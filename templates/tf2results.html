@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{query}} - TF2 Item Search</title>
+    <link rel="stylesheet" href="/css/tf2.css">
+    <script src="/scripts/tf2.js"></script>
+  </head>
+
+  <body>
+    <div id="container">
+      <header>
+      <h1 id='results'>Results</h1>
+      <form action='/search' style="position: absolute; top:20px; right: 20px;">
+        <input type="search" placeholder="Search" name="q" style="font-size: 1.5em;">
+        <input type="submit" value="Search" class="button">
+      </form>
+      </header>
+
+      <div id='hoverbox'></div>
+      <div id='itembox'></div>  
+
+      <div id="body">
+        {% if classitems %}
+        <ul>
+        {% for item in classitems %}
+        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if allclassitems %}
+        <h2>All-class items</h2>
+        <ul>
+        {% for item in allclassitems %}
+        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
+        {% endfor %}      
+        </ul>      
+        {% endif %}
+
+        {% if searchitems %}
+        <ul>
+        {% for item in searchitems %}
+        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
+        {% endfor %}      
+        </ul>
+        {% endif %}
+
+        {% if not (classitems or allclassitems or searchitems) %}
+        <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
+        {% endif %}
+      </div>
+      <footer>{{footer|safe}}</footer>
+    </div>
+  </body>
+</html>

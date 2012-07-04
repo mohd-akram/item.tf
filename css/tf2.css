@@ -1,0 +1,185 @@
+html {
+  height: 100%;
+  background: #21201F;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPg0KPGxpbmVhckdyYWRpZW50IGlkPSJnODM3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPg0KPHN0b3Agc3RvcC1jb2xvcj0iIzI4MjgyOCIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iIzE2MTYxNiIgb2Zmc2V0PSIxIi8+DQo8L2xpbmVhckdyYWRpZW50Pg0KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNnODM3KSIgLz4NCjwvc3ZnPg==);
+  background-attachment: fixed;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-align:center;
+  font-family: 'Segoe UI', 'Lucida Grande', sans-serif;
+}
+
+#container {
+  min-height:100%;
+  position: relative;
+}
+
+header {
+  width: 100%;
+  height: 100px;
+  z-index: -1;
+/* SVG as background image (IE9/Chrome/Safari/Opera) */ 
+  background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc1NTUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiM0RjRENDkiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiMzMzMyMkQiIG9mZnNldD0iMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2c1NTUpIiAvPgo8L3N2Zz4=);
+  background-color: rgb(87, 84, 79);
+  box-shadow:1px 1px 6px rgba(0,0,0,0.3);
+}
+
+header > a {
+  text-decoration: none;
+  color: white;
+}
+
+#body {
+  padding-bottom: 20px;
+}
+
+#tips {
+  width: 150px;
+  text-align: right;
+  color: rgb(160, 158, 146);
+  font-size: 0.9em;
+  position: absolute;
+  right: 10px;
+}
+footer {
+  position:absolute;
+  font-size: 0.9em;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  text-decoration: none;
+}
+
+footer > a {
+  text-decoration: none;
+  font-weight: bold;
+  color: white; 
+}
+
+h1 {
+  margin: 0;
+  padding: 20px;
+  border-radius: 7px;
+  font-size:3em;
+  text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+}
+
+ul {
+  list-style:none;
+  margin:auto;
+  margin-top: 30px;
+  margin-bottom:30px;
+  overflow:hidden;
+  padding:0;
+  width:1080px;
+}
+
+#results {
+  margin: 0;
+  font-size:3em;
+}
+
+.item {
+  background: rgba(50, 50, 47, .8) center no-repeat;
+  background-size: 98px;
+  border: 1px solid #363634;
+  border-radius: 11px;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, .15);
+  cursor: pointer;
+  float: left;
+  height: 90px;
+  margin: 4px;
+  position: relative;
+  width: 98px;  
+}
+
+.button {
+  color: white;
+  text-decoration: none;
+  text-shadow: 2px 2px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', 'Lucida Grande', sans-serif;
+  font-size: 1.2em;
+  padding: 8px;
+  display: inline-block;
+  background-color: #333333;
+  background-image: -webkit-linear-gradient(#585857, #333333);
+  background-image: -moz-linear-gradient(#585857, #333333);
+  background-image: -o-linear-gradient(#585857, #333333);
+  border-style: none;
+  outline: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#buy-button {
+  background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
+  background-position: top;
+  position:absolute;
+  bottom:20px;
+  left:270px;
+  width: 97px;
+  height: 24px;  
+}
+
+#buy-button:hover {
+  background-position: bottom;
+}
+
+#itembox {
+  display: none;
+  z-index:1;
+  background-color: #31312F;
+  background-position: center;
+  background-size: 300px;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 8px 8px rgba(0, 0, 0, .2);
+  border-radius: 10px;
+  width: 400px;
+  height: 500px;
+  margin-top: -250px;
+  margin-left: -200px;
+  position:fixed;
+  top: 50%;
+  left: 50%;
+}
+
+li:hover *,li>div:first-child {
+  display:none;
+}
+
+li:hover *,li>div:last-child {
+  display:none;
+}
+
+#hoverbox {
+  background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPg0KPGxpbmVhckdyYWRpZW50IGlkPSJnODM4IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPg0KPHN0b3Agc3RvcC1jb2xvcj0icmdiYSgzNCwgMzQsIDM0LCAwLjkpIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSJyZ2JhKDE0LCAxNCwgMTQsIDAuOSkiIG9mZnNldD0iMSIvPg0KPC9saW5lYXJHcmFkaWVudD4NCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZzgzOCkiIC8+DQo8L3N2Zz4=);
+  background:-webkit-linear-gradient(top,rgba(34,34,34,.9),rgba(14,14,14,.9));
+  border:1px solid #0C0C0C;
+  border-radius:8px;
+  box-shadow:1px 1px 6px #111;
+  display:none;
+  font-size:12px;
+  padding:5px;
+  position:absolute;
+  text-align:center;
+  white-space:pre-wrap;
+  width:308px;
+  word-wrap:break-word;
+  z-index:1;
+}
+
+#hoverbox>div {
+  font:18px Sans-serif;
+  margin:3px 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+

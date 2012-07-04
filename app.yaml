@@ -1,0 +1,29 @@
+application: tf2find
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /images
+  static_dir: images
+
+- url: /css
+  static_dir: css
+
+- url: /scripts
+  static_dir: scripts
+
+- url: .*
+  script: main.app
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
+
+- name: jinja2
+  version: "2.6"
