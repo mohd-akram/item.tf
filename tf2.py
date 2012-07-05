@@ -48,7 +48,7 @@ class TF2ItemHandler(Handler):
         if defindex in ITEMS_DICT:
             itemdict = ITEMS_DICT[defindex]
         else:
-            self.redirect('/tf2')
+            self.redirect('/')
             return
 
         if is_json:
