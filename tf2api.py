@@ -49,16 +49,16 @@ def getmarketprices(items):
     pricesdict = {}
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
-    prices = list(reader)[1:-1]
+    sheet = list(reader)[1:-1]
 
     for idx in items:
         itemsbyname[items[idx]['item_name']] = idx
 
-    for i in prices:
-        name = filtermarketname(i['name'])
-        price = i['price']
-        quality = i['quality']
-        lowprice = i['lowprice']
+    for row in sheet:
+        name = convertmarketname(row['name'])
+        price = row['price']
+        quality = row['quality']
+        lowprice = row['lowprice']
 
         denominations = ['Key','Bud','Scrap']
         pricedict = {}
@@ -79,7 +79,7 @@ def getmarketprices(items):
             lowquality = 'Unique'
 
             if lowprice != '-':
-                if not any(i in lowprice for i in denominations):
+                if not any(d in lowprice for d in denominations):
                     lowprice = lowprice + ' Refined'
 
                 pricedict[lowquality] = lowprice
@@ -88,7 +88,7 @@ def getmarketprices(items):
 
     return pricesdict
 
-def getitemtypes():
+def getallitemtypes():
     return ['hat','weapon','misc','tool','action','taunt','paint']
 
 def gettf2classes():
@@ -127,7 +127,7 @@ def getmarketprice(item, marketprices):
 
     return marketprice
 
-def filtermarketname(name):
+def convertmarketname(name):
     """Changes the market name to match the proper TF2 name"""
     translations = {'Meet the Medic (clean)':'Taunt: The Meet the Medic',
                     'High-Five (clean)\n':'Taunt: The High Five!'}
@@ -143,6 +143,26 @@ def getitemclasses(item):
     if 'used_by_classes' in item:
         classes = item['used_by_classes']
     return classes
+
+def getitemtags(item):
+    tags = []
+
+    if isweapon(item):
+        tags.append('weapon')
+    if ishat(item):
+        tags.append('hat')
+    if ismisc(item):
+        tags.append('misc')
+    if isaction(item):
+        tags.append('action')
+    if istaunt(item):
+        tags.append('taunt')
+    if istool(item):
+        tags.append('tool')
+    if ispaint(item):
+        tags.append('paint')
+
+    return tags
 
 def isweapon(item):
     if item['item_class'].startswith('tf_weapon'):

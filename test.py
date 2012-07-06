@@ -14,5 +14,5 @@ itemsdict = tf2search.getitemsdict(items,storeprices,marketprices)
 """
 
 cProfile.run(setup)
-cProfile.run("tf2search.search('engi hats',items,itemsdict)")
-cProfile.run("tf2search.search('all',items,itemsdict)")
+cProfile.run("tf2search.search('engi hats',itemsdict)")
+cProfile.run("tf2search.search('all',itemsdict)")

@@ -46,7 +46,7 @@ class TF2ResultsHandler(Handler):
         query = self.request.get('q')
         items = getitems()
         itemsdict = getitemsdict()
-        result = tf2search.search(query, items, itemsdict)
+        result = tf2search.search(query, itemsdict)
 
         t1 = time.time()
 
