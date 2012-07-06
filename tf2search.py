@@ -5,13 +5,15 @@ Regular search, eg: 'Meet the Medic'
 Requires TF2 API module to get items and prices.
 
 Usage:
-    items = search('engi medic hats', items, storeprices, marketprices)
+    items = search('engi medic hats', items, itemsdict)
 
 Note: You must provide your own image URLs for the paint cans.
       Replace the relative URL in createitemdict.
 """
 import re
 import logging
+from collections import OrderedDict
+
 from tf2api import (getitemtypes, gettf2classes, getstoreprice,
                     getmarketprice, getitemclasses, isweapon,
                     ishat, ismisc, isaction, istaunt, istool, ispaint)
@@ -35,7 +37,7 @@ def getitemtype(word):
 
 def createitemdict(item, storeprices, marketprices):
     """Takes a TF2 item and returns a custom dict with a limited number of
-    keys"""
+    keys that are used for search"""
     if 'used_by_classes' in item:
         classes = item['used_by_classes']
     else:
@@ -63,10 +65,12 @@ def createitemdict(item, storeprices, marketprices):
     return itemdict
 
 def getitemsdict(items, storeprices, marketprices):
-    itemsdict = {}
+    """Returns an ordered dictionary with index as key and an itemdict as value"""
+    itemsdict = OrderedDict()
     for idx in items:
         itemdict = createitemdict(items[idx],storeprices,marketprices)
         itemsdict[idx] = itemdict
+
     return itemsdict
 
 def parseinput(query):

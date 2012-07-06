@@ -1,7 +1,6 @@
 import json
 import logging
-
-from collections import OrderedDict
+import time
 
 from tf2api import getitems, getstoreprices, getmarketprices
 from tf2search import search, getitemsdict
@@ -14,17 +13,19 @@ ITEMS_DICT = memcache.get('itemsdict')
 FOOTER = 'Developed by <a href="http://steamcommunity.com/id/thefilmore">filmore</a>. Powered by <a href="http://steampowered.com">Steam</a>'
 
 if not (ITEMS and ITEMS_DICT):
+    t0 = time.clock()
     with open('api_key.txt') as f:
         apikey = f.read()
 
     ITEMS = getitems(apikey)
     storeprices= getstoreprices(apikey)
-    marketprices = getmarketprices()
-    itemsdict = getitemsdict(ITEMS,storeprices,marketprices)
-    ITEMS_DICT = OrderedDict(sorted(itemsdict.items(), key=lambda t: t))
+    marketprices = getmarketprices(ITEMS)
+    ITEMS_DICT = getitemsdict(ITEMS,storeprices,marketprices)
 
     memcache.set('items', ITEMS)
     memcache.set('itemsdict',ITEMS_DICT)
+    t1 = time.clock()
+    logging.info('Time taken to update cache - {} seconds'.format(t1-t0))
 
 class TF2Handler(Handler):
     def get(self):

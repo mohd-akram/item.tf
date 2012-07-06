@@ -4,18 +4,19 @@ import csv
 import re
 import logging
 from urllib2 import urlopen
+from collections import OrderedDict
 
 def hasdigit(string):
     regex = re.compile(r'[0-9]')
     return regex.match(string)
 
 def getitems(apikey):
-    """Returns a dictionary of items in the schema where the key is defindex for
+    """Returns an ordered dictionary of items in the schema where the key is defindex for
     each item"""
     url = 'http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key={}&language=en'.format(apikey)
     schema = urlopen(url).read()
 
-    items = {}
+    items = OrderedDict()
     itemslist = json.loads(schema)['result']['items']
 
     for item in itemslist:
@@ -37,15 +38,55 @@ def getstoreprices(apikey):
 
     return prices
 
-def getmarketprices():
-    """Get market prices from tf2spreadsheet.blogspot.com"""
+def getmarketprices(items):
+    """Get market prices from tf2spreadsheet.blogspot.com
+    Returns a dictionary where the key is defindex and value is a dictionary of
+    prices for the item"""
     url = 'https://spreadsheets.google.com/pub?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv'
     pricesdata = urlopen(url)
+
+    itemsbyname = {}
+    pricesdict = {}
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
     prices = list(reader)[1:-1]
 
-    return prices
+    for idx in items:
+        itemsbyname[items[idx]['item_name']] = idx
+
+    for i in prices:
+        name = filtermarketname(i['name'])
+        price = i['price']
+        quality = i['quality']
+        lowprice = i['lowprice']
+
+        denominations = ['Key','Bud','Scrap']
+        pricedict = {}
+
+        if name in itemsbyname:
+            index = itemsbyname[name]
+
+            price = price.replace('ref','').replace('\n','').title()
+            lowprice = lowprice.replace('ref','').replace('\n','').title()
+
+            # Check if the price is a number and no denomination is specified
+            if not any(d in price for d in denominations) and hasdigit(price):
+                # Add Refined denomination
+                price = price + ' Refined'
+
+            pricedict[quality] = price
+
+            lowquality = 'Unique'
+
+            if lowprice != '-':
+                if not any(i in lowprice for i in denominations):
+                    lowprice = lowprice + ' Refined'
+
+                pricedict[lowquality] = lowprice
+
+            pricesdict[index] = pricedict
+
+    return pricesdict
 
 def getitemtypes():
     return ['hat','weapon','misc','tool','action','taunt','paint']
@@ -78,34 +119,13 @@ def getstoreprice(item, storeprices):
 
 def getmarketprice(item, marketprices):
     """Get market price of item"""
-    denominations = ['Key','Bud','Scrap']
-    pricesdict = {}
+    index = item['defindex']
+    marketprice = {}
 
-    for i in marketprices:
-        if filtermarketname(i['name']) == item['item_name']:
-            price = i['price']
-            quality = i['quality']
-            lowprice = i['lowprice']
+    if index in marketprices:
+        marketprice = marketprices[index]
 
-            price = price.replace('ref','').replace('\n','').title()
-            lowprice = lowprice.replace('ref','').replace('\n','').title()
-
-            # Check if the price is a number and no denomination is specified
-            if not any(i in price for i in denominations) and hasdigit(price):
-                # Add Refined denomination
-                price = price + ' Refined'
-
-            pricesdict[quality] = price
-
-            lowquality = 'Unique'
-
-            if lowprice != '-':
-                if not any(i in lowprice for i in denominations):
-                    lowprice = lowprice + ' Refined'
-
-                pricesdict[lowquality] = lowprice
-
-    return pricesdict
+    return marketprice
 
 def filtermarketname(name):
     """Changes the market name to match the proper TF2 name"""

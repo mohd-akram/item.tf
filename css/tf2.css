@@ -134,7 +134,7 @@ ul {
   display: none;
   z-index:1;
   background-color: #31312F;
-  background-position: center;
+  background-position: center 140px;
   background-size: 300px;
   background-repeat: no-repeat;
   box-shadow: 0 0 8px 8px rgba(0, 0, 0, .2);
