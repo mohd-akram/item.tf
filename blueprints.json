@@ -1,0 +1,2232 @@
+{
+    "Smelt Class Weapons (Scout)": [
+        [
+            "Any Scout Weapon", 
+            "Any Scout Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Sniper)": [
+        [
+            "Any Sniper Weapon", 
+            "Any Sniper Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Soldier)": [
+        [
+            "Any Soldier Weapon", 
+            "Any Soldier Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Demoman)": [
+        [
+            "Any Demoman Weapon", 
+            "Any Demoman Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Heavy)": [
+        [
+            "Any Heavy Weapon", 
+            "Any Heavy Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Medic)": [
+        [
+            "Any Medic Weapon", 
+            "Any Medic Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Pyro)": [
+        [
+            "Any Pyro Weapon", 
+            "Any Pyro Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Spy)": [
+        [
+            "Any Spy Weapon", 
+            "Any Spy Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Class Weapons (Engineer)": [
+        [
+            "Any Engineer Weapon", 
+            "Any Engineer Weapon"
+        ], 
+        [
+            "Scrap Metal"
+        ]
+    ], 
+    "Combine Scrap Metal": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Scrap Metal"
+        ], 
+        [
+            "Reclaimed Metal"
+        ]
+    ], 
+    "Combine Reclaimed Metal": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Refined Metal"
+        ]
+    ], 
+    "Fabricate Slot Token (Primary)": [
+        [
+            "Any Primary Weapon", 
+            "Any Primary Weapon", 
+            "Any Primary Weapon"
+        ], 
+        [
+            "Slot Token - Primary"
+        ]
+    ], 
+    "Fabricate Slot Token (Secondary)": [
+        [
+            "Any Secondary Weapon", 
+            "Any Secondary Weapon", 
+            "Any Secondary Weapon"
+        ], 
+        [
+            "Slot Token - Secondary"
+        ]
+    ], 
+    "Fabricate Slot Token (Melee)": [
+        [
+            "Any Melee Weapon", 
+            "Any Melee Weapon", 
+            "Any Melee Weapon"
+        ], 
+        [
+            "Slot Token - Melee"
+        ]
+    ], 
+    "Fabricate Slot Token (PDA2)": [
+        [
+            "Any Spy Watch", 
+            "Any Spy Watch", 
+            "Any Spy Watch"
+        ], 
+        [
+            "Slot Token - PDA2"
+        ]
+    ], 
+    "Fabricate Class Token (Scout)": [
+        [
+            "Any Scout Weapon", 
+            "Any Scout Weapon", 
+            "Any Scout Weapon"
+        ], 
+        [
+            "Class Token - Scout"
+        ]
+    ], 
+    "Fabricate Class Token (Sniper)": [
+        [
+            "Any Sniper Weapon", 
+            "Any Sniper Weapon", 
+            "Any Sniper Weapon"
+        ], 
+        [
+            "Class Token - Sniper"
+        ]
+    ], 
+    "Fabricate Class Token (Soldier)": [
+        [
+            "Any Soldier Weapon", 
+            "Any Soldier Weapon", 
+            "Any Soldier Weapon"
+        ], 
+        [
+            "Class Token - Soldier"
+        ]
+    ], 
+    "Fabricate Class Token (Demoman)": [
+        [
+            "Any Demoman Weapon", 
+            "Any Demoman Weapon", 
+            "Any Demoman Weapon"
+        ], 
+        [
+            "Class Token - Demoman"
+        ]
+    ], 
+    "Fabricate Class Token (Heavy)": [
+        [
+            "Any Heavy Weapon", 
+            "Any Heavy Weapon", 
+            "Any Heavy Weapon"
+        ], 
+        [
+            "Class Token - Heavy"
+        ]
+    ], 
+    "Fabricate Class Token (Medic)": [
+        [
+            "Any Medic Weapon", 
+            "Any Medic Weapon", 
+            "Any Medic Weapon"
+        ], 
+        [
+            "Class Token - Medic"
+        ]
+    ], 
+    "Fabricate Class Token (Pyro)": [
+        [
+            "Any Pyro Weapon", 
+            "Any Pyro Weapon", 
+            "Any Pyro Weapon"
+        ], 
+        [
+            "Class Token - Pyro"
+        ]
+    ], 
+    "Fabricate Class Token (Spy)": [
+        [
+            "Any Spy Weapon", 
+            "Any Spy Weapon", 
+            "Any Spy Weapon"
+        ], 
+        [
+            "Class Token - Spy"
+        ]
+    ], 
+    "Fabricate Class Token (Engineer)": [
+        [
+            "Any Engineer Weapon", 
+            "Any Engineer Weapon", 
+            "Any Engineer Weapon"
+        ], 
+        [
+            "Class Token - Engineer"
+        ]
+    ], 
+    "Rebuild Class Token (Scout)": [
+        [
+            "Any Class Token", 
+            "Any Scout Weapon"
+        ], 
+        [
+            "Class Token - Scout"
+        ]
+    ], 
+    "Rebuild Class Token (Sniper)": [
+        [
+            "Any Class Token", 
+            "Any Sniper Weapon"
+        ], 
+        [
+            "Class Token - Sniper"
+        ]
+    ], 
+    "Rebuild Class Token (Soldier)": [
+        [
+            "Any Class Token", 
+            "Any Soldier Weapon"
+        ], 
+        [
+            "Class Token - Soldier"
+        ]
+    ], 
+    "Rebuild Class Token (Demoman)": [
+        [
+            "Any Class Token", 
+            "Any Demoman Weapon"
+        ], 
+        [
+            "Class Token - Demoman"
+        ]
+    ], 
+    "Rebuild Class Token (Heavy)": [
+        [
+            "Any Class Token", 
+            "Any Heavy Weapon"
+        ], 
+        [
+            "Class Token - Heavy"
+        ]
+    ], 
+    "Rebuild Class Token (Medic)": [
+        [
+            "Any Class Token", 
+            "Any Medic Weapon"
+        ], 
+        [
+            "Class Token - Medic"
+        ]
+    ], 
+    "Rebuild Class Token (Pyro)": [
+        [
+            "Any Class Token", 
+            "Any Pyro Weapon"
+        ], 
+        [
+            "Class Token - Pyro"
+        ]
+    ], 
+    "Rebuild Class Token (Spy)": [
+        [
+            "Any Class Token", 
+            "Any Spy Weapon"
+        ], 
+        [
+            "Class Token - Spy"
+        ]
+    ], 
+    "Rebuild Class Token (Engineer)": [
+        [
+            "Any Class Token", 
+            "Any Engineer Weapon"
+        ], 
+        [
+            "Class Token - Engineer"
+        ]
+    ], 
+    "Rebuild Slot Token (Primary)": [
+        [
+            "Any Slot Token", 
+            "Any Primary Weapon"
+        ], 
+        [
+            "Slot Token - Primary"
+        ]
+    ], 
+    "Rebuild Slot Token (Secondary)": [
+        [
+            "Any Slot Token", 
+            "Any Secondary Weapon"
+        ], 
+        [
+            "Slot Token - Secondary"
+        ]
+    ], 
+    "Rebuild Slot Token (Melee)": [
+        [
+            "Any Slot Token", 
+            "Any Melee Weapon"
+        ], 
+        [
+            "Slot Token - Melee"
+        ]
+    ], 
+    "Rebuild Slot Token (PDA2)": [
+        [
+            "Any Slot Token", 
+            "Any Spy Watch"
+        ], 
+        [
+            "Slot Token - PDA2"
+        ]
+    ], 
+    "Smelt Tokens": [
+        [
+            "Any Token", 
+            "Any Token", 
+            "Any Token"
+        ], 
+        [
+            "Reclaimed Metal"
+        ]
+    ], 
+    "Smelt Reclaimed Metal": [
+        [
+            "Reclaimed Metal"
+        ], 
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Scrap Metal"
+        ]
+    ], 
+    "Smelt Refined Metal": [
+        [
+            "Refined Metal"
+        ], 
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Reclaimed Metal"
+        ]
+    ], 
+    "Fabricate Class Weapons (Scout, Primary)": [
+        [
+            "Class Token - Scout", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Force-A-Nature", 
+            "Shortstop", 
+            "Soda Popper", 
+            "Baby Face's Blaster"
+        ]
+    ], 
+    "Fabricate Class Weapons (Scout, Secondary)": [
+        [
+            "Class Token - Scout", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Bonk! Atomic Punch", 
+            "Crit-a-Cola", 
+            "Mad Milk", 
+            "Winger", 
+            "Pretty Boy's Pocket Pistol"
+        ]
+    ], 
+    "Fabricate Class Weapons (Scout, Melee)": [
+        [
+            "Class Token - Scout", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Sandman", 
+            "Holy Mackerel", 
+            "Candy Cane", 
+            "Boston Basher", 
+            "Fan O'War", 
+            "Atomizer", 
+            "Three-Rune Blade", 
+            "Unarmed Combat", 
+            "Wrap Assassin"
+        ]
+    ], 
+    "Fabricate Class Weapons (Sniper, Primary)": [
+        [
+            "Class Token - Sniper", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Huntsman", 
+            "Sydney Sleeper", 
+            "Bazaar Bargain", 
+            "Machina", 
+            "Hitman's Heatmaker"
+        ]
+    ], 
+    "Fabricate Class Weapons (Sniper, Secondary)": [
+        [
+            "Class Token - Sniper", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Razorback", 
+            "Jarate", 
+            "Darwin's Danger Shield", 
+            "Cleaner's Carbine"
+        ]
+    ], 
+    "Fabricate Class Weapons (Sniper, Melee)": [
+        [
+            "Class Token - Sniper", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Tribalman's Shiv", 
+            "Bushwacka", 
+            "Shahanshah"
+        ]
+    ], 
+    "Fabricate Class Weapons (Soldier, Primary)": [
+        [
+            "Class Token - Soldier", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Direct Hit", 
+            "Black Box", 
+            "Rocket Jumper", 
+            "Liberty Launcher", 
+            "Cow Mangler 5000", 
+            "Original", 
+            "Beggar's Bazooka"
+        ]
+    ], 
+    "Fabricate Class Weapons (Soldier, Secondary)": [
+        [
+            "Class Token - Soldier", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Buff Banner", 
+            "Gunboats", 
+            "Battalion's Backup", 
+            "Concheror", 
+            "Reserve Shooter", 
+            "Righteous Bison", 
+            "Mantreads"
+        ]
+    ], 
+    "Fabricate Class Weapons (Soldier, Melee)": [
+        [
+            "Class Token - Soldier", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Equalizer", 
+            "Pain Train", 
+            "Half-Zatoichi", 
+            "Market Gardener", 
+            "Disciplinary Action", 
+            "Escape Plan"
+        ]
+    ], 
+    "Fabricate Class Weapons (Demoman, Primary)": [
+        [
+            "Class Token - Demoman", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Loch-n-Load", 
+            "Ali Baba's Wee Booties", 
+            "Bootlegger"
+        ]
+    ], 
+    "Fabricate Class Weapons (Demoman, Secondary)": [
+        [
+            "Class Token - Demoman", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Scottish Resistance", 
+            "Chargin' Targe", 
+            "Sticky Jumper", 
+            "Splendid Screen"
+        ]
+    ], 
+    "Fabricate Class Weapons (Demoman, Melee)": [
+        [
+            "Class Token - Demoman", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Eyelander", 
+            "Pain Train", 
+            "Scotsman's Skullcutter", 
+            "Ullapool Caber", 
+            "Claidheamh Mòr", 
+            "Half-Zatoichi", 
+            "Persian Persuader", 
+            "Nessie's Nine Iron", 
+            "Scottish Handshake"
+        ]
+    ], 
+    "Fabricate Class Weapons (Heavy, Primary)": [
+        [
+            "Class Token - Heavy", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Natascha", 
+            "Brass Beast", 
+            "Tomislav"
+        ]
+    ], 
+    "Fabricate Class Weapons (Heavy, Secondary)": [
+        [
+            "Class Token - Heavy", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Sandvich", 
+            "Dalokohs Bar", 
+            "Buffalo Steak Sandvich", 
+            "Family Business"
+        ]
+    ], 
+    "Fabricate Class Weapons (Heavy, Melee)": [
+        [
+            "Class Token - Heavy", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Killing Gloves of Boxing", 
+            "Gloves of Running Urgently", 
+            "Warrior's Spirit", 
+            "Fists of Steel", 
+            "Eviction Notice", 
+            "Apoco-Fists", 
+            "Holiday Punch"
+        ]
+    ], 
+    "Fabricate Class Weapons (Medic, Primary)": [
+        [
+            "Class Token - Medic", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Blutsauger", 
+            "Crusader's Crossbow", 
+            "Overdose"
+        ]
+    ], 
+    "Fabricate Class Weapons (Medic, Secondary)": [
+        [
+            "Class Token - Medic", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Kritzkrieg", 
+            "Quick-Fix"
+        ]
+    ], 
+    "Fabricate Class Weapons (Medic, Melee)": [
+        [
+            "Class Token - Medic", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Ubersaw", 
+            "Vita-Saw", 
+            "Amputator", 
+            "Solemn Vow"
+        ]
+    ], 
+    "Fabricate Class Weapons (Pyro, Primary)": [
+        [
+            "Class Token - Pyro", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Backburner", 
+            "Degreaser", 
+            "Phlogistinator", 
+            "Rainblower"
+        ]
+    ], 
+    "Fabricate Class Weapons (Pyro, Secondary)": [
+        [
+            "Class Token - Pyro", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Flare Gun", 
+            "Detonator", 
+            "Reserve Shooter", 
+            "Manmelter", 
+            "Scorch Shot"
+        ]
+    ], 
+    "Fabricate Class Weapons (Pyro, Melee)": [
+        [
+            "Class Token - Pyro", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Axtinguisher", 
+            "Homewrecker", 
+            "Powerjack", 
+            "Back Scratcher", 
+            "Postal Pummeler", 
+            "Maul", 
+            "Third Degree", 
+            "Lollichop"
+        ]
+    ], 
+    "Fabricate Class Weapons (Spy, Secondary)": [
+        [
+            "Class Token - Spy", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Ambassador", 
+            "L'Etranger", 
+            "Enforcer", 
+            "Diamondback"
+        ]
+    ], 
+    "Fabricate Class Weapons (Spy, Melee)": [
+        [
+            "Class Token - Spy", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Your Eternal Reward", 
+            "Conniver's Kunai", 
+            "Big Earner", 
+            "Wanga Prick", 
+            "Sharp Dresser", 
+            "Spy-cicle"
+        ]
+    ], 
+    "Fabricate Class Weapons (Spy, PDA2)": [
+        [
+            "Class Token - Spy", 
+            "Slot Token - PDA2", 
+            "Scrap Metal"
+        ], 
+        [
+            "Dead Ringer", 
+            "Cloak and Dagger"
+        ]
+    ], 
+    "Fabricate Class Weapons (Engineer, Primary)": [
+        [
+            "Class Token - Engineer", 
+            "Slot Token - Primary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Frontier Justice", 
+            "Widowmaker", 
+            "Pomson 6000"
+        ]
+    ], 
+    "Fabricate Class Weapons (Engineer, Secondary)": [
+        [
+            "Class Token - Engineer", 
+            "Slot Token - Secondary", 
+            "Scrap Metal"
+        ], 
+        [
+            "Wrangler", 
+            "Short Circuit"
+        ]
+    ], 
+    "Fabricate Class Weapons (Engineer, Melee)": [
+        [
+            "Class Token - Engineer", 
+            "Slot Token - Melee", 
+            "Scrap Metal"
+        ], 
+        [
+            "Gunslinger", 
+            "Southern Hospitality", 
+            "Jag", 
+            "Eureka Effect"
+        ]
+    ], 
+    "Fabricate Crit-a-Cola": [
+        [
+            "Kritzkrieg", 
+            "Bonk! Atomic Punch"
+        ], 
+        [
+            "Crit-a-Cola"
+        ]
+    ], 
+    "Fabricate Gunboats": [
+        [
+            "Chargin' Targe", 
+            "Razorback"
+        ], 
+        [
+            "Gunboats"
+        ]
+    ], 
+    "Fabricate Dalokohs Bar": [
+        [
+            "Scrap Metal", 
+            "Sandvich"
+        ], 
+        [
+            "Dalokohs Bar"
+        ]
+    ], 
+    "Fabricate Homewrecker": [
+        [
+            "Scrap Metal", 
+            "Equalizer"
+        ], 
+        [
+            "Homewrecker"
+        ]
+    ], 
+    "Fabricate Pain Train": [
+        [
+            "Scrap Metal", 
+            "Sandman"
+        ], 
+        [
+            "Pain Train"
+        ]
+    ], 
+    "Fabricate Scotsman's Skullcutter": [
+        [
+            "Jarate", 
+            "Axtinguisher"
+        ], 
+        [
+            "Scotsman's Skullcutter"
+        ]
+    ], 
+    "Fabricate Tribalman's Shiv": [
+        [
+            "Dead Ringer", 
+            "Huntsman"
+        ], 
+        [
+            "Tribalman's Shiv"
+        ]
+    ], 
+    "Fabricate Southern Hospitality": [
+        [
+            "Scrap Metal", 
+            "Ambassador"
+        ], 
+        [
+            "Southern Hospitality"
+        ]
+    ], 
+    "Fabricate Mad Milk": [
+        [
+            "Jarate", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Mad Milk"
+        ]
+    ], 
+    "Fabricate Shortstop": [
+        [
+            "Force-A-Nature", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Shortstop"
+        ]
+    ], 
+    "Fabricate Battalion's Backup": [
+        [
+            "Buff Banner", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Battalion's Backup"
+        ]
+    ], 
+    "Fabricate Black Box": [
+        [
+            "Direct Hit", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Black Box"
+        ]
+    ], 
+    "Fabricate Degreaser": [
+        [
+            "Backburner", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Degreaser"
+        ]
+    ], 
+    "Fabricate Powerjack": [
+        [
+            "Axtinguisher", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Powerjack"
+        ]
+    ], 
+    "Fabricate Bushwacka": [
+        [
+            "Eyelander", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Bushwacka"
+        ]
+    ], 
+    "Fabricate Sydney Sleeper": [
+        [
+            "Huntsman", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Sydney Sleeper"
+        ]
+    ], 
+    "Fabricate L'Etranger": [
+        [
+            "Dead Ringer", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "L'Etranger"
+        ]
+    ], 
+    "Fabricate Holy Mackerel": [
+        [
+            "Sandman", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Holy Mackerel"
+        ]
+    ], 
+    "Fabricate Darwin's Danger Shield": [
+        [
+            "Razorback", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Darwin's Danger Shield"
+        ]
+    ], 
+    "Fabricate Your Eternal Reward": [
+        [
+            "Cloak and Dagger", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Your Eternal Reward"
+        ]
+    ], 
+    "Fabricate Gloves Of Running Urgently": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Killing Gloves of Boxing"
+        ], 
+        [
+            "Gloves of Running Urgently"
+        ]
+    ], 
+    "Fabricate Vita-Saw": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Ubersaw"
+        ], 
+        [
+            "Vita-Saw"
+        ]
+    ], 
+    "Fabricate Brass Beast": [
+        [
+            "Reclaimed Metal", 
+            "Natascha"
+        ], 
+        [
+            "Brass Beast"
+        ]
+    ], 
+    "Fabricate Loch-n-Load": [
+        [
+            "Reclaimed Metal", 
+            "Scottish Resistance"
+        ], 
+        [
+            "Loch-n-Load"
+        ]
+    ], 
+    "Fabricate Crusader's Crossbow": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Huntsman"
+        ], 
+        [
+            "Crusader's Crossbow"
+        ]
+    ], 
+    "Fabricate Warrior's Spirit": [
+        [
+            "Scrap Metal", 
+            "Gloves of Running Urgently"
+        ], 
+        [
+            "Warrior's Spirit"
+        ]
+    ], 
+    "Fabricate Amputator": [
+        [
+            "Scrap Metal", 
+            "Vita-Saw"
+        ], 
+        [
+            "Amputator"
+        ]
+    ], 
+    "Fabricate Ullapool Caber": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Pain Train"
+        ], 
+        [
+            "Ullapool Caber"
+        ]
+    ], 
+    "Fabricate Buffalo Steak Sandvich": [
+        [
+            "Reclaimed Metal", 
+            "Sandvich"
+        ], 
+        [
+            "Buffalo Steak Sandvich"
+        ]
+    ], 
+    "Fabricate Boston Basher": [
+        [
+            "Tribalman's Shiv", 
+            "Sandman"
+        ], 
+        [
+            "Boston Basher"
+        ]
+    ], 
+    "Fabricate Claidheamh Mòr": [
+        [
+            "Chargin' Targe", 
+            "Homewrecker"
+        ], 
+        [
+            "Claidheamh Mòr"
+        ]
+    ], 
+    "Fabricate Candy Cane": [
+        [
+            "Kritzkrieg", 
+            "Pain Train"
+        ], 
+        [
+            "Candy Cane"
+        ]
+    ], 
+    "Fabricate Back Scratcher": [
+        [
+            "Axtinguisher", 
+            "Scotsman's Skullcutter"
+        ], 
+        [
+            "Back Scratcher"
+        ]
+    ], 
+    "Fabricate Jag": [
+        [
+            "Scrap Metal", 
+            "Southern Hospitality"
+        ], 
+        [
+            "Jag"
+        ]
+    ], 
+    "Fabricate Fists Of Steel": [
+        [
+            "Reclaimed Metal", 
+            "Killing Gloves of Boxing"
+        ], 
+        [
+            "Fists of Steel"
+        ]
+    ], 
+    "Fabricate Sharpened Volcano Fragment": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Axtinguisher"
+        ], 
+        [
+            "Sharpened Volcano Fragment"
+        ]
+    ], 
+    "Fabricate Sun-on-a-Stick": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Boston Basher"
+        ], 
+        [
+            "Sun-on-a-Stick"
+        ]
+    ], 
+    "Fabricate Half-Zatoichi": [
+        [
+            "Reclaimed Metal", 
+            "Eyelander", 
+            "Eyelander"
+        ], 
+        [
+            "Half-Zatoichi"
+        ]
+    ], 
+    "Fabricate Concheror": [
+        [
+            "Scrap Metal", 
+            "Battalion's Backup"
+        ], 
+        [
+            "Concheror"
+        ]
+    ], 
+    "Fabricate Conniver's Kunai": [
+        [
+            "Scrap Metal", 
+            "Your Eternal Reward"
+        ], 
+        [
+            "Conniver's Kunai"
+        ]
+    ], 
+    "Fabricate Fan O'War": [
+        [
+            "Scrap Metal", 
+            "Mad Milk"
+        ], 
+        [
+            "Fan O'War"
+        ]
+    ], 
+    "Fabricate SpaceChem Pin": [
+        [
+            "Moustachium Bar", 
+            "Moustachium Bar", 
+            "Moustachium Bar", 
+            "Spacemetal Scrap"
+        ], 
+        [
+            "SpaceChem Pin"
+        ]
+    ], 
+    "Fabricate Fishcake": [
+        [
+            "Moustachium Bar", 
+            "Moustachium Bar", 
+            "Moustachium Bar", 
+            "'Fish'"
+        ], 
+        [
+            "Fishcake"
+        ]
+    ], 
+    "Fabricate Soda Popper": [
+        [
+            "Reclaimed Metal", 
+            "Bonk! Atomic Punch", 
+            "Force-A-Nature"
+        ], 
+        [
+            "Soda Popper"
+        ]
+    ], 
+    "Fabricate Winger": [
+        [
+            "Reclaimed Metal", 
+            "Shortstop"
+        ], 
+        [
+            "Winger"
+        ]
+    ], 
+    "Fabricate Atomizer": [
+        [
+            "Reclaimed Metal", 
+            "Bonk! Atomic Punch", 
+            "Sandman"
+        ], 
+        [
+            "Atomizer"
+        ]
+    ], 
+    "Fabricate Family Business": [
+        [
+            "Reclaimed Metal", 
+            "Frontier Justice", 
+            "Homewrecker"
+        ], 
+        [
+            "Family Business"
+        ]
+    ], 
+    "Fabricate Tomislav": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Brass Beast"
+        ], 
+        [
+            "Tomislav"
+        ]
+    ], 
+    "Fabricate Eviction Notice": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Fists of Steel"
+        ], 
+        [
+            "Eviction Notice"
+        ]
+    ], 
+    "Fabricate Enforcer": [
+        [
+            "Reclaimed Metal", 
+            "Scrap Metal", 
+            "L'Etranger"
+        ], 
+        [
+            "Enforcer"
+        ]
+    ], 
+    "Fabricate Big Earner": [
+        [
+            "Reclaimed Metal", 
+            "Conniver's Kunai", 
+            "L'Etranger"
+        ], 
+        [
+            "Big Earner"
+        ]
+    ], 
+    "Fabricate Bazaar Bargain": [
+        [
+            "Reclaimed Metal", 
+            "Sydney Sleeper", 
+            "Eyelander"
+        ], 
+        [
+            "Bazaar Bargain"
+        ]
+    ], 
+    "Fabricate Shahanshah": [
+        [
+            "Reclaimed Metal", 
+            "Amputator", 
+            "Bushwacka"
+        ], 
+        [
+            "Shahanshah"
+        ]
+    ], 
+    "Fabricate Persian Persuader": [
+        [
+            "Half-Zatoichi", 
+            "Half-Zatoichi", 
+            "Scrap Metal"
+        ], 
+        [
+            "Persian Persuader"
+        ]
+    ], 
+    "Fabricate Splendid Screen": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Chargin' Targe"
+        ], 
+        [
+            "Splendid Screen"
+        ]
+    ], 
+    "Fabricate Ali Baba's Wee Booties": [
+        [
+            "Mantreads", 
+            "Gloves of Running Urgently"
+        ], 
+        [
+            "Ali Baba's Wee Booties"
+        ]
+    ], 
+    "Fabricate Liberty Launcher": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Black Box"
+        ], 
+        [
+            "Liberty Launcher"
+        ]
+    ], 
+    "Fabricate Reserve Shooter": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Frontier Justice"
+        ], 
+        [
+            "Reserve Shooter"
+        ]
+    ], 
+    "Fabricate Market Gardener": [
+        [
+            "Reclaimed Metal", 
+            "Gunboats", 
+            "Pain Train"
+        ], 
+        [
+            "Market Gardener"
+        ]
+    ], 
+    "Fabricate Mantreads": [
+        [
+            "Refined Metal", 
+            "Gunboats"
+        ], 
+        [
+            "Mantreads"
+        ]
+    ], 
+    "Fabricate Disciplinary Action": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Pain Train"
+        ], 
+        [
+            "Disciplinary Action"
+        ]
+    ], 
+    "Fabricate Detonator": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "Flare Gun"
+        ], 
+        [
+            "Detonator"
+        ]
+    ], 
+    "Fabricate Overdose": [
+        [
+            "Reclaimed Metal", 
+            "Gloves of Running Urgently", 
+            "Crusader's Crossbow"
+        ], 
+        [
+            "Overdose"
+        ]
+    ], 
+    "Fabricate Solemn Vow": [
+        [
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Jarate", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Solemn Vow"
+        ]
+    ], 
+    "Fabricate Quick-Fix": [
+        [
+            "Reclaimed Metal", 
+            "Mad Milk", 
+            "Kritzkrieg"
+        ], 
+        [
+            "Quick-Fix"
+        ]
+    ], 
+    "Fabricate Cow Mangler 5000": [
+        [
+            "Reclaimed Metal", 
+            "Black Box"
+        ], 
+        [
+            "Cow Mangler 5000"
+        ]
+    ], 
+    "Fabricate Righteous Bison": [
+        [
+            "Reclaimed Metal", 
+            "Battalion's Backup"
+        ], 
+        [
+            "Righteous Bison"
+        ]
+    ], 
+    "Fabricate Original": [
+        [
+            "Scrap Metal", 
+            "Scrap Metal", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Original"
+        ]
+    ], 
+    "Fabricate Widowmaker": [
+        [
+            "Reclaimed Metal", 
+            "Reclaimed Metal", 
+            "L'Etranger"
+        ], 
+        [
+            "Widowmaker"
+        ]
+    ], 
+    "Fabricate Short Circuit": [
+        [
+            "Scrap Metal", 
+            "Reclaimed Metal", 
+            "Gunslinger"
+        ], 
+        [
+            "Short Circuit"
+        ]
+    ], 
+    "Fabricate Machina": [
+        [
+            "Reclaimed Metal", 
+            "Righteous Bison", 
+            "Sydney Sleeper"
+        ], 
+        [
+            "Machina"
+        ]
+    ], 
+    "Fabricate Diamondback": [
+        [
+            "Reclaimed Metal", 
+            "Frontier Justice", 
+            "Dead Ringer"
+        ], 
+        [
+            "Diamondback"
+        ]
+    ], 
+    "Fabricate Wrap Assassin": [
+        [
+            "Reclaimed Metal", 
+            "Southern Hospitality"
+        ], 
+        [
+            "Wrap Assassin"
+        ]
+    ], 
+    "Fabricate Phlogistinator": [
+        [
+            "Reclaimed Metal", 
+            "Soda Popper", 
+            "Backburner"
+        ], 
+        [
+            "Phlogistinator"
+        ]
+    ], 
+    "Fabricate Manmelter": [
+        [
+            "Reclaimed Metal", 
+            "Detonator"
+        ], 
+        [
+            "Manmelter"
+        ]
+    ], 
+    "Fabricate Third Degree": [
+        [
+            "Reclaimed Metal", 
+            "Axtinguisher", 
+            "Powerjack"
+        ], 
+        [
+            "Third Degree"
+        ]
+    ], 
+    "Fabricate Holiday Punch": [
+        [
+            "Reclaimed Metal", 
+            "Holy Mackerel", 
+            "Gloves of Running Urgently"
+        ], 
+        [
+            "Holiday Punch"
+        ]
+    ], 
+    "Fabricate Pomson 6000": [
+        [
+            "Reclaimed Metal", 
+            "Righteous Bison", 
+            "Short Circuit"
+        ], 
+        [
+            "Pomson 6000"
+        ]
+    ], 
+    "Fabricate Eureka Effect": [
+        [
+            "Jag", 
+            "Jag", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Eureka Effect"
+        ]
+    ], 
+    "Fabricate Spy-cicle": [
+        [
+            "Reclaimed Metal", 
+            "Your Eternal Reward"
+        ], 
+        [
+            "Spy-cicle"
+        ]
+    ], 
+    "Fabricate Cozy Camper": [
+        [
+            "Reclaimed Metal", 
+            "Jarate", 
+            "Razorback"
+        ], 
+        [
+            "Cozy Camper"
+        ]
+    ], 
+    "Fabricate Escape Plan": [
+        [
+            "Scrap Metal", 
+            "Disciplinary Action"
+        ], 
+        [
+            "Escape Plan"
+        ]
+    ], 
+    "Fabricate Baby Face's Blaster": [
+        [
+            "Shortstop", 
+            "Shortstop", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Baby Face's Blaster"
+        ]
+    ], 
+    "Fabricate Pretty Boy's Pocket Pistol": [
+        [
+            "Reclaimed Metal", 
+            "Mad Milk", 
+            "Winger"
+        ], 
+        [
+            "Pretty Boy's Pocket Pistol"
+        ]
+    ], 
+    "Fabricate Hitman's Heatmaker": [
+        [
+            "Reclaimed Metal", 
+            "Machina", 
+            "Bazaar Bargain"
+        ], 
+        [
+            "Hitman's Heatmaker"
+        ]
+    ], 
+    "Fabricate Cleaner's Carbine": [
+        [
+            "Bushwacka", 
+            "Bushwacka", 
+            "Bushwacka", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Cleaner's Carbine"
+        ]
+    ], 
+    "Fabricate Beggar's Bazooka": [
+        [
+            "Direct Hit", 
+            "Direct Hit", 
+            "Direct Hit", 
+            "Reclaimed Metal"
+        ], 
+        [
+            "Beggar's Bazooka"
+        ]
+    ], 
+    "Fabricate Scorch Shot": [
+        [
+            "Reclaimed Metal", 
+            "Flare Gun", 
+            "Degreaser"
+        ], 
+        [
+            "Scorch Shot"
+        ]
+    ], 
+    "Fabricate Headgear": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal"
+        ], 
+        [
+            "A Hat"
+        ]
+    ], 
+    "Fabricate Class Headgear (Scout)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Scout"
+        ], 
+        [
+            "Batter's Helmet", 
+            "Bonk Helm", 
+            "Ye Olde Baker Boy", 
+            "Baseball Bill's Sports Shine", 
+            "Troublemaker's Tossle Cap", 
+            "Whoopee Cap", 
+            "Milkman", 
+            "Bombing Run", 
+            "Flipped Trilby", 
+            "Superfan", 
+            "Bonk Boy", 
+            "Hero's Tail", 
+            "Sign of the Wolf's School", 
+            "Planeswalker Goggles", 
+            "El Jefe", 
+            "Hot Dogger", 
+            "Backwards Ballcap", 
+            "Stereoscopic Shades", 
+            "Hermes", 
+            "Big Elfin Deal", 
+            "Bootie Time", 
+            "Boston Boom-Bringer", 
+            "Fast Learner", 
+            "Front Runner", 
+            "Fed-Fightin' Fedora", 
+            "Dillinger's Duffel"
+        ]
+    ], 
+    "Fabricate Class Headgear (Sniper)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Sniper"
+        ], 
+        [
+            "Trophy Belt", 
+            "Professional's Panama", 
+            "Master's Yellow Belt", 
+            "Ritzy Rick's Hair Fixative", 
+            "Shooter's Sola Topi", 
+            "Bloke's Bucket Hat", 
+            "Ol' Snaggletooth", 
+            "Larrikin Robin", 
+            "Crocleather Slouch", 
+            "Villain's Veil", 
+            "Desert Marauder", 
+            "Anger", 
+            "Your Worst Nightmare", 
+            "Crocodile Smile", 
+            "Swagman's Swatter", 
+            "Outback Intellectual", 
+            "Itsy Bitsy Spyer", 
+            "Bushman's Boonie", 
+            "Fruit Shoot", 
+            "Liquidator's Lid"
+        ]
+    ], 
+    "Fabricate Class Headgear (Soldier)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Soldier"
+        ], 
+        [
+            "Soldier's Stash", 
+            "Stainless Pot", 
+            "Tyrant's Helm", 
+            "Killer's Kabuto", 
+            "Sergeant's Drill Hat", 
+            "Grenadier's Softcap", 
+            "Chieftain's Challenge", 
+            "Stout Shako", 
+            "Dr's Dapper Topper", 
+            "Exquisite Rack", 
+            "Defiant Spartan", 
+            "Hero's Hachimaki", 
+            "Team Captain", 
+            "Honcho's Headgear", 
+            "Pocket Medic", 
+            "Furious Fukaamigasa", 
+            "Jumper's Jeepcap", 
+            "Brain Bucket", 
+            "Lord Cockswain's Pith Helmet", 
+            "Lord Cockswain's Novelty Mutton Chops and Pipe", 
+            "Armored Authority", 
+            "Fancy Dress Uniform", 
+            "Stahlhelm", 
+            "Infernal Impaler", 
+            "Salty Dog", 
+            "Hat With No Name", 
+            "Ornament Armament", 
+            "All-Father", 
+            "Kringle Collection", 
+            "Lucky Shot", 
+            "Battle Bob", 
+            "Conquistador", 
+            "Captain's Cocktails", 
+            "Helmet Without a Home"
+        ]
+    ], 
+    "Fabricate Class Headgear (Demoman)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Demoman"
+        ], 
+        [
+            "Demoman's Fro", 
+            "Glengarry Bonnet", 
+            "Scotsman's Stove Pipe", 
+            "Hustler's Hallmark", 
+            "Tippler's Tricorne", 
+            "Rimmed Raincatcher", 
+            "Sober Stuntman", 
+            "Carouser's Capotain", 
+            "Scotch Bonnet", 
+            "Prince Tavish's Crown", 
+            "Samur-Eye", 
+            "Private Eye", 
+            "Reggaelator", 
+            "Sultan's Ceremonial", 
+            "Conjurer's Cowl", 
+            "Tam O' Shanter", 
+            "Mask of the Shaman", 
+            "Tavish DeGroot Experience", 
+            "Buccaneer's Bicorne", 
+            "A Whiff of the Old Brimstone", 
+            "Ornament Armament", 
+            "Bolgan", 
+            "Aladdin's Private Reserve", 
+            "Snapped Pupil", 
+            "Liquor Locker", 
+            "Bird-Man of Aberdeen"
+        ]
+    ], 
+    "Fabricate Class Headgear (Heavy)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Heavy"
+        ], 
+        [
+            "Football Helmet", 
+            "Officer's Ushanka", 
+            "Tough Guy's Toque", 
+            "Hound Dog", 
+            "Heavy Duty Rag", 
+            "Pugilist's Protector", 
+            "Hard Counter", 
+            "Cadaver's Cranium", 
+            "Big Chief", 
+            "Magnificent Mongolian", 
+            "Coupe D'isaster", 
+            "Dread Knot", 
+            "Team Captain", 
+            "Large Luchadore", 
+            "Pocket Medic", 
+            "Capo's Capper", 
+            "Copper's Hard Top", 
+            "Security Shades", 
+            "Big Steel Jaw of Summer Fun", 
+            "Pilotka", 
+            "Dragonborn Helmet", 
+            "Purity Fist", 
+            "Cold War Luchador", 
+            "One-Man Army", 
+            "Outdoorsman", 
+            "Gym Rat", 
+            "War Head", 
+            "Sandvich Safe", 
+            "All-Father", 
+            "Toss-Proof Towel", 
+            "Apparatchik's Apparel"
+        ]
+    ], 
+    "Fabricate Class Headgear (Medic)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Medic"
+        ], 
+        [
+            "Prussian Pickelhaube", 
+            "Vintage Tyrolean", 
+            "Otolaryngologist's Mirror", 
+            "Physician's Procedure Mask", 
+            "Ze Goggles", 
+            "Gentleman's Gatsby", 
+            "Berliner's Bucket Helm", 
+            "Blighted Beak", 
+            "German Gonzila", 
+            "Geisha Boy", 
+            "Team Captain", 
+            "Medic's Mountain Cap", 
+            "Grimm Hatte", 
+            "Private Eye", 
+            "Doctor's Sack", 
+            "Planeswalker Helm", 
+            "Surgeon's Stahlhelm", 
+            "Couvre Corner", 
+            "Surgeon's Stethoscope", 
+            "Dr. Whoa", 
+            "Nine-Pipe Problem", 
+            "Scrap Pack", 
+            "Surgeon's Side Satchel", 
+            "Gentleman's Ushanka"
+        ]
+    ], 
+    "Fabricate Class Headgear (Pyro)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Pyro"
+        ], 
+        [
+            "Pyro's Beanie", 
+            "Respectless Rubber Glove", 
+            "Brigade Helm", 
+            "Triboniophorus Tyrannus", 
+            "Whiskered Gentleman", 
+            "Vintage Merryweather", 
+            "Attendant", 
+            "Old Guadalajara", 
+            "Napper's Respite", 
+            "Handyman's Handle", 
+            "Pyromancer's Mask", 
+            "Prancer's Pride", 
+            "Madame Dixie", 
+            "Hottie's Hoodie", 
+            "Sight for Sore Eyes", 
+            "Connoisseur's Cap", 
+            "Dead Cone", 
+            "Stately Steel Toe", 
+            "Last Breath", 
+            "Apparition's Aspect", 
+            "Moonman Backpack", 
+            "Bubble Pipe", 
+            "Little Buddy", 
+            "Birdcage", 
+            "Flamboyant Flamenco", 
+            "Cremator's Conscience", 
+            "Ornament Armament", 
+            "Head Warmer", 
+            "Jingle Belt", 
+            "Infernal Orchestrina", 
+            "Burning Bongos", 
+            "Waxy Wayfinder", 
+            "Scrap Pack", 
+            "HazMat Headcase"
+        ]
+    ], 
+    "Fabricate Class Headgear (Spy)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Spy"
+        ], 
+        [
+            "Fancy Fedora", 
+            "Camera Beard", 
+            "Backbiter's Billycock", 
+            "Magistrate's Mullet", 
+            "Frenchman's Beret", 
+            "Familiar Fez", 
+            "D\u00e9tective Noir", 
+            "Le Party Phantom", 
+            "Noh Mercy", 
+            "Private Eye", 
+            "Charmer's Chapeau", 
+            "Janissary Ketche", 
+            "Cosa Nostra Cap", 
+            "Made Man", 
+            "Rogue's Col Roule", 
+            "Nanobalaclava", 
+            "Counterfeit Billycock", 
+            "L'Inspecteur", 
+            "Spectre's Spectacles", 
+            "Dashin' Hashshashin", 
+            "Dr. Whoa", 
+            "Sneaky Spats of Sneaking", 
+            "Business Casual"
+        ]
+    ], 
+    "Fabricate Class Headgear (Engineer)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Class Token - Engineer"
+        ], 
+        [
+            "Mining Light", 
+            "Texas Ten Gallon", 
+            "Engineer's Cap", 
+            "Texas Slim's Dome Shine", 
+            "Hotrod", 
+            "Safe'n'Sound", 
+            "Buckaroos Hat", 
+            "Industrial Festivizer", 
+            "Western Wear", 
+            "Big Country", 
+            "Teddy Roosebelt", 
+            "Googly Gazer", 
+            "Ol' Geezer", 
+            "Hetman's Headpiece", 
+            "Prairie Heel Biters", 
+            "Pip-Boy", 
+            "Wingstick", 
+            "Brainiac Hairpiece", 
+            "Brainiac Goggles", 
+            "Pencil Pusher", 
+            "Builder's Blueprints", 
+            "Virtual Reality Headset", 
+            "Itsy Bitsy Spyer", 
+            "Stocking Stuffer", 
+            "Texas Half-Pants", 
+            "Idea Tube"
+        ]
+    ], 
+    "Rebuild Headgear": [
+        [
+            "Any Hat", 
+            "Any Hat"
+        ], 
+        [
+            "A Hat"
+        ]
+    ], 
+    "Fabricate Bonk Helm": [
+        [
+            "Bonk! Atomic Punch", 
+            "Bonk! Atomic Punch", 
+            "Batter's Helmet"
+        ], 
+        [
+            "Bonk Helm"
+        ]
+    ], 
+    "Fabricate Set Headgear (Polycount Pyro)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Polycount Pyro Bundle Weapon"
+        ], 
+        [
+            "Attendant"
+        ]
+    ], 
+    "Fabricate Set Headgear (Polycount Spy)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Polycount Spy Bundle Weapon"
+        ], 
+        [
+            "Familiar Fez"
+        ]
+    ], 
+    "Fabricate Set Headgear (Polycount Soldier)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Polycount Soldier Bundle Weapon"
+        ], 
+        [
+            "Grenadier's Softcap"
+        ]
+    ], 
+    "Fabricate Set Headgear (Polycount Sniper)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Polycount Sniper Bundle Weapon"
+        ], 
+        [
+            "Ol' Snaggletooth"
+        ]
+    ], 
+    "Fabricate Set Headgear (Polycount Scout)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Polycount Scout Bundle Weapon"
+        ], 
+        [
+            "Milkman"
+        ]
+    ], 
+    "Fabricate Set Headgear (Lawrence of Australia)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Lawrence of Australia Weapon"
+        ], 
+        [
+            "Desert Marauder"
+        ]
+    ], 
+    "Fabricate Set Headgear (One Thousand and One Demoknights)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any One Thousand and One Demoknights Weapon"
+        ], 
+        [
+            "Sultan's Ceremonial"
+        ]
+    ], 
+    "Fabricate Set Headgear (Black Market Business)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Black Market Business Weapon"
+        ], 
+        [
+            "Capo's Capper"
+        ]
+    ], 
+    "Fabricate Set Headgear (The #1 Fan)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any The #1 Fan Weapon"
+        ], 
+        [
+            "Bonk Boy"
+        ]
+    ], 
+    "Fabricate Set Headgear (The General's Formals)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any The General's Formals Weapon"
+        ], 
+        [
+            "Armored Authority", 
+            "Fancy Dress Uniform"
+        ]
+    ], 
+    "Fabricate Set Headgear (The Man of Honor)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any The Man of Honor Weapon"
+        ], 
+        [
+            "Cosa Nostra Cap", 
+            "Made Man"
+        ]
+    ], 
+    "Fabricate Set Headgear (Dr. Grordbort's Victory Pack)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Dr. Grordbort's Victory Pack Weapon"
+        ], 
+        [
+            "Lord Cockswain's Pith Helmet", 
+            "Lord Cockswain's Novelty Mutton Chops and Pipe"
+        ]
+    ], 
+    "Fabricate Set Headgear (Swashbuckler's Swag)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Swashbuckler's Swag Weapon"
+        ], 
+        [
+            "Buccaneer's Bicorne", 
+            "A Whiff of the Old Brimstone"
+        ]
+    ], 
+    "Fabricate Set Headgear (Dr. Grordbort's Moonman Pack)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Dr. Grordbort's Moonman Pack Weapon"
+        ], 
+        [
+            "Moonman Backpack", 
+            "Bubble Pipe"
+        ]
+    ], 
+    "Fabricate Set Headgear (Dr. Grordbort's Brainiac Pack)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Dr. Grordbort's Brainiac Pack Weapon"
+        ], 
+        [
+            "Brainiac Hairpiece", 
+            "Brainiac Goggles"
+        ]
+    ], 
+    "Fabricate Set Headgear (Santa's Little Accomplice)": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Any Santa's Little Accomplice Weapon"
+        ], 
+        [
+            "Big Elfin Deal", 
+            "Bootie Time"
+        ]
+    ], 
+    "Fabricate Fruit Shoot": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Huntsman"
+        ], 
+        [
+            "Fruit Shoot"
+        ]
+    ], 
+    "Fabricate Horseless Headless Horsemann's Headtaker": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Unusual Haunted Metal Scrap", 
+            "Scotsman's Skullcutter"
+        ], 
+        [
+            "Unusual Horseless Headless Horsemann's Headtaker"
+        ]
+    ], 
+    "Fabricate Haunted Headgear": [
+        [
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Refined Metal", 
+            "Unusual Haunted Metal Scrap"
+        ], 
+        [
+            "Spine-Tingling Skull", 
+            "Spine-Cooling Skull", 
+            "Spine-Twisting Skull"
+        ]
+    ], 
+    "Fabricate Saxton Hale Halloween Mask": [
+        [
+            "Scout Mask", 
+            "Sniper Mask", 
+            "Soldier Mask", 
+            "Demoman Mask", 
+            "Medic Mask", 
+            "Heavy Mask", 
+            "Spy Mask", 
+            "Engineer Mask", 
+            "Pyro Mask"
+        ], 
+        [
+            "Saxton Hale Mask"
+        ]
+    ], 
+    "Fabricate Pile Of Ash": [
+        [
+            "Any Burned Item", 
+            "Any Burned Item", 
+            "Any Burned Item", 
+            "Any Burned Item"
+        ], 
+        [
+            "Pile Of Ash"
+        ]
+    ]
+}

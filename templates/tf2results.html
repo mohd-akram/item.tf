@@ -23,7 +23,15 @@
         {% if classitems %}
         <ul>
         {% for item in classitems %}
-        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
+        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
+        {% for b in item['blueprint'] %}
+        <ul data-chance="{{b[1]}}" style="display:none">         
+          {% for i in b[0] %}
+          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+          {% endfor %}
+        </ul>
+        {% endfor %}
+        </li>
         {% endfor %}
         </ul>
         {% endif %}
@@ -32,16 +40,32 @@
         <h2>All-class items</h2>
         <ul>
         {% for item in allclassitems %}
-        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
-        {% endfor %}      
-        </ul>      
+        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
+        {% for b in item['blueprint'] %}
+        <ul data-chance="{{b[1]}}" style="display:none">         
+          {% for i in b[0] %}
+          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+          {% endfor %}
+        </ul>
+        {% endfor %}
+        </li>
+        {% endfor %}
+        </ul>
         {% endif %}
 
         {% if searchitems %}
         <ul>
         {% for item in searchitems %}
-        <li class="item" id="{{item['index']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" style="background-image:url({{item['image']}})"><div>{{item['name']}}</div><div>{{item['image_large']}}</div></li>
-        {% endfor %}      
+        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
+        {% for b in item['blueprint'] %}
+        <ul data-chance="{{b[1]}}" style="display:none">         
+          {% for i in b[0] %}
+          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+          {% endfor %}
+        </ul>
+        {% endfor %}
+        </li>
+        {% endfor %}
         </ul>
         {% endif %}
 

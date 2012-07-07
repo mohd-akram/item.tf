@@ -28,9 +28,16 @@ def getitemsdict():
     itemsdict = memcache.get('itemsdict')
 
     if not itemsdict:
+        items = getitems()
+        itemsbyname = tf2api.getitemsbyname(items)
         storeprices = tf2api.getstoreprices(getapikey())
-        marketprices = tf2api.getmarketprices(getitems())
-        itemsdict = tf2search.getitemsdict(getitems(),storeprices,marketprices)
+        marketprices = tf2api.getmarketprices(itemsbyname)
+
+        with open('blueprints.json') as f:
+            blueprints = json.loads(f.read().decode('utf-8'))
+            blueprints = tf2search.parseblueprints(blueprints,itemsbyname)
+
+        itemsdict = tf2search.getitemsdict(items,storeprices,marketprices,blueprints)
         memcache.set('itemsdict', itemsdict)
 
     return itemsdict

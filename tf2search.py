@@ -12,7 +12,7 @@ Note: You must provide your own image URLs for the paint cans.
 """
 import re
 import logging
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 
 from tf2api import (getallitemtypes, gettf2classes, getstoreprice,
                     getmarketprice, getitemclasses, getitemtags, ispaint)
@@ -37,7 +37,31 @@ def getitemtype(word):
         elif word == itemtype or word == itemtype+'s':
             return itemtype
 
-def createitemdict(item, storeprices, marketprices):
+def parseblueprints(blueprints,itemsbyname):
+    blueprintsdict = defaultdict(list)
+    for i in blueprints:
+        required = blueprints[i][0]
+        results = blueprints[i][1]
+
+        for name in results:
+            if name in itemsbyname:
+                index = itemsbyname[name]['defindex']
+                chance = int(100.0/len(results))
+
+                blueprintlist = []
+
+                for j in required:
+                    image = ''
+                    if j in itemsbyname:
+                        item = itemsbyname[j]
+                        image = item['image_url']
+                    blueprintdict = {'name':j,'image':image,'index':item['defindex']}
+                    blueprintlist.append(blueprintdict)
+
+                blueprintsdict[index].append((blueprintlist,chance))
+    return blueprintsdict
+
+def createitemdict(item, storeprices, marketprices, blueprints):
     """Takes a TF2 item and returns a custom dict with a limited number of
     keys that are used for search"""
     classes = getitemclasses(item)
@@ -45,6 +69,7 @@ def createitemdict(item, storeprices, marketprices):
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
+    blueprint = blueprints[item['defindex']]
 
     itemdict = {'name':item['item_name'],
                 'image':item['image_url'],
@@ -53,7 +78,8 @@ def createitemdict(item, storeprices, marketprices):
                 'tags':tags,
                 'index':item['defindex'],
                 'storeprice':storeprice,
-                'marketprice':marketprice}
+                'marketprice':marketprice,
+                'blueprint':blueprint}
 
     if ispaint(item):
         paintvalue = str(int(item['attributes'][1]['value']))
@@ -63,11 +89,12 @@ def createitemdict(item, storeprices, marketprices):
 
     return itemdict
 
-def getitemsdict(items, storeprices, marketprices):
+def getitemsdict(items, storeprices, marketprices, blueprints):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
+
     for idx in items:
-        itemdict = createitemdict(items[idx],storeprices,marketprices)
+        itemdict = createitemdict(items[idx],storeprices,marketprices,blueprints)
         itemsdict[idx] = itemdict
 
     return itemsdict

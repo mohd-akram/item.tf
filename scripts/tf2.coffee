@@ -1,5 +1,5 @@
 show = (e) ->
-  hbox.innerHTML = e.target.firstChild.innerHTML
+  hbox.innerHTML = e.target.title
   hbox.style.display = "block"
 
 hide = ->
@@ -14,12 +14,33 @@ moveMouse = (e) ->
   hbox.style.top = (e.pageY + 28) + "px"
   hbox.style.left = (e.pageX - 154) + "px"
 
-openSummary = (e) ->
-  itemId = e.target.id
-  itemName = e.target.firstChild.innerHTML
+window.openSummary = (e) ->
+  showiteminfo(e.target)
 
-  marketprice = e.target.getAttribute('data-marketprice').replace(/[{}']/g,'').replace(/, /g,'<br>')
-  storeprice = e.target.getAttribute('data-storeprice')
+window.showiteminfo = (element) ->
+  itembox = document.getElementById("itembox")
+  itemId = element.id
+  itemName = element.title
+
+  marketprice = element.getAttribute('data-marketprice').replace(/[{}']/g,'').replace(/, /g,'<br>')
+  storeprice = element.getAttribute('data-storeprice')
+  imageUrl = element.getAttribute('data-image')
+  blueprints = element.getElementsByTagName('ul')
+
+  blueprintshtml = '<div id="blueprint">'
+  for b in blueprints
+    chance = b.getAttribute('data-chance')
+
+    blueprintshtml += '<ul style="width:auto;margin:0">'
+    for i in b.getElementsByTagName('li')
+      index = i.id
+      name = i.title
+      i = i.innerHTML
+      style = "background-image:url(#{ i });"
+      blueprintshtml = blueprintshtml + "<a href='/item/#{ index }' target='_blank'><li title='#{ name }' class='item-small' style='#{ style }'></li></a>"
+    blueprintshtml += "<li style='position:relative;top: 15px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
+    blueprintshtml += "</ul>"
+  blueprintshtml += '</div>'
 
   if storeprice
     storeprice = "$#{ storeprice }"
@@ -35,17 +56,16 @@ openSummary = (e) ->
       <input class='button' style='position:absolute;bottom:10px;left:140px;' type='submit' name='submit' value='Find trades'>
       <input type='hidden' name='type' value='any'>
     </form>
-    #{ buyButton }"
+    #{ buyButton }
+    #{ blueprintshtml }"
 
   itembox.style.display = "block"
-  imageUrl = e.target.lastChild.innerHTML
   itembox.style.backgroundImage = "url('#{ imageUrl }')"
   #url = window.location.pathname
-  #window.open(url[...-6] + 'item/' + e.target.id)
+  #window.open(url[...-6] + 'item/' + element.id)
 
 window.onload = ->
   window.hbox = document.getElementById("hoverbox")
-  window.itembox = document.getElementById("itembox")
 
   if hbox
     icells = document.getElementsByTagName("li")
@@ -55,4 +75,4 @@ window.onload = ->
       cell.addEventListener("mouseover", show, false)
       cell.addEventListener("click", openSummary, false)
 
-  document.addEventListener("click",hideitembox, false)
+    document.addEventListener("click",hideitembox, false)

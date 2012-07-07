@@ -3,14 +3,22 @@
   <head>
     <title>TF2 Item Search</title>
     <link rel="stylesheet" href="/css/tf2.css">
+    <script src="/scripts/tf2.js"></script>
   </head>
 
   <body>
     <div id="container">
-      <div id="body">
-        <h1>{{item.name}}</h1>
-        <img src="{{item.image_large}}">
+      <div id="body" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}">
+      {% for b in item['blueprint'] %}
+      <ul data-chance="{{b[1]}}" style="display:none">         
+      {% for i in b[0] %}
+      <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+      {% endfor %}
+      </ul>
+      {% endfor %}
+      <div id="itembox"></div>
       </div>
+      <script>showiteminfo(body)</script>
       <footer>{{footer|safe}}</footer>
     </div>
   </body>

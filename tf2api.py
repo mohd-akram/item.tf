@@ -24,6 +24,12 @@ def getitems(apikey):
 
     return items
 
+def getitemsbyname(items):
+    itemsbyname = {}
+    for idx in items:
+        itemsbyname[items[idx]['item_name']] = items[idx]
+    return itemsbyname
+
 def getstoreprices(apikey):
     """Returns a dictionary of store prices where the key is defindex for
     each item"""
@@ -38,21 +44,17 @@ def getstoreprices(apikey):
 
     return prices
 
-def getmarketprices(items):
+def getmarketprices(itemsbyname):
     """Get market prices from tf2spreadsheet.blogspot.com
     Returns a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
     url = 'https://spreadsheets.google.com/pub?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv'
     pricesdata = urlopen(url)
 
-    itemsbyname = {}
     pricesdict = {}
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
     sheet = list(reader)[1:-1]
-
-    for idx in items:
-        itemsbyname[items[idx]['item_name']] = idx
 
     for row in sheet:
         name = convertmarketname(row['name'])
@@ -64,7 +66,7 @@ def getmarketprices(items):
         pricedict = {}
 
         if name in itemsbyname:
-            index = itemsbyname[name]
+            index = itemsbyname[name]['defindex']
 
             price = price.replace('ref','').replace('\n','').title()
             lowprice = lowprice.replace('ref','').replace('\n','').title()
@@ -165,8 +167,10 @@ def getitemtags(item):
     return tags
 
 def isweapon(item):
-    if item['item_class'].startswith('tf_weapon'):
-        return True
+    if 'item_slot' in item:
+        if (item['item_slot'] in ['primary','secondary','melee']
+            and item['item_class'] != 'slot_token'):
+            return True
 
 def ishat(item):
     if 'item_slot' in item:
