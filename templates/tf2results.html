@@ -19,7 +19,7 @@
       <div id='hoverbox'></div>
       <div id='itembox'></div>  
 
-      <div id="body">
+      <div id="body" style='padding-bottom: 38px;'>
         {% if classitems %}
         <ul>
         {% for item in classitems %}
@@ -73,7 +73,7 @@
         <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
         {% endif %}
       </div>
-      <footer>{{footer|safe}}</footer>
+      <footer style='height: 38px;'>{{footer|safe}}</footer>
     </div>
   </body>
 </html>

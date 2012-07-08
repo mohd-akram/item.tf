@@ -15,7 +15,7 @@
   hideitembox = function(e) {
     var target, _ref;
     target = e.target || e.srcElement;
-    if (target !== itembox && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT')) {
+    if (target !== itembox && __indexOf.call(itembox.getElementsByTagName('ul'), target) < 0 && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT')) {
       return itembox.style.display = 'none';
     }
   };
@@ -30,7 +30,7 @@
   };
 
   window.showiteminfo = function(element) {
-    var b, blueprints, blueprintshtml, buyButton, chance, i, imageUrl, index, itemId, itemName, itembox, listitem, marketprice, name, storeprice, style, _i, _j, _len, _len1, _ref;
+    var b, blueprints, blueprintshtml, buy, buyButton, chance, i, imageUrl, index, itemId, itemName, itembox, listitem, marketprice, name, storeprice, style, _i, _j, _len, _len1, _ref;
     itembox = document.getElementById("itembox");
     itemId = element.id;
     itemName = element.title;
@@ -61,13 +61,21 @@
     blueprintshtml += '</div>';
     if (storeprice) {
       storeprice = "$" + storeprice;
-      buyButton = "<h3>" + storeprice + "</h3><a id='buy-button' href='http://store.steampowered.com/buyitem/440/" + itemId + "'></a>";
+      buyButton = "<form style='position:absolute;bottom:14px;left:320px;'>" + storeprice + "<br><input type='text' value='1' size='1' id='quantity'></form><a href='#' id='buy-button'></a>";
     } else {
       buyButton = '';
     }
     itembox.innerHTML = "<h2>" + itemName + "</h2>    <a class='button' target='_blank' style='position:absolute;bottom:10px;left:10px;' href='http://wiki.teamfortress.com/wiki/" + itemName + "'>Open in Wiki</a>    <h3>" + marketprice + "</h3>    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:140px;' type='submit' name='submit' value='Find trades'>      <input type='hidden' name='type' value='any'>    </form>    " + buyButton + "    " + blueprintshtml;
     itembox.style.display = "block";
-    return itembox.style.backgroundImage = "url('" + imageUrl + "')";
+    itembox.style.backgroundImage = "url('" + imageUrl + "')";
+    buy = document.getElementById('buy-button');
+    if (buy) {
+      return buy.onclick = function() {
+        var quantity;
+        quantity = document.getElementById('quantity').value;
+        return window.open("http://store.steampowered.com/buyitem/440/" + itemId + "/" + quantity);
+      };
+    }
   };
 
   window.onload = function() {

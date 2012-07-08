@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 def hasdigit(string):
     regex = re.compile(r'[0-9]')
-    return regex.match(string)
+    return regex.search(string)
 
 def getitems(apikey):
     """Returns an ordered dictionary of items in the schema where the key is defindex for
@@ -24,10 +24,20 @@ def getitems(apikey):
 
     return items
 
+def getduplicates():
+    """Gets items that have the same name as another item
+    This includes any stock weapons that are included twice"""
+    stock = [i for i in range(26)] + [29,30]
+    keys = [5049,5067,5072,5073]
+    crates = [5041,5045]
+    return keys + crates + stock
+
 def getitemsbyname(items):
+    duplicates = getduplicates()
     itemsbyname = {}
     for idx in items:
-        itemsbyname[items[idx]['item_name']] = items[idx]
+        if idx not in duplicates:
+            itemsbyname[items[idx]['item_name']] = items[idx]
     return itemsbyname
 
 def getstoreprices(apikey):
@@ -132,7 +142,10 @@ def getmarketprice(item, marketprices):
 def convertmarketname(name):
     """Changes the market name to match the proper TF2 name"""
     translations = {'Meet the Medic (clean)':'Taunt: The Meet the Medic',
-                    'High-Five (clean)\n':'Taunt: The High Five!'}
+                    'High-Five (clean)\n':'Taunt: The High Five!',
+                    'Key': 'Mann Co. Supply Crate Key',
+                    'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
+                    'Mann Co. Supply Crate (series 46)':'Scorched Crate'}
 
     if name in translations:
         name = translations[name]

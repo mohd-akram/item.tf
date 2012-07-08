@@ -7,7 +7,7 @@ hide = ->
 
 hideitembox = (e) ->
   target = e.target or e.srcElement
-  if target != itembox and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT']
+  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT']
     itembox.style.display='none'
 
 moveMouse = (e) ->
@@ -47,7 +47,7 @@ window.showiteminfo = (element) ->
 
   if storeprice
     storeprice = "$#{ storeprice }"
-    buyButton = "<h3>#{ storeprice }</h3><a id='buy-button' href='http://store.steampowered.com/buyitem/440/#{ itemId }'></a>"
+    buyButton = "<form style='position:absolute;bottom:14px;left:320px;'>#{ storeprice }<br><input type='text' value='1' size='1' id='quantity'></form><a href='#' id='buy-button'></a>"
   else
     buyButton = ''
 
@@ -64,8 +64,12 @@ window.showiteminfo = (element) ->
 
   itembox.style.display = "block"
   itembox.style.backgroundImage = "url('#{ imageUrl }')"
-  #url = window.location.pathname
-  #window.open(url[...-6] + 'item/' + element.id)
+
+  buy = document.getElementById('buy-button')
+  if buy
+    buy.onclick = ->
+      quantity = document.getElementById('quantity').value
+      window.open("http://store.steampowered.com/buyitem/440/#{ itemId }/#{ quantity }")
 
 window.onload = ->
   window.hbox = document.getElementById("hoverbox")

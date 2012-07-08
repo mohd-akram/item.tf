@@ -57,17 +57,17 @@ header > a {
 
 footer {
   position:absolute;
-  font-size: 0.9em;
   bottom: 0;
   width: 100%;
   height: 20px;
-  text-decoration: none;
+  font-size: 0.9em;
+  color: #A09E92;
 }
 
-footer > a {
+footer a {
   text-decoration: none;
   font-weight: bold;
-  color: white; 
+  color: #A09E92;
 }
 
 h1 {
@@ -139,8 +139,8 @@ ul {
   background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
   background-position: top;
   position:absolute;
-  bottom:20px;
-  left:270px;
+  bottom:14px;
+  left:380px;
   width: 97px;
   height: 24px;  
 }
@@ -153,7 +153,7 @@ ul {
   display: none;
   z-index:1;
   background-color: #31312F;
-  background-position: center 140px;
+  background-position: center 100px;
   background-size: 300px;
   background-repeat: no-repeat;
   box-shadow: 0 0 8px 8px rgba(0, 0, 0, .2);
@@ -165,6 +165,14 @@ ul {
   position:fixed;
   top: 50%;
   left: 50%;
+}
+
+#quantity {
+  text-align: right;
+  background-color: #414040;
+  border-color: #55544F;
+  border-style: solid;
+  color: white;
 }
 
 li:hover *,li>div:first-child {
@@ -200,5 +208,3 @@ li:hover *,li>div:last-child {
 a {
   text-decoration: none;
 }
-
-

@@ -15,7 +15,8 @@ import logging
 from collections import defaultdict, OrderedDict
 
 from tf2api import (getallitemtypes, gettf2classes, getstoreprice,
-                    getmarketprice, getitemclasses, getitemtags, ispaint)
+                    getmarketprice, getitemclasses, getitemtags,
+                    getduplicates, ispaint)
 
 def splitspecial(string):
     """Splits a string at special characters"""
@@ -157,8 +158,10 @@ def getresultitems(result, itemsdict):
     classitems = []
     allclassitems = []
     searchitems = []
-    stockweps = [i for i in range(0,31)]
-    exclusions = stockweps + [122,123,124,472,495,2061,2066,2067,2068,5023]
+    # Exclude some items from search results
+    noimages = [122,123,124,472,495,2061,2066,2067,2068]
+    duplicates = getduplicates()
+    exclusions = duplicates + noimages + [5023]
 
     classes = result['classes']
     types = result['types']
@@ -176,7 +179,7 @@ def getresultitems(result, itemsdict):
             if (isclassmatch or not classes) and (istypematch or not types):
                 itemdict = itemsdict[idx]
                 if itemdict['index'] not in exclusions:
-                    if len(itemclasses)==1:
+                    if len(itemclasses)==1 or not classes:
                         classitems.append(itemdict)
                     else:
                         allclassitems.append(itemdict)
