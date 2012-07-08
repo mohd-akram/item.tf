@@ -108,9 +108,8 @@ ul {
 }
 
 .item-small {
-  background: rgba(50, 50, 47, .8) center no-repeat;
   background-size: 80px;
-  cursor: pointer;
+  background-repeat: no-repeat;
   float: left;
   height: 76px;
   margin: 4px;

@@ -30,7 +30,7 @@
   };
 
   window.showiteminfo = function(element) {
-    var b, blueprints, blueprintshtml, buyButton, chance, i, imageUrl, index, itemId, itemName, itembox, marketprice, name, storeprice, style, _i, _j, _len, _len1, _ref;
+    var b, blueprints, blueprintshtml, buyButton, chance, i, imageUrl, index, itemId, itemName, itembox, listitem, marketprice, name, storeprice, style, _i, _j, _len, _len1, _ref;
     itembox = document.getElementById("itembox");
     itemId = element.id;
     itemName = element.title;
@@ -46,13 +46,16 @@
       _ref = b.getElementsByTagName('li');
       for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
         i = _ref[_j];
-        index = i.id;
         name = i.title;
-        i = i.innerHTML;
-        style = "background-image:url(" + i + ");";
-        blueprintshtml = blueprintshtml + ("<a href='/item/" + index + "' target='_blank'><li title='" + name + "' class='item-small' style='" + style + "'></li></a>");
+        index = i.id;
+        style = "background-image:url(" + i.innerHTML + ");";
+        listitem = "<li title='" + name + "' class='item-small' style='" + style + "'></li>";
+        if (index) {
+          listitem = ("<a href='/item/" + index + "' target='_blank'>") + listitem + "</a>";
+        }
+        blueprintshtml = blueprintshtml + listitem;
       }
-      blueprintshtml += "<li style='position:relative;top: 15px;margin-left:440px;'><h3>" + chance + "%</h3></li>";
+      blueprintshtml += "<li style='position:relative;top: 13px;margin-left:440px;'><h3>" + chance + "%</h3></li>";
       blueprintshtml += "</ul>";
     }
     blueprintshtml += '</div>';

@@ -33,12 +33,15 @@ window.showiteminfo = (element) ->
 
     blueprintshtml += '<ul style="width:auto;margin:0">'
     for i in b.getElementsByTagName('li')
-      index = i.id
       name = i.title
-      i = i.innerHTML
-      style = "background-image:url(#{ i });"
-      blueprintshtml = blueprintshtml + "<a href='/item/#{ index }' target='_blank'><li title='#{ name }' class='item-small' style='#{ style }'></li></a>"
-    blueprintshtml += "<li style='position:relative;top: 15px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
+      index = i.id
+      style = "background-image:url(#{ i.innerHTML });"
+      listitem =  "<li title='#{ name }' class='item-small' style='#{ style }'></li>"
+      if index
+        listitem = "<a href='/item/#{ index }' target='_blank'>" + listitem + "</a>"
+
+      blueprintshtml = blueprintshtml + listitem
+    blueprintshtml += "<li style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
     blueprintshtml += "</ul>"
   blueprintshtml += '</div>'
 

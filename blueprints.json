@@ -1,85 +1,4 @@
 {
-    "Smelt Class Weapons (Scout)": [
-        [
-            "Any Scout Weapon", 
-            "Any Scout Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Sniper)": [
-        [
-            "Any Sniper Weapon", 
-            "Any Sniper Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Soldier)": [
-        [
-            "Any Soldier Weapon", 
-            "Any Soldier Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Demoman)": [
-        [
-            "Any Demoman Weapon", 
-            "Any Demoman Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Heavy)": [
-        [
-            "Any Heavy Weapon", 
-            "Any Heavy Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Medic)": [
-        [
-            "Any Medic Weapon", 
-            "Any Medic Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Pyro)": [
-        [
-            "Any Pyro Weapon", 
-            "Any Pyro Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Spy)": [
-        [
-            "Any Spy Weapon", 
-            "Any Spy Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Class Weapons (Engineer)": [
-        [
-            "Any Engineer Weapon", 
-            "Any Engineer Weapon"
-        ], 
-        [
-            "Scrap Metal"
-        ]
-    ], 
     "Combine Scrap Metal": [
         [
             "Scrap Metal", 
@@ -354,26 +273,6 @@
             "Any Token"
         ], 
         [
-            "Reclaimed Metal"
-        ]
-    ], 
-    "Smelt Reclaimed Metal": [
-        [
-            "Reclaimed Metal"
-        ], 
-        [
-            "Scrap Metal", 
-            "Scrap Metal", 
-            "Scrap Metal"
-        ]
-    ], 
-    "Smelt Refined Metal": [
-        [
-            "Refined Metal"
-        ], 
-        [
-            "Reclaimed Metal", 
-            "Reclaimed Metal", 
             "Reclaimed Metal"
         ]
     ], 

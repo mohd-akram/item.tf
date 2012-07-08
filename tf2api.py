@@ -168,7 +168,7 @@ def getitemtags(item):
 
 def isweapon(item):
     if 'item_slot' in item:
-        if (item['item_slot'] in ['primary','secondary','melee']
+        if (item['item_slot'] in ['primary','secondary','melee','pda','pda2']
             and item['item_class'] != 'slot_token'):
             return True
 

@@ -38,10 +38,19 @@ def getitemtype(word):
             return itemtype
 
 def parseblueprints(blueprints,itemsbyname):
+    url = '/images/items/'
+    repl = {'Any Class Token':'class_token.png',
+            'Any Slot Token':'slot_token.png',
+            'Any Token':'token.png',
+            'Any Primary Weapon':'primary.png',
+            'Any Secondary Weapon':'secondary.png',
+            'Any Melee Weapon':'melee.png',
+            'Any Spy Watch':'watch.png'}
+
     blueprintsdict = defaultdict(list)
     for i in blueprints:
         required = blueprints[i][0]
-        results = blueprints[i][1]
+        results = set(blueprints[i][1])
 
         for name in results:
             if name in itemsbyname:
@@ -51,11 +60,28 @@ def parseblueprints(blueprints,itemsbyname):
                 blueprintlist = []
 
                 for j in required:
+                    # Some required items don't have an index
+                    index2 = ''
                     image = ''
+                    anyclasswep = re.match(r'Any (\w+) Weapon',j)
+
+                    if anyclasswep:
+                        tf2class = anyclasswep.group(1)
+                        if tf2class not in ['Primary','Secondary']:
+                            image = url + '{}_icon.png'.format(anyclasswep.group(1))
+
+                    if j in repl:
+                        image = url + repl[j]
+
+                    if j == 'Any Burned Item':
+                        image = itemsbyname['Burned Banana Peel']['image_url']
+
                     if j in itemsbyname:
                         item = itemsbyname[j]
                         image = item['image_url']
-                    blueprintdict = {'name':j,'image':image,'index':item['defindex']}
+                        index2 = item['defindex']
+
+                    blueprintdict = {'name':j,'image':image,'index':index2}
                     blueprintlist.append(blueprintdict)
 
                 blueprintsdict[index].append((blueprintlist,chance))
@@ -131,7 +157,8 @@ def getresultitems(result, itemsdict):
     classitems = []
     allclassitems = []
     searchitems = []
-    exclusions = [122,123,124,472,495,2061,2066,2067,2068,5023]
+    stockweps = [i for i in range(0,31)]
+    exclusions = stockweps + [122,123,124,472,495,2061,2066,2067,2068,5023]
 
     classes = result['classes']
     types = result['types']
