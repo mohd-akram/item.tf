@@ -91,7 +91,7 @@ def getmarketprices(itemsbyname):
             lowquality = 'Unique'
 
             if lowprice != '-':
-                if not any(d in lowprice for d in denominations):
+                if not any(d in lowprice for d in denominations) and hasdigit(lowprice):
                     lowprice = lowprice + ' Refined'
 
                 pricedict[lowquality] = lowprice

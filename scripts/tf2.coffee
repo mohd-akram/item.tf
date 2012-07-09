@@ -7,7 +7,7 @@ hide = ->
 
 hideitembox = (e) ->
   target = e.target or e.srcElement
-  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT']
+  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION']
     itembox.style.display='none'
 
 moveMouse = (e) ->
@@ -47,7 +47,7 @@ window.showiteminfo = (element) ->
 
   if storeprice
     storeprice = "$#{ storeprice }"
-    buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>#{ storeprice }<br><input type='text' value='1' size='1' class='textbox'></form><a href='#' id='buy-button'></a>"
+    buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>#{ storeprice }<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buy-button'></a>"
   else
     buyButton = ''
 
@@ -56,9 +56,9 @@ window.showiteminfo = (element) ->
     <h3>#{ marketprice }</h3>
     <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>
       <input type='hidden' name='has1' value='440,#{ itemId },6'>
-      <input class='button' style='position:absolute;bottom:9px;left:138px;' type='submit' name='submit' value='Find trades'>
+      <input class='button' style='position:absolute;bottom:10px;left:138px;margin:0;' type='submit' name='submit' value='Find trades'>
       <input type='hidden' name='type' value='any'>
-      <select id='quality' class='textbox'>
+      <select id='quality' class='textbox' style='text-align:left'>
         <option value='6' selected=''>Unique</option>
         <option value='3'>Vintage</option>
         <option value='1'>Genuine</option>

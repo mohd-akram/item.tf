@@ -15,7 +15,7 @@
   hideitembox = function(e) {
     var target, _ref;
     target = e.target || e.srcElement;
-    if (target !== itembox && __indexOf.call(itembox.getElementsByTagName('ul'), target) < 0 && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT' && _ref !== 'SELECT')) {
+    if (target !== itembox && __indexOf.call(itembox.getElementsByTagName('ul'), target) < 0 && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT' && _ref !== 'SELECT' && _ref !== 'OPTION')) {
       return itembox.style.display = 'none';
     }
   };
@@ -61,11 +61,11 @@
     blueprintshtml += '</div>';
     if (storeprice) {
       storeprice = "$" + storeprice;
-      buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>" + storeprice + "<br><input type='text' value='1' size='1' class='textbox'></form><a href='#' id='buy-button'></a>";
+      buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>" + storeprice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buy-button'></a>";
     } else {
       buyButton = '';
     }
-    itembox.innerHTML = "<h2>" + itemName + "</h2>    <a class='button' target='_blank' style='position:absolute;bottom:10px;left:10px;' href='http://wiki.teamfortress.com/wiki/" + itemName + "'>Open in Wiki</a>    <h3>" + marketprice + "</h3>    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:9px;left:138px;' type='submit' name='submit' value='Find trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml;
+    itembox.innerHTML = "<h2>" + itemName + "</h2>    <a class='button' target='_blank' style='position:absolute;bottom:10px;left:10px;' href='http://wiki.teamfortress.com/wiki/" + itemName + "'>Open in Wiki</a>    <h3>" + marketprice + "</h3>    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:138px;margin:0;' type='submit' name='submit' value='Find trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox' style='text-align:left'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml;
     itembox.style.display = "block";
     itembox.style.backgroundImage = "url('" + imageUrl + "')";
     buy = document.getElementById('buy-button');
