@@ -52,12 +52,14 @@ window.showiteminfo = (element) ->
   else
     buyButton = ''
 
+  wikilink = 'href="http://wiki.teamfortress.com/wiki/' + itemName + '"'
+
   itembox.innerHTML = "<h2>#{ itemName }</h2>
-    <a class='button' target='_blank' style='position:absolute;bottom:10px;left:10px;' href='http://wiki.teamfortress.com/wiki/#{ itemName }'>Open in Wiki</a>
+    <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' #{ wikilink }>Wiki</a>
     <h3>#{ marketprice }</h3>
     <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>
       <input type='hidden' name='has1' value='440,#{ itemId },6'>
-      <input class='button' style='position:absolute;bottom:10px;left:138px;margin:0;' type='submit' name='submit' value='Find trades'>
+      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>
       <input type='hidden' name='type' value='any'>
       <select id='quality' class='textbox' style='text-align:left'>
         <option value='6' selected=''>Unique</option>

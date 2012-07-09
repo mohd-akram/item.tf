@@ -30,7 +30,7 @@
   };
 
   window.showiteminfo = function(element) {
-    var b, blueprints, blueprintshtml, buy, buyButton, chance, i, imageUrl, index, itemId, itemName, listitem, marketprice, name, quality, storeprice, style, title, _i, _j, _len, _len1, _ref;
+    var b, blueprints, blueprintshtml, buy, buyButton, chance, i, imageUrl, index, itemId, itemName, listitem, marketprice, name, quality, storeprice, style, title, wikilink, _i, _j, _len, _len1, _ref;
     window.itembox = document.getElementById("itembox");
     itemId = element.id;
     itemName = element.title;
@@ -66,7 +66,8 @@
     } else {
       buyButton = '';
     }
-    itembox.innerHTML = "<h2>" + itemName + "</h2>    <a class='button' target='_blank' style='position:absolute;bottom:10px;left:10px;' href='http://wiki.teamfortress.com/wiki/" + itemName + "'>Open in Wiki</a>    <h3>" + marketprice + "</h3>    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:138px;margin:0;' type='submit' name='submit' value='Find trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox' style='text-align:left'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml;
+    wikilink = 'href="http://wiki.teamfortress.com/wiki/' + itemName + '"';
+    itembox.innerHTML = "<h2>" + itemName + "</h2>    <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' " + wikilink + ">Wiki</a>    <h3>" + marketprice + "</h3>    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox' style='text-align:left'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml;
     itembox.style.display = "block";
     itembox.style.backgroundImage = "url('" + imageUrl + "')";
     buy = document.getElementById('buy-button');

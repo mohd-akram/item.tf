@@ -73,10 +73,11 @@ def getmarketprices(itemsbyname):
         quality = row['quality']
         lowprice = row['lowprice']
 
-        pricedict = {}
-
         if name in itemsbyname:
             index = itemsbyname[name]['defindex']
+
+            if not index in pricesdict:
+                pricesdict[index] = {}
 
             price = price.replace('ref','').replace('\n','').title()
             lowprice = lowprice.replace('ref','').replace('\n','').title()
@@ -86,7 +87,9 @@ def getmarketprices(itemsbyname):
                 # Add Refined denomination
                 price += ' Refined'
 
-            pricedict[quality] = price
+            if price:
+                pricesdict[index][quality] = price
+
             lowquality = 'Unique'
 
             if 'Dirty' in lowprice:
@@ -98,9 +101,7 @@ def getmarketprices(itemsbyname):
                 if not any(d in lowprice for d in denominations) and hasdigit(lowprice):
                     lowprice += ' Refined'
 
-                pricedict[lowquality] = lowprice
-
-            pricesdict[index] = pricedict
+                pricesdict[index][lowquality] = lowprice
 
     return pricesdict
 
@@ -153,7 +154,8 @@ def convertmarketname(row):
                     'Enemies Gibbed':'Strange Part: Gib Kills',
                     "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
                     'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
-                    'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus'}
+                    'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus',
+                    'Hazmat Headcase':'HazMat Headcase'}
 
     name = row['name']
     if name in translations:

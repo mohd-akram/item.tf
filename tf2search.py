@@ -136,7 +136,9 @@ def getitemsdict(items, storeprices, marketprices, blueprints):
 
 def parseinput(query):
     query = query.lower()
-    querylist = splitspecial(query)
+
+    querylist = [i for i in splitspecial(query) if i not in ['the','a','of','s']]
+
     classes = []
     types = []
     for idx,word in enumerate(querylist):
@@ -151,7 +153,8 @@ def parseinput(query):
         if itemtype:
             types.append(itemtype)
 
-    querylist = [i for i in querylist if i not in ['the','a','of']]
+    if (len(types) + len(classes)) != len(querylist):
+        classes = types = []
 
     result = {'querylist':querylist,'classes':classes,'types':types}
     return result
@@ -212,9 +215,10 @@ def getresultitems(result, itemsdict):
 
 def getsorteditemlist(itemlist, querylist):
     indexlist = []
+
     for itemdict in itemlist:
         name = itemdict['name'].lower().replace('!','')
-        intersectionlength = len(set(querylist).intersection(name.split()))
+        intersectionlength = len(set(querylist).intersection(splitspecial(name)))
         indexlist.append(intersectionlength)
 
     sortedlist =[itemlist for (indexlist,itemlist) in sorted(zip(indexlist,itemlist),reverse=True)]
