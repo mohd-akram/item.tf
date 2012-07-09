@@ -62,17 +62,17 @@ def getmarketprices(itemsbyname):
     pricesdata = urlopen(url)
 
     pricesdict = {}
+    denominations = ['Key','Bud','Scrap']
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
     sheet = list(reader)[1:-1]
 
     for row in sheet:
-        name = convertmarketname(row['name'])
+        name = convertmarketname(row)
         price = row['price']
         quality = row['quality']
         lowprice = row['lowprice']
 
-        denominations = ['Key','Bud','Scrap']
         pricedict = {}
 
         if name in itemsbyname:
@@ -84,15 +84,19 @@ def getmarketprices(itemsbyname):
             # Check if the price is a number and no denomination is specified
             if not any(d in price for d in denominations) and hasdigit(price):
                 # Add Refined denomination
-                price = price + ' Refined'
+                price += ' Refined'
 
             pricedict[quality] = price
-
             lowquality = 'Unique'
 
-            if lowprice != '-':
+            if 'Dirty' in lowprice:
+                lowquality += ' (Dirty)'
+
+            lowprice = lowprice.replace('(Dirty)','')
+
+            if lowprice and lowprice != '-':
                 if not any(d in lowprice for d in denominations) and hasdigit(lowprice):
-                    lowprice = lowprice + ' Refined'
+                    lowprice += ' Refined'
 
                 pricedict[lowquality] = lowprice
 
@@ -125,7 +129,7 @@ def getstoreprice(item, storeprices):
 
     if defindex in storeprices:
         storeitem = storeprices[defindex]
-        storeprice = storeitem['prices']['USD']/100.00
+        storeprice = round(storeitem['prices']['USD']/100.00,2)
 
     return storeprice
 
@@ -139,16 +143,23 @@ def getmarketprice(item, marketprices):
 
     return marketprice
 
-def convertmarketname(name):
+def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
     translations = {'Meet the Medic (clean)':'Taunt: The Meet the Medic',
                     'High-Five (clean)\n':'Taunt: The High Five!',
                     'Key': 'Mann Co. Supply Crate Key',
                     'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
-                    'Mann Co. Supply Crate (series 46)':'Scorched Crate'}
+                    'Mann Co. Supply Crate (series 46)':'Scorched Crate',
+                    'Enemies Gibbed':'Strange Part: Gib Kills',
+                    "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
+                    'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
+                    'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus'}
 
+    name = row['name']
     if name in translations:
         name = translations[name]
+    elif row['quality'] == 'Strange Part':
+        name = 'Strange Part: ' + name
 
     return name.replace(' (dirty)','').replace(' (clean)','')
 

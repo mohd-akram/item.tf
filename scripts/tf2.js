@@ -30,7 +30,7 @@
   };
 
   window.showiteminfo = function(element) {
-    var b, blueprints, blueprintshtml, buy, buyButton, chance, i, imageUrl, index, itemId, itemName, listitem, marketprice, name, quality, storeprice, style, _i, _j, _len, _len1, _ref;
+    var b, blueprints, blueprintshtml, buy, buyButton, chance, i, imageUrl, index, itemId, itemName, listitem, marketprice, name, quality, storeprice, style, title, _i, _j, _len, _len1, _ref;
     window.itembox = document.getElementById("itembox");
     itemId = element.id;
     itemName = element.title;
@@ -49,7 +49,8 @@
         name = i.title;
         index = i.id;
         style = "background-image:url(" + i.innerHTML + ");";
-        listitem = "<li title='" + name + "' class='item-small' style='" + style + "'></li>";
+        title = 'title="' + name + '"';
+        listitem = "<li " + title + " class='item-small' style='" + style + "'></li>";
         if (index) {
           listitem = ("<a href='/item/" + index + "' target='_blank'>") + listitem + "</a>";
         }

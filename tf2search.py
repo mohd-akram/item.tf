@@ -63,14 +63,18 @@ def parseblueprints(blueprints,itemsbyname):
                 for j in required:
                     # Some required items don't have an index
                     index2 = ''
-                    image = ''
+                    image = '/images/items/whatsthis.png'
                     anyclasswep = re.match(r'Any (\w+) Weapon',j)
+                    anypolywep = re.match(r'Any Polycount (\w+) Bundle Weapon',j)
 
                     if anyclasswep:
                         tf2class = anyclasswep.group(1)
                         if tf2class not in ['Primary','Secondary']:
                             image = url + '{}_icon.png'.format(anyclasswep.group(1))
 
+                    if anypolywep:
+                        polyclass = anypolywep.group(1).lower()
+                        image = 'http://media.steampowered.com/apps/440/icons/kit_{}.png'.format(polyclass)
                     if j in repl:
                         image = url + repl[j]
 
@@ -85,7 +89,7 @@ def parseblueprints(blueprints,itemsbyname):
                     blueprintdict = {'name':j,'image':image,'index':index2}
                     blueprintlist.append(blueprintdict)
 
-                blueprintsdict[index].append((blueprintlist,chance))
+                blueprintsdict[index].append((chance,blueprintlist))
     return blueprintsdict
 
 def createitemdict(item, storeprices, marketprices, blueprints):
@@ -96,7 +100,7 @@ def createitemdict(item, storeprices, marketprices, blueprints):
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
-    blueprint = blueprints[item['defindex']]
+    blueprint = sorted(blueprints[item['defindex']],reverse=True) # Sort by chance
 
     itemdict = {'name':item['item_name'],
                 'image':item['image_url'],
@@ -107,6 +111,10 @@ def createitemdict(item, storeprices, marketprices, blueprints):
                 'storeprice':storeprice,
                 'marketprice':marketprice,
                 'blueprint':blueprint}
+
+    # Hack for Ghastlier Gibus market price. Has same price as Ghastlierest
+    if itemdict['name'] == 'Ghastlier Gibus':
+        itemdict['marketprice'] = marketprices[116]
 
     if ispaint(item):
         paintvalue = str(int(item['attributes'][1]['value']))
@@ -161,7 +169,7 @@ def getresultitems(result, itemsdict):
     # Exclude some items from search results
     noimages = [122,123,124,472,495,2061,2066,2067,2068]
     duplicates = getduplicates()
-    exclusions = duplicates + noimages + [5023]
+    exclusions = duplicates + noimages + [5023,5999]
 
     classes = result['classes']
     types = result['types']

@@ -24,3 +24,15 @@ tf2api.py has no dependencies and can be used separately.
 Dependencies
 ------------
 There are no external dependencies, only built-in Python modules.
+
+Thanks
+------
+This project was inspired by and depends on the great TF2 community to function, so a special thanks to the following:
+
+[TF2 Outpost](http://tf2outpost.com)
+
+[TF2 Crafting Advisor](http://tf2crafting.info)
+
+[TF2 Spreadsheet](http://tf2spreadsheet.blogspot.com)
+
+[TF2B](http://tf2b.com)

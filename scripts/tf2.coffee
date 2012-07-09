@@ -36,7 +36,8 @@ window.showiteminfo = (element) ->
       name = i.title
       index = i.id
       style = "background-image:url(#{ i.innerHTML });"
-      listitem =  "<li title='#{ name }' class='item-small' style='#{ style }'></li>"
+      title = 'title="' + name + '"'
+      listitem =  "<li #{ title } class='item-small' style='#{ style }'></li>"
       if index
         listitem = "<a href='/item/#{ index }' target='_blank'>" + listitem + "</a>"
 

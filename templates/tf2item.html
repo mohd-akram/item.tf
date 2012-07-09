@@ -10,8 +10,8 @@
     <div id="container">
       <div id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}">
       {% for b in item['blueprint'] %}
-      <ul data-chance="{{b[1]}}" style="display:none">         
-      {% for i in b[0] %}
+      <ul data-chance="{{b[0]}}" style="display:none">         
+      {% for i in b[1] %}
       <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
       {% endfor %}
       </ul>

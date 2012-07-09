@@ -10,23 +10,23 @@
     <div id="container">
       <header>
       <h1 id='results'>Results</h1>
-      <form action='/search' style="position: absolute; top:20px; right: 20px;">
-        <input type="search" placeholder="Search" name="q" style="font-size: 1.5em;">
+      <form action="/search" style="position: absolute; top:20px; right: 20px;">
+        <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.5em;">
         <input type="submit" value="Search" class="button">
       </form>
       </header>
 
-      <div id='hoverbox'></div>
-      <div id='itembox'></div>  
+      <div id="hoverbox"></div>
+      <div id="itembox"></div>  
 
-      <div id="body" style='padding-bottom: 38px;'>
+      <div id="body" style="padding-bottom: 38px;">
         {% if classitems %}
         <ul>
         {% for item in classitems %}
         <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
         {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[1]}}" style="display:none">         
-          {% for i in b[0] %}
+        <ul data-chance="{{b[0]}}" style="display:none">         
+          {% for i in b[1] %}
           <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
           {% endfor %}
         </ul>
@@ -42,8 +42,8 @@
         {% for item in allclassitems %}
         <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
         {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[1]}}" style="display:none">         
-          {% for i in b[0] %}
+        <ul data-chance="{{b[0]}}" style="display:none">         
+          {% for i in b[1] %}
           <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
           {% endfor %}
         </ul>
@@ -58,8 +58,8 @@
         {% for item in searchitems %}
         <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
         {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[1]}}" style="display:none">         
-          {% for i in b[0] %}
+        <ul data-chance="{{b[0]}}" style="display:none">         
+          {% for i in b[1] %}
           <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
           {% endfor %}
         </ul>
@@ -73,7 +73,7 @@
         <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
         {% endif %}
       </div>
-      <footer style='height: 38px;'>{{footer|safe}}</footer>
+      <footer style="height: 38px;">{{footer|safe}}</footer>
     </div>
   </body>
 </html>
