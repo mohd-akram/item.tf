@@ -27,7 +27,7 @@ def getitems(apikey):
 def getduplicates():
     """Gets items that have the same name as another item
     This includes any stock weapons that are included twice"""
-    stock = [i for i in range(26)] + [29,30]
+    stock = [10,11,12,23] + [i for i in range(190,213)]
     keys = [5049,5067,5072,5073]
     crates = [5041,5045]
     return keys + crates + stock

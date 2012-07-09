@@ -19,25 +19,20 @@ def getapikey():
         apikey = f.read()
     return apikey
 
-def getitems():
-    items = memcache.get('items')
-    if not items:
-        items = tf2api.getitems(getapikey())
-        memcache.set('items', items)
-    return items
-
 def getitemsdict():
     itemsdict = memcache.get('itemsdict')
 
     if not itemsdict:
-        items = getitems()
+        apikey = getapikey()
+        items = tf2api.getitems(apikey)
         itemsbyname = tf2api.getitemsbyname(items)
-        storeprices = tf2api.getstoreprices(getapikey())
+        storeprices = tf2api.getstoreprices(apikey)
         marketprices = tf2api.getmarketprices(itemsbyname)
 
         with open('blueprints.json') as f:
-            blueprints = json.loads(f.read().decode('utf-8'))
-            blueprints = tf2search.parseblueprints(blueprints,itemsbyname)
+            data = json.loads(f.read().decode('utf-8'))
+
+        blueprints = tf2search.parseblueprints(data,itemsbyname)
 
         itemsdict = tf2search.getitemsdict(items,storeprices,marketprices,blueprints)
         memcache.set('itemsdict', itemsdict)
@@ -50,11 +45,11 @@ class TF2Handler(Handler):
 
 class TF2ResultsHandler(Handler):
     def get(self):
-        t0 = time.time()
-
         query = self.request.get('q')
+
         if query:
-            items = getitems()
+            t0 = time.time()
+
             itemsdict = getitemsdict()
             result = tf2search.search(query, itemsdict)
 

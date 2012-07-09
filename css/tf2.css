@@ -139,8 +139,8 @@ ul {
   background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
   background-position: top;
   position:absolute;
-  bottom:14px;
-  left:380px;
+  bottom:20px;
+  left:395px;
   width: 97px;
   height: 24px;  
 }
@@ -167,12 +167,18 @@ ul {
   left: 50%;
 }
 
-#quantity {
+.textbox {
   text-align: right;
   background-color: #414040;
   border-color: #55544F;
   border-style: solid;
   color: white;
+}
+
+#quality {
+  position:absolute;
+  left: 254px;
+  bottom: 20px;
 }
 
 li:hover *,li>div:first-child {
