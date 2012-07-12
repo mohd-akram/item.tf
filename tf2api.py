@@ -144,7 +144,7 @@ def getstoreprice(item, storeprices):
 
     if defindex in storeprices:
         storeitem = storeprices[defindex]
-        storeprice = round(storeitem['prices']['USD']/100.00,2)
+        storeprice = str(round(storeitem['prices']['USD']/100.00,2))
 
     return storeprice
 
