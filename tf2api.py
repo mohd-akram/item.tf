@@ -44,7 +44,7 @@ def getduplicates():
     stock = [10,11,12,23] + [i for i in range(190,213)]
     keys = [5049,5067,5072,5073]
     crates = [5041,5045]
-    return keys + crates + stock
+    return keys + crates + stock + [743]
 
 def getitemsbyname(items):
     duplicates = getduplicates()

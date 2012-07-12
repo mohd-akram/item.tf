@@ -27,7 +27,10 @@ def getitemsdict():
         schema = tf2api.getschema(apikey)
         items = tf2api.getitems(schema)
         attributes = tf2api.getattributes(schema)
+
         itemsbyname = tf2api.getitemsbyname(items)
+        memcache.set('itemsbyname', itemsbyname)
+
         storeprices = tf2api.getstoreprices(apikey)
         marketprices = tf2api.getmarketprices(itemsbyname)
 
@@ -38,20 +41,21 @@ def getitemsdict():
 
         itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
         memcache.set('itemsdict', itemsdict)
-        memcache.set('itemsbyname', itemsbyname)
+
+        exclusions = tf2search.getexclusions()
+        itemnames = [i['name'] for i in itemsdict.values() if i['index'] not in exclusions]
+        memcache.set('itemnames', itemnames)
 
     return itemsdict
 
 class TF2Handler(Handler):
     def get(self):
         query = self.request.get('items')
+        itemnames = memcache.get('itemnames')
         if not query:
             self.render('tf2.html',footer=getfooter())
-        elif query == 'all':
-            itemsdict = getitemsdict()
-            exclusions = tf2search.getexclusions()
-            results = [i['name'] for i in itemsdict.values() if i['index'] not in exclusions]
-            self.write(json.dumps(results))
+        elif query == 'all' and itemnames:
+            self.write(json.dumps(itemnames))
 
 class TF2ResultsHandler(Handler):
     def get(self):
