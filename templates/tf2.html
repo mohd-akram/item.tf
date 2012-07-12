@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TF2 Item Search</title>
+    <title>TF2 Find</title>
     <meta name="description" content="Find TF2 items and quickly get information about crafting blueprints, market prices and more." />
     <link rel="stylesheet" href="/css/tf2.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <style>
+      .ui-autocomplete {
+        max-height: 100px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        padding-right: 20px;
+      }
+    </style> 
   </head>
 
   <body>
-    <header style="height: 10px"></header>
-    <div id="body" style="text-align:center;">
+    <div id="container">
+      <header style="height: 10px"></header>
       <div id="tips">
         <h3>Tips</h3>
         <p>Search for class items<br>eg: engi hats<br>
         or search for any item<br>eg: meet the medic<br><br>
         Right click on search box and click "Add as search engine..." if you use Chrome</p>
       </div>
-      <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Item Search</h1>
+      <div id="body">
+      <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
       <form action="/search">
         <input name="q" id="inputBox" type="search" placeholder="Search" size="30" style="margin-top: 30px; font-size:1.5em;">
         <input type="submit" value="Search" class="button">
       </form>
       <script>document.getElementById('inputBox').focus()</script>
-    </div>
+      <script>var items = $.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data})})</script>
+      </div>
     <footer>{{footer|safe}}</footer>
+    </div>
   </body>
 </html>

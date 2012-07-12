@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{query}} - TF2 Item Search</title>
+    <title>{{query}} - TF2 Find</title>
     <link rel="stylesheet" href="/css/tf2.css">
     <script src="/scripts/tf2.js"></script>
   </head>
@@ -9,6 +9,7 @@
   <body>
     <div id="container">
       <header>
+      <h1 id="back"><a href="/">&lt;</a></h1>
       <h1 id='results'>Results</h1>
       <form action="/search" style="position: absolute; top:20px; right: 20px;">
         <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.5em;">
@@ -20,53 +21,20 @@
       <div id="itembox"></div>  
 
       <div id="body" style="padding-bottom: 38px;">
+        {% from 'macros.html' import showitems %}
+        <!--Results-->
+
         {% if classitems %}
-        <ul>
-        {% for item in classitems %}
-        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
-        {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[0]}}" style="display:none">         
-          {% for i in b[1] %}
-          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
-          {% endfor %}
-        </ul>
-        {% endfor %}
-        </li>
-        {% endfor %}
-        </ul>
+        {{ showitems(classitems) }}
         {% endif %}
 
         {% if allclassitems %}
         <h2>All-class items</h2>
-        <ul>
-        {% for item in allclassitems %}
-        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
-        {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[0]}}" style="display:none">         
-          {% for i in b[1] %}
-          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
-          {% endfor %}
-        </ul>
-        {% endfor %}
-        </li>
-        {% endfor %}
-        </ul>
+        {{ showitems(allclassitems) }}
         {% endif %}
 
         {% if searchitems %}
-        <ul>
-        {% for item in searchitems %}
-        <li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" style="background-image:url({{item['image']}})">
-        {% for b in item['blueprint'] %}
-        <ul data-chance="{{b[0]}}" style="display:none">         
-          {% for i in b[1] %}
-          <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
-          {% endfor %}
-        </ul>
-        {% endfor %}
-        </li>
-        {% endfor %}
-        </ul>
+        {{ showitems(searchitems) }}
         {% endif %}
 
         {% if not (classitems or allclassitems or searchitems) %}

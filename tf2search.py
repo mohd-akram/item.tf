@@ -15,8 +15,8 @@ import logging
 from collections import defaultdict, OrderedDict
 
 from tf2api import (getallitemtypes, gettf2classes, getstoreprice,
-                    getmarketprice, getitemclasses, getitemtags,
-                    getduplicates, ispaint)
+                    getmarketprice, getitemattributes, getitemclasses,
+                    getitemtags, getduplicates, ispaint)
 
 def splitspecial(string):
     """Splits a string at special characters"""
@@ -28,6 +28,13 @@ def getclass(word):
     for tf2class in gettf2classes():
         if word == tf2class['name'] or word in tf2class['aliases']:
             return tf2class['name']
+
+def getexclusions():
+    noimages = [122,123,124,472,495,2061,2066,2067,2068]
+    duplicates = getduplicates()
+    exclusions = duplicates + noimages + [5023,5999]
+
+    return exclusions
 
 def getitemtype(word):
     weapon = ['wep','weap']
@@ -89,14 +96,19 @@ def parseblueprints(blueprints,itemsbyname):
                     blueprintdict = {'name':j,'image':image,'index':index2}
                     blueprintlist.append(blueprintdict)
 
-                blueprintsdict[index].append((chance,blueprintlist))
+                blueprintsdict[index].append({'chance':chance,'required':blueprintlist})
     return blueprintsdict
 
-def createitemdict(item, storeprices, marketprices, blueprints):
+def createitemdict(item, attributes, blueprints, storeprices, marketprices):
     """Takes a TF2 item and returns a custom dict with a limited number of
     keys that are used for search"""
     classes = getitemclasses(item)
 
+    description = ''
+    if 'item_description' in item:
+        description = item['item_description']
+
+    attributes = getitemattributes(item,attributes)
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
@@ -108,9 +120,11 @@ def createitemdict(item, storeprices, marketprices, blueprints):
                 'classes':classes,
                 'tags':tags,
                 'index':item['defindex'],
+                'description':description,
+                'attributes':attributes,
                 'storeprice':storeprice,
                 'marketprice':marketprice,
-                'blueprint':blueprint}
+                'blueprints':blueprint}
 
     # Hack for Ghastlier Gibus market price. Has same price as Ghastlierest
     if itemdict['name'] == 'Ghastlier Gibus':
@@ -124,12 +138,12 @@ def createitemdict(item, storeprices, marketprices, blueprints):
 
     return itemdict
 
-def getitemsdict(items, storeprices, marketprices, blueprints):
+def getitemsdict(items, attributes, blueprints, storeprices, marketprices):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
 
     for idx in items:
-        itemdict = createitemdict(items[idx],storeprices,marketprices,blueprints)
+        itemdict = createitemdict(items[idx],attributes,blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict
@@ -170,9 +184,7 @@ def getresultitems(result, itemsdict):
     allclassitems = []
     searchitems = []
     # Exclude some items from search results
-    noimages = [122,123,124,472,495,2061,2066,2067,2068]
-    duplicates = getduplicates()
-    exclusions = duplicates + noimages + [5023,5999]
+    exclusions = getexclusions()
 
     classes = result['classes']
     types = result['types']
@@ -180,15 +192,13 @@ def getresultitems(result, itemsdict):
     querylist = result['querylist']
 
     if classes or types:
-        for idx in itemsdict:
-            itemdict = itemsdict[idx]
+        for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
 
             isclassmatch = not set(itemclasses).isdisjoint(classes) or not itemclasses
             istypematch = not set(types).isdisjoint(itemdict['tags'])
 
             if (isclassmatch or not classes) and (istypematch or not types):
-                itemdict = itemsdict[idx]
                 if itemdict['index'] not in exclusions:
                     if len(itemclasses)==1 or not classes:
                         classitems.append(itemdict)
@@ -196,8 +206,7 @@ def getresultitems(result, itemsdict):
                         allclassitems.append(itemdict)
     else:
         isgetall = querylist == ['all']
-        for idx in itemsdict:
-            itemdict = itemsdict[idx]
+        for itemdict in itemsdict.values():
             itemname = splitspecial(itemdict['name'].lower())
 
             match = not set(itemname).isdisjoint(querylist)

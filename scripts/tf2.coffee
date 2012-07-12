@@ -1,5 +1,10 @@
 show = (e) ->
-  hbox.innerHTML = e.target.title
+  title = e.target.title
+  description = e.target.getAttribute('data-description')
+  attributes = e.target.getElementsByTagName('div')[0].innerHTML
+  if description
+    description = "<br>#{ description }"
+  hbox.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{ attributes }#{ description }"
   hbox.style.display = "block"
 
 hide = ->
@@ -27,11 +32,11 @@ window.showiteminfo = (element) ->
   imageUrl = element.getAttribute('data-image')
   blueprints = element.getElementsByTagName('ul')
 
-  blueprintshtml = '<div id="blueprint">'
+  blueprintshtml = '<div id="blueprints">'
   for b in blueprints
     chance = b.getAttribute('data-chance')
 
-    blueprintshtml += '<ul style="width:auto;margin:0">'
+    blueprintshtml += '<ul class="blueprint">'
     for i in b.getElementsByTagName('li')
       name = i.title
       index = i.id

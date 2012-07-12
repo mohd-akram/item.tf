@@ -1,0 +1,27 @@
+{% macro showitem(item, showthumb=True) %}
+{% if showthumb %}
+{% set style = "background-image:url({})".format(item['image']) %}
+{% else %}
+{% set style = "display: none" %}
+{% endif %}
+<li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" data-description="{{item['description']}}" style="{{style}}">
+{% for b in item['blueprints'] %}
+<ul data-chance="{{b['chance']}}" style="display:none">         
+  {% for i in b['required'] %}
+  <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+  {% endfor %}
+</ul>
+{% endfor %}
+<div>{% for a in item['attributes'] %}
+<span class="{{a['type']}}">{{a['description']}}</span>
+{% endfor %}</div>
+</li>
+{% endmacro %}
+
+{% macro showitems(itemslist) %}
+<ul class="itemlist">
+{% for item in itemslist %}
+{{ showitem(item) }}
+{% endfor %}
+</ul>
+{% endmacro %}

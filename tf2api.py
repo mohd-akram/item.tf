@@ -10,19 +10,33 @@ def hasdigit(string):
     regex = re.compile(r'[0-9]')
     return regex.search(string)
 
-def getitems(apikey):
+def getschema(apikey):
+    """Returns the schema"""
+    url = 'http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key={}&language=en'.format(apikey)
+    schema = json.loads(urlopen(url).read())
+
+    return schema
+
+def getitems(schema):
     """Returns an ordered dictionary of items in the schema where the key is defindex for
     each item"""
-    url = 'http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key={}&language=en'.format(apikey)
-    schema = urlopen(url).read()
-
     items = OrderedDict()
-    itemslist = json.loads(schema)['result']['items']
+    itemslist = schema['result']['items']
 
     for item in itemslist:
         items[item['defindex']] = item
 
     return items
+
+def getattributes(schema):
+    """Returns a dictionary with each attribute's name as key"""
+    attributes = {}
+    attributeslist = schema['result']['attributes']
+
+    for attribute in attributeslist:
+        attributes[attribute['name']] = attribute
+
+    return attributes
 
 def getduplicates():
     """Gets items that have the same name as another item
@@ -143,6 +157,37 @@ def getmarketprice(item, marketprices):
         marketprice = marketprices[index]
 
     return marketprice
+
+def getitemattributes(item, allattributes):
+    """Get attributes of item"""
+    attributelist = []
+    if 'attributes' in item:
+        attributes = item['attributes']
+        for a in attributes:
+            value = a['value']
+
+            attribute = allattributes[a['name']]
+            if not attribute['hidden'] and 'description_string' in attribute:
+                description = attribute['description_string'].replace('%s1','{}')
+                descformat = attribute['description_format']
+
+                if descformat == "value_is_percentage":
+                	value = (value * 100) - 100
+
+                elif descformat == "value_is_inverted_percentage":
+                	value = 100 - (value * 100)
+
+                elif descformat == "value_is_additive_percentage":
+                	value *= 100
+
+                description = description.format(int(value))
+
+                attrdict = {'description':description,'type':attribute['effect_type']}
+                attributelist.append(attrdict)
+
+    order = ['neutral','positive','negative']
+
+    return sorted(attributelist,key=lambda k: order.index(k['type']))
 
 def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""

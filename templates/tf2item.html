@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{item['name']}} - TF2 Item Search</title>
+    <title>{{item['name']}} - TF2 Find</title>
     <link rel="stylesheet" href="/css/tf2.css">
     <script src="/scripts/tf2.js"></script>
   </head>
 
   <body>
     <div id="container">
-      <div id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}">
-      {% for b in item['blueprint'] %}
-      <ul data-chance="{{b[0]}}" style="display:none">         
-      {% for i in b[1] %}
-      <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
-      {% endfor %}
-      </ul>
-      {% endfor %}
+      <h1 id="back"><a href="/">&lt;</a></h1>
+      {% from 'macros.html' import showitem %}
+      {{ showitem(item,False) }}
       <div id="itembox"></div>
-      </div>
       <script>showiteminfo(document.getElementById('{{item['index']}}'))</script>
       <footer>{{footer|safe}}</footer>
     </div>

@@ -24,7 +24,9 @@ def getitemsdict():
 
     if not itemsdict:
         apikey = getapikey()
-        items = tf2api.getitems(apikey)
+        schema = tf2api.getschema(apikey)
+        items = tf2api.getitems(schema)
+        attributes = tf2api.getattributes(schema)
         itemsbyname = tf2api.getitemsbyname(items)
         storeprices = tf2api.getstoreprices(apikey)
         marketprices = tf2api.getmarketprices(itemsbyname)
@@ -34,21 +36,34 @@ def getitemsdict():
 
         blueprints = tf2search.parseblueprints(data,itemsbyname)
 
-        itemsdict = tf2search.getitemsdict(items,storeprices,marketprices,blueprints)
+        itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
         memcache.set('itemsdict', itemsdict)
+        memcache.set('itemsbyname', itemsbyname)
 
     return itemsdict
 
 class TF2Handler(Handler):
     def get(self):
-        self.render('tf2.html',footer=getfooter())
+        query = self.request.get('items')
+        if not query:
+            self.render('tf2.html',footer=getfooter())
+        elif query == 'all':
+            itemsdict = getitemsdict()
+            exclusions = tf2search.getexclusions()
+            results = [i['name'] for i in itemsdict.values() if i['index'] not in exclusions]
+            self.write(json.dumps(results))
 
 class TF2ResultsHandler(Handler):
     def get(self):
+        t0 = time.time()
         query = self.request.get('q')
 
         if query:
-            t0 = time.time()
+            itemsbyname = memcache.get('itemsbyname')
+            if itemsbyname:
+                if query in itemsbyname:
+                    self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
+                    return
 
             itemsdict = getitemsdict()
             result = tf2search.search(query, itemsdict)
@@ -79,6 +94,6 @@ class TF2ItemHandler(Handler):
 
         if is_json:
             self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
-            self.write(json.dumps(itemdict))
+            self.write(json.dumps(itemdict,indent=2))
         else:
             self.render('tf2item.html',item=itemdict,footer=getfooter())

@@ -7,16 +7,20 @@ setup = """
 with open('api_key.txt') as f:
     key = f.read()
 
-items = tf2api.getitems(key)
+schema = tf2api.getschema(key)
+
+items = tf2api.getitems(schema)
 itemsbyname = tf2api.getitemsbyname(items)
+
+attributes = tf2api.getattributes(schema)
 storeprices = tf2api.getstoreprices(key)
 marketprices = tf2api.getmarketprices(itemsbyname)
 
 with open('blueprints.json') as f:
-    blueprints = json.loads(f.read().decode('utf-8'))
-    blueprints = tf2search.parseblueprints(blueprints,itemsbyname)
+    data = json.loads(f.read().decode('utf-8'))
+    blueprints = tf2search.parseblueprints(data,itemsbyname)
 
-itemsdict = tf2search.getitemsdict(items,storeprices,marketprices,blueprints)
+itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
 """
 
 cProfile.run(setup)

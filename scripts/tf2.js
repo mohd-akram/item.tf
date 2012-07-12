@@ -4,7 +4,14 @@
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   show = function(e) {
-    hbox.innerHTML = e.target.title;
+    var attributes, description, title;
+    title = e.target.title;
+    description = e.target.getAttribute('data-description');
+    attributes = e.target.getElementsByTagName('div')[0].innerHTML;
+    if (description) {
+      description = "<br>" + description;
+    }
+    hbox.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>" + title + "</div>" + attributes + description;
     return hbox.style.display = "block";
   };
 
@@ -38,11 +45,11 @@
     storeprice = element.getAttribute('data-storeprice');
     imageUrl = element.getAttribute('data-image');
     blueprints = element.getElementsByTagName('ul');
-    blueprintshtml = '<div id="blueprint">';
+    blueprintshtml = '<div id="blueprints">';
     for (_i = 0, _len = blueprints.length; _i < _len; _i++) {
       b = blueprints[_i];
       chance = b.getAttribute('data-chance');
-      blueprintshtml += '<ul style="width:auto;margin:0">';
+      blueprintshtml += '<ul class="blueprint">';
       _ref = b.getElementsByTagName('li');
       for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
         i = _ref[_j];
