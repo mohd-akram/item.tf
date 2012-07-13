@@ -22,7 +22,7 @@
   hideitembox = function(e) {
     var target, _ref;
     target = e.target || e.srcElement;
-    if (target !== itembox && __indexOf.call(itembox.getElementsByTagName('ul'), target) < 0 && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT' && _ref !== 'SELECT' && _ref !== 'OPTION')) {
+    if (target !== itembox && __indexOf.call(itembox.getElementsByTagName('ul'), target) < 0 && __indexOf.call(itembox.childNodes, target) < 0 && ((_ref = target.tagName) !== 'LI' && _ref !== 'A' && _ref !== 'INPUT' && _ref !== 'SELECT' && _ref !== 'OPTION' && _ref !== 'H3')) {
       return itembox.style.display = 'none';
     }
   };

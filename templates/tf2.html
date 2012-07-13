@@ -35,7 +35,7 @@
         <input type="submit" value="Search" class="button">
       </form>
       <script>document.getElementById('inputBox').focus()</script>
-      <script>var items = $.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data})})</script>
+      <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data})})</script>
       </div>
     <footer>{{footer|safe}}</footer>
     </div>

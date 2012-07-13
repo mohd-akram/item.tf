@@ -12,7 +12,7 @@ hide = ->
 
 hideitembox = (e) ->
   target = e.target or e.srcElement
-  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION']
+  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION','H3']
     itembox.style.display='none'
 
 moveMouse = (e) ->
