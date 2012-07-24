@@ -42,20 +42,29 @@ def getitemsdict():
         itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
         memcache.set('itemsdict', itemsdict)
 
+    return itemsdict
+
+def getitemnames():
+    itemnames = memcache.get('itemnames')
+    if not itemnames:
+        itemsdict = getitemsdict()
         exclusions = tf2search.getexclusions()
         itemnames = [i['name'] for i in itemsdict.values() if i['index'] not in exclusions]
         memcache.set('itemnames', itemnames)
 
-    return itemsdict
+    return itemnames
 
 class TF2Handler(Handler):
     def get(self):
-        query = self.request.get('items')
-        itemnames = memcache.get('itemnames')
-        if not query:
-            self.render('tf2.html',footer=getfooter())
-        elif query == 'all' and itemnames:
-            self.write(json.dumps(itemnames))
+        if 'appspot' in self.request.host:
+            self.redirect('http://www.tf2find.com')
+        else:
+            query = self.request.get('items')
+            if not query:
+                self.render('tf2.html',footer=getfooter())
+            elif query == 'all':
+                itemnames = getitemnames()
+                self.write(json.dumps(itemnames))
 
 class TF2ResultsHandler(Handler):
     def get(self):
@@ -63,13 +72,13 @@ class TF2ResultsHandler(Handler):
         query = self.request.get('q')
 
         if query:
-            itemsbyname = memcache.get('itemsbyname')
-            if itemsbyname:
-                if query in itemsbyname:
-                    self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
-                    return
-
             itemsdict = getitemsdict()
+            itemsbyname = memcache.get('itemsbyname')
+
+            if query in itemsbyname:
+                self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
+                return
+
             result = tf2search.search(query, itemsdict)
 
             t1 = time.time()
