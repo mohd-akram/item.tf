@@ -7,13 +7,6 @@ import tf2search
 
 from handler import Handler, memcache
 
-def getfooter(time=''):
-    if time:
-        time = '{} seconds<br>'.format(time)
-    return (time+'Developed by <a href="http://steamcommunity.com/id/thefilmore">filmore</a> '
-            '(<a href="https://github.com/mohd-akram/tf2find">GitHub</a>). '
-            'Powered by <a href="http://steampowered.com">Steam</a>.')
-
 def getapikey():
     with open('api_key.txt') as f:
         apikey = f.read()
@@ -61,7 +54,7 @@ class TF2Handler(Handler):
         else:
             query = self.request.get('items')
             if not query:
-                self.render('tf2.html',footer=getfooter())
+                self.render('tf2.html')
             elif query == 'all':
                 itemnames = getitemnames()
                 self.write(json.dumps(itemnames))
@@ -83,14 +76,12 @@ class TF2ResultsHandler(Handler):
 
             t1 = time.time()
 
-            timetaken = round(t1-t0,3)
-
             self.render('tf2results.html',
                         query=query,
                         classitems=result['classitems'],
                         allclassitems=result['allclassitems'],
                         searchitems=result['searchitems'],
-                        footer=getfooter(timetaken))
+                        time=round(t1-t0,3))
         else:
             self.redirect('/')
 
@@ -109,4 +100,4 @@ class TF2ItemHandler(Handler):
             self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
             self.write(json.dumps(itemdict,indent=2))
         else:
-            self.render('tf2item.html',item=itemdict,footer=getfooter())
+            self.render('tf2item.html',item=itemdict)

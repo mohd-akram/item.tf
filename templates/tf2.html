@@ -39,7 +39,7 @@
       <script>document.getElementById('inputBox').focus()</script>
       <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data})})</script>
       </div>
-    <footer>{{footer|safe}}</footer>
+      <footer>{% include 'footer.html' %}</footer>
     </div>
   </body>
 </html>

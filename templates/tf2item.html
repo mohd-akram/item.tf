@@ -14,7 +14,7 @@
       {{ showitem(item,False) }}
       <div id="itembox"></div>
       <script>showiteminfo(document.getElementById('{{item['index']}}'))</script>
-      <footer>{{footer|safe}}</footer>
+      <footer>{% include 'footer.html' %}</footer>
     </div>
   </body>
 </html>
