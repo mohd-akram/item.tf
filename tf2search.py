@@ -56,7 +56,7 @@ def parseblueprints(blueprints,itemsbyname):
         for name in results:
             if name in itemsbyname:
                 index = itemsbyname[name]['defindex']
-                chance = int(100.0/len(results))
+                chance = int(round(100.0/len(results)))
 
                 blueprintlist = []
 
