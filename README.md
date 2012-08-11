@@ -3,8 +3,6 @@ TF2 Find
 
 This is a Google App Engine site that lets you search TF2 items and find the ones you want. It's still in progress, but the main idea is that it you can find everything you need to know about the store price, market price and crafting recipe to help you obtain it. The future plan is to create some sort of recommendation mechanism.
 
-[**Live Demo**](http://tf2find.appspot.com)
-
 Get Started
 -----------
 

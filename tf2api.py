@@ -38,20 +38,12 @@ def getattributes(schema):
 
     return attributes
 
-def getduplicates():
-    """Gets items that have the same name as another item
-    This includes any stock weapons that are included twice"""
-    stock = [10,11,12,23] + [i for i in range(190,213)] + [736]
-    keys = [5049,5067,5072,5073]
-    crates = [5041,5045]
-    return keys + crates + stock + [743]
-
 def getitemsbyname(items):
-    duplicates = getduplicates()
-    itemsbyname = {}
-    for idx in items:
-        if idx not in duplicates:
-            itemsbyname[items[idx]['item_name']] = items[idx]
+    itemsbyname = OrderedDict()
+    for item in items.values():
+        name = item['item_name']
+        if name not in itemsbyname:
+            itemsbyname[name] = item
     return itemsbyname
 
 def getstoreprices(apikey):
@@ -120,7 +112,7 @@ def getmarketprices(itemsbyname):
     return pricesdict
 
 def getallitemtypes():
-    return ['hat','weapon','misc','tool','action','taunt','paint']
+    return ['hat','weapon','misc','tool','action','taunt','paint','token']
 
 def gettf2classes():
     scout = {'name':'Scout', 'aliases':['Scoot']}
@@ -168,7 +160,7 @@ def getitemattributes(item, allattributes):
 
             attribute = allattributes[a['name']]
             if not attribute['hidden'] and 'description_string' in attribute:
-                description = attribute['description_string'].replace('%s1','{}')
+                description = attribute['description_string'].replace('%s1','{:g}')
                 descformat = attribute['description_format']
 
                 if descformat == "value_is_percentage":
@@ -180,7 +172,7 @@ def getitemattributes(item, allattributes):
                 elif descformat == "value_is_additive_percentage":
                 	value *= 100
 
-                description = description.format(int(value))
+                description = description.format(value)
 
                 attrdict = {'description':description,'type':attribute['effect_type']}
                 attributelist.append(attrdict)
@@ -220,53 +212,28 @@ def getitemclasses(item):
 def getitemtags(item):
     tags = []
 
-    if isweapon(item):
+    if item['item_class'].startswith('tf_weapon_'):
         tags.append('weapon')
-    if ishat(item):
-        tags.append('hat')
-    if ismisc(item):
-        tags.append('misc')
-    if isaction(item):
-        tags.append('action')
-    if istaunt(item):
+
+    elif item['item_class'].endswith('_token'):
+        tags.append('token')
+
+    if 'item_slot' in item:
+        slot = item['item_slot']
+
+        if slot == 'head':
+            tags.append('hat')
+
+        else:
+            tags.append(slot)
+
+    if item['item_type_name'] == 'Special Taunt':
         tags.append('taunt')
-    if istool(item):
+
+    if 'tool' in item:
         tags.append('tool')
-    if ispaint(item):
-        tags.append('paint')
+
+        if item['tool']['type'] == 'paint_can':
+            tags.append('paint')
 
     return tags
-
-def isweapon(item):
-    if 'item_slot' in item:
-        if (item['item_slot'] in ['primary','secondary','melee','pda','pda2']
-            and item['item_class'] != 'slot_token'):
-            return True
-
-def ishat(item):
-    if 'item_slot' in item:
-        if item['item_slot'] == 'head':
-            return True
-
-def ismisc(item):
-    if 'item_slot' in item:
-        if item['item_slot'] == 'misc':
-            return True
-
-def isaction(item):
-    if 'item_slot' in item:
-        if item['item_slot'] == 'action':
-            return True
-
-def istaunt(item):
-    if item['item_type_name'] == 'Special Taunt':
-        return True
-
-def istool(item):
-    if 'tool' in item:
-        return True
-
-def ispaint(item):
-    if istool(item):
-        if item['tool']['type'] == 'paint_can':
-            return True

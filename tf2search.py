@@ -16,25 +16,18 @@ from collections import defaultdict, OrderedDict
 
 from tf2api import (getallitemtypes, gettf2classes, getstoreprice,
                     getmarketprice, getitemattributes, getitemclasses,
-                    getitemtags, getduplicates, ispaint)
+                    getitemtags)
 
 def splitspecial(string):
     """Splits a string at special characters"""
     regex = re.compile(r'\W+')
-    return regex.split(string)
+    return [i for i in regex.split(string) if i]
 
 def getclass(word):
     word = word.capitalize()
     for tf2class in gettf2classes():
         if word == tf2class['name'] or word in tf2class['aliases']:
             return tf2class['name']
-
-def getexclusions():
-    noimages = [122,123,124,472,495,2061,2066,2067,2068]
-    duplicates = getduplicates()
-    exclusions = duplicates + noimages + [5023,5999]
-
-    return exclusions
 
 def getitemtype(word):
     weapon = ['wep','weap']
@@ -130,7 +123,7 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
     if itemdict['name'] == 'Ghastlier Gibus':
         itemdict['marketprice'] = marketprices[116]
 
-    if ispaint(item):
+    if 'paint' in tags:
         paintvalue = str(int(item['attributes'][1]['value']))
         # Ignore Paint Tool
         if paintvalue != '1':
@@ -141,7 +134,6 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
 def getitemsdict(items, attributes, blueprints, storeprices, marketprices):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
-
     for idx in items:
         itemdict = createitemdict(items[idx],attributes,blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
@@ -162,7 +154,7 @@ def parseinput(query):
         # Originally a fix when searching for "Meet the Medic"
         # It ignores any class names if they are at the end or not preceded by
         # another class name
-        if tf2class and (idx==0 or getclass(querylist[idx-1])):
+        if tf2class:
             classes.append(tf2class)
         if itemtype:
             types.append(itemtype)
@@ -183,8 +175,7 @@ def getresultitems(result, itemsdict):
     classitems = []
     allclassitems = []
     searchitems = []
-    # Exclude some items from search results
-    exclusions = getexclusions()
+    names = []
 
     classes = result['classes']
     types = result['types']
@@ -199,20 +190,24 @@ def getresultitems(result, itemsdict):
             istypematch = not set(types).isdisjoint(itemdict['tags'])
 
             if (isclassmatch or not classes) and (istypematch or not types):
-                if itemdict['index'] not in exclusions:
+                name = itemdict['name']
+                if itemdict['image'] and name not in names:
                     if len(itemclasses)==1 or not classes:
                         classitems.append(itemdict)
                     else:
                         allclassitems.append(itemdict)
+                    names.append(name)
     else:
-        isgetall = querylist == ['all']
+        isgetall = (querylist == ['all'])
+
         for itemdict in itemsdict.values():
             itemname = splitspecial(itemdict['name'].lower())
 
             match = not set(itemname).isdisjoint(querylist)
 
-            if (match and itemdict['index'] not in exclusions) or isgetall:
+            if (match and itemdict['image'] and itemname not in names) or isgetall:
                 searchitems.append(itemdict)
+                names.append(itemname)
 
         # Sort search items
         if not isgetall:

@@ -36,10 +36,10 @@
         <input name="q" id="inputBox" type="search" placeholder="Search" size="30" style="margin-top: 30px; font-size:1.5em;">
         <input type="submit" value="Search" class="button">
       </form>
-      <script>document.getElementById('inputBox').focus()</script>
-      <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data})})</script>
       </div>
       <footer>{% include 'footer.html' %}</footer>
     </div>
+  <script>document.getElementById('inputBox').focus()</script>
+  <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data, autoFocus: true, delay: 50, minLength: 2})})</script>
   </body>
 </html>
