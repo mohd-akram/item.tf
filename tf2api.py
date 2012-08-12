@@ -212,11 +212,9 @@ def getitemclasses(item):
 def getitemtags(item):
     """Get a list of tags that describe the item"""
     tags = []
+    itemclass = item['item_class']
 
-    if item['item_class'].startswith('tf_weapon_'):
-        tags.append('weapon')
-
-    elif item['item_class'].endswith('_token'):
+    if itemclass.endswith('_token'):
         tags.append('token')
 
     if 'item_slot' in item:
@@ -224,8 +222,10 @@ def getitemtags(item):
 
         if slot == 'head':
             tags.append('hat')
-
         else:
+            if slot in ['primary','secondary','melee','pda','pda2'] and itemclass != 'slot_token':
+                tags.append('weapon')
+
             tags.append(slot)
 
     if item['item_type_name'] == 'Special Taunt':
