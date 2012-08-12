@@ -14,7 +14,7 @@ import re
 import logging
 from collections import defaultdict, OrderedDict
 
-from tf2api import (getallitemtypes, gettf2classes, getstoreprice,
+from tf2api import (getalltags, getallclasses, getstoreprice,
                     getmarketprice, getitemattributes, getitemclasses,
                     getitemtags)
 
@@ -25,18 +25,18 @@ def splitspecial(string):
 
 def getclass(word):
     word = word.capitalize()
-    for tf2class in gettf2classes():
-        if word == tf2class['name'] or word in tf2class['aliases']:
-            return tf2class['name']
+    for name,aliases in getallclasses().items():
+        if word == name or word in aliases:
+            return name
 
-def getitemtype(word):
+def gettag(word):
     weapon = ['wep','weap']
-    itemtypes = getallitemtypes()
-    for itemtype in itemtypes:
+    tags = getalltags()
+    for tag in tags:
         if word in weapon or word in [i+'s' for i in weapon]:
             return 'weapon'
-        elif word == itemtype or word == itemtype+'s':
-            return itemtype
+        elif word == tag or word == tag+'s':
+            return tag
 
 def parseblueprints(blueprints,itemsbyname):
     url = '/images/items/'
@@ -68,8 +68,8 @@ def parseblueprints(blueprints,itemsbyname):
                     anypolywep = re.match(r'Any Polycount (\w+) Bundle Weapon',j)
 
                     if anyclasswep:
-                        tf2class = anyclasswep.group(1)
-                        if tf2class not in ['Primary','Secondary']:
+                        class_ = anyclasswep.group(1)
+                        if class_ not in ['Primary','Secondary']:
                             image = url + '{}_icon.png'.format(anyclasswep.group(1))
 
                     if anypolywep:
@@ -101,7 +101,7 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
     if 'item_description' in item:
         description = item['item_description']
 
-    attributes = getitemattributes(item,attributes)
+    attributes = getitemattributes(item, attributes)
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
@@ -146,47 +146,47 @@ def parseinput(query):
     querylist = [i for i in splitspecial(query) if i not in ['the','a','of','s']]
 
     classes = []
-    types = []
+    tags = []
     for idx,word in enumerate(querylist):
-        tf2class = getclass(word)
-        itemtype = getitemtype(word)
+        class_ = getclass(word)
+        tag = gettag(word)
 
-        if tf2class:
-            classes.append(tf2class)
-        if itemtype:
-            types.append(itemtype)
+        if class_:
+            classes.append(class_)
+        if tag:
+            tags.append(tag)
 
-    if (len(types) + len(classes)) != len(querylist):
-        classes = types = []
+    if (len(tags) + len(classes)) != len(querylist):
+        classes = tags = []
 
-    result = {'querylist':querylist,'classes':classes,'types':types}
-    return result
+    return {'querylist':querylist,'classes':classes,'tags':tags}
 
-def getresultitems(result, itemsdict):
+def search(query, itemsdict):
     """This method parses the result obtained from parseInput and gets all the
     items that match this result. It returns a dict with three keys - classitems,
     allclassitems and searchitems. If the user's query did not match any class
-    or itemtype, a regular search is done and the searchitems is populated with
-    the result. If it did match a class and/or item type, the results are divided
+    or tag, a regular search is done and the searchitems is populated with
+    the result. If it did match a class and/or item tag, the results are divided
     into specific class items (classitems) and all-class items (allclassitems)"""
     classitems = []
     allclassitems = []
     searchitems = []
     names = []
 
+    result = parseinput(query)
     classes = result['classes']
-    types = result['types']
+    tags = result['tags']
 
     querylist = result['querylist']
 
-    if classes or types:
+    if classes or tags:
         for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
 
             isclassmatch = not set(itemclasses).isdisjoint(classes) or not itemclasses
-            istypematch = not set(types).isdisjoint(itemdict['tags'])
+            istagmatch = not set(tags).isdisjoint(itemdict['tags'])
 
-            if (isclassmatch or not classes) and (istypematch or not types):
+            if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
                 if itemdict['image'] and name not in names:
                     if len(itemclasses)==1 or not classes:
@@ -210,9 +210,7 @@ def getresultitems(result, itemsdict):
         if not isgetall:
             searchitems = getsorteditemlist(searchitems,querylist)
 
-    resultitemsdict = {'classitems':classitems, 'allclassitems':allclassitems, 'searchitems':searchitems}
-
-    return resultitemsdict
+    return {'classitems':classitems, 'allclassitems':allclassitems, 'searchitems':searchitems}
 
 def getsorteditemlist(itemlist, querylist):
     indexlist = []
@@ -222,9 +220,4 @@ def getsorteditemlist(itemlist, querylist):
         intersectionlength = len(set(querylist).intersection(splitspecial(name)))
         indexlist.append(intersectionlength)
 
-    sortedlist =[itemlist for (indexlist,itemlist) in sorted(zip(indexlist,itemlist),reverse=True)]
-    return sortedlist
-
-def search(query, itemsdict):
-    result = parseinput(query)
-    return getresultitems(result, itemsdict)
+    return [itemlist for (indexlist,itemlist) in sorted(zip(indexlist,itemlist),reverse=True)]

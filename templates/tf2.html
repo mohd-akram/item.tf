@@ -24,11 +24,22 @@
   <body>
     <div id="container">
       <header style="height: 10px"></header>
-      <div id="tips">
-        <h3>Tips</h3>
-        <p>Search for class items<br>eg: engi hats<br>
-        or search for any item<br>eg: meet the medic<br><br>
-        Right click on search box and click "Add as search engine..." if you use Chrome</p>
+      <div id="sidebar">
+        <h3 id="hover">Help</h3>
+        <div id="list">
+        <h4>Examples</h4>
+        <p>
+        {% for i in ['engi hats','medic weps','demo melee','sniper spy'] %}
+        <a href="/search?q={{i}}">{{i}}</a><br> 
+        {% endfor %}
+        </p>
+        <h4>Keywords</h4>
+        <p>
+        {% for i in ['hat','weapon','misc','tool','action','taunt','paint','token','primary','secondary','melee'] %}
+        <a href="/search?q={{i}}">{{i}}</a><br>
+        {% endfor %}
+        </p>
+        </div>
       </div>
       <div id="body">
       <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
@@ -41,5 +52,6 @@
     </div>
   <script>document.getElementById('inputBox').focus()</script>
   <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data, autoFocus: true, delay: 50, minLength: 2})})</script>
+  <script>$('#hover').hover(function() {$('#list').show('slow')})</script>
   </body>
 </html>

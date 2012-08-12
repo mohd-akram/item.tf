@@ -113,31 +113,29 @@ def getmarketprices(itemsbyname):
 
     return pricesdict
 
-def getallitemtypes():
-    return ['hat','weapon','misc','tool','action','taunt','paint','token']
+def getalltags():
+    return (['hat','weapon','misc','tool','action','taunt','paint','token'] +
+            ['primary','secondary','melee'])
 
-def gettf2classes():
-    scout = {'name':'Scout', 'aliases':['Scoot']}
-    soldier = {'name':'Soldier', 'aliases':['Solly']}
-    pyro = {'name':'Pyro', 'aliases':[]}
-    demoman = {'name':'Demoman', 'aliases':['Demo']}
-    heavy = {'name':'Heavy', 'aliases':[]}
-    engineer = {'name':'Engineer', 'aliases':['Engi','Engie']}
-    medic = {'name':'Medic', 'aliases':[]}
-    sniper = {'name':'Sniper', 'aliases':[]}
-    spy = {'name':'Spy', 'aliases':[]}
-
-    classes = [scout,soldier,pyro,demoman,heavy,engineer,medic,sniper,spy]
-
-    return classes
+def getallclasses():
+    return OrderedDict(
+            [('Scout',['Scoot']),
+            ('Soldier',['Solly']),
+            ('Pyro',[]),
+            ('Demoman',['Demo']),
+            ('Heavy',[]),
+            ('Engineer',['Engi','Engie']),
+            ('Medic',[]),
+            ('Sniper',[]),
+            ('Spy',[])])
 
 def getstoreprice(item, storeprices):
     """Get store price of item"""
-    defindex = item['defindex']
+    index = item['defindex']
     storeprice = ''
 
-    if defindex in storeprices:
-        storeitem = storeprices[defindex]
+    if index in storeprices:
+        storeitem = storeprices[index]
         storeprice = str(round(storeitem['prices']['USD']/100.00,2))
 
     return storeprice
@@ -212,6 +210,7 @@ def getitemclasses(item):
     return classes
 
 def getitemtags(item):
+    """Get a list of tags that describe the item"""
     tags = []
 
     if item['item_class'].startswith('tf_weapon_'):

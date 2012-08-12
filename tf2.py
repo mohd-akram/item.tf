@@ -55,8 +55,7 @@ def updatecache():
     memcache.set('sitemap',sitemap.toxml())
 
 def getfromcache(key):
-    value = memcache.get(key)
-    if not value:
+    if not memcache.get(key):
         updatecache()
 
     return memcache.get(key)
@@ -101,10 +100,10 @@ class TF2SearchHandler(Handler):
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
         itemsdict = getfromcache('itemsdict')
-        defindex = int(defindex)
+        index = int(defindex)
 
-        if defindex in itemsdict:
-            itemdict = itemsdict[defindex]
+        if index in itemsdict:
+            itemdict = itemsdict[index]
         else:
             return self.redirect('/')
 
