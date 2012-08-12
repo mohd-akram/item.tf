@@ -39,6 +39,8 @@ def getattributes(schema):
     return attributes
 
 def getitemsbyname(items):
+    """Returns an ordered dictionary of items in the schema where the key is item_name for
+    each item"""
     itemsbyname = OrderedDict()
     for item in items.values():
         name = item['item_name']

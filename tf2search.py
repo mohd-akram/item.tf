@@ -151,9 +151,6 @@ def parseinput(query):
         tf2class = getclass(word)
         itemtype = getitemtype(word)
 
-        # Originally a fix when searching for "Meet the Medic"
-        # It ignores any class names if they are at the end or not preceded by
-        # another class name
         if tf2class:
             classes.append(tf2class)
         if itemtype:

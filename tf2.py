@@ -16,47 +16,50 @@ def getapikey():
         apikey = f.read()
     return apikey
 
-def getitemsdict():
-    itemsdict = memcache.get('itemsdict')
+def updatecache():
+    apikey = getapikey()
+    schema = tf2api.getschema(apikey)
+    items = tf2api.getitems(schema)
+    attributes = tf2api.getattributes(schema)
 
-    if not itemsdict:
-        apikey = getapikey()
-        schema = tf2api.getschema(apikey)
-        items = tf2api.getitems(schema)
-        attributes = tf2api.getattributes(schema)
+    storeprices = tf2api.getstoreprices(apikey)
 
-        itemsbyname = tf2api.getitemsbyname(items)
-        memcache.set('itemsbyname', itemsbyname)
+    itemsbyname = tf2api.getitemsbyname(items)
+    marketprices = tf2api.getmarketprices(itemsbyname)
 
-        storeprices = tf2api.getstoreprices(apikey)
-        marketprices = tf2api.getmarketprices(itemsbyname)
+    with open('blueprints.json') as f:
+        data = json.loads(f.read().decode('utf-8'))
 
-        with open('blueprints.json') as f:
-            data = json.loads(f.read().decode('utf-8'))
+    blueprints = tf2search.parseblueprints(data,itemsbyname)
 
-        blueprints = tf2search.parseblueprints(data,itemsbyname)
+    itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
 
-        itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
-        memcache.set('itemsdict', itemsdict)
+    itemnames = []
 
-    return itemsdict
+    homepage = gethomepage()
+    sitemap = Sitemap()
+    sitemap.add(homepage)
 
-def getitemsbyname():
-    itemsbyname = memcache.get('itemsbyname')
-    if not itemsbyname:
-        getitemsdict()
-        itemsbyname = memcache.get('itemsbyname')
+    for name,item in itemsbyname.items():
+        if not item['image_url']:
+            del itemsbyname[name]
+        else:
+            itemnames.append(name)
 
-    return itemsbyname
+            path = '{0}/item/{1}'.format(homepage,item['defindex'])
+            sitemap.add(path)
 
-def getitemnames():
-    itemnames = memcache.get('itemnames')
-    if not itemnames:
-        itemsbyname = getitemsbyname()
-        itemnames = [name for name in itemsbyname if itemsbyname[name]['image_url']]
-        memcache.set('itemnames', itemnames)
+    memcache.set('itemsdict', itemsdict)
+    memcache.set('itemsbyname', itemsbyname)
+    memcache.set('itemnames', itemnames)
+    memcache.set('sitemap',sitemap.toxml())
 
-    return itemnames
+def getfromcache(key):
+    value = memcache.get(key)
+    if not value:
+        updatecache()
+
+    return memcache.get(key)
 
 class TF2Handler(Handler):
     def get(self):
@@ -67,7 +70,7 @@ class TF2Handler(Handler):
         if not query:
             self.render('tf2.html')
         elif query == 'all':
-            itemnames = getitemnames()
+            itemnames = getfromcache('itemnames')
             self.write(json.dumps(itemnames))
 
 class TF2SearchHandler(Handler):
@@ -76,8 +79,8 @@ class TF2SearchHandler(Handler):
         query = self.request.get('q')
 
         if query:
-            itemsdict = getitemsdict()
-            itemsbyname = getitemsbyname()
+            itemsdict = getfromcache('itemsdict')
+            itemsbyname = getfromcache('itemsbyname')
 
             if query in itemsbyname:
                 return self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
@@ -97,7 +100,7 @@ class TF2SearchHandler(Handler):
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
-        itemsdict = getitemsdict()
+        itemsdict = getfromcache('itemsdict')
         defindex = int(defindex)
 
         if defindex in itemsdict:
@@ -123,25 +126,8 @@ class TF2ItemHandler(Handler):
 
 class TF2SitemapHandler(Handler):
     def get(self):
-        sitemap = memcache.get('sitemap')
-        if not sitemap:
-            sitemap = Sitemap()
-
-            homepage = gethomepage()
-            sitemap.add(homepage)
-
-            itemsbyname = getitemsbyname()
-
-            for item in itemsbyname.values():
-                if item['image_url']:
-                    path = '{0}/item/{1}'.format(homepage,item['defindex'])
-                    sitemap.add(path)
-
-            sitemap = sitemap.toxml()
-            memcache.set('sitemap',sitemap)
-
         self.response.headers['Content-Type'] = 'application/xml; charset=UTF-8'
-        self.write(sitemap)
+        self.write(getfromcache('sitemap'))
 
 class Sitemap:
     def __init__(self):
