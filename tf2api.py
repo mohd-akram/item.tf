@@ -91,7 +91,7 @@ def getmarketprices(itemsbyname):
             lowprice = lowprice.replace('ref','').replace('\n','').title()
 
             # Check if the price is a number and no denomination is specified
-            if not any(d in price for d in denominations) and hasdigit(price):
+            if set(price).isdisjoint(denominations) and hasdigit(price):
                 # Add Refined denomination
                 price += ' Refined'
 
@@ -106,7 +106,7 @@ def getmarketprices(itemsbyname):
             lowprice = lowprice.replace('(Dirty)','')
 
             if lowprice and lowprice != '-':
-                if not any(d in lowprice for d in denominations) and hasdigit(lowprice):
+                if set(lowprice).isdisjoint(denominations) and hasdigit(lowprice):
                     lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice

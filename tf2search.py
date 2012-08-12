@@ -184,7 +184,7 @@ def search(query, itemsdict):
             itemclasses = itemdict['classes']
 
             isclassmatch = not set(itemclasses).isdisjoint(classes) or not itemclasses
-            istagmatch = not set(tags).isdisjoint(itemdict['tags'])
+            istagmatch = set(tags).issubset(itemdict['tags'])
 
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
