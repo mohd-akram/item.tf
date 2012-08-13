@@ -114,7 +114,7 @@ class TF2ItemHandler(Handler):
             desc_list = []
 
             if itemdict['description']:
-                desc_list.append(itemdict['description'].replace('\n','. '))
+                desc_list.append(itemdict['description'])
 
             desc_list.append(', '.join(itemdict['classes']) if itemdict['classes'] else 'All Classes')
 
