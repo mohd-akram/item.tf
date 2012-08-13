@@ -8,7 +8,7 @@
 {% for b in item['blueprints'] %}
 <ul data-chance="{{b['chance']}}" style="display:none">         
   {% for i in b['required'] %}
-  <li title="{{i['name']}}" id="{{i['index']}}">{{i['image']}}</li>
+  <li title="{{i['name']}}" id="{{i['index']}}" data-image="{{i['image']}}"></li>
   {% endfor %}
 </ul>
 {% endfor %}

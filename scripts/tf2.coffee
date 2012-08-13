@@ -40,7 +40,7 @@ window.showiteminfo = (element) ->
     for i in b.getElementsByTagName('li')
       name = i.title
       index = i.id
-      style = "background-image:url(#{ i.innerHTML });"
+      style = "background-image:url(#{ i.getAttribute('data-image') });"
       title = 'title="' + name + '"'
       listitem =  "<li #{ title } class='item-small' style='#{ style }'></li>"
       if index
