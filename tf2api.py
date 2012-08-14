@@ -85,7 +85,7 @@ def getmarketprices(itemsbyname):
             index = itemsbyname[name]['defindex']
 
             if not index in pricesdict:
-                pricesdict[index] = {}
+                pricesdict[index] = OrderedDict()
 
             price = price.replace('ref','').replace('\n','').title()
             lowprice = lowprice.replace('ref','').replace('\n','').title()
@@ -94,6 +94,9 @@ def getmarketprices(itemsbyname):
             if not any(d in price for d in denominations) and hasdigit(price):
                 # Add Refined denomination
                 price += ' Refined'
+
+            if 'dirty' in row['name']:
+                quality += ' (Dirty)'
 
             if price:
                 pricesdict[index][quality] = price
