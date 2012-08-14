@@ -195,7 +195,8 @@ def convertmarketname(row):
                     "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
                     'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
                     'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus',
-                    'Hazmat Headcase':'HazMat Headcase'}
+                    'Hazmat Headcase':'HazMat Headcase',
+                    'Spine-Chilling Skull 2010 (clean)':'Spine-Chilling Skull'}
 
     name = row['name']
     if name in translations:
