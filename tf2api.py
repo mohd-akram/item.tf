@@ -85,7 +85,7 @@ def getmarketprices(itemsbyname):
             index = itemsbyname[name]['defindex']
 
             if not index in pricesdict:
-                pricesdict[index] = OrderedDict()
+                pricesdict[index] = {}
 
             price = price.replace('ref','').replace('\n','').title()
             lowprice = lowprice.replace('ref','').replace('\n','').title()
