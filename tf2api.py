@@ -116,9 +116,12 @@ def getmarketprices(itemsbyname):
 
     return pricesdict
 
+def getweapontags():
+    return ['primary','secondary','melee','pda','pda2','building']
+
 def getalltags():
     return (['hat','weapon','misc','tool','action','taunt','paint','token'] +
-            ['primary','secondary','melee'])
+            getweapontags())
 
 def getallclasses():
     return OrderedDict(
@@ -227,7 +230,7 @@ def getitemtags(item):
         if slot == 'head':
             tags.append('hat')
         else:
-            if slot in ['primary','secondary','melee','pda','pda2'] and itemclass != 'slot_token':
+            if slot in getweapontags() and itemclass != 'slot_token':
                 tags.append('weapon')
 
             tags.append(slot)

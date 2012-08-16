@@ -47,7 +47,7 @@ window.showiteminfo = (element) ->
         listitem = "<a href='/item/#{ index }' target='_blank'>" + listitem + "</a>"
 
       blueprintshtml = blueprintshtml + listitem
-    blueprintshtml += "<li style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
+    blueprintshtml += "<li title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
     blueprintshtml += "</ul>"
   blueprintshtml += '</div>'
 

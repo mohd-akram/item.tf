@@ -67,7 +67,7 @@ class TF2Handler(Handler):
 
         query = self.request.get('items')
         if not query:
-            self.render('tf2.html')
+            self.render('tf2.html',tags=tf2api.getalltags())
         elif query == 'all':
             itemnames = getfromcache('itemnames')
             self.write(json.dumps(itemnames))

@@ -35,7 +35,7 @@
         </p>
         <h4>Keywords</h4>
         <p>
-        {% for i in ['hat','weapon','misc','tool','action','taunt','paint','token','primary','secondary','melee'] %}
+        {% for i in tags %}
         <a href="/search?q={{i}}">{{i}}</a><br>
         {% endfor %}
         </p>

@@ -49,9 +49,9 @@ def parseblueprints(blueprints,itemsbyname):
             'Any Spy Watch':'watch.png'}
 
     blueprintsdict = defaultdict(list)
-    for i in blueprints:
-        required = blueprints[i][0]
-        results = set(blueprints[i][1])
+    for b in blueprints:
+        required = blueprints[b][0]
+        results = blueprints[b][1]
 
         for name in results:
             if name in itemsbyname:
@@ -60,36 +60,41 @@ def parseblueprints(blueprints,itemsbyname):
 
                 blueprintlist = []
 
-                for j in required:
-                    # Some required items don't have an index
-                    index2 = ''
-                    image = '/images/items/whatsthis.png'
-                    anyclasswep = re.match(r'Any (\w+) Weapon',j)
-                    anypolywep = re.match(r'Any Polycount (\w+) Bundle Weapon',j)
+                for i in required:
+                    blueprintdict = {}
 
-                    if anyclasswep:
-                        class_ = anyclasswep.group(1)
-                        if class_ not in ['Primary','Secondary']:
-                            image = url + '{}_icon.png'.format(anyclasswep.group(1))
+                    anyclasswep = re.match(r'Any (\w+) Weapon',i)
+                    anypolywep = re.match(r'Any Polycount (\w+) Bundle Weapon',i)
 
-                    if anypolywep:
-                        polyclass = anypolywep.group(1).lower()
-                        image = 'http://media.steampowered.com/apps/440/icons/kit_{}.png'.format(polyclass)
-                    if j in repl:
-                        image = url + repl[j]
+                    if i in repl:
+                        image = url + repl[i]
 
-                    if j == 'Any Burned Item':
+                    elif i == 'Any Burned Item':
                         image = itemsbyname['Burned Banana Peel']['image_url']
 
-                    if j in itemsbyname:
-                        item = itemsbyname[j]
-                        image = item['image_url']
-                        index2 = item['defindex']
+                    elif anyclasswep:
+                        image = url + '{}_icon.png'.format(anyclasswep.group(1))
 
-                    blueprintdict = {'name':j,'image':image,'index':index2}
+                    elif anypolywep:
+                        class_ = anypolywep.group(1).lower()
+                        image = 'http://media.steampowered.com/apps/440/icons/kit_{}.png'.format(class_)
+
+                    elif i in itemsbyname:
+                        item = itemsbyname[i]
+                        image = item['image_url']
+
+                        blueprintdict['index'] = item['defindex']
+
+                    else:
+                        image = '/images/items/whatsthis.png'
+
+                    blueprintdict['name'] = i
+                    blueprintdict['image'] = image
+
                     blueprintlist.append(blueprintdict)
 
                 blueprintsdict[index].append({'chance':chance,'required':blueprintlist})
+
     return blueprintsdict
 
 def createitemdict(item, attributes, blueprints, storeprices, marketprices):
