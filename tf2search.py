@@ -20,8 +20,7 @@ from tf2api import (getalltags, getallclasses, getstoreprice,
 
 def splitspecial(string):
     """Splits a string at special characters"""
-    regex = re.compile(r'\W+')
-    return [i for i in regex.split(string) if i]
+    return [i for i in re.split(r'\W+',string) if i]
 
 def getclass(word):
     word = word.capitalize()

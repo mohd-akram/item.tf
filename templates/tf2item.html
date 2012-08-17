@@ -11,9 +11,10 @@
   <body>
     <div id="container">
       <h1 id="back"><a href="/">&lt;</a></h1>
+      <div id="hoverbox"></div>
+      <div id="itembox"></div>
       {% from 'macros.html' import showitem %}
       {{ showitem(item,False) }}
-      <div id="itembox"></div>
       <script>showiteminfo(document.getElementById('{{item['index']}}'))</script>
       <footer>{% include 'footer.html' %}</footer>
     </div>

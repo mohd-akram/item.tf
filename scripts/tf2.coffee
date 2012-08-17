@@ -10,9 +10,9 @@ show = (e) ->
 hide = ->
   hbox.style.display = "none"
 
-hideitembox = (e) ->
+window.hideitembox = (e) ->
   target = e.target or e.srcElement
-  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION','H3']
+  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION','H3','IMG']
     itembox.style.display='none'
 
 moveMouse = (e) ->
@@ -23,15 +23,23 @@ window.openSummary = (e) ->
   showiteminfo(e.target)
 
 window.showiteminfo = (element) ->
+  window.hbox = document.getElementById('hoverbox')
   window.itembox = document.getElementById("itembox")
   itemId = element.id
   itemName = element.title
 
   marketprice = element.getAttribute('data-marketprice').replace(/[{}']/g,'').replace(/, /g,'<br>')
+  if marketprice
+    for i in ['Unique','Vintage','Strange','Genuine','Haunted']
+      re = new RegExp(i,"g")
+      marketprice = marketprice.replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
+    marketprice = '<h3 style="margin:5px 0 5px 0">'+marketprice+'</h3>'
+
   storeprice = element.getAttribute('data-storeprice')
   imageUrl = element.getAttribute('data-image')
   blueprints = element.getElementsByTagName('ul')
 
+  # Blueprints HTML
   blueprintshtml = '<div id="blueprints">'
   for b in blueprints
     chance = b.getAttribute('data-chance')
@@ -51,6 +59,7 @@ window.showiteminfo = (element) ->
     blueprintshtml += "</ul>"
   blueprintshtml += '</div>'
 
+  # Buy button and price HTML
   if storeprice
     storeprice = "$#{ storeprice }"
     buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>#{ storeprice }<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buy-button'></a>"
@@ -59,9 +68,18 @@ window.showiteminfo = (element) ->
 
   wikilink = 'href="http://wiki.teamfortress.com/wiki/' + itemName + '"'
 
-  itembox.innerHTML = "<h2>#{ itemName }</h2>
+  # Classes HTML
+  classeshtml = "<div id='classes' style='position:absolute;top:0;right:0'>"
+  classes = element.getAttribute('data-classes')
+  if classes
+    for i in classes.split(',')
+      classeshtml += "<img title='#{ i }' width='40px' height='40px' src='/images/items/#{ i }_icon.png'><br>"
+  classeshtml += "</div>"
+
+  # Itembox HTML
+  itembox.innerHTML = "<h2 style='margin-bottom:5px;color:#B2B2B2;'>#{ itemName }</h2>
     <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' #{ wikilink }>Wiki</a>
-    <h3>#{ marketprice }</h3>
+    #{ marketprice }
     <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>
       <input type='hidden' name='has1' value='440,#{ itemId },6'>
       <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>
@@ -76,17 +94,31 @@ window.showiteminfo = (element) ->
       </select>
     </form>
     #{ buyButton }
-    #{ blueprintshtml }"
+    #{ blueprintshtml }
+    #{ classeshtml }"
 
   itembox.style.display = "block"
-  itembox.style.backgroundImage = "url('#{ imageUrl }')"
+ 
+  # Hover area
+  hoverarea = document.createElement('div')
+  hoverarea.title = element.title
+  hoverarea.setAttribute('data-description',element.getAttribute('data-description'))
+  hoverarea.id = 'hoverarea'
+  hoverarea.style.backgroundImage = "url('#{ imageUrl }')"
+  hoverarea.innerHTML = '<div style="display:none">'+element.getElementsByTagName('div')[0].innerHTML+'</div>'
+  hoverarea.addEventListener("mouseout", hide, false)
+  hoverarea.addEventListener("mousemove", moveMouse, false)
+  hoverarea.addEventListener("mouseover", show, false)
+  itembox.appendChild(hoverarea)
 
+  # Buy button link
   buy = document.getElementById('buy-button')
   if buy
     buy.onclick = ->
       quantity = document.getElementById('quantity').value
       window.open("http://store.steampowered.com/buyitem/440/#{ itemId }/#{ quantity }")
 
+  # TF2Outpost link
   quality = document.tf2outpostform.quality
   quality.onchange = ->
     document.tf2outpostform.has1.value = "440,#{ itemId },#{ quality.value }"
@@ -95,11 +127,9 @@ window.onload = ->
   window.hbox = document.getElementById("hoverbox")
 
   if hbox
-    icells = document.getElementsByTagName("li")
-    for cell in icells
-      cell.addEventListener("mouseout", hide, false)
-      cell.addEventListener("mousemove", moveMouse, false)
-      cell.addEventListener("mouseover", show, false)
-      cell.addEventListener("click", openSummary, false)
-
-    document.addEventListener("click",hideitembox, false)
+    for i in document.getElementsByClassName('itemlist')
+      for cell in i.getElementsByTagName('li')
+        cell.addEventListener("mouseout", hide, false)
+        cell.addEventListener("mousemove", moveMouse, false)
+        cell.addEventListener("mouseover", show, false)
+        cell.addEventListener("click", openSummary, false)

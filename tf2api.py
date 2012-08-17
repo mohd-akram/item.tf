@@ -6,9 +6,9 @@ import logging
 from urllib2 import urlopen
 from collections import OrderedDict
 
-def hasdigit(string):
-    regex = re.compile(r'[0-9]')
-    return regex.search(string)
+def isprice(string):
+    """Check if string starts with a number"""
+    return re.match(r'[0-9]',string)
 
 def getschema(apikey):
     """Returns the schema"""
@@ -91,7 +91,7 @@ def getmarketprices(itemsbyname):
             lowprice = lowprice.replace('ref','').replace('\n','').title()
 
             # Check if the price is a number and no denomination is specified
-            if not any(d in price for d in denominations) and hasdigit(price):
+            if not any(d in price for d in denominations) and isprice(price):
                 # Add Refined denomination
                 price += ' Refined'
 
@@ -109,7 +109,7 @@ def getmarketprices(itemsbyname):
             lowprice = lowprice.replace('(Dirty)','')
 
             if lowprice and lowprice != '-':
-                if not any(d in lowprice for d in denominations) and hasdigit(lowprice):
+                if not any(d in lowprice for d in denominations) and isprice(lowprice):
                     lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice

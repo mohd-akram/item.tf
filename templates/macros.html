@@ -4,7 +4,7 @@
 {% else %}
 {% set style = "display: none" %}
 {% endif %}
-<li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" data-description="{{item['description']}}" style="{{style}}">
+<li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" data-description="{{item['description']}}" data-classes="{{item['classes']|join(',')}}" style="{{style}}">
 {% for b in item['blueprints'] %}
 <ul data-chance="{{b['chance']}}" style="display:none">         
   {% for i in b['required'] %}
