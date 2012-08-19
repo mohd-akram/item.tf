@@ -116,7 +116,7 @@
       }
     }
     classeshtml += "</div>";
-    tagshtml = "<div id='tags' style='position:absolute;top:-5px;left:-1px'>";
+    tagshtml = "<div id='tags' style='position:absolute;top:-5px;left:5px'>";
     tags = element.getAttribute('data-tags');
     if (tags) {
       tags = tags.split(',');
@@ -153,7 +153,7 @@
       }
     }
     tagshtml += "</div>";
-    itembox.innerHTML = "<h2 style='margin-bottom:5px;color:#B2B2B2;'>" + itemName + "</h2>    <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' " + wikilink + ">Wiki</a>    " + marketprice + "    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox' style='text-align:left'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml + "    " + classeshtml + "    " + tagshtml;
+    itembox.innerHTML = "<h2 style='margin-bottom:5px'><a href='/item/" + itemId + "' target='_blank' style='color:#B2B2B2;'>" + itemName + "</a></h2>    <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' " + wikilink + ">Wiki</a>    " + marketprice + "    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>      <input type='hidden' name='has1' value='440," + itemId + ",6'>      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>      <input type='hidden' name='type' value='any'>      <select id='quality' class='textbox' style='text-align:left'>        <option value='6' selected=''>Unique</option>        <option value='3'>Vintage</option>        <option value='1'>Genuine</option>        <option value='5'>Unusual</option>        <option value='11'>Strange</option>        <option value='13'>Haunted</option>      </select>    </form>    " + buyButton + "    " + blueprintshtml + "    " + classeshtml + "    " + tagshtml;
     itembox.style.display = "block";
     hoverarea = document.createElement('div');
     hoverarea.title = element.title;
