@@ -191,15 +191,20 @@ def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
     translations = {'Meet the Medic (clean)':'Taunt: The Meet the Medic',
                     'High-Five (clean)\n':'Taunt: The High Five!',
+                    'Schadenfreude (clean)':'Taunt: The Schadenfreude',
                     'Key': 'Mann Co. Supply Crate Key',
                     'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
-                    'Mann Co. Supply Crate (series 46)':'Scorched Crate',
                     'Enemies Gibbed':'Strange Part: Gib Kills',
                     "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
                     'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
                     'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus',
                     'Hazmat Headcase':'HazMat Headcase',
-                    'Spine-Chilling Skull 2010 (clean)':'Spine-Chilling Skull'}
+                    'Spine-Chilling Skull 2010 (clean)':'Spine-Chilling Skull',
+                    "Color of a Gentlemann's Business Pants":"The Color of a Gentlemann's Business Pants",
+                    '\tColor No. 216-190-216 (Pink)':"Color No. 216-190-216",
+                    "Zephaniah's Greed":"Zepheniah's Greed",
+                    'Bolgan Helmet':'Bolgan',
+                    'Full Head of Steam (dirty)':'Full Head Of Steam'}
 
     name = row['name']
     if name in translations:
@@ -207,7 +212,7 @@ def convertmarketname(row):
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
 
-    return name.replace(' (dirty)','').replace(' (clean)','')
+    return name.replace(' (dirty)','').replace(' (clean)','').replace('\n','').replace('\t','')
 
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""

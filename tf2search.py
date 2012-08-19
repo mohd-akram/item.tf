@@ -45,7 +45,7 @@ def parseblueprints(blueprints,itemsbyname):
             'Any Primary Weapon':'primary.png',
             'Any Secondary Weapon':'secondary.png',
             'Any Melee Weapon':'melee.png',
-            'Any Spy Watch':'watch.png'}
+            'Any Spy Watch':'pda2.png'}
 
     blueprintsdict = defaultdict(list)
     for b in blueprints:
@@ -59,7 +59,7 @@ def parseblueprints(blueprints,itemsbyname):
 
                 blueprintlist = []
 
-                for i in required:
+                for i in set(required):
                     blueprintdict = {}
 
                     anyclasswep = re.match(r'Any (\w+) Weapon',i)
@@ -89,6 +89,7 @@ def parseblueprints(blueprints,itemsbyname):
 
                     blueprintdict['name'] = i
                     blueprintdict['image'] = image
+                    blueprintdict['count'] = required.count(i)
 
                     blueprintlist.append(blueprintdict)
 
@@ -192,26 +193,26 @@ def search(query, itemsdict):
 
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
-                if itemdict['image'] and name not in names:
+                index = itemdict['index']
+                if itemdict['image'] and (index<496 or (512<index<680) or (698<index<8000)) and name not in names:
                     if len(itemclasses)==1 or not classes:
                         classitems.append(itemdict)
                     else:
                         allclassitems.append(itemdict)
                     names.append(name)
     else:
-        isgetall = (querylist == ['all'])
+        if querylist == ['all']:
+            searchitems = itemsdict.values()
+        else:
+            for itemdict in itemsdict.values():
+                itemname = splitspecial(itemdict['name'].lower())
 
-        for itemdict in itemsdict.values():
-            itemname = splitspecial(itemdict['name'].lower())
+                match = not set(itemname).isdisjoint(querylist)
 
-            match = not set(itemname).isdisjoint(querylist)
+                if (match and itemdict['image'] and itemname not in names):
+                    searchitems.append(itemdict)
+                    names.append(itemname)
 
-            if (match and itemdict['image'] and itemname not in names) or isgetall:
-                searchitems.append(itemdict)
-                names.append(itemname)
-
-        # Sort search items
-        if not isgetall:
             searchitems = getsorteditemlist(searchitems,querylist)
 
     return {'classitems':classitems, 'allclassitems':allclassitems, 'searchitems':searchitems}

@@ -4,24 +4,24 @@
 {% else %}
 {% set style = "display: none" %}
 {% endif %}
-<li class="item" id="{{item['index']}}" title="{{item['name']}}" data-storeprice="{{item['storeprice']}}" data-marketprice="{{item['marketprice']}}" data-image="{{item['image_large']}}" data-description="{{item['description']}}" data-classes="{{item['classes']|join(',')}}" style="{{style}}">
-{% for b in item['blueprints'] %}
-<ul data-chance="{{b['chance']}}" style="display:none">         
-  {% for i in b['required'] %}
-  <li title="{{i['name']}}" id="{{i['index']}}" data-image="{{i['image']}}"></li>
-  {% endfor %}
+<li class="item"id="{{item['index']}}"title="{{item['name']}}"style="{{style}}"data-image="{{item['image_large']}}"{% for i in ['classes','tags'] %}{% if item[i] %}data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %} {% for i in ['storeprice','marketprice','description'] %}{% if item[i] %}data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}>
+{%- for b in item['blueprints'] %}
+<ul data-chance="{{b['chance']}}"style="display:none">         
+  {%- for i in b['required'] %}
+  <li title="{{i['name']}}"{% if i['index'] %}id="{{i['index']}}"{% endif %}data-image="{{i['image']}}"data-count="{{i['count']}}"></li>
+  {%- endfor %}
 </ul>
-{% endfor %}
+{%- endfor %}
+{%- if item['attributes'] %}
 <div>{% for a in item['attributes'] %}
 <span class="{{a['type']}}">{{a['description']}}</span>
-{% endfor %}</div>
-</li>
+{% endfor %}</div>{%- endif %}</li>
 {% endmacro %}
 
 {% macro showitems(itemslist) %}
 <ul class="itemlist">
 {% for item in itemslist %}
 {{ showitem(item) }}
-{% endfor %}
+{%- endfor %}
 </ul>
 {% endmacro %}

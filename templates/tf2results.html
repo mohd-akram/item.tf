@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>{{query}} - TF2 Find</title>
+    <meta name="description" content='Search results for "{{query}}"' />
     <link rel="stylesheet" href="/css/tf2.css">
     <script src="/scripts/tf2.js"></script>
     {% include 'analytics.html' %}
@@ -9,41 +10,40 @@
 
   <body>
     <div id="container">
-      <header>
-      <h1 id="back"><a href="/">&lt;</a></h1>
-      <h1 id="results">Results</h1>
-      <form action="/search" style="position: absolute; top:20px; right: 20px;">
-        <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.5em;">
-        <input type="submit" value="Search" class="button">
-      </form>
-      </header>
+    <header>
+    <h1 id="back"><a href="/">&lt;</a></h1>
+    <h1 id="results">Results</h1>
+    <form action="/search" style="position: absolute; top:20px; right: 20px;">
+      <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.5em;">
+      <input type="submit" value="Search" class="button">
+    </form>
+    </header>
 
-      <div id="hoverbox"></div>
-      <div id="itembox"></div>  
+    <div id="hoverbox"></div>
+    <div id="itembox"></div>  
 
-      <div id="body" style="padding-bottom: 38px;">
-        {% from 'macros.html' import showitems %}
-        <!--Results-->
+    <div id="body" style="padding-bottom: 38px;">
+    {% from 'macros.html' import showitems %}
 
-        {% if classitems %}
-        {{ showitems(classitems) }}
-        {% endif %}
+    {%- if classitems %}
+    {{ showitems(classitems) }}
+    {%- endif %}
 
-        {% if allclassitems %}
-        <h2>All-class items</h2>
-        {{ showitems(allclassitems) }}
-        {% endif %}
+    {%- if allclassitems %}
+    <h2>All-class items</h2>
+    {{ showitems(allclassitems) }}
+    {%- endif %}
 
-        {% if searchitems %}
-        {{ showitems(searchitems) }}
-        {% endif %}
+    {%- if searchitems %}
+    {{ showitems(searchitems) }}
+    {%- endif %}
 
-        {% if not (classitems or allclassitems or searchitems) %}
-        <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
-        {% endif %}
-      </div>
-      <script>document.addEventListener("click",hideitembox, false)</script>
-      <footer style="height: 38px;">{{time}} seconds<br>{% include 'footer.html' %}</footer>
+    {%- if not (classitems or allclassitems or searchitems) %}
+    <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
+    {%- endif %}
+    </div>
+    <script>document.addEventListener("click",hideitembox, false)</script>
+    <footer style="height: 38px;">{{time}} seconds<br>{% include 'footer.html' %}</footer>
     </div>
   </body>
 </html>
