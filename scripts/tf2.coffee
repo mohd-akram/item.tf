@@ -48,7 +48,7 @@ window.showiteminfo = (element) ->
     for i in ['Unique','Vintage','Strange','Genuine','Haunted']
       re = new RegExp(i,"g")
       marketprice = marketprice.replace(/[{}']/g,'').replace(/, /g,'<br>').replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
-    marketprice = '<h3 style="margin:5px 0 5px 0">'+marketprice+'</h3>'
+    marketprice = '<h3 id="marketprice">'+marketprice+'</h3>'
   else
     marketprice = ''
 
@@ -127,7 +127,7 @@ window.showiteminfo = (element) ->
   tagshtml += "</div>"
       
   # Itembox HTML
-  itembox.innerHTML = "<h2 style='margin-bottom:5px'><a href='/item/#{itemId}' target='_blank' style='color:#B2B2B2;'>#{ itemName }</a></h2>
+  itembox.innerHTML = "<h2 id='itemname'><a href='/item/#{itemId}' target='_blank' title='Go to Item Page'>#{ itemName }</a></h2>
     <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' #{ wikilink }>Wiki</a>
     #{ marketprice }
     <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>

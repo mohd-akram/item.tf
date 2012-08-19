@@ -144,12 +144,11 @@ ul {
   font-size: 1.2em;
   padding: 8px;
   display: inline-block;
-  background-color: #333333;
+  background-color: #444;
   background-image: -webkit-linear-gradient(#585857, #333333);
   background-image: -moz-linear-gradient(#585857, #333333);
   background-image: -o-linear-gradient(#585857, #333333);
   border-style: none;
-  outline: 0;
   border-radius: 10px;
   cursor: pointer;
 }
@@ -182,6 +181,21 @@ ul {
   position:fixed;
   top: 50%;
   left: 50%;
+  text-shadow: 0 0 10px black;
+}
+
+#itemname {
+  margin-bottom:5px;
+  color:#D1D0D0;
+}
+
+#itemname>a {
+  color:#D1D0D0;
+}
+
+#itemname>a:hover {
+  color: rgb(230,230,230);
+  text-shadow: 0 0 10px #999;
 }
 
 #hoverarea {
@@ -191,12 +205,17 @@ ul {
   background-repeat: no-repeat;
   background-position: center -35px;
 }
+
 .textbox {
   text-align: right;
   background-color: #414040;
   border-color: #55544F;
   border-style: solid;
   color: white;
+}
+
+#marketprice {
+  margin:5px 0 5px 0;
 }
 
 #quality {
@@ -246,6 +265,10 @@ ul {
 a {
   color: white;
   text-decoration: none;
+}
+
+a>img {
+  border: none;
 }
 
 #back {
