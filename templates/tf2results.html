@@ -22,7 +22,7 @@
     <div id="hoverbox"></div>
     <div id="itembox"></div>  
 
-    <div id="body" style="padding-bottom: 38px;">
+    <div id="body">
     {% from 'macros.html' import showitems %}
 
     {%- if classitems %}
@@ -43,7 +43,7 @@
     {%- endif %}
     </div>
     <script>document.addEventListener("click",hideitembox, false)</script>
-    <footer style="height: 38px;">{{time}} seconds<br>{% include 'footer.html' %}</footer>
+    <footer>{{time}} seconds<br>{% include 'footer.html' %}</footer>
     </div>
   </body>
 </html>

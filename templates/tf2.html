@@ -4,6 +4,7 @@
     <title>TF2 Find</title>
     <meta name="description" content="Find TF2 items and quickly get information about crafting blueprints, market prices and more." />
     <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
+    <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{homepage}}/searchdescription.xml">
     <link rel="stylesheet" href="/css/tf2.css">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -48,10 +49,10 @@
         <input type="submit" value="Search" class="button">
       </form>
       </div>
-      <footer>{% include 'footer.html' %}</footer>
+      <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
     </div>
   <script>document.getElementById('inputBox').focus()</script>
-  <script>$.getJSON('/',{items: 'all'}, function (data) {$("#inputBox").autocomplete({source: data, autoFocus: true, delay: 50, minLength: 2})})</script>
+  <script>$.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})})</script>
   <script>$('#hover').hover(function() {$('#list').show('slow')})</script>
   </body>
 </html>

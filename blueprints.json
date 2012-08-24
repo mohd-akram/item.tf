@@ -1920,9 +1920,9 @@
   ],
   "Fabricate Bonk Helm": [
     [
+      "Batter's Helmet",
       "Bonk! Atomic Punch",
-      "Bonk! Atomic Punch",
-      "Batter's Helmet"
+      "Bonk! Atomic Punch"
     ],
     [
       "Bonk Helm"
@@ -2189,6 +2189,17 @@
     ],
     [
       "Pile Of Ash"
+    ]
+  ],
+  "Fabricate Power Up Canteen": [
+    [
+      "Scrap Metal",
+      "Scrap Metal",
+      "Scrap Metal",
+      "Scrap Metal"
+    ],
+    [
+      "Power Up Canteen"
     ]
   ]
 }

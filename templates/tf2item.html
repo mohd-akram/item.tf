@@ -16,7 +16,7 @@
       {% from 'macros.html' import showitem %}
       {{ showitem(item,False) }}
       <script>showiteminfo(document.getElementById('{{item['index']}}'));document.getElementById('itemname').innerHTML="{{item['name']}}"</script>
-      <footer>{% include 'footer.html' %}</footer>
+      <footer style="height:20px">{% include 'footer.html' %}</footer>
     </div>
   </body>
 </html>

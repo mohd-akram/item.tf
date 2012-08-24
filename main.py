@@ -19,10 +19,12 @@ import logging
 
 import handler
 
-from tf2 import TF2Handler, TF2SearchHandler, TF2ItemHandler, TF2SitemapHandler
+from tf2 import (TF2Handler, TF2SearchHandler, TF2SuggestHandler,
+                 TF2ItemHandler, TF2SitemapHandler)
 
 app = webapp2.WSGIApplication([('/', TF2Handler),
                                ('/search', TF2SearchHandler),
+                               ('/suggest', TF2SuggestHandler),
                                ('/item/([0-9]+)(\.json)?', TF2ItemHandler),
                                ('/sitemap\.xml',TF2SitemapHandler)],
                               debug=True)

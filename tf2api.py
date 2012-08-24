@@ -218,7 +218,7 @@ def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
     classes = []
     if 'used_by_classes' in item:
-        classes = item['used_by_classes']
+        classes = sorted(item['used_by_classes'],key=lambda k: getallclasses().keys().index(k))
     return classes
 
 def getitemtags(item):

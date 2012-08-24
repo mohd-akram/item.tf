@@ -59,7 +59,7 @@ def parseblueprints(blueprints,itemsbyname):
 
                 blueprintlist = []
 
-                for i in set(required):
+                for i in OrderedDict.fromkeys(required):
                     blueprintdict = {}
 
                     anyclasswep = re.match(r'Any (\w+) Weapon',i)

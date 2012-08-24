@@ -3,10 +3,13 @@ show = (e) ->
 
   attributes = getattributes(e.target)
   description = getdescription(e.target)
-  description = if description then '<br>'+description else description
+  description = if description then '<br>'+escapeHTML(description) else description
 
   hbox.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{ attributes }#{ description }"
   hbox.style.display = "block"
+
+escapeHTML = (string) ->
+    return string.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
 
 getattributes = (item) ->
   divs = item.getElementsByTagName('div')
@@ -25,9 +28,15 @@ hide = ->
   hbox.style.display = "none"
 
 window.hideitembox = (e) ->
-  target = e.target or e.srcElement
-  if target != itembox and target not in itembox.getElementsByTagName('ul') and target not in itembox.childNodes and target.tagName not in ['LI','A','INPUT','SELECT','OPTION','H3','IMG']
-    itembox.style.display='none'
+  a = e.target or e.srcElement
+  if a.getAttribute('class') != 'item'
+    els = []
+    while a
+      els.push(a)
+      a = a.parentNode
+
+    if itembox not in els
+      itembox.style.display = 'none'
 
 moveMouse = (e) ->
   hbox.style.top = (e.pageY + 28) + "px"

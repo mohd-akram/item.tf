@@ -54,10 +54,13 @@ def updatecache():
     memcache.set('itemnames', itemnames)
     memcache.set('sitemap',sitemap.toxml())
 
-def getfromcache(key):
-    if not memcache.get(key):
-        updatecache()
+    memcache.set('lastupdated',time.time())
 
+def getfromcache(key):
+    lastupdated = memcache.get('lastupdated')
+    if not lastupdated or time.time()-lastupdated > 3600:
+        updatecache()
+        logging.info('Updated cache')
     return memcache.get(key)
 
 class TF2Handler(Handler):
@@ -65,16 +68,11 @@ class TF2Handler(Handler):
         if self.request.host.endswith('appspot.com'):
             return self.redirect(gethomepage(), True)
 
-        query = self.request.get('items')
-        if not query:
-            self.render('tf2.html',tags=tf2api.getalltags())
-        elif query == 'all':
-            itemnames = getfromcache('itemnames')
-            self.write(json.dumps(itemnames))
+        lastupdated = int(time.time()-getfromcache('lastupdated')) / 60
+        self.render('tf2.html',homepage=gethomepage(),tags=tf2api.getalltags(),lastupdated=lastupdated)
 
 class TF2SearchHandler(Handler):
     def get(self):
-        t0 = time.time()
         query = self.request.get('q')
 
         if query:
@@ -84,8 +82,8 @@ class TF2SearchHandler(Handler):
             if query in itemsbyname:
                 return self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
 
+            t0 = time.time()
             result = tf2search.search(query, itemsdict)
-
             t1 = time.time()
 
             self.render('tf2results.html',
@@ -96,6 +94,22 @@ class TF2SearchHandler(Handler):
                         time=round(t1-t0,3))
         else:
             self.redirect('/')
+
+class TF2SuggestHandler(Handler):
+    def get(self):
+        query = self.request.get('q')
+
+        suggestions = []
+        itemnames = getfromcache('itemnames')
+        if query:
+            for name in itemnames:
+                if query in name.lower():
+                    suggestions.append(name)
+        else:
+            suggestions = itemnames
+
+        self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
+        self.write(json.dumps([query,suggestions],indent=2))
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
