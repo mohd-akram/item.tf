@@ -41,14 +41,10 @@ header > a {
 #sidebar {
   width: auto;
   text-align: right;
-  color: rgb(160, 158, 146);
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
   font-size: 0.9em;
   position: absolute;
   top: 20px;
   right: 10px;
-  padding: 10px;
 }
 
 #sidebar a {
@@ -284,6 +280,13 @@ a>img {
 
 #list {
   display: none;
+}
+
+.rounded {
+  color: rgb(160, 158, 146);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .unique {

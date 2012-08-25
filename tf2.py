@@ -69,7 +69,9 @@ class TF2Handler(Handler):
             return self.redirect(gethomepage(), True)
 
         lastupdated = int(time.time()-getfromcache('lastupdated')) / 60
-        self.render('tf2.html',homepage=gethomepage(),tags=tf2api.getalltags(),lastupdated=lastupdated)
+        self.render('tf2.html',homepage=gethomepage(),
+                               tags=tf2api.getalltags(),
+                               lastupdated=lastupdated)
 
 class TF2SearchHandler(Handler):
     def get(self):

@@ -4,7 +4,8 @@
     <title>TF2 Find</title>
     <meta name="description" content="Find TF2 items and quickly get information about crafting blueprints, market prices and more." />
     <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
-    <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{homepage}}/searchdescription.xml">
+    {% set searchurl = homepage+'/searchdescription.xml' -%}
+    <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{searchurl}}">
     <link rel="stylesheet" href="/css/tf2.css">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -25,7 +26,7 @@
   <body>
     <div id="container">
       <header style="height: 10px"></header>
-      <div id="sidebar">
+      <div id="sidebar" class="rounded">
         <h3 id="hover">Help</h3>
         <div id="list">
         <h4>Examples</h4>
@@ -44,6 +45,7 @@
       </div>
       <div id="body">
       <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
+      <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
       <form action="/search">
         <input name="q" id="inputBox" type="search" placeholder="Search" size="30" style="margin-top: 30px; font-size:1.5em;">
         <input type="submit" value="Search" class="button">
@@ -51,8 +53,11 @@
       </div>
       <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
     </div>
-  <script>document.getElementById('inputBox').focus()</script>
-  <script>$.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})})</script>
-  <script>$('#hover').hover(function() {$('#list').show('slow')})</script>
+  <script>
+    $('#inputBox').focus();
+    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
+    $('#hover').hover(function() {$('#list').show('slow')});
+    $.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
+  </script>
   </body>
 </html>

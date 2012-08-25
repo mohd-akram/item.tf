@@ -4,7 +4,7 @@ import csv
 import re
 import logging
 from urllib2 import urlopen
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 
 def isprice(string):
     """Check if string starts with a number"""
@@ -69,7 +69,7 @@ def getmarketprices(itemsbyname):
     url = 'https://spreadsheets.google.com/pub?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv'
     pricesdata = urlopen(url)
 
-    pricesdict = {}
+    pricesdict = defaultdict(dict)
     denominations = ['Key','Bud','Scrap']
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
@@ -82,10 +82,14 @@ def getmarketprices(itemsbyname):
         lowprice = row['lowprice']
 
         if name in itemsbyname:
-            index = itemsbyname[name]['defindex']
+            if name.startswith('Gold Botkiller'):
+                nongold = row.copy()
+                nongold['name'] = name.replace('Gold ','')
+                nongold['price'] = lowprice
+                nongold['lowprice'] = lowprice = ''
+                sheet.append(nongold)
 
-            if not index in pricesdict:
-                pricesdict[index] = {}
+            index = itemsbyname[name]['defindex']
 
             price = price.replace('ref','').replace('\n','').title()
             lowprice = lowprice.replace('ref','').replace('\n','').title()
@@ -98,15 +102,15 @@ def getmarketprices(itemsbyname):
             if 'dirty' in row['name']:
                 quality += ' (Dirty)'
 
-            if price:
-                pricesdict[index][quality] = price
-
             lowquality = 'Unique'
 
             if 'Dirty' in lowprice:
                 lowquality += ' (Dirty)'
 
             lowprice = lowprice.replace('(Dirty)','')
+
+            if price:
+                pricesdict[index][quality] = price
 
             if lowprice and lowprice != '-':
                 if not any(d in lowprice for d in denominations) and isprice(lowprice):
