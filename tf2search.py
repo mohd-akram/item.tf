@@ -107,7 +107,7 @@ def parseblueprints(blueprints,itemsbyname):
 
     return blueprintsdict
 
-def createitemdict(item, schema, blueprints, storeprices, marketprices):
+def createitemdict(item, attributes, effects, blueprints, storeprices, marketprices):
     """Takes a TF2 item and returns a custom dict with a limited number of
     keys that are used for search"""
     classes = getitemclasses(item)
@@ -116,7 +116,7 @@ def createitemdict(item, schema, blueprints, storeprices, marketprices):
     if 'item_description' in item:
         description = item['item_description']
 
-    attributes = getitemattributes(item, getattributes(schema), getparticleeffects(schema))
+    attributes = getitemattributes(item, attributes, effects)
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
@@ -146,20 +146,20 @@ def getitemsdict(schema, blueprints, storeprices, marketprices):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
     items = getitems(schema)
+    attributes = getattributes(schema)
+    effects = getparticleeffects(schema)
     for idx in items:
-        itemdict = createitemdict(items[idx],schema,blueprints,storeprices,marketprices)
+        itemdict = createitemdict(items[idx],attributes,effects,blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict
 
 def parseinput(query):
-    query = query.lower()
-
-    querylist = [i for i in splitspecial(query) if i not in ['the','a','of','s']]
+    querylist = [i for i in splitspecial(query.lower()) if i not in ['the','a','of','s']]
 
     classes = []
     tags = []
-    for idx,word in enumerate(querylist):
+    for word in querylist:
         class_ = getclass(word)
         tag = gettag(word)
 

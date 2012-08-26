@@ -17,17 +17,16 @@ def getapikey():
     return apikey
 
 def updatecache():
+    t0 = time.time()
     apikey = getapikey()
     schema = tf2api.getschema(apikey)
-
     storeprices = tf2api.getstoreprices(apikey)
-
-    itemsbyname = tf2api.getitemsbyname(schema)
-    marketprices = tf2api.getmarketprices(itemsbyname)
 
     with open('blueprints.json') as f:
         data = json.loads(f.read().decode('utf-8'))
 
+    itemsbyname = tf2api.getitemsbyname(schema)
+    marketprices = tf2api.getmarketprices(itemsbyname)
     blueprints = tf2search.parseblueprints(data,itemsbyname)
 
     itemsdict = tf2search.getitemsdict(schema,blueprints,storeprices,marketprices)
@@ -51,14 +50,15 @@ def updatecache():
     memcache.set('itemsbyname', itemsbyname)
     memcache.set('itemnames', itemnames)
     memcache.set('sitemap',sitemap.toxml())
+    t1 = time.time()
 
-    memcache.set('lastupdated',time.time())
+    memcache.set('lastupdated',t1)
+    logging.debug('Updated Cache. Time taken: {} seconds'.format(t1-t0))
 
 def getfromcache(key):
     lastupdated = memcache.get('lastupdated')
     if not lastupdated or time.time()-lastupdated > 3600:
         updatecache()
-        logging.info('Updated cache')
     return memcache.get(key)
 
 class TF2Handler(Handler):
