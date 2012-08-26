@@ -228,7 +228,7 @@ def getsorteditemlist(itemlist, querylist):
     indexlist = []
 
     for itemdict in itemlist:
-        name = itemdict['name'].lower().replace('!','')
+        name = itemdict['name'].lower()
         intersectionlength = len(set(querylist).intersection(splitspecial(name)))
         indexlist.append(intersectionlength)
 
