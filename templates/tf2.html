@@ -55,9 +55,9 @@
     </div>
   <script>
     $('#inputBox').focus();
-    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
     $('#hover').hover(function() {$('#list').show('slow')});
     $.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
+    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
   </script>
   </body>
 </html>

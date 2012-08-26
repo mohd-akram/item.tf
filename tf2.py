@@ -19,12 +19,10 @@ def getapikey():
 def updatecache():
     apikey = getapikey()
     schema = tf2api.getschema(apikey)
-    items = tf2api.getitems(schema)
-    attributes = tf2api.getattributes(schema)
 
     storeprices = tf2api.getstoreprices(apikey)
 
-    itemsbyname = tf2api.getitemsbyname(items)
+    itemsbyname = tf2api.getitemsbyname(schema)
     marketprices = tf2api.getmarketprices(itemsbyname)
 
     with open('blueprints.json') as f:
@@ -32,7 +30,7 @@ def updatecache():
 
     blueprints = tf2search.parseblueprints(data,itemsbyname)
 
-    itemsdict = tf2search.getitemsdict(items,attributes,blueprints,storeprices,marketprices)
+    itemsdict = tf2search.getitemsdict(schema,blueprints,storeprices,marketprices)
 
     itemnames = []
 
@@ -101,11 +99,11 @@ class TF2SuggestHandler(Handler):
     def get(self):
         query = self.request.get('q')
 
-        suggestions = []
         itemnames = getfromcache('itemnames')
         if query:
+            suggestions = []
             for name in itemnames:
-                if query in name.lower():
+                if query in name or query in name.lower():
                     suggestions.append(name)
         else:
             suggestions = itemnames

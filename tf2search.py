@@ -14,9 +14,10 @@ import re
 import logging
 from collections import defaultdict, OrderedDict
 
-from tf2api import (getalltags, getallclasses, getstoreprice,
-                    getmarketprice, getitemattributes, getitemclasses,
-                    getitemtags)
+from tf2api import (getitems, getattributes, getparticleeffects,
+                    getalltags, getallclasses,
+                    getitemattributes, getitemclasses, getitemtags,
+                    getstoreprice, getmarketprice)
 
 def splitspecial(string):
     """Splits a string at special characters"""
@@ -39,13 +40,32 @@ def gettag(word):
 
 def parseblueprints(blueprints,itemsbyname):
     url = '/images/items/'
-    repl = {'Any Class Token':'class_token.png',
-            'Any Slot Token':'slot_token.png',
-            'Any Token':'token.png',
-            'Any Primary Weapon':'primary.png',
-            'Any Secondary Weapon':'secondary.png',
-            'Any Melee Weapon':'melee.png',
-            'Any Spy Watch':'pda2.png'}
+    localrepl = {'Any Class Token':'class_token.png',
+                 'Any Slot Token':'slot_token.png',
+                 'Any Token':'token.png',
+                 'Any Primary Weapon':'primary.png',
+                 'Any Secondary Weapon':'secondary.png',
+                 'Any Melee Weapon':'melee.png',
+                 'Any Spy Watch':'pda2.png'}
+
+    repl = {"Any Santa's Little Accomplice Weapon":"Santa's Little Accomplice Bundle",
+            "Any Burned Item":"Burned Banana Peel"}
+
+    polyweps = {'Pyro':"The Gas Jockey's Gear",
+                'Spy':"The Saharan Spy",
+                'Soldier':"The Tank Buster",
+                'Sniper':"The Croc-o-Style Kit",
+                'Scout':"The Special Delivery"}
+
+    for class_ in getallclasses():
+        repl['Any {} Weapon'.format(class_)] = '{} Starter Pack'.format(class_)
+
+    for class_,name in polyweps.items():
+        repl['Any Polycount {} Bundle Weapon'.format(class_)] = name
+
+    for i in ['Victory','Moonman','Brainiac']:
+        pack = "Dr. Grordbort's {} Pack".format(i)
+        repl["Any {} Weapon".format(pack)] = pack
 
     blueprintsdict = defaultdict(list)
     for b in blueprints:
@@ -62,21 +82,11 @@ def parseblueprints(blueprints,itemsbyname):
                 for i in OrderedDict.fromkeys(required):
                     blueprintdict = {}
 
-                    anyclasswep = re.match(r'Any (\w+) Weapon',i)
-                    anypolywep = re.match(r'Any Polycount (\w+) Bundle Weapon',i)
+                    if i in localrepl:
+                        image = url + localrepl[i]
 
-                    if i in repl:
-                        image = url + repl[i]
-
-                    elif i == 'Any Burned Item':
-                        image = itemsbyname['Burned Banana Peel']['image_url']
-
-                    elif anyclasswep:
-                        image = url + '{}_icon.png'.format(anyclasswep.group(1))
-
-                    elif anypolywep:
-                        class_ = anypolywep.group(1).lower()
-                        image = 'http://media.steampowered.com/apps/440/icons/kit_{}.png'.format(class_)
+                    elif i in repl:
+                        image = itemsbyname[repl[i]]['image_url']
 
                     elif i in itemsbyname:
                         item = itemsbyname[i]
@@ -97,7 +107,7 @@ def parseblueprints(blueprints,itemsbyname):
 
     return blueprintsdict
 
-def createitemdict(item, attributes, blueprints, storeprices, marketprices):
+def createitemdict(item, schema, blueprints, storeprices, marketprices):
     """Takes a TF2 item and returns a custom dict with a limited number of
     keys that are used for search"""
     classes = getitemclasses(item)
@@ -106,7 +116,7 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
     if 'item_description' in item:
         description = item['item_description']
 
-    attributes = getitemattributes(item, attributes)
+    attributes = getitemattributes(item, getattributes(schema), getparticleeffects(schema))
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
@@ -124,10 +134,6 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
                 'marketprice':marketprice,
                 'blueprints':blueprint}
 
-    # Hack for Ghastlier Gibus market price. Has same price as Ghastlierest
-    if itemdict['name'] == 'Ghastlier Gibus':
-        itemdict['marketprice'] = marketprices[116]
-
     if 'paint' in tags:
         paintvalue = str(int(item['attributes'][1]['value']))
         # Ignore Paint Tool
@@ -136,11 +142,12 @@ def createitemdict(item, attributes, blueprints, storeprices, marketprices):
 
     return itemdict
 
-def getitemsdict(items, attributes, blueprints, storeprices, marketprices):
+def getitemsdict(schema, blueprints, storeprices, marketprices):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
+    items = getitems(schema)
     for idx in items:
-        itemdict = createitemdict(items[idx],attributes,blueprints,storeprices,marketprices)
+        itemdict = createitemdict(items[idx],schema,blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict

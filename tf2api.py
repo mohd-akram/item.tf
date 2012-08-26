@@ -38,14 +38,25 @@ def getattributes(schema):
 
     return attributes
 
-def getitemsbyname(items):
+def getparticleeffects(schema):
+    """Returns a dictionary with each particle effect's id as key"""
+    effects = {}
+    effectslist = schema['result']['attribute_controlled_attached_particles']
+
+    for effect in effectslist:
+        effects[effect['id']] = effect
+
+    return effects
+
+def getitemsbyname(schema):
     """Returns an ordered dictionary of items in the schema where the key is item_name for
     each item"""
     itemsbyname = OrderedDict()
-    for item in items.values():
+    for item in schema['result']['items']:
         name = item['item_name']
         if name not in itemsbyname:
             itemsbyname[name] = item
+
     return itemsbyname
 
 def getstoreprices(apikey):
@@ -81,7 +92,20 @@ def getmarketprices(itemsbyname):
         quality = row['quality']
         lowprice = row['lowprice']
 
-        if name in itemsbyname:
+        if name == 'Ghastlier/Ghastlierest Gibus':
+            ghastlier = row.copy()
+            ghastliest = row.copy()
+            ghastlier['name'] = 'Ghastlier Gibus'
+            ghastliest['name'] = 'Ghastlierest Gibus'
+            sheet.extend([ghastlier,ghastliest])
+
+        elif name == 'Halloween Masks':
+            for class_ in getallclasses():
+                classmask = row.copy()
+                classmask['name'] = class_ + ' Mask'
+                sheet.append(classmask)
+
+        elif name in itemsbyname:
             if name.startswith('Gold Botkiller'):
                 nongold = row.copy()
                 nongold['name'] = name.replace('Gold ','')
@@ -160,7 +184,7 @@ def getmarketprice(item, marketprices):
 
     return marketprice
 
-def getitemattributes(item, allattributes):
+def getitemattributes(item, allattributes, effects):
     """Get attributes of item"""
     attributelist = []
     if 'attributes' in item:
@@ -170,17 +194,23 @@ def getitemattributes(item, allattributes):
 
             attribute = allattributes[a['name']]
             if not attribute['hidden'] and 'description_string' in attribute:
-                description = attribute['description_string'].replace('%s1','{:g}')
+                description = attribute['description_string']
                 descformat = attribute['description_format']
 
-                if descformat == "value_is_percentage":
-                	value = (value * 100) - 100
+                if descformat == "value_is_particle_index":
+                    value = effects[value]['name']
+                    description = description.replace('%s1','{}')
+                else:
+                    if descformat == "value_is_percentage":
+                    	value = (value * 100) - 100
 
-                elif descformat == "value_is_inverted_percentage":
-                	value = 100 - (value * 100)
+                    elif descformat == "value_is_inverted_percentage":
+                    	value = 100 - (value * 100)
 
-                elif descformat == "value_is_additive_percentage":
-                	value *= 100
+                    elif descformat == "value_is_additive_percentage":
+                    	value *= 100
+
+                    description = description.replace('%s1','{:g}')
 
                 description = description.format(value)
 
@@ -201,9 +231,8 @@ def convertmarketname(row):
                     'Enemies Gibbed':'Strange Part: Gib Kills',
                     "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
                     'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
-                    'Ghastlier/Ghastlierest Gibus':'Ghastlierest Gibus',
                     'Hazmat Headcase':'HazMat Headcase',
-                    'Spine-Chilling Skull 2010 (clean)':'Spine-Chilling Skull',
+                    'Spine-Chilling Skull 2010':'Spine-Chilling Skull',
                     "Color of a Gentlemann's Business Pants":"The Color of a Gentlemann's Business Pants",
                     '\tColor No. 216-190-216 (Pink)':"Color No. 216-190-216",
                     "Zephaniah's Greed":"Zepheniah's Greed",
