@@ -66,7 +66,9 @@ class TF2Handler(Handler):
         if self.request.host.endswith('appspot.com'):
             return self.redirect(gethomepage(), True)
 
-        lastupdated = int(time.time()-getfromcache('lastupdated')) / 60
+        t0 = getfromcache('lastupdated')
+        lastupdated = int(time.time()-t0) / 60
+
         self.render('tf2.html',homepage=gethomepage(),
                                tags=tf2api.getalltags(),
                                lastupdated=lastupdated)
