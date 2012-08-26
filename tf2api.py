@@ -93,11 +93,10 @@ def getmarketprices(itemsbyname):
         lowprice = row['lowprice']
 
         if name == 'Ghastlier/Ghastlierest Gibus':
-            ghastlier = row.copy()
-            ghastliest = row.copy()
-            ghastlier['name'] = 'Ghastlier Gibus'
-            ghastliest['name'] = 'Ghastlierest Gibus'
-            sheet.extend([ghastlier,ghastliest])
+            for i in ['Ghastlier','Ghastlierest']:
+                hat = row.copy()
+                hat['name'] = i + ' Gibus'
+                sheet.append(hat)
 
         elif name == 'Halloween Masks':
             for class_ in getallclasses():
