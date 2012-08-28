@@ -20,7 +20,6 @@ body {
 }
 
 header {
-  width: 100%;
   height: 100px;
   z-index: -1;
 /* SVG as background image (IE9/Chrome/Safari/Opera) */ 

@@ -20,13 +20,14 @@ def updatecache():
     t0 = time.time()
     apikey = getapikey()
     schema = tf2api.getschema(apikey)
-    storeprices = tf2api.getstoreprices(apikey)
 
-    with open('blueprints.json') as f:
-        data = json.loads(f.read().decode('utf-8'))
+    storeprices = tf2api.getstoreprices(apikey)
 
     itemsbyname = tf2api.getitemsbyname(schema)
     marketprices = tf2api.getmarketprices(itemsbyname)
+
+    with open('blueprints.json') as f:
+        data = json.loads(f.read().decode('utf-8'))
     blueprints = tf2search.parseblueprints(data,itemsbyname)
 
     itemsdict = tf2search.getitemsdict(schema,blueprints,storeprices,marketprices)
@@ -46,20 +47,24 @@ def updatecache():
             path = '{0}/item/{1}'.format(homepage,item['defindex'])
             sitemap.add(path)
 
-    memcache.set('itemsdict', itemsdict)
-    memcache.set('itemsbyname', itemsbyname)
-    memcache.set('itemnames', itemnames)
-    memcache.set('sitemap',sitemap.toxml())
+    memcache.set_multi({'itemsdict': itemsdict,
+                        'itemsbyname': itemsbyname,
+                        'itemnames': itemnames,
+                        'sitemap': sitemap.toxml()})
     t1 = time.time()
 
     memcache.set('lastupdated',t1)
     logging.debug('Updated Cache. Time taken: {} seconds'.format(t1-t0))
 
 def getfromcache(key):
-    lastupdated = memcache.get('lastupdated')
-    if not lastupdated or time.time()-lastupdated > 3600:
+    value = memcache.get(key)
+
+    if not value:
+        logging.debug('Cache is empty')
         updatecache()
-    return memcache.get(key)
+        value = memcache.get(key)
+
+    return value
 
 class TF2Handler(Handler):
     def get(self):
@@ -143,6 +148,15 @@ class TF2SitemapHandler(Handler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/xml; charset=UTF-8'
         self.write(getfromcache('sitemap'))
+
+class CacheHandler(Handler):
+    def get(self,option):
+        if option == 'update':
+            updatecache()
+            self.write('Cache Updated')
+        if option == 'flush':
+            memcache.flush_all()
+            self.write('Cache Flushed')
 
 class Sitemap:
     def __init__(self):

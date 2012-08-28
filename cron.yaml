@@ -1,0 +1,4 @@
+cron:
+- description: update cache
+  url: /cache/update
+  schedule: every 1 hours synchronized
