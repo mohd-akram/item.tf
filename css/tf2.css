@@ -59,7 +59,6 @@ header > a {
 
 .blueprint {
   margin:auto;
-  padding:0;
   width:auto;
   overflow:hidden;
 }
@@ -97,6 +96,7 @@ h1 {
 }
 
 ul {
+  padding: 0;
   list-style:none;
 }
 
