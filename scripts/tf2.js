@@ -62,7 +62,9 @@
   };
 
   window.openSummary = function(e) {
-    return showiteminfo(e.target);
+    showiteminfo(e.target);
+    e.preventDefault();
+    return e.stopPropagation();
   };
 
   window.showiteminfo = function(element) {
@@ -90,7 +92,7 @@
     for (_j = 0, _len1 = blueprints.length; _j < _len1; _j++) {
       b = blueprints[_j];
       chance = b.getAttribute('data-chance');
-      blueprintshtml += '<ul class="blueprint">';
+      blueprintshtml += '<div class="blueprint">';
       _ref1 = b.getElementsByTagName('li');
       for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
         i = _ref1[_k];
@@ -99,15 +101,15 @@
           index = i.id;
           style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
           title = 'title="' + name + '"';
-          listitem = "<li " + title + " class='item-small' style='" + style + "'></li>";
+          listitem = "<div " + title + " class='item-small' style='" + style + "'></div>";
           if (index) {
             listitem = ("<a href='/item/" + index + "' target='_blank'>") + listitem + "</a>";
           }
           blueprintshtml += listitem;
         }
       }
-      blueprintshtml += "<li title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>" + chance + "%</h3></li>";
-      blueprintshtml += "</ul>";
+      blueprintshtml += "<div title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>" + chance + "%</h3></div>";
+      blueprintshtml += "</div>";
     }
     blueprintshtml += '</div>';
     if (storeprice) {
@@ -190,30 +192,29 @@
     };
   };
 
-  window.onload = function() {
-    var cell, i, _i, _len, _ref, _results;
+  window.addHoverbox = function() {
+    var cell, i, _i, _j, _len, _len1, _ref, _ref1;
     window.hbox = document.getElementById("hoverbox");
     if (hbox) {
       _ref = document.getElementsByClassName('itemlist');
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
-        _results.push((function() {
-          var _j, _len1, _ref1, _results1;
-          _ref1 = i.getElementsByClassName('item');
-          _results1 = [];
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            cell = _ref1[_j];
-            cell.addEventListener("mouseout", hide, false);
-            cell.addEventListener("mousemove", moveMouse, false);
-            cell.addEventListener("mouseover", show, false);
-            _results1.push(cell.addEventListener("click", openSummary, false));
-          }
-          return _results1;
-        })());
+        _ref1 = i.getElementsByClassName('item');
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          cell = _ref1[_j];
+          cell.addEventListener("mouseout", hide, false);
+          cell.addEventListener("mousemove", moveMouse, false);
+          cell.addEventListener("mouseover", show, false);
+          cell.addEventListener("click", openSummary, false);
+        }
       }
-      return _results;
     }
+    document.getElementById('container').addEventListener("click", hideitembox, false);
+    return document.onkeydown = function(event) {
+      if (event.keyCode === 27) {
+        return itembox.style.display = 'none';
+      }
+    };
   };
 
 }).call(this);

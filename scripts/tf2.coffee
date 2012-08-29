@@ -44,6 +44,8 @@ moveMouse = (e) ->
 
 window.openSummary = (e) ->
   showiteminfo(e.target)
+  e.preventDefault()
+  e.stopPropagation()
 
 window.showiteminfo = (element) ->
   window.hbox = document.getElementById('hoverbox')
@@ -70,20 +72,20 @@ window.showiteminfo = (element) ->
   for b in blueprints
     chance = b.getAttribute('data-chance')
 
-    blueprintshtml += '<ul class="blueprint">'
+    blueprintshtml += '<div class="blueprint">'
     for i in b.getElementsByTagName('li')
       for j in [0...i.getAttribute('data-count')]
         name = i.title
         index = i.id
         style = "background-image:url(#{ i.getAttribute('data-image') });"
         title = 'title="' + name + '"'
-        listitem =  "<li #{ title } class='item-small' style='#{ style }'></li>"
+        listitem =  "<div #{ title } class='item-small' style='#{ style }'></div>"
         if index
           listitem = "<a href='/item/#{ index }' target='_blank'>" + listitem + "</a>"
 
         blueprintshtml += listitem
-    blueprintshtml += "<li title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></li>"
-    blueprintshtml += "</ul>"
+    blueprintshtml += "<div title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></div>"
+    blueprintshtml += "</div>"
   blueprintshtml += '</div>'
 
   # Buy button and price HTML
@@ -183,7 +185,7 @@ window.showiteminfo = (element) ->
   quality.onchange = ->
     document.tf2outpostform.has1.value = "440,#{ itemId },#{ quality.value }"
 
-window.onload = ->
+window.addHoverbox = ->
   window.hbox = document.getElementById("hoverbox")
 
   if hbox
@@ -193,3 +195,8 @@ window.onload = ->
         cell.addEventListener("mousemove", moveMouse, false)
         cell.addEventListener("mouseover", show, false)
         cell.addEventListener("click", openSummary, false)
+
+  document.getElementById('container').addEventListener("click",hideitembox, false)
+  document.onkeydown = (event) ->
+    if event.keyCode == 27
+      itembox.style.display = 'none'
