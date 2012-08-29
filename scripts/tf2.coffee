@@ -188,7 +188,7 @@ window.onload = ->
 
   if hbox
     for i in document.getElementsByClassName('itemlist')
-      for cell in i.getElementsByTagName('li')
+      for cell in i.getElementsByClassName('item')
         cell.addEventListener("mouseout", hide, false)
         cell.addEventListener("mousemove", moveMouse, false)
         cell.addEventListener("mouseover", show, false)

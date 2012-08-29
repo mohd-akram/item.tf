@@ -200,7 +200,7 @@
         i = _ref[_i];
         _results.push((function() {
           var _j, _len1, _ref1, _results1;
-          _ref1 = i.getElementsByTagName('li');
+          _ref1 = i.getElementsByClassName('item');
           _results1 = [];
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
             cell = _ref1[_j];

@@ -1,14 +1,15 @@
 """TF2 API Script"""
 import json
 import csv
-import re
 import logging
 from urllib2 import urlopen
 from collections import defaultdict, OrderedDict
 
 def isprice(string):
     """Check if string starts with a number"""
-    return re.match(r'[0-9]',string)
+    if string:
+        return string[0].isdigit()
+    return False
 
 def getschema(apikey):
     """Returns the schema"""
@@ -88,9 +89,10 @@ def getmarketprices(itemsbyname):
 
     for row in sheet:
         name = convertmarketname(row)
-        price = row['price']
+        price = filtermarketstring(row['price']).title()
         quality = row['quality']
-        lowprice = row['lowprice']
+        lowprice = filtermarketstring(row['lowprice']).title()
+        lowquality = 'Unique'
 
         if name == 'Ghastlier/Ghastlierest Gibus':
             for i in ['Ghastlier','Ghastlierest']:
@@ -114,25 +116,18 @@ def getmarketprices(itemsbyname):
 
             index = itemsbyname[name]['defindex']
 
-            price = price.replace('ref','').replace('\n','').title()
-            lowprice = lowprice.replace('ref','').replace('\n','').title()
-
-            # Check if the price is a number and no denomination is specified
-            if not any(d in price for d in denominations) and isprice(price):
-                # Add Refined denomination
-                price += ' Refined'
-
             if 'dirty' in row['name']:
                 quality += ' (Dirty)'
 
-            lowquality = 'Unique'
-
-            if 'Dirty' in lowprice:
+            if 'dirty' in row['lowprice']:
                 lowquality += ' (Dirty)'
 
-            lowprice = lowprice.replace('(Dirty)','')
-
             if price:
+                # Check if the price is a number and no denomination is specified
+                if not any(d in price for d in denominations) and isprice(price):
+                    # Add Refined denomination
+                    price += ' Refined'
+
                 pricesdict[index][quality] = price
 
             if lowprice and lowprice != '-':
@@ -244,7 +239,10 @@ def convertmarketname(row):
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
 
-    return name.replace(' (dirty)','').replace(' (clean)','').replace('\n','').replace('\t','')
+    return filtermarketstring(name)
+
+def filtermarketstring(string):
+    return string.replace('(clean)','').replace('(dirty)','').strip()
 
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
