@@ -15,7 +15,7 @@ import logging
 from collections import defaultdict, OrderedDict
 
 from tf2api import (getitems, getattributes, getparticleeffects,
-                    getalltags, getallclasses,
+                    getalltags, getallclasses, getweapontags,
                     getitemattributes, getitemclasses, getitemtags,
                     getstoreprice, getmarketprice)
 
@@ -174,7 +174,7 @@ def parseinput(query):
     return {'querylist':querylist,'classes':classes,'tags':tags}
 
 def search(query, itemsdict):
-    """This method parses the result obtained from parseInput and gets all the
+    """This method parses the result obtained from parseinput and gets all the
     items that match this result. It returns a dict with three keys - classitems,
     allclassitems and searchitems. If the user's query did not match any class
     or tag, a regular search is done and the searchitems is populated with
@@ -188,15 +188,19 @@ def search(query, itemsdict):
     result = parseinput(query)
     classes = result['classes']
     tags = result['tags']
-
     querylist = result['querylist']
 
+    hasweapontag = not set(tags).isdisjoint(getweapontags())
     if classes or tags:
         for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
+            itemtags = itemdict['tags']
 
             isclassmatch = not set(itemclasses).isdisjoint(classes) or not itemclasses
-            istagmatch = set(tags).issubset(itemdict['tags'])
+            if hasweapontag:
+                istagmatch = set(tags).issubset(itemtags)
+            else:
+                istagmatch = not set(tags).isdisjoint(itemtags)
 
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']

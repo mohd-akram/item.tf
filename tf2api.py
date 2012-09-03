@@ -1,3 +1,5 @@
+﻿# coding=utf-8
+
 """TF2 API Script"""
 import json
 import csv
@@ -106,6 +108,12 @@ def getmarketprices(itemsbyname):
                 classmask['name'] = class_ + ' Mask'
                 sheet.append(classmask)
 
+        elif 'Soldier Medal' in name:
+            medal = row.copy()
+            medal['name'] = "Gentle Manne's Service Medal"
+            medal['quality'] = name.replace('Soldier Medal ','')
+            sheet.append(medal)
+
         elif name in itemsbyname:
             if name.startswith('Gold Botkiller'):
                 nongold = row.copy()
@@ -142,7 +150,7 @@ def getweapontags():
     return ['primary','secondary','melee','pda','pda2','building']
 
 def getalltags():
-    return (['hat','weapon','misc','tool','action','taunt','paint','token'] +
+    return (['hat','weapon','misc','tool','action','taunt','paint','token','bundle'] +
             getweapontags())
 
 def getallclasses():
@@ -217,29 +225,43 @@ def getitemattributes(item, allattributes, effects):
 
 def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
-    translations = {'Meet the Medic (clean)':'Taunt: The Meet the Medic',
-                    'High-Five (clean)\n':'Taunt: The High Five!',
-                    'Schadenfreude (clean)':'Taunt: The Schadenfreude',
-                    'Key': 'Mann Co. Supply Crate Key',
-                    'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
-                    'Enemies Gibbed':'Strange Part: Gib Kills',
-                    "HHH's Axe (clean)":"Horseless Headless Horsemann's Headtaker",
-                    'Unusual Haunted Metal scrap (dirty)':'Haunted Metal Scrap',
-                    'Hazmat Headcase':'HazMat Headcase',
-                    'Spine-Chilling Skull 2010':'Spine-Chilling Skull',
-                    "Color of a Gentlemann's Business Pants":"The Color of a Gentlemann's Business Pants",
-                    '\tColor No. 216-190-216 (Pink)':"Color No. 216-190-216",
-                    "Zephaniah's Greed":"Zepheniah's Greed",
-                    'Bolgan Helmet':'Bolgan',
-                    'Full Head of Steam (dirty)':'Full Head Of Steam'}
+    name = filtermarketstring(row['name'])
+    repl = {'Meet the Medic':'Taunt: The Meet the Medic',
+            'High-Five':'Taunt: The High Five!',
+            'Schadenfreude':'Taunt: The Schadenfreude',
+            'Key': 'Mann Co. Supply Crate Key',
+            'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
+            'Enemies Gibbed':'Strange Part: Gib Kills',
+            "HHH's Axe":"Horseless Headless Horsemann's Headtaker",
+            'Unusual Haunted Metal scrap':'Haunted Metal Scrap',
+            'Hazmat Headcase':'HazMat Headcase',
+            'Spine-Chilling Skull 2010':'Spine-Chilling Skull',
+            'Color No. 216-190-216 (Pink)':"Color No. 216-190-216",
+            "Zephaniah's Greed":"Zepheniah's Greed",
+            'Bolgan Helmet':'Bolgan',
+            'Full Head of Steam':'Full Head Of Steam',
+            'Detective Noir':u'Détective Noir',
+            'Helmet Without A Home':'Helmet Without a Home',
+            'Dueling mini game':'Dueling Mini-Game',
+            'Submachine Gun':'SMG',
+            'Monoculus':'MONOCULUS!',
+            'The Milkman':'Milkman',
+            "Lord Cockswain's Novelty Pipe and Mutton Chops":"Lord Cockswain's Novelty Mutton Chops and Pipe",
+            "Dr. Grordbert's Copper Crest":"Dr. Grordbort's Copper Crest",
+            "Dr. Grordbert's Silver Crest":"Dr. Grordbort's Silver Crest",
+            'Superfan':'The Superfan',
+            'Athletic Supporter':'The Athletic Supporter',
+            'Essential Accessories':'The Essential Accessories',
+            "Color of a Gentlemann's Business Pants":"The Color of a Gentlemann's Business Pants"}
 
-    name = row['name']
-    if name in translations:
-        name = translations[name]
+    if name in repl:
+        name = repl[name]
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
+    elif row['class'] == 'Noisemaker':
+        name = 'Noise Maker - ' + name
 
-    return filtermarketstring(name)
+    return name
 
 def filtermarketstring(string):
     return string.replace('(clean)','').replace('(dirty)','').strip()
@@ -256,7 +278,9 @@ def getitemtags(item):
     tags = []
     itemclass = item['item_class']
 
-    if itemclass.endswith('_token'):
+    if itemclass == 'bundle':
+        tags.append(itemclass)
+    elif itemclass.endswith('_token'):
         tags.append('token')
 
     if 'item_slot' in item:

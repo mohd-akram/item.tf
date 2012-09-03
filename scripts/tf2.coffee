@@ -141,9 +141,9 @@ window.showiteminfo = (element) ->
   itembox.innerHTML = "<h2 id='itemname'><a href='/item/#{itemId}' target='_blank' title='Go to Item Page'>#{ itemName }</a></h2>
     <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' #{ wikilink }>Wiki</a>
     #{ marketprice }
-    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search' target='_blank'>
+    <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'>
       <input type='hidden' name='has1' value='440,#{ itemId },6'>
-      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find trades' name='submit' value='Trades'>
+      <input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'>
       <input type='hidden' name='type' value='any'>
       <select id='quality' class='textbox' style='text-align:left'>
         <option value='6' selected=''>Unique</option>
