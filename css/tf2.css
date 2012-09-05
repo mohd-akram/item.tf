@@ -34,6 +34,7 @@ header > a {
 
 #body {
   padding-bottom: 38px;
+  padding-top: 20px;
 }
 
 #sidebar {
@@ -85,6 +86,24 @@ h1 {
   border-radius: 7px;
   font-size:3em;
   text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+}
+
+#body>h2 {
+  text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+}
+
+a>h2 {
+  display: inline;
+}
+
+.glow {
+  color:#D1D0D0;
+  text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
+}
+
+.glow:hover {
+  color: rgb(230,230,230);
+  text-shadow: 0 0 10px #999;
 }
 
 .itemlist {
@@ -180,15 +199,6 @@ ul {
 #itemname {
   margin-bottom:5px;
   color:#D1D0D0;
-}
-
-#itemname>a {
-  color:#D1D0D0;
-}
-
-#itemname>a:hover {
-  color: rgb(230,230,230);
-  text-shadow: 0 0 10px #999;
 }
 
 #hoverarea {

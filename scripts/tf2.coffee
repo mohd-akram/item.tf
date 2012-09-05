@@ -2,8 +2,12 @@ show = (e) ->
   title = e.target.title
 
   attributes = getattributes(e.target)
-  description = getdescription(e.target)
-  description = if description then '<br>'+escapeHTML(description) else description
+  description = escapeHTML(getdescription(e.target))
+  if description
+    if 'bundle' in gettags(e.target) and description.indexOf('---') != -1
+      desclist = description.split('---')
+      description = "#{ desclist[0] }<br><span style='color:#95af0c'>#{ desclist[1] }</span>"
+    description = '<br>'+description
 
   hbox.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{ attributes }#{ description }"
   hbox.style.display = "block"
@@ -20,6 +24,11 @@ getdescription = (item) ->
   description = item.getAttribute('data-description')
   description ?= ''
   return description
+
+gettags = (item) ->
+  tags = item.getAttribute('data-tags')
+  tags ?= ''
+  return tags.split(',')
 
 capitalize = (word) ->
   return word[0].toUpperCase() + word[1...]
@@ -81,9 +90,16 @@ window.showiteminfo = (element) ->
         title = 'title="' + name + '"'
         listitem =  "<div #{ title } class='item-small' style='#{ style }'></div>"
         if index
-          listitem = "<a href='/item/#{ index }' target='_blank'>" + listitem + "</a>"
+          url = "/item/#{ index }"
+        else
+          name = name.replace('Any ','').replace('Spy Watch','PDA2')
+          if name.split(' ').length > 2
+            name = name.replace('Weapon','Set')
+          url = "/search?q=#{ encodeURIComponent(name) }"
 
+        listitem = "<a href=\"#{ url }\" target='_blank'>#{ listitem }</a>"
         blueprintshtml += listitem
+
     blueprintshtml += "<div title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>#{ chance }%</h3></div>"
     blueprintshtml += "</div>"
   blueprintshtml += '</div>'
@@ -107,9 +123,8 @@ window.showiteminfo = (element) ->
 
   # Tags HTML
   tagshtml = "<div id='tags' style='position:absolute;top:-5px;left:5px'>"
-  tags = element.getAttribute('data-tags')
-  if tags
-    tags = tags.split(',')
+  tags = gettags(element)
+  if tags.length > 0
     isweapon = 'weapon' in tags
     istoken = 'token' in tags
 
@@ -138,7 +153,7 @@ window.showiteminfo = (element) ->
   tagshtml += "</div>"
       
   # Itembox HTML
-  itembox.innerHTML = "<h2 id='itemname'><a href='/item/#{itemId}' target='_blank' title='Go to Item Page'>#{ itemName }</a></h2>
+  itembox.innerHTML = "<h2 id='itemname'><a href='/item/#{itemId}' target='_blank' class='glow' title='Go to Item Page'>#{ itemName }</a></h2>
     <a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' #{ wikilink }>Wiki</a>
     #{ marketprice }
     <form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'>
@@ -165,6 +180,7 @@ window.showiteminfo = (element) ->
   hoverarea = document.createElement('div')
   hoverarea.title = element.title
   hoverarea.setAttribute('data-description',getdescription(element))
+  hoverarea.setAttribute('data-tags',gettags(element))
   hoverarea.id = 'hoverarea'
   hoverarea.style.backgroundImage = "url('#{ imageUrl }')"
   hoverarea.innerHTML = '<div style="display:none">'+getattributes(element)+'</div>'

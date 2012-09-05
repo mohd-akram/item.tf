@@ -16,9 +16,46 @@ def isprice(string):
 def getschema(apikey):
     """Returns the schema"""
     url = 'http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key={}&language=en'.format(apikey)
-    schema = json.loads(urlopen(url).read())
 
-    return schema
+    return json.loads(urlopen(url).read())
+
+def getitemsinfo(apikey, storeprices, indexes):
+    """Returns a dictionary of AssetClassInfo values with index as key"""
+    url = 'http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001?key={0}&language=en&appid=440&class_count={1}'.format(apikey,len(indexes))
+
+    idtoindex = {}
+    for n,index in enumerate(indexes):
+        classid = storeprices[index]['classid']
+        idtoindex[classid] = index
+        url += '&classid{0}={1}'.format(n,classid)
+
+    itemsinfo = {}
+    infobyid = json.loads(urlopen(url).read())['result']
+    del infobyid['success']
+
+    for classid, iteminfo in infobyid.items():
+        itemsinfo[idtoindex[classid]] = iteminfo
+
+    return itemsinfo
+
+def getbundles(apikey, storeprices):
+    """Returns a dictionary of store bundles with index as key"""
+    indexes = []
+    for index,price in storeprices.items():
+        if "Bundles" in price['tags']:
+            indexes.append(index)
+
+    return getitemsinfo(apikey,storeprices,indexes)
+
+def getitemsets(schema):
+    """Returns a dictionary of itemsets with 'name' as key"""
+    itemsets = {}
+    itemsetslist = schema['result']['item_sets']
+
+    for itemset in itemsetslist:
+        itemsets[itemset['name']] = itemset
+
+    return itemsets
 
 def getitems(schema):
     """Returns an ordered dictionary of items in the schema where the key is defindex for
@@ -30,6 +67,17 @@ def getitems(schema):
         items[item['defindex']] = item
 
     return items
+
+def getitemsbyname(schema):
+    """Returns an ordered dictionary of items in the schema where the key is item_name for
+    each item"""
+    itemsbyname = OrderedDict()
+    for item in schema['result']['items']:
+        name = item['item_name']
+        if name not in itemsbyname:
+            itemsbyname[name] = item
+
+    return itemsbyname
 
 def getattributes(schema):
     """Returns a dictionary with each attribute's name as key"""
@@ -50,17 +98,6 @@ def getparticleeffects(schema):
         effects[effect['id']] = effect
 
     return effects
-
-def getitemsbyname(schema):
-    """Returns an ordered dictionary of items in the schema where the key is item_name for
-    each item"""
-    itemsbyname = OrderedDict()
-    for item in schema['result']['items']:
-        name = item['item_name']
-        if name not in itemsbyname:
-            itemsbyname[name] = item
-
-    return itemsbyname
 
 def getstoreprices(apikey):
     """Returns a dictionary of store prices where the key is defindex for
@@ -223,6 +260,49 @@ def getitemattributes(item, allattributes, effects):
 
     return sorted(attributelist,key=lambda k: order.index(k['type']))
 
+def getitemclasses(item):
+    """Get the TF2 classes that can use this item"""
+    classes = []
+    if 'used_by_classes' in item:
+        classes = sorted(item['used_by_classes'],key=lambda k: getallclasses().keys().index(k))
+    return classes
+
+def getitemtags(item):
+    """Get a list of tags that describe the item"""
+    tags = []
+    itemclass = item['item_class']
+
+    if itemclass == 'bundle':
+        tags.append(itemclass)
+    elif itemclass.endswith('_token'):
+        tags.append('token')
+
+    if 'item_slot' in item:
+        slot = item['item_slot']
+
+        if slot == 'head':
+            tags.append('hat')
+        else:
+            if slot in getweapontags() and itemclass != 'slot_token':
+                tags.append('weapon')
+
+            tags.append(slot)
+
+    if item['item_type_name'] == 'Special Taunt':
+        tags.append('taunt')
+
+    if 'tool' in item:
+        tags.append('tool')
+
+        if item['tool']['type'] == 'paint_can':
+            tags.append('paint')
+
+    return tags
+
+def filtermarketstring(string):
+    """Clean up a string from the spreadsheet"""
+    return string.replace('(clean)','').replace('(dirty)','').strip()
+
 def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
     name = filtermarketstring(row['name'])
@@ -262,45 +342,3 @@ def convertmarketname(row):
         name = 'Noise Maker - ' + name
 
     return name
-
-def filtermarketstring(string):
-    return string.replace('(clean)','').replace('(dirty)','').strip()
-
-def getitemclasses(item):
-    """Get the TF2 classes that can use this item"""
-    classes = []
-    if 'used_by_classes' in item:
-        classes = sorted(item['used_by_classes'],key=lambda k: getallclasses().keys().index(k))
-    return classes
-
-def getitemtags(item):
-    """Get a list of tags that describe the item"""
-    tags = []
-    itemclass = item['item_class']
-
-    if itemclass == 'bundle':
-        tags.append(itemclass)
-    elif itemclass.endswith('_token'):
-        tags.append('token')
-
-    if 'item_slot' in item:
-        slot = item['item_slot']
-
-        if slot == 'head':
-            tags.append('hat')
-        else:
-            if slot in getweapontags() and itemclass != 'slot_token':
-                tags.append('weapon')
-
-            tags.append(slot)
-
-    if item['item_type_name'] == 'Special Taunt':
-        tags.append('taunt')
-
-    if 'tool' in item:
-        tags.append('tool')
-
-        if item['tool']['type'] == 'paint_can':
-            tags.append('paint')
-
-    return tags

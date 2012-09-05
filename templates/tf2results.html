@@ -26,23 +26,25 @@
     <div id="body">
     {% from 'macros.html' import showitems %}
 
-    {%- if classitems %}
-    {{ showitems(classitems) }}
+    {%- if mainitems %}
+    {{ showitems(mainitems) }}
     {%- endif %}
 
-    {%- if allclassitems %}
-    <h2>All-class items</h2>
-    {{ showitems(allclassitems) }}
+    {%- if otheritems %}
+    {% for k,v in otheritems.items() %}
+    {%- if query == 'sets' %}<a href="/search?q={{k}} Set" class="glow" target="_blank"><h2>{{k}}</h2></a>
+    {% else %}
+    <h2>{{k}}</h2>
+    {% endif -%}
+    {{ showitems(v) }}
+    {%- endfor %}
     {%- endif %}
 
-    {%- if searchitems %}
-    {{ showitems(searchitems) }}
-    {%- endif %}
-
-    {%- if not (classitems or allclassitems or searchitems) %}
+    {%- if not (mainitems or otheritems) %}
     <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
-    {%- endif %}
+    {%- endif -%}
     </div>
+
     <script>addHoverbox()</script>
     <footer>{{time}} seconds<br>{% include 'footer.html' %}</footer>
     </div>

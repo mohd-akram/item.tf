@@ -19,9 +19,11 @@ def getapikey():
 def updatecache():
     t0 = time.time()
     apikey = getapikey()
-    schema = tf2api.getschema(apikey)
 
+    schema = tf2api.getschema(apikey)
+    itemsets = tf2api.getitemsets(schema)
     storeprices = tf2api.getstoreprices(apikey)
+    bundles = tf2api.getbundles(apikey,storeprices)
 
     itemsbyname = tf2api.getitemsbyname(schema)
     marketprices = tf2api.getmarketprices(itemsbyname)
@@ -30,7 +32,7 @@ def updatecache():
         data = json.loads(f.read().decode('utf-8'))
     blueprints = tf2search.parseblueprints(data,itemsbyname)
 
-    itemsdict = tf2search.getitemsdict(schema,blueprints,storeprices,marketprices)
+    itemsdict = tf2search.getitemsdict(schema,bundles,blueprints,storeprices,marketprices)
 
     itemnames = []
 
@@ -50,6 +52,7 @@ def updatecache():
     memcache.set_multi({'itemsdict': itemsdict,
                         'itemsbyname': itemsbyname,
                         'itemnames': itemnames,
+                        'itemsets': itemsets,
                         'sitemap': sitemap.toxml()})
     t1 = time.time()
 
@@ -83,21 +86,22 @@ class TF2SearchHandler(Handler):
         query = self.request.get('q')
 
         if query:
-            itemsdict = getfromcache('itemsdict')
             itemsbyname = getfromcache('itemsbyname')
 
             if query in itemsbyname:
                 return self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
 
+            itemsdict = getfromcache('itemsdict')
+            itemsets = getfromcache('itemsets')
+
             t0 = time.time()
-            result = tf2search.search(query, itemsdict)
+            result = tf2search.search(query, itemsdict, itemsbyname, itemsets)
             t1 = time.time()
 
             self.render('tf2results.html',
                         query=query,
-                        classitems=result['classitems'],
-                        allclassitems=result['allclassitems'],
-                        searchitems=result['searchitems'],
+                        mainitems=result['mainitems'],
+                        otheritems=result['otheritems'],
                         time=round(t1-t0,3))
         else:
             self.redirect('/')

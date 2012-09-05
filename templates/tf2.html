@@ -31,13 +31,13 @@
         <div id="list">
         <h4>Examples</h4>
         <p>
-        {% for i in ['engi hats','medic weps','demo melee','sniper spy'] %}
+        {% for i in ['engi hats','medic weps','demo melee','sniper spy','the saharan spy set'] %}
         <a href="/search?q={{i}}">{{i}}</a><br> 
         {% endfor %}
         </p>
         <h4>Keywords</h4>
         <p>
-        {% for i in tags %}
+        {% for i in ['all','sets']+tags %}
         <a href="/search?q={{i}}">{{i}}</a><br>
         {% endfor %}
         </p>

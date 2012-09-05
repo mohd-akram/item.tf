@@ -2,10 +2,12 @@
 It supports class based search, eg: 'engineer hats'
 It also supports alias based search, eg: 'engi hats'
 Regular search, eg: 'Meet the Medic'
+Slot search, eg: 'primary weps'
+Set search, eg: 'the saharan spy set'
 Requires TF2 API module to get items and prices.
 
 Usage:
-    items = search('engi medic hats', itemsdict)
+    items = search('engi medic hats', itemsdict, itemsbyname, itemsets)
 
 Note: You must provide your own image URLs for the paint cans.
       Replace the relative URL in createitemdict.
@@ -14,7 +16,7 @@ import re
 import logging
 from collections import defaultdict, OrderedDict
 
-from tf2api import (getitems, getattributes, getparticleeffects,
+from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
                     getalltags, getallclasses, getweapontags,
                     getitemattributes, getitemclasses, getitemtags,
                     getstoreprice, getmarketprice)
@@ -38,7 +40,7 @@ def gettag(word):
         elif word == tag or word == tag+'s':
             return tag
 
-def parseblueprints(blueprints,itemsbyname):
+def parseblueprints(blueprints, itemsbyname):
     url = '/images/items/'
     localrepl = {'Any Class Token':'class_token.png',
                  'Any Slot Token':'slot_token.png',
@@ -51,17 +53,14 @@ def parseblueprints(blueprints,itemsbyname):
     repl = {"Any Santa's Little Accomplice Weapon":"Santa's Little Accomplice Bundle",
             "Any Burned Item":"Burned Banana Peel"}
 
-    polyweps = {'Pyro':"The Gas Jockey's Gear",
-                'Spy':"The Saharan Spy",
-                'Soldier':"The Tank Buster",
-                'Sniper':"The Croc-o-Style Kit",
-                'Scout':"The Special Delivery"}
+    polyweps = ["The Gas Jockey's Gear","The Saharan Spy","The Tank Buster",
+                "The Croc-o-Style Kit","The Special Delivery"]
 
     for class_ in getallclasses():
         repl['Any {} Weapon'.format(class_)] = '{} Starter Pack'.format(class_)
 
-    for class_,name in polyweps.items():
-        repl['Any Polycount {} Bundle Weapon'.format(class_)] = name
+    for name in polyweps:
+        repl['Any {} Weapon'.format(name)] = name
 
     for i in ['Victory','Moonman','Brainiac']:
         pack = "Dr. Grordbort's {} Pack".format(i)
@@ -107,29 +106,47 @@ def parseblueprints(blueprints,itemsbyname):
 
     return blueprintsdict
 
-def createitemdict(item, attributes, effects, blueprints, storeprices, marketprices):
+def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, storeprices, marketprices):
     """Takes a TF2 item and returns a custom dict with a limited number of
     keys that are used for search"""
+    index = item['defindex']
+    name = item['item_name']
     classes = getitemclasses(item)
-
-    description = ''
-    if 'item_description' in item:
-        description = item['item_description']
-
     attributes = getitemattributes(item, attributes, effects)
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
-    blueprint = sorted(blueprints[item['defindex']],reverse=True) # Sort by chance
+    blueprint = sorted(blueprints[index],reverse=True) # Sort by chance
 
-    itemdict = {'name':item['item_name'],
+    description = ''
+    if 'bundle' in tags and storeprice:
+        descriptions = bundles[index]['descriptions']
+        text = []
+        items = []
+
+        for i in range(len(descriptions)):
+            key = str(i)
+            value = descriptions[key]['value']
+            if 'color' in descriptions[key]:
+                items.append(value)
+            else:
+                text.append(value)
+
+        description = '{0}---{1}'.format('\n'.join(text),'\n'.join(items))
+
+    elif 'item_description' in item:
+        description = item['item_description']
+        if 'bundle' in tags and name in itemsets:
+            description += '---'+'\n'.join(itemsets[name]['items'])
+
+    itemdict = {'index':index,
+                'name':name,
                 'image':item['image_url'],
                 'image_large':item['image_url_large'],
-                'classes':classes,
-                'tags':tags,
-                'index':item['defindex'],
                 'description':description,
                 'attributes':attributes,
+                'classes':classes,
+                'tags':tags,
                 'storeprice':storeprice,
                 'marketprice':marketprice,
                 'blueprints':blueprint}
@@ -142,14 +159,15 @@ def createitemdict(item, attributes, effects, blueprints, storeprices, marketpri
 
     return itemdict
 
-def getitemsdict(schema, blueprints, storeprices, marketprices):
+def getitemsdict(schema, bundles, blueprints, storeprices, marketprices):
     """Returns an ordered dictionary with index as key and an itemdict as value"""
     itemsdict = OrderedDict()
     items = getitems(schema)
+    itemsets = getitemsets(schema)
     attributes = getattributes(schema)
     effects = getparticleeffects(schema)
     for idx in items:
-        itemdict = createitemdict(items[idx],attributes,effects,blueprints,storeprices,marketprices)
+        itemdict = createitemdict(items[idx],attributes,effects,itemsets,bundles,blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict
@@ -171,25 +189,27 @@ def parseinput(query):
     if (len(tags) + len(classes)) != len(querylist):
         classes = tags = []
 
-    return {'querylist':querylist,'classes':classes,'tags':tags}
+    return {'query':query,'querylist':querylist,'classes':classes,'tags':tags}
 
-def search(query, itemsdict):
+def getsetitemindex(name, itemsbyname):
+    return itemsbyname[name.replace('The ','').replace("Capone's Capper","Capo's Capper")]['defindex']
+
+def search(query, itemsdict, itemsbyname, itemsets):
     """This method parses the result obtained from parseinput and gets all the
-    items that match this result. It returns a dict with three keys - classitems,
-    allclassitems and searchitems. If the user's query did not match any class
-    or tag, a regular search is done and the searchitems is populated with
-    the result. If it did match a class and/or item tag, the results are divided
-    into specific class items (classitems) and all-class items (allclassitems)"""
-    classitems = []
-    allclassitems = []
-    searchitems = []
+    items that match this result. It returns a dict with two keys - mainitems,
+    and otheritems. The mainitems value is a list for regular results while the
+    otheritems value is a dict of lists for several different results"""
+    mainitems = []
+    otheritems = defaultdict(list)
     names = []
 
     result = parseinput(query)
+    query = result['query']
+    querylist = result['querylist']
     classes = result['classes']
     tags = result['tags']
-    querylist = result['querylist']
 
+    itemsetmatch = re.match('(.+) [sS]et',query)
     hasweapontag = not set(tags).isdisjoint(getweapontags())
     if classes or tags:
         for itemdict in itemsdict.values():
@@ -206,27 +226,42 @@ def search(query, itemsdict):
                 name = itemdict['name']
                 index = itemdict['index']
                 if itemdict['image'] and (index<496 or (512<index<680) or (698<index<8000)) and name not in names:
-                    if len(itemclasses)==1 or not classes:
-                        classitems.append(itemdict)
+                    if len(itemclasses) == 1:
+                        mainitems.append(itemdict)
+                    elif len(itemclasses) > 1:
+                        otheritems['Multi-Class Items'].append(itemdict)
                     else:
-                        allclassitems.append(itemdict)
+                        otheritems['All-Class Items'].append(itemdict)
                     names.append(name)
+
+    elif query == 'all':
+        mainitems = itemsdict.values()
+
+    elif query == 'sets':
+        for setname,itemset in itemsets.items():
+            for name in itemset['items']:
+                otheritems[setname].append(itemsdict[getsetitemindex(name,itemsbyname)])
+
+    elif itemsetmatch:
+        for setname,itemset in itemsets.items():
+            if setname.lower() == itemsetmatch.group(1).lower():
+                for name in itemset['items']:
+                    otheritems[setname].append(itemsdict[getsetitemindex(name,itemsbyname)])
+                break
+
     else:
-        if querylist == ['all']:
-            searchitems = itemsdict.values()
-        else:
-            for itemdict in itemsdict.values():
-                itemname = splitspecial(itemdict['name'].lower())
+        for itemdict in itemsdict.values():
+            itemname = splitspecial(itemdict['name'].lower())
 
-                match = not set(itemname).isdisjoint(querylist)
+            match = not set(itemname).isdisjoint(querylist)
 
-                if (match and itemdict['image'] and itemname not in names):
-                    searchitems.append(itemdict)
-                    names.append(itemname)
+            if (match and itemdict['image'] and itemname not in names):
+                mainitems.append(itemdict)
+                names.append(itemname)
 
-            searchitems = getsorteditemlist(searchitems,querylist)
+        mainitems = getsorteditemlist(mainitems,querylist)
 
-    return {'classitems':classitems, 'allclassitems':allclassitems, 'searchitems':searchitems}
+    return {'mainitems':mainitems, 'otheritems':otheritems}
 
 def getsorteditemlist(itemlist, querylist):
     indexlist = []
