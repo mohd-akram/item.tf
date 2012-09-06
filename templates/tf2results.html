@@ -31,7 +31,7 @@
     {%- endif %}
 
     {%- if otheritems %}
-    {% for k,v in otheritems.items() %}
+    {% for k,v in otheritems %}
     {%- if query == 'sets' %}<a href="/search?q={{k}} Set" class="glow" target="_blank"><h2>{{k}}</h2></a>
     {% else %}
     <h2>{{k}}</h2>

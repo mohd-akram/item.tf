@@ -1,9 +1,15 @@
 ﻿# coding=utf-8
 
-"""TF2 API Script"""
+"""This module is based on the Steam WebAPI and can be used to get information
+about items in TF2. Using this module, you can obtain the item schema,
+store prices, bundles, item sets and attributes for TF2.
+You can also obtain market prices from the community spreadsheet.
+
+There are also functions for parsing the information of each item.
+
+"""
 import json
 import csv
-import logging
 from urllib2 import urlopen
 from collections import defaultdict, OrderedDict
 
@@ -14,63 +20,51 @@ def isprice(string):
     return False
 
 def getschema(apikey):
-    """Returns the schema"""
-    url = 'http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key={}&language=en'.format(apikey)
+    """Return the schema"""
+    url = ('http://api.steampowered.com/IEconItems_440/GetSchema/v0001/'
+           '?key={}&language=en'.format(apikey))
 
     return json.loads(urlopen(url).read())
 
 def getitemsinfo(apikey, storeprices, indexes):
-    """Returns a dictionary of AssetClassInfo values with index as key"""
-    url = 'http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001?key={0}&language=en&appid=440&class_count={1}'.format(apikey,len(indexes))
+    """Return a dictionary of AssetClassInfo values with index as key"""
+    url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
+           '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
+                                                                   len(indexes))
+                                                                   )
 
     idtoindex = {}
-    for n,index in enumerate(indexes):
+    for n, index in enumerate(indexes):
         classid = storeprices[index]['classid']
         idtoindex[classid] = index
-        url += '&classid{0}={1}'.format(n,classid)
+        url += '&classid{0}={1}'.format(n, classid)
 
-    itemsinfo = {}
     infobyid = json.loads(urlopen(url).read())['result']
     del infobyid['success']
 
-    for classid, iteminfo in infobyid.items():
-        itemsinfo[idtoindex[classid]] = iteminfo
-
-    return itemsinfo
+    return {idtoindex[classid]:iteminfo for classid, iteminfo in
+            infobyid.items()}
 
 def getbundles(apikey, storeprices):
-    """Returns a dictionary of store bundles with index as key"""
-    indexes = []
-    for index,price in storeprices.items():
-        if "Bundles" in price['tags']:
-            indexes.append(index)
-
-    return getitemsinfo(apikey,storeprices,indexes)
+    """Return a dictionary of store bundles with index as key"""
+    indexes = [index for index, price in storeprices.items()
+               if "Bundles" in price['tags']]
+    return getitemsinfo(apikey, storeprices, indexes)
 
 def getitemsets(schema):
-    """Returns a dictionary of itemsets with 'name' as key"""
-    itemsets = {}
-    itemsetslist = schema['result']['item_sets']
-
-    for itemset in itemsetslist:
-        itemsets[itemset['name']] = itemset
-
-    return itemsets
+    """Return a dictionary of itemsets with 'name' as key"""
+    return {itemset['name']:itemset for itemset in
+            schema['result']['item_sets']}
 
 def getitems(schema):
-    """Returns an ordered dictionary of items in the schema where the key is defindex for
-    each item"""
-    items = OrderedDict()
-    itemslist = schema['result']['items']
-
-    for item in itemslist:
-        items[item['defindex']] = item
-
-    return items
+    """Return an ordered dictionary of items in the schema where the key is
+    defindex for each item"""
+    return OrderedDict([(item['defindex'], item) for item in
+                        schema['result']['items']])
 
 def getitemsbyname(schema):
-    """Returns an ordered dictionary of items in the schema where the key is item_name for
-    each item"""
+    """Return an ordered dictionary of items in the schema where the key is
+    item_name for each item"""
     itemsbyname = OrderedDict()
     for item in schema['result']['items']:
         name = item['item_name']
@@ -80,50 +74,39 @@ def getitemsbyname(schema):
     return itemsbyname
 
 def getattributes(schema):
-    """Returns a dictionary with each attribute's name as key"""
-    attributes = {}
-    attributeslist = schema['result']['attributes']
-
-    for attribute in attributeslist:
-        attributes[attribute['name']] = attribute
-
-    return attributes
+    """Return a dictionary with each attribute's name as key"""
+    return {attribute['name']:attribute for attribute in
+            schema['result']['attributes']}
 
 def getparticleeffects(schema):
-    """Returns a dictionary with each particle effect's id as key"""
-    effects = {}
-    effectslist = schema['result']['attribute_controlled_attached_particles']
-
-    for effect in effectslist:
-        effects[effect['id']] = effect
-
-    return effects
+    """Return a dictionary with each particle effect's id as key"""
+    return {effect['id']:effect for effect in
+            schema['result']['attribute_controlled_attached_particles']}
 
 def getstoreprices(apikey):
-    """Returns a dictionary of store prices where the key is defindex for
+    """Return a dictionary of store prices where the key is defindex for
     each item"""
-    url = 'http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/?key={}&language=en&appid=440&currency=usd'.format(apikey)
-    pricesdata = urlopen(url).read()
+    url = ('http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
+           '?key={}&language=en&appid=440&currency=usd'.format(apikey))
 
-    prices = {}
-    priceslist = json.loads(pricesdata)['result']['assets']
+    prices = json.loads(urlopen(url).read())['result']['assets']
 
-    for price in priceslist:
-        prices[int(price['name'])] = price
-
-    return prices
+    return {int(price['name']):price for price in prices}
 
 def getmarketprices(itemsbyname):
     """Get market prices from tf2spreadsheet.blogspot.com
-    Returns a dictionary where the key is defindex and value is a dictionary of
+    Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = 'https://spreadsheets.google.com/pub?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv'
+    url = ('https://spreadsheets.google.com/pub'
+           '?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv')
     pricesdata = urlopen(url)
 
     pricesdict = defaultdict(dict)
-    denominations = ['Key','Bud','Scrap']
+    denoms = ['Key', 'Bud', 'Scrap']
 
-    reader = csv.DictReader(pricesdata, fieldnames=['quality','class','name','price','lowprice','notes','color'])
+    reader = csv.DictReader(pricesdata, fieldnames=['quality', 'class', 'name',
+                                                    'price', 'lowprice',
+                                                    'notes', 'color'])
     sheet = list(reader)[1:-1]
 
     for row in sheet:
@@ -168,15 +151,15 @@ def getmarketprices(itemsbyname):
                 lowquality += ' (Dirty)'
 
             if price:
-                # Check if the price is a number and no denomination is specified
-                if not any(d in price for d in denominations) and isprice(price):
+                # Check if price starts with a number and has no denomination
+                if not any(d in price for d in denoms) and isprice(price):
                     # Add Refined denomination
                     price += ' Refined'
 
                 pricesdict[index][quality] = price
 
             if lowprice and lowprice != '-':
-                if not any(d in lowprice for d in denominations) and isprice(lowprice):
+                if not any(d in lowprice for d in denoms) and isprice(lowprice):
                     lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice
@@ -184,13 +167,17 @@ def getmarketprices(itemsbyname):
     return pricesdict
 
 def getweapontags():
-    return ['primary','secondary','melee','pda','pda2','building']
+    """Return all weapon tags"""
+    return ['primary', 'secondary', 'melee', 'pda', 'pda2', 'building']
 
 def getalltags():
-    return (['hat','weapon','misc','tool','action','taunt','paint','token','bundle'] +
-            getweapontags())
+    """Return all item tags"""
+    return (['hat', 'weapon', 'misc', 'tool', 'action',
+             'taunt', 'paint', 'token', 'bundle'] + getweapontags())
 
 def getallclasses():
+    """Return an OrderedDict of TF2 classes with name as key and
+    a list of aliases as value"""
     return OrderedDict(
             [('Scout',['Scoot']),
             ('Soldier',['Solly']),
@@ -205,23 +192,14 @@ def getallclasses():
 def getstoreprice(item, storeprices):
     """Get store price of item"""
     index = item['defindex']
-    storeprice = ''
 
-    if index in storeprices:
-        storeitem = storeprices[index]
-        storeprice = str(round(storeitem['prices']['USD']/100.00,2))
-
-    return storeprice
+    return (str(round(storeprices[index]['prices']['USD']/100.00, 2))
+            if index in storeprices else  '')
 
 def getmarketprice(item, marketprices):
     """Get market price of item"""
     index = item['defindex']
-    marketprice = {}
-
-    if index in marketprices:
-        marketprice = marketprices[index]
-
-    return marketprice
+    return marketprices[index] if index in marketprices else {}
 
 def getitemattributes(item, allattributes, effects):
     """Get attributes of item"""
@@ -241,31 +219,31 @@ def getitemattributes(item, allattributes, effects):
                     description = description.replace('%s1','{}')
                 else:
                     if descformat == "value_is_percentage":
-                    	value = (value * 100) - 100
+                        value = (value * 100) - 100
 
                     elif descformat == "value_is_inverted_percentage":
-                    	value = 100 - (value * 100)
+                        value = 100 - (value * 100)
 
                     elif descformat == "value_is_additive_percentage":
-                    	value *= 100
+                        value *= 100
 
                     description = description.replace('%s1','{:g}')
 
                 description = description.format(value)
 
-                attrdict = {'description':description,'type':attribute['effect_type']}
+                attrdict = {'description':description,
+                            'type':attribute['effect_type']}
                 attributelist.append(attrdict)
 
-    order = ['neutral','positive','negative']
+    order = ['neutral', 'positive', 'negative']
 
-    return sorted(attributelist,key=lambda k: order.index(k['type']))
+    return sorted(attributelist, key=lambda k: order.index(k['type']))
 
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
-    classes = []
-    if 'used_by_classes' in item:
-        classes = sorted(item['used_by_classes'],key=lambda k: getallclasses().keys().index(k))
-    return classes
+    return (sorted(item['used_by_classes'],
+                  key=getallclasses().keys().index)
+                  if 'used_by_classes' in item else [])
 
 def getitemtags(item):
     """Get a list of tags that describe the item"""
@@ -309,8 +287,6 @@ def convertmarketname(row):
     repl = {'Meet the Medic':'Taunt: The Meet the Medic',
             'High-Five':'Taunt: The High Five!',
             'Schadenfreude':'Taunt: The Schadenfreude',
-            'Key': 'Mann Co. Supply Crate Key',
-            'Mann Co. Supply Crate (series 40)':'Salvaged Mann Co. Supply Crate',
             'Enemies Gibbed':'Strange Part: Gib Kills',
             "HHH's Axe":"Horseless Headless Horsemann's Headtaker",
             'Unusual Haunted Metal scrap':'Haunted Metal Scrap',
@@ -326,13 +302,21 @@ def convertmarketname(row):
             'Submachine Gun':'SMG',
             'Monoculus':'MONOCULUS!',
             'The Milkman':'Milkman',
-            "Lord Cockswain's Novelty Pipe and Mutton Chops":"Lord Cockswain's Novelty Mutton Chops and Pipe",
-            "Dr. Grordbert's Copper Crest":"Dr. Grordbort's Copper Crest",
-            "Dr. Grordbert's Silver Crest":"Dr. Grordbort's Silver Crest",
             'Superfan':'The Superfan',
             'Athletic Supporter':'The Athletic Supporter',
             'Essential Accessories':'The Essential Accessories',
-            "Color of a Gentlemann's Business Pants":"The Color of a Gentlemann's Business Pants"}
+            "Dr. Grordbert's Copper Crest":"Dr. Grordbort's Copper Crest",
+            "Dr. Grordbert's Silver Crest":"Dr. Grordbort's Silver Crest",
+            'Key': 'Mann Co. Supply Crate Key',
+
+            'Mann Co. Supply Crate (series 40)':
+            'Salvaged Mann Co. Supply Crate',
+
+            "Lord Cockswain's Novelty Pipe and Mutton Chops":
+            "Lord Cockswain's Novelty Mutton Chops and Pipe",
+
+            "Color of a Gentlemann's Business Pants":
+            "The Color of a Gentlemann's Business Pants"}
 
     if name in repl:
         name = repl[name]

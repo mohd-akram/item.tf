@@ -101,7 +101,9 @@ class TF2SearchHandler(Handler):
             self.render('tf2results.html',
                         query=query,
                         mainitems=result['mainitems'],
-                        otheritems=result['otheritems'],
+                        otheritems=sorted(result['otheritems'].items(),
+                                          key=lambda k: len(k[0]),
+                                          reverse=True),
                         time=round(t1-t0,3))
         else:
             self.redirect('/')

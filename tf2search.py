@@ -22,8 +22,8 @@ from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
                     getstoreprice, getmarketprice)
 
 def splitspecial(string):
-    """Splits a string at special characters"""
-    return [i for i in re.split(r'\W+',string) if i]
+    """Split a string at special characters"""
+    return [i for i in re.split(r'\W+',string.lower()) if i]
 
 def getclass(word):
     word = word.capitalize()
@@ -107,7 +107,7 @@ def parseblueprints(blueprints, itemsbyname):
     return blueprintsdict
 
 def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, storeprices, marketprices):
-    """Takes a TF2 item and returns a custom dict with a limited number of
+    """Take a TF2 item and return a custom dict with a limited number of
     keys that are used for search"""
     index = item['defindex']
     name = item['item_name']
@@ -167,13 +167,14 @@ def getitemsdict(schema, bundles, blueprints, storeprices, marketprices):
     attributes = getattributes(schema)
     effects = getparticleeffects(schema)
     for idx in items:
-        itemdict = createitemdict(items[idx],attributes,effects,itemsets,bundles,blueprints,storeprices,marketprices)
+        itemdict = createitemdict(items[idx],attributes,effects,itemsets,bundles,
+                                  blueprints,storeprices,marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict
 
 def parseinput(query):
-    querylist = [i for i in splitspecial(query.lower()) if i not in ['the','a','of','s']]
+    querylist = [i for i in splitspecial(query) if i not in ['the','a','of','s']]
 
     classes = []
     tags = []
@@ -183,7 +184,7 @@ def parseinput(query):
 
         if class_:
             classes.append(class_)
-        if tag:
+        elif tag:
             tags.append(tag)
 
     if (len(tags) + len(classes)) != len(querylist):
@@ -191,8 +192,13 @@ def parseinput(query):
 
     return {'query':query,'querylist':querylist,'classes':classes,'tags':tags}
 
-def getsetitemindex(name, itemsbyname):
-    return itemsbyname[name.replace('The ','').replace("Capone's Capper","Capo's Capper")]['defindex']
+def getsetitems(itemset, itemsbyname, itemsdict):
+    setitems = []
+    for name in itemset['items']:
+        name = name.replace('The ','').replace("Capone's Capper","Capo's Capper")
+        setitems.append(itemsdict[itemsbyname[name]['defindex']])
+
+    return setitems
 
 def search(query, itemsdict, itemsbyname, itemsets):
     """This method parses the result obtained from parseinput and gets all the
@@ -239,19 +245,17 @@ def search(query, itemsdict, itemsbyname, itemsets):
 
     elif query == 'sets':
         for setname,itemset in itemsets.items():
-            for name in itemset['items']:
-                otheritems[setname].append(itemsdict[getsetitemindex(name,itemsbyname)])
+            otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
 
     elif itemsetmatch:
         for setname,itemset in itemsets.items():
             if setname.lower() == itemsetmatch.group(1).lower():
-                for name in itemset['items']:
-                    otheritems[setname].append(itemsdict[getsetitemindex(name,itemsbyname)])
+                otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
                 break
 
     else:
         for itemdict in itemsdict.values():
-            itemname = splitspecial(itemdict['name'].lower())
+            itemname = splitspecial(itemdict['name'])
 
             match = not set(itemname).isdisjoint(querylist)
 
@@ -259,16 +263,15 @@ def search(query, itemsdict, itemsbyname, itemsets):
                 mainitems.append(itemdict)
                 names.append(itemname)
 
+        for setname,itemset in itemsets.items():
+            if not set(splitspecial(setname)).isdisjoint(querylist):
+                otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
+
         mainitems = getsorteditemlist(mainitems,querylist)
 
     return {'mainitems':mainitems, 'otheritems':otheritems}
 
 def getsorteditemlist(itemlist, querylist):
-    indexlist = []
-
-    for itemdict in itemlist:
-        name = itemdict['name'].lower()
-        intersectionlength = len(set(querylist).intersection(splitspecial(name)))
-        indexlist.append(intersectionlength)
-
-    return [itemlist for (indexlist,itemlist) in sorted(zip(indexlist,itemlist),reverse=True)]
+    """Return sorted itemlist based on the intersection between the
+    search query words and each item's name"""
+    return sorted(itemlist,key=lambda k: set(querylist).intersection(splitspecial(k['name'])),reverse=True)
