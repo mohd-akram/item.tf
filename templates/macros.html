@@ -25,3 +25,9 @@
 {%- endfor %}
 </div>
 {% endmacro %}
+
+{% macro showsearchlinks(stringlist) %}
+{% for string in stringlist %}
+<a href="/search?q={{string}}">{{string}}</a><br>
+{% endfor %}
+{% endmacro %}

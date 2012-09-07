@@ -24,7 +24,7 @@
     <style>.itemlist{width:540px;margin-top:120px;}</style>
     {% include 'analytics.html' %}
   </head>
-
+{% from 'macros.html' import showitems, showsearchlinks %}
   <body>
     <div id="container">
       <header style="height: 10px"></header>
@@ -33,15 +33,13 @@
         <div id="list">
         <h4>Examples</h4>
         <p>
-        {% for i in ['engi hats','medic weps','demo melee','sniper spy','the saharan spy set'] %}
-        <a href="/search?q={{i}}">{{i}}</a><br> 
-        {% endfor %}
+        {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set']) }}
         </p>
         <h4>Keywords</h4>
         <p>
-        {% for i in ['all','sets']+tags %}
-        <a href="/search?q={{i}}">{{i}}</a><br>
-        {% endfor %}
+        {{ showsearchlinks(['all','sets','random']) }}
+        <br>
+        {{ showsearchlinks(tags) }}
         </p>
         </div>
       </div>
@@ -56,7 +54,6 @@
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
-      {% from 'macros.html' import showitems %}
       {{ showitems(newitems) }}
       </div>
       <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
