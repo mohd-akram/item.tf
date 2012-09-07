@@ -317,6 +317,9 @@ def convertmarketname(row):
             'Mann Co. Supply Crate (series 40)':
             'Salvaged Mann Co. Supply Crate',
 
+            'Mann Co. Supply Crate (series 48)':
+            'Fall Crate',
+
             "Lord Cockswain's Novelty Pipe and Mutton Chops":
             "Lord Cockswain's Novelty Mutton Chops and Pipe",
 
