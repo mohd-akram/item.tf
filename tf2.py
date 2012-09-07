@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import random
 from xml.dom.minidom import getDOMImplementation
 
 import tf2api
@@ -33,6 +34,8 @@ def updatecache():
     blueprints = tf2search.parseblueprints(data,itemsbyname)
 
     itemsdict = tf2search.getitemsdict(schema,bundles,blueprints,storeprices,marketprices)
+    filtereditems = [itemdict for itemdict in itemsdict.values() if tf2search.isvalidresult(itemdict)]
+    newitems = [itemsdict[index] for index in tf2api.getnewstoreprices(storeprices)]
 
     itemnames = []
 
@@ -53,6 +56,8 @@ def updatecache():
                         'itemsbyname': itemsbyname,
                         'itemnames': itemnames,
                         'itemsets': itemsets,
+                        'filtereditems': filtereditems,
+                        'newitems': newitems,
                         'sitemap': sitemap.toxml()})
     t1 = time.time()
 
@@ -79,6 +84,7 @@ class TF2Handler(Handler):
 
         self.render('tf2.html',homepage=gethomepage(),
                                tags=tf2api.getalltags(),
+                               newitems=random.sample(getfromcache('newitems'),5),
                                lastupdated=lastupdated)
 
 class TF2SearchHandler(Handler):
@@ -90,6 +96,9 @@ class TF2SearchHandler(Handler):
 
             if query in itemsbyname:
                 return self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
+            elif query == 'random':
+                filtereditems = getfromcache('filtereditems')
+                return self.redirect('/item/{}'.format(random.choice(filtereditems)['index']))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')

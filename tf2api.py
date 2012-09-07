@@ -27,7 +27,7 @@ def getschema(apikey):
     return json.loads(urlopen(url).read())
 
 def getitemsinfo(apikey, storeprices, indexes):
-    """Return a dictionary of AssetClassInfo values with index as key"""
+    """Return a dictionary of AssetClassInfo values with defindex as key"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
            '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
                                                                    len(indexes))
@@ -46,9 +46,9 @@ def getitemsinfo(apikey, storeprices, indexes):
             infobyid.items()}
 
 def getbundles(apikey, storeprices):
-    """Return a dictionary of store bundles with index as key"""
+    """Return a dictionary of store bundles with defindex as key"""
     indexes = [index for index, price in storeprices.items()
-               if "Bundles" in price['tags']]
+               if 'Bundles' in price['tags']]
     return getitemsinfo(apikey, storeprices, indexes)
 
 def getitemsets(schema):
@@ -92,6 +92,11 @@ def getstoreprices(apikey):
     prices = json.loads(urlopen(url).read())['result']['assets']
 
     return {int(price['name']):price for price in prices}
+
+def getnewstoreprices(storeprices):
+    """Return a dictionary of store prices of new items with defindex as key"""
+    return {index:price for index, price in storeprices.items()
+            if 'New' in price['tags']}
 
 def getmarketprices(itemsbyname):
     """Get market prices from tf2spreadsheet.blogspot.com
@@ -214,17 +219,17 @@ def getitemattributes(item, allattributes, effects):
                 description = attribute['description_string']
                 descformat = attribute['description_format']
 
-                if descformat == "value_is_particle_index":
+                if descformat == 'value_is_particle_index':
                     value = effects[value]['name']
                     description = description.replace('%s1','{}')
                 else:
-                    if descformat == "value_is_percentage":
+                    if descformat == 'value_is_percentage':
                         value = (value * 100) - 100
 
-                    elif descformat == "value_is_inverted_percentage":
+                    elif descformat == 'value_is_inverted_percentage':
                         value = 100 - (value * 100)
 
-                    elif descformat == "value_is_additive_percentage":
+                    elif descformat == 'value_is_additive_percentage':
                         value *= 100
 
                     description = description.replace('%s1','{:g}')
@@ -292,7 +297,7 @@ def convertmarketname(row):
             'Unusual Haunted Metal scrap':'Haunted Metal Scrap',
             'Hazmat Headcase':'HazMat Headcase',
             'Spine-Chilling Skull 2010':'Spine-Chilling Skull',
-            'Color No. 216-190-216 (Pink)':"Color No. 216-190-216",
+            'Color No. 216-190-216 (Pink)':'Color No. 216-190-216',
             "Zephaniah's Greed":"Zepheniah's Greed",
             'Bolgan Helmet':'Bolgan',
             'Full Head of Steam':'Full Head Of Steam',

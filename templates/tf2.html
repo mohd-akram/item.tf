@@ -8,6 +8,7 @@
     <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{searchurl}}">
     <link rel="stylesheet" href="/css/tf2.css">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
+    <script src="/scripts/tf2.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
     <style>
@@ -20,6 +21,7 @@
         padding-right: 20px;
       }
     </style>
+    <style>.itemlist{width:540px;margin-top:120px;}</style>
     {% include 'analytics.html' %}
   </head>
 
@@ -43,13 +45,19 @@
         </p>
         </div>
       </div>
+      <div id="hoverbox"></div>
+      <div id="itembox"></div>
+
       <div id="body">
       <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
       <form action="/search">
-        <input name="q" id="inputBox" type="search" placeholder="Search" size="30" style="margin-top: 30px; font-size:1.5em;">
+        <input name="q" id="inputBox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
+        <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
+      {% from 'macros.html' import showitems %}
+      {{ showitems(newitems) }}
       </div>
       <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
     </div>
@@ -57,6 +65,7 @@
     $('#inputBox').focus();
     $('#hover').hover(function() {$('#list').show('slow')});
     $.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
+    addHoverbox();
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
   </script>
   </body>

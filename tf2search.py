@@ -200,6 +200,13 @@ def getsetitems(itemset, itemsbyname, itemsdict):
 
     return setitems
 
+def isvalidresult(itemdict):
+    """Check if the item has an image and is not a competition medal"""
+    index = itemdict['index']
+    return (itemdict['image'] and
+            (index<496 or (512<index<680) or (698<index<8000)) and
+            not itemdict['name'].startswith('TF_Bundle'))
+
 def search(query, itemsdict, itemsbyname, itemsets):
     """This method parses the result obtained from parseinput and gets all the
     items that match this result. It returns a dict with two keys - mainitems,
@@ -231,7 +238,7 @@ def search(query, itemsdict, itemsbyname, itemsets):
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
                 index = itemdict['index']
-                if itemdict['image'] and (index<496 or (512<index<680) or (698<index<8000)) and name not in names:
+                if isvalidresult(itemdict) and name not in names:
                     if len(itemclasses) == 1:
                         mainitems.append(itemdict)
                     elif len(itemclasses) > 1:
