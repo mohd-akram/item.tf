@@ -13,7 +13,6 @@ Note: You must provide your own image URLs for the paint cans.
       Replace the relative URL in createitemdict.
 """
 import re
-import logging
 from collections import defaultdict, OrderedDict
 
 from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
@@ -23,15 +22,17 @@ from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
 
 def splitspecial(string):
     """Split a string at special characters"""
-    return [i for i in re.split(r'\W+',string.lower()) if i]
+    return [i for i in re.split(r'\W+', string.lower()) if i]
 
 def getclass(word):
+    """Parse a word and return TF2 class or alias if it matches one"""
     word = word.capitalize()
-    for name,aliases in getallclasses().items():
+    for name, aliases in getallclasses().items():
         if word == name or word in aliases:
             return name
 
 def gettag(word):
+    """Parse a word and return an item tag if it matches one"""
     weapon = ['wep','weap']
     tags = getalltags()
     for tag in tags:
@@ -41,6 +42,7 @@ def gettag(word):
             return tag
 
 def parseblueprints(blueprints, itemsbyname):
+    """Parse a human-readable dictionary of blueprint descriptions"""
     url = '/images/items/'
     localrepl = {'Any Class Token':'class_token.png',
                  'Any Slot Token':'slot_token.png',
@@ -50,11 +52,13 @@ def parseblueprints(blueprints, itemsbyname):
                  'Any Melee Weapon':'melee.png',
                  'Any Spy Watch':'pda2.png'}
 
-    repl = {"Any Santa's Little Accomplice Weapon":"Santa's Little Accomplice Bundle",
+    repl = {"Any Santa's Little Accomplice Weapon":
+            "Santa's Little Accomplice Bundle",
+
             "Any Burned Item":"Burned Banana Peel"}
 
-    polyweps = ["The Gas Jockey's Gear","The Saharan Spy","The Tank Buster",
-                "The Croc-o-Style Kit","The Special Delivery"]
+    polyweps = ["The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
+                "The Croc-o-Style Kit", "The Special Delivery"]
 
     for class_ in getallclasses():
         repl['Any {} Weapon'.format(class_)] = '{} Starter Pack'.format(class_)
@@ -62,7 +66,7 @@ def parseblueprints(blueprints, itemsbyname):
     for name in polyweps:
         repl['Any {} Weapon'.format(name)] = name
 
-    for i in ['Victory','Moonman','Brainiac']:
+    for i in ['Victory', 'Moonman', 'Brainiac']:
         pack = "Dr. Grordbort's {} Pack".format(i)
         repl["Any {} Weapon".format(pack)] = pack
 
@@ -102,11 +106,13 @@ def parseblueprints(blueprints, itemsbyname):
 
                     blueprintlist.append(blueprintdict)
 
-                blueprintsdict[index].append({'chance':chance,'required':blueprintlist})
+                blueprintsdict[index].append({'chance':chance,
+                                              'required':blueprintlist})
 
     return blueprintsdict
 
-def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, storeprices, marketprices):
+def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
+                   storeprices, marketprices):
     """Take a TF2 item and return a custom dict with a limited number of
     keys that are used for search"""
     index = item['defindex']
@@ -116,7 +122,7 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, sto
     storeprice = getstoreprice(item, storeprices)
     marketprice = getmarketprice(item, marketprices)
     tags = getitemtags(item)
-    blueprint = sorted(blueprints[index],reverse=True) # Sort by chance
+    blueprint = sorted(blueprints[index], reverse=True) # Sort by chance
 
     description = ''
     if 'bundle' in tags and storeprice:
@@ -132,7 +138,7 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, sto
             else:
                 text.append(value)
 
-        description = '{0}---{1}'.format('\n'.join(text),'\n'.join(items))
+        description = '{0}---{1}'.format('\n'.join(text), '\n'.join(items))
 
     elif 'item_description' in item:
         description = item['item_description']
@@ -155,26 +161,30 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints, sto
         paintvalue = str(int(item['attributes'][1]['value']))
         # Ignore Paint Tool
         if paintvalue != '1':
-            itemdict['image'] = itemdict['image_large'] = '/images/paints/Paint_Can_{}.png'.format(paintvalue)
+            itemdict['image'] = itemdict['image_large'] = (
+            '/images/paints/Paint_Can_{}.png'.format(paintvalue))
 
     return itemdict
 
 def getitemsdict(schema, bundles, blueprints, storeprices, marketprices):
-    """Returns an ordered dictionary with index as key and an itemdict as value"""
+    """Returns an ordered dictionary with index as key and itemdict as value"""
     itemsdict = OrderedDict()
     items = getitems(schema)
     itemsets = getitemsets(schema)
     attributes = getattributes(schema)
     effects = getparticleeffects(schema)
     for idx in items:
-        itemdict = createitemdict(items[idx],attributes,effects,itemsets,bundles,
-                                  blueprints,storeprices,marketprices)
+        itemdict = createitemdict(items[idx], attributes, effects,
+                                  itemsets, bundles, blueprints,
+                                  storeprices, marketprices)
         itemsdict[idx] = itemdict
 
     return itemsdict
 
 def parseinput(query):
-    querylist = [i for i in splitspecial(query) if i not in ['the','a','of','s']]
+    """Parse a search query and return a dict to be used in search function"""
+    querylist = [i for i in splitspecial(query) if i not in
+                 ['the','a','of','s']]
 
     classes = []
     tags = []
@@ -190,22 +200,32 @@ def parseinput(query):
     if (len(tags) + len(classes)) != len(querylist):
         classes = tags = []
 
-    return {'query':query,'querylist':querylist,'classes':classes,'tags':tags}
+    return {'query':query, 'querylist':querylist,
+            'classes':classes, 'tags':tags}
 
 def getsetitems(itemset, itemsbyname, itemsdict):
+    """Get a list of the items in an item set"""
     setitems = []
     for name in itemset['items']:
-        name = name.replace('The ','').replace("Capone's Capper","Capo's Capper")
+        name = name.replace('The ','').replace("Capone's Capper",
+                                               "Capo's Capper")
         setitems.append(itemsdict[itemsbyname[name]['defindex']])
 
     return setitems
 
-def isvalidresult(itemdict):
-    """Check if the item has an image and is not a competition medal"""
+def isvalidresult(itemdict, strict=True):
+    """Check if item has an image and is not a duplicate of
+    "Map Stamps Collection".
+    If strict is True, competition medals and bundle junk also return False"""
     index = itemdict['index']
-    return (itemdict['image'] and
-            (index<496 or (512<index<680) or (698<index<8000)) and
-            not itemdict['name'].startswith('TF_Bundle'))
+    isvalid = (itemdict['image'] and
+               index not in (2007,2015,2049))
+    if strict:
+        isvalid = (isvalid and
+                   (index<496 or (512<index<680) or (698<index<8000))
+                   and not itemdict['name'].startswith('TF_Bundle'))
+
+    return isvalid
 
 def search(query, itemsdict, itemsbyname, itemsets):
     """This method parses the result obtained from parseinput and gets all the
@@ -222,14 +242,15 @@ def search(query, itemsdict, itemsbyname, itemsets):
     classes = result['classes']
     tags = result['tags']
 
-    itemsetmatch = re.match('(.+) [sS]et',query)
+    itemsetmatch = re.match('(.+) [sS]et', query)
     hasweapontag = not set(tags).isdisjoint(getweapontags())
     if classes or tags:
         for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
             itemtags = itemdict['tags']
 
-            isclassmatch = not set(itemclasses).isdisjoint(classes) or not itemclasses
+            isclassmatch = (not set(itemclasses).isdisjoint(classes) or
+                           not itemclasses)
             if hasweapontag:
                 istagmatch = set(tags).issubset(itemtags)
             else:
@@ -237,7 +258,6 @@ def search(query, itemsdict, itemsbyname, itemsets):
 
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
-                index = itemdict['index']
                 if isvalidresult(itemdict) and name not in names:
                     if len(itemclasses) == 1:
                         mainitems.append(itemdict)
@@ -251,34 +271,39 @@ def search(query, itemsdict, itemsbyname, itemsets):
         mainitems = itemsdict.values()
 
     elif query == 'sets':
-        for setname,itemset in itemsets.items():
-            otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
+        for setname, itemset in itemsets.items():
+            otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+                                                   itemsdict))
 
     elif itemsetmatch:
-        for setname,itemset in itemsets.items():
+        for setname, itemset in itemsets.items():
             if setname.lower() == itemsetmatch.group(1).lower():
-                otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
+                otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+                                                       itemsdict))
                 break
 
     else:
         for itemdict in itemsdict.values():
-            itemname = splitspecial(itemdict['name'])
+            name = splitspecial(itemdict['name'])
 
-            match = not set(itemname).isdisjoint(querylist)
+            match = not set(name).isdisjoint(querylist)
 
-            if (match and itemdict['image'] and itemname not in names):
+            if (match and isvalidresult(itemdict, False) and name not in names):
                 mainitems.append(itemdict)
-                names.append(itemname)
+                names.append(name)
 
-        for setname,itemset in itemsets.items():
+        for setname, itemset in itemsets.items():
             if not set(splitspecial(setname)).isdisjoint(querylist):
-                otheritems[setname].extend(getsetitems(itemset,itemsbyname,itemsdict))
+                otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+                                                       itemsdict))
 
-        mainitems = getsorteditemlist(mainitems,querylist)
+        mainitems = getsorteditemlist(mainitems, querylist)
 
     return {'mainitems':mainitems, 'otheritems':otheritems}
 
 def getsorteditemlist(itemlist, querylist):
     """Return sorted itemlist based on the intersection between the
     search query words and each item's name"""
-    return sorted(itemlist,key=lambda k: set(querylist).intersection(splitspecial(k['name'])),reverse=True)
+    return sorted(itemlist,
+           key=lambda k: set(querylist).intersection(splitspecial(k['name'])),
+           reverse=True)

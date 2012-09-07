@@ -1,3 +1,4 @@
+"""This module contains all the page handlers and caching mechanisms."""
 import json
 import logging
 import time
@@ -24,33 +25,38 @@ def updatecache():
     schema = tf2api.getschema(apikey)
     itemsets = tf2api.getitemsets(schema)
     storeprices = tf2api.getstoreprices(apikey)
-    bundles = tf2api.getbundles(apikey,storeprices)
+    bundles = tf2api.getbundles(apikey, storeprices)
 
     itemsbyname = tf2api.getitemsbyname(schema)
     marketprices = tf2api.getmarketprices(itemsbyname)
 
     with open('blueprints.json') as f:
         data = json.loads(f.read().decode('utf-8'))
-    blueprints = tf2search.parseblueprints(data,itemsbyname)
+    blueprints = tf2search.parseblueprints(data, itemsbyname)
 
-    itemsdict = tf2search.getitemsdict(schema,bundles,blueprints,storeprices,marketprices)
-    filtereditems = [itemdict for itemdict in itemsdict.values() if tf2search.isvalidresult(itemdict)]
-    newitems = [itemsdict[index] for index in tf2api.getnewstoreprices(storeprices)]
+    itemsdict = tf2search.getitemsdict(schema, bundles, blueprints,
+                                       storeprices, marketprices)
+    newitems = [itemsdict[index] for index in
+                tf2api.getnewstoreprices(storeprices)]
 
     itemnames = []
+    filtereditems = []
 
     homepage = gethomepage()
     sitemap = Sitemap()
     sitemap.add(homepage)
 
-    for name,item in itemsbyname.items():
-        if not item['image_url']:
-            del itemsbyname[name]
-        else:
+    for name, item in itemsbyname.items():
+        index = item['defindex']
+        itemdict = itemsdict[index]
+        if tf2search.isvalidresult(itemdict):
             itemnames.append(name)
+            filtereditems.append(itemdict)
 
-            path = '{0}/item/{1}'.format(homepage,item['defindex'])
+            path = '{0}/item/{1}'.format(homepage, index)
             sitemap.add(path)
+        else:
+            del itemsbyname[name]
 
     memcache.set_multi({'itemsdict': itemsdict,
                         'itemsbyname': itemsbyname,
@@ -61,7 +67,7 @@ def updatecache():
                         'sitemap': sitemap.toxml()})
     t1 = time.time()
 
-    memcache.set('lastupdated',t1)
+    memcache.set('lastupdated', t1)
     logging.debug('Updated Cache. Time taken: {} seconds'.format(t1-t0))
 
 def getfromcache(key):
@@ -82,10 +88,11 @@ class TF2Handler(Handler):
         t0 = getfromcache('lastupdated')
         lastupdated = int(time.time()-t0) / 60
 
-        self.render('tf2.html',homepage=gethomepage(),
-                               tags=tf2api.getalltags(),
-                               newitems=random.sample(getfromcache('newitems'),5),
-                               lastupdated=lastupdated)
+        self.render('tf2.html', homepage=gethomepage(),
+                                tags=tf2api.getalltags(),
+                                newitems=random.sample(getfromcache('newitems'),
+                                                       5),
+                                lastupdated=lastupdated)
 
 class TF2SearchHandler(Handler):
     def get(self):
@@ -95,10 +102,13 @@ class TF2SearchHandler(Handler):
             itemsbyname = getfromcache('itemsbyname')
 
             if query in itemsbyname:
-                return self.redirect('/item/{}'.format(itemsbyname[query]['defindex']))
+                return self.redirect(
+                       '/item/{}'.format(itemsbyname[query]['defindex']))
+
             elif query == 'random':
                 filtereditems = getfromcache('filtereditems')
-                return self.redirect('/item/{}'.format(random.choice(filtereditems)['index']))
+                return self.redirect(
+                       '/item/{}'.format(random.choice(filtereditems)['index']))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')
@@ -130,8 +140,9 @@ class TF2SuggestHandler(Handler):
         else:
             suggestions = itemnames
 
-        self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
-        self.write(json.dumps([query,suggestions],indent=2))
+        self.response.headers['Content-Type'] = ('application/json;'
+                                                 'charset=UTF-8')
+        self.write(json.dumps([query, suggestions], indent=2))
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
@@ -144,20 +155,24 @@ class TF2ItemHandler(Handler):
             return self.redirect('/')
 
         if is_json:
-            self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
-            self.write(json.dumps(itemdict,indent=2))
+            self.response.headers['Content-Type'] = ('application/json;'
+                                                     'charset=UTF-8')
+            self.write(json.dumps(itemdict, indent=2))
         else:
             desc_list = []
 
             if itemdict['description']:
                 desc_list.append(itemdict['description'].replace('\n',' '))
 
-            desc_list.append(', '.join(itemdict['classes']) if itemdict['classes'] else 'All Classes')
+            desc_list.append(', '.join(itemdict['classes'])
+                             if itemdict['classes'] else 'All Classes')
 
             if itemdict['tags']:
                 desc_list.append(', '.join(itemdict['tags']).title())
 
-            self.render('tf2item.html',item=itemdict,description=' | '.join(desc_list))
+            self.render('tf2item.html',
+                        item=itemdict,
+                        description=' | '.join(desc_list))
 
 class TF2SitemapHandler(Handler):
     def get(self):
@@ -165,28 +180,32 @@ class TF2SitemapHandler(Handler):
         self.write(getfromcache('sitemap'))
 
 class CacheHandler(Handler):
-    def get(self,option):
+    def get(self, option):
         if option == 'update':
             updatecache()
             self.write('Cache Updated')
-        if option == 'flush':
+        elif option == 'flush':
             memcache.flush_all()
             self.write('Cache Flushed')
 
 class Sitemap:
+    """A simple class that is used to create XML sitemaps"""
     def __init__(self):
         impl = getDOMImplementation()
-        self.doc = impl.createDocument(None,'urlset',None)
+        self.doc = impl.createDocument(None, 'urlset', None)
 
         self.urlset = self.doc.documentElement
-        self.urlset.setAttribute('xmlns','http://www.sitemaps.org/schemas/sitemap/0.9')
+        self.urlset.setAttribute('xmlns',
+                                 'http://www.sitemaps.org/schemas/sitemap/0.9')
 
-    def add(self,path):
+    def add(self, path):
+        """Add a url to the sitemap"""
         url = self.doc.createElement('url')
         loc = url.appendChild(self.doc.createElement('loc'))
-        loctext = loc.appendChild(self.doc.createTextNode(path))
+        loc.appendChild(self.doc.createTextNode(path))
 
         return self.urlset.appendChild(url)
 
     def toxml(self):
+        """Return a pretty XML version of the sitemap"""
         return self.doc.toprettyxml(encoding='UTF-8')

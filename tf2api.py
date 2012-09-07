@@ -68,7 +68,8 @@ def getitemsbyname(schema):
     itemsbyname = OrderedDict()
     for item in schema['result']['items']:
         name = item['item_name']
-        if name not in itemsbyname:
+        if (name not in itemsbyname and
+           item['defindex'] not in (2007, 2015, 2049)):
             itemsbyname[name] = item
 
     return itemsbyname
