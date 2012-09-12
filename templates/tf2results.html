@@ -32,7 +32,7 @@
 
     {%- if otheritems %}
     {% for k,v in otheritems %}
-    {%- if query == 'sets' %}<a href="/search?q={{k}} Set" class="glow" target="_blank"><h2>{{k}}</h2></a>
+    {%- if query == 'sets' %}<a href="/search?q={{k|replace('#','%23')}} Set" class="glow" target="_blank"><h2>{{k}}</h2></a>
     {% else %}
     <h2>{{k}}</h2>
     {% endif -%}

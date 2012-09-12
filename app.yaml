@@ -22,6 +22,10 @@ handlers:
 - url: /scripts
   static_dir: scripts
 
+- url: /(.*\.(png))
+  static_files: static/\1
+  upload: static/(.*\.(png))
+
 - url: /cache/.*
   script: main.cache
   login: admin

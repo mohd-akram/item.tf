@@ -214,15 +214,13 @@
   window.addHoverbox = function() {
     var cell, _i, _len, _ref;
     init();
-    if (hoverBox) {
-      _ref = document.getElementsByClassName('item');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        cell = _ref[_i];
-        cell.addEventListener("mouseout", hide, false);
-        cell.addEventListener("mousemove", moveMouse, false);
-        cell.addEventListener("mouseover", show, false);
-        cell.addEventListener("click", openSummary, false);
-      }
+    _ref = document.getElementsByClassName('item');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      cell = _ref[_i];
+      cell.addEventListener("mouseout", hide, false);
+      cell.addEventListener("mousemove", moveMouse, false);
+      cell.addEventListener("mouseover", show, false);
+      cell.addEventListener("click", openSummary, false);
     }
     document.getElementById('container').addEventListener("click", hideItemBox, false);
     return document.onkeydown = function(e) {

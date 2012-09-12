@@ -54,7 +54,7 @@ window.hideItemBox = (e) ->
 
 moveMouse = (e) ->
   hoverBox.style.top = "#{ e.pageY + 28 }px"
-  hoverBox.style.left = "#{e.pageX - 154}px"
+  hoverBox.style.left = "#{ e.pageX - 154 }px"
 
 window.openSummary = (e) ->
   showItemInfo(e.target)
@@ -171,7 +171,7 @@ window.showItemInfo = (element) ->
   # Itembox HTML
   itemBox.innerHTML = "
 <h2 id='itemname'>
-<a href='/item/#{itemId}'
+<a href='/item/#{ itemId }'
  target='_blank' class='glow' title='Go to Item Page'>
 #{ itemName }</a></h2>
 <a class='button' target='_blank' title='Open in Wiki'
@@ -234,12 +234,11 @@ window.showItemInfo = (element) ->
 
 window.addHoverbox = ->
   init()
-  if hoverBox
-    for cell in document.getElementsByClassName('item')
-      cell.addEventListener("mouseout", hide, false)
-      cell.addEventListener("mousemove", moveMouse, false)
-      cell.addEventListener("mouseover", show, false)
-      cell.addEventListener("click", openSummary, false)
+  for cell in document.getElementsByClassName('item')
+    cell.addEventListener("mouseout", hide, false)
+    cell.addEventListener("mousemove", moveMouse, false)
+    cell.addEventListener("mouseover", show, false)
+    cell.addEventListener("click", openSummary, false)
 
   document.getElementById('container').addEventListener("click",
                                                         hideItemBox,
