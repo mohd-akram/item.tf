@@ -4,11 +4,12 @@ import logging
 import time
 import random
 from xml.dom.minidom import getDOMImplementation
+from google.appengine.api import memcache
 
 import tf2api
 import tf2search
 
-from handler import Handler, memcache
+from handler import Handler
 
 def gethomepage():
     return 'http://www.tf2find.com'
@@ -189,7 +190,7 @@ class CacheHandler(Handler):
             self.write('Cache Flushed')
 
 class Sitemap:
-    """A simple class that is used to create XML sitemaps"""
+    """A class that is used to create XML sitemaps"""
     def __init__(self):
         impl = getDOMImplementation()
         self.doc = impl.createDocument(None, 'urlset', None)

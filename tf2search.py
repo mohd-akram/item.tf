@@ -11,6 +11,7 @@ Usage:
 
 Note: You must provide your own image URLs for the paint cans.
       Replace the relative URL in createitemdict.
+
 """
 import re
 from collections import defaultdict, OrderedDict

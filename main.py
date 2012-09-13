@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 import webapp2
-import logging
-
-import handler
 
 from tf2 import (TF2Handler, TF2SearchHandler, TF2SuggestHandler,
                  TF2ItemHandler, TF2SitemapHandler, CacheHandler)
@@ -28,4 +25,4 @@ app = webapp2.WSGIApplication([('/', TF2Handler),
                                ('/item/([0-9]+)(\.json)?', TF2ItemHandler),
                                ('/sitemap\.xml',TF2SitemapHandler)])
 
-cache = webapp2.WSGIApplication([('/cache/(update|flush)',CacheHandler)])
+cache = webapp2.WSGIApplication([('/cache/(update|flush)', CacheHandler)])
