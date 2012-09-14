@@ -14,7 +14,7 @@
       <div id="hoverbox"></div>
       <div id="itembox"></div>
       {% from 'macros.html' import showitem %}
-      {{ showitem(item,False) }}
+      {{ showitem(item, False) }}
       <script>showItemInfo(document.getElementById('{{item['index']}}'));document.getElementById('itemname').innerHTML="{{item['name']}}"</script>
       <footer style="height:20px">{% include 'footer.html' %}</footer>
     </div>

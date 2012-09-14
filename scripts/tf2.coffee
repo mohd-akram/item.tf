@@ -1,8 +1,25 @@
+escapeHTML = (string) ->
+  string.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+
+capitalize = (word) ->
+  word[0].toUpperCase() + word[1...]
+
+getAttributes = (item) ->
+  divs = item.getElementsByTagName('div')
+  if divs.length then divs[0].innerHTML else ''
+
+getDescription = (item) ->
+  item.getAttribute('data-description') or ''
+
+getTags = (item) ->
+  (item.getAttribute('data-tags') or '').split(',')
+
 show = (e) ->
   title = e.target.title
 
   attributes = getAttributes(e.target)
   description = escapeHTML(getDescription(e.target))
+
   if description
     if 'bundle' in getTags(e.target) and description.indexOf('---') != -1
       descList = description.split('---')
@@ -15,33 +32,19 @@ show = (e) ->
 
   hoverBox.style.display = "block"
 
-escapeHTML = (string) ->
-  return string.replace(/&/g,'&amp;')
-               .replace(/</g,'&lt;')
-               .replace(/>/g,'&gt;')
-
-getAttributes = (item) ->
-  divs = item.getElementsByTagName('div')
-  attributes = if divs.length>0 then divs[0].innerHTML else ''
-  return attributes
-
-getDescription = (item) ->
-  description = item.getAttribute('data-description')
-  description ?= ''
-  return description
-
-getTags = (item) ->
-  tags = item.getAttribute('data-tags')
-  tags ?= ''
-  return tags.split(',')
-
-capitalize = (word) ->
-  return word[0].toUpperCase() + word[1...]
-
 hide = ->
   hoverBox.style.display = "none"
 
-window.hideItemBox = (e) ->
+moveMouse = (e) ->
+  hoverBox.style.top = "#{ e.pageY + 28 }px"
+  hoverBox.style.left = "#{ e.pageX - 154 }px"
+
+openSummary = (e) ->
+  showItemInfo(e.target)
+  e.preventDefault()
+  e.stopPropagation()
+
+hideItemBox = (e) ->
   a = e.target or e.srcElement
   if a.getAttribute('class') != 'item'
     els = []
@@ -52,14 +55,9 @@ window.hideItemBox = (e) ->
     if itemBox not in els
       itemBox.style.display = 'none'
 
-moveMouse = (e) ->
-  hoverBox.style.top = "#{ e.pageY + 28 }px"
-  hoverBox.style.left = "#{ e.pageX - 154 }px"
-
-window.openSummary = (e) ->
-  showItemInfo(e.target)
-  e.preventDefault()
-  e.stopPropagation()
+init = ->
+  window.hoverBox = document.getElementById("hoverbox")
+  window.itemBox = document.getElementById("itembox")
 
 window.showItemInfo = (element) ->
   init()
@@ -67,17 +65,14 @@ window.showItemInfo = (element) ->
   itemName = element.title
 
   # Market price HTML
-  marketPrice = element.getAttribute('data-marketprice')
+  marketPrice = element.getAttribute('data-marketprice') or ''
   if marketPrice
+    marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
     for i in ['Unique','Vintage','Strange','Genuine','Haunted']
       re = new RegExp(i,"g")
       marketPrice = marketPrice
-                .replace(/[{}']/g,'')
-                .replace(/, /g,'<br>')
                 .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
     marketPrice = "<h3 id='marketprice'>#{ marketPrice }</h3>"
-  else
-    marketPrice = ''
 
   storePrice = element.getAttribute('data-storeprice')
   imageUrl = element.getAttribute('data-image')
@@ -114,15 +109,12 @@ window.showItemInfo = (element) ->
   blueprintsHTML += '</div>'
 
   # Buy button and price HTML
-  if storePrice
-    storePrice = "$#{ storePrice }"
-    buyButton = "<form style='position:absolute;bottom:19px;left:345px;'>
-#{ storePrice }<br>
+  buyButton = if storePrice then "<form
+ style='position:absolute;bottom:19px;left:345px;'>
+$#{ storePrice }<br>
 <input type='text' value='1' size='1' id='quantity'
  class='textbox'>
-</form><a href='#' id='buy-button'></a>"
-  else
-    buyButton = ''
+</form><a href='#' id='buy-button'></a>" else ''
 
   # Classes HTML
   classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>"
@@ -137,7 +129,7 @@ window.showItemInfo = (element) ->
   # Tags HTML
   tagsHTML = "<div id='tags' style='position:absolute;top:-5px;left:5px'>"
   tags = getTags(element)
-  if tags.length > 0
+  if tags.length
     isWeapon = 'weapon' in tags
     isToken = 'token' in tags
 
@@ -157,7 +149,7 @@ window.showItemInfo = (element) ->
         title = capitalize(i)
         image = i
 
-    if isToken and classes != null
+    if isToken and classes
       title = 'Class Token'
       image = 'class_token'
 
@@ -203,13 +195,12 @@ window.showItemInfo = (element) ->
 #{ classesHTML }
 #{ tagsHTML }
 "
-  itemBox.style.display = "block"
 
   # Hover area
   hoverArea = document.createElement('div')
   hoverArea.title = element.title
-  hoverArea.setAttribute('data-description',getDescription(element))
-  hoverArea.setAttribute('data-tags',getTags(element))
+  hoverArea.setAttribute('data-description', getDescription(element))
+  hoverArea.setAttribute('data-tags', getTags(element))
   hoverArea.id = 'hoverarea'
   hoverArea.style.backgroundImage = "url('#{ imageUrl }')"
   hoverArea.innerHTML = "<div style='display:none'>
@@ -232,6 +223,8 @@ window.showItemInfo = (element) ->
   quality.onchange = ->
     document.tf2outpostform.has1.value = "440,#{ itemId },#{ quality.value }"
 
+  itemBox.style.display = "block"
+
 window.addHoverbox = ->
   init()
   for cell in document.getElementsByClassName('item')
@@ -246,7 +239,3 @@ window.addHoverbox = ->
   document.onkeydown = (e) ->
     if e.keyCode == 27
       itemBox.style.display = 'none'
-
-window.init = ->
-  window.hoverBox = document.getElementById("hoverbox")
-  window.itemBox = document.getElementById("itembox")
