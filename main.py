@@ -23,6 +23,6 @@ app = webapp2.WSGIApplication([('/', TF2Handler),
                                ('/search', TF2SearchHandler),
                                ('/suggest', TF2SuggestHandler),
                                ('/item/([0-9]+)(\.json)?', TF2ItemHandler),
-                               ('/sitemap\.xml',TF2SitemapHandler)])
+                               ('/sitemap\.xml', TF2SitemapHandler)])
 
 cache = webapp2.WSGIApplication([('/cache/(update|flush)', CacheHandler)])

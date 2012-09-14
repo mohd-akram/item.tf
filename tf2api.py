@@ -185,15 +185,15 @@ def getallclasses():
     """Return an OrderedDict of TF2 classes with name as key and
     a list of aliases as value"""
     return OrderedDict(
-            [('Scout',['Scoot']),
-            ('Soldier',['Solly']),
-            ('Pyro',[]),
-            ('Demoman',['Demo']),
-            ('Heavy',[]),
-            ('Engineer',['Engi','Engie']),
-            ('Medic',[]),
-            ('Sniper',[]),
-            ('Spy',[])])
+            [('Scout', ['Scoot']),
+            ('Soldier', ['Solly']),
+            ('Pyro', []),
+            ('Demoman', ['Demo']),
+            ('Heavy', []),
+            ('Engineer', ['Engi','Engie']),
+            ('Medic', []),
+            ('Sniper', []),
+            ('Spy', [])])
 
 def getstoreprice(item, storeprices):
     """Get store price of item"""
