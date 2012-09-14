@@ -30,22 +30,20 @@
     {{ showitems(mainitems) }}
     {%- endif %}
 
-    {%- if otheritems %}
-    {% for k,v in otheritems %}
-    {%- if query == 'sets' %}<a href="/search?q={{k|replace('#','%23')}} Set" class="glow" target="_blank"><h2>{{k}}</h2></a>
+    {% for name, items in otheritems %}
+    {%- if name in itemsets %}<h2><a href="/search?q={{name|replace('#','%23')}} Set" class="glow" target="_blank">{{name}}</a></h2>
     {% else %}
-    <h2>{{k}}</h2>
+    <h2>{{name}}</h2>
     {% endif -%}
-    {{ showitems(v) }}
+    {{ showitems(items) }}
     {%- endfor %}
-    {%- endif %}
 
     {%- if not (mainitems or otheritems) %}
     <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
     {%- endif -%}
     </div>
 
-    <script>addHoverbox()</script>
+    <script>addHoverBox()</script>
     <footer>{{time}} seconds<br>{% include 'footer.html' %}</footer>
     </div>
   </body>

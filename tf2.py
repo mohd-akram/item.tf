@@ -124,6 +124,7 @@ class TF2SearchHandler(Handler):
                         otheritems=sorted(result['otheritems'].items(),
                                           key=lambda k: len(k[0]),
                                           reverse=True),
+                        itemsets=itemsets,
                         time=round(t1-t0,3))
         else:
             self.redirect('/')

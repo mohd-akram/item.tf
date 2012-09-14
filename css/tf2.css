@@ -88,12 +88,8 @@ h1 {
   text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
 }
 
-#body>h2 {
+#body > h2 {
   text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
-}
-
-a>h2 {
-  display: inline;
 }
 
 .glow {
@@ -165,7 +161,7 @@ ul {
   cursor: pointer;
 }
 
-#buy-button {
+#buybutton {
   background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
   background-position: top;
   position:absolute;
@@ -175,7 +171,7 @@ ul {
   height: 24px;  
 }
 
-#buy-button:hover {
+#buybutton:hover {
   background-position: bottom;
 }
 
@@ -260,7 +256,7 @@ ul {
   z-index:100;
 }
 
-#hoverbox>div {
+#hoverbox > div {
   font:18px Sans-serif;
   margin:3px 0;
 }
@@ -270,7 +266,7 @@ a {
   text-decoration: none;
 }
 
-a>img {
+a > img {
   border: none;
 }
 

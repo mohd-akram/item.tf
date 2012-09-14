@@ -50,7 +50,7 @@
       <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
       <form action="/search">
-        <input name="q" id="inputBox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
+        <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
@@ -59,10 +59,10 @@
       <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
     </div>
   <script>
-    $('#inputBox').focus();
+    $('#searchbox').focus();
     $('#hover').hover(function() {$('#list').show('slow')});
-    $.getJSON('/suggest', function (data) {$("#inputBox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
-    addHoverbox();
+    $.getJSON('/suggest', function (data) {$("#searchbox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
+    addHoverBox();
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
   </script>
   </body>

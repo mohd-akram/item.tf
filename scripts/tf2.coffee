@@ -39,13 +39,13 @@ moveMouse = (e) ->
   hoverBox.style.top = "#{ e.pageY + 28 }px"
   hoverBox.style.left = "#{ e.pageX - 154 }px"
 
-openSummary = (e) ->
+clickItem = (e) ->
   showItemInfo(e.target)
   e.preventDefault()
   e.stopPropagation()
 
 hideItemBox = (e) ->
-  a = e.target or e.srcElement
+  a = e.target
   if a.getAttribute('class') != 'item'
     els = []
     while a
@@ -109,12 +109,12 @@ window.showItemInfo = (element) ->
   blueprintsHTML += '</div>'
 
   # Buy button and price HTML
-  buyButton = if storePrice then "<form
+  buyHTML = if storePrice then "<form
  style='position:absolute;bottom:19px;left:345px;'>
 $#{ storePrice }<br>
 <input type='text' value='1' size='1' id='quantity'
  class='textbox'>
-</form><a href='#' id='buy-button'></a>" else ''
+</form><a href='#' id='buybutton'></a>" else ''
 
   # Classes HTML
   classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>"
@@ -190,7 +190,7 @@ $#{ storePrice }<br>
 </select>
 
 </form>
-#{ buyButton }
+#{ buyHTML }
 #{ blueprintsHTML }
 #{ classesHTML }
 #{ tagsHTML }
@@ -211,9 +211,9 @@ $#{ storePrice }<br>
   itemBox.appendChild(hoverArea)
 
   # Buy button link
-  buy = document.getElementById('buy-button')
-  if buy
-    buy.onclick = ->
+  buyButton = document.getElementById('buybutton')
+  if buyButton
+    buyButton.onclick = ->
       quantity = document.getElementById('quantity').value
       window.open("http://store.steampowered.com/buyitem/440/
 #{ itemId }/#{ quantity }")
@@ -225,13 +225,13 @@ $#{ storePrice }<br>
 
   itemBox.style.display = "block"
 
-window.addHoverbox = ->
+window.addHoverBox = ->
   init()
-  for cell in document.getElementsByClassName('item')
-    cell.addEventListener("mouseout", hide, false)
-    cell.addEventListener("mousemove", moveMouse, false)
-    cell.addEventListener("mouseover", show, false)
-    cell.addEventListener("click", openSummary, false)
+  for item in document.getElementsByClassName('item')
+    item.addEventListener("mouseout", hide, false)
+    item.addEventListener("mousemove", moveMouse, false)
+    item.addEventListener("mouseover", show, false)
+    item.addEventListener("click", clickItem, false)
 
   document.getElementById('container').addEventListener("click",
                                                         hideItemBox,
