@@ -87,7 +87,7 @@ window.showItemInfo = (element) ->
     for i in b.getElementsByTagName('li')
       for j in [0...i.getAttribute('data-count')]
         name = i.title
-        index = i.id
+        index = i.getAttribute('data-index')
         style = "background-image:url(#{ i.getAttribute('data-image') });"
         listItem =  "<div title=\"#{ name }\" class='item-small'
  style='#{ style }'></div>"

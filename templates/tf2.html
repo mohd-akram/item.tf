@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>TF2 Find</title>
     <meta name="description" content="Find TF2 items and quickly get information about crafting blueprints, market prices and more." />
     <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
@@ -21,7 +22,7 @@
         padding-right: 20px;
       }
     </style>
-    <style>.itemlist{width:540px;margin-top:120px;}</style>
+    <style>.itemlist{width:540px;margin-top:100px;}</style>
     {% include 'analytics.html' %}
   </head>
 {% from 'macros.html' import showitems, showsearchlinks %}
@@ -47,7 +48,7 @@
       <div id="itembox"></div>
 
       <div id="body">
-      <h1 style="margin-top:200px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
+      <h1 style="margin-top:140px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
       <form action="/search">
         <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
@@ -63,7 +64,7 @@
     $('#hover').hover(function() {$('#list').show('slow')});
     $.getJSON('/suggest', function (data) {$("#searchbox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
     addHoverBox();
-    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()};
+    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
   </script>
   </body>
 </html>

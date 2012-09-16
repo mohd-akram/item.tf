@@ -109,7 +109,7 @@
         i = _ref1[_k];
         for (j = _l = 0, _ref2 = i.getAttribute('data-count'); 0 <= _ref2 ? _l < _ref2 : _l > _ref2; j = 0 <= _ref2 ? ++_l : --_l) {
           name = i.title;
-          index = i.id;
+          index = i.getAttribute('data-index');
           style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
           listItem = "<div title=\"" + name + "\" class='item-small' style='" + style + "'></div>";
           if (index) {

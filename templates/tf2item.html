@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>{{item['name']}} - TF2 Find</title>
     <meta name="description" content="{{description}}" />
     <link rel="stylesheet" href="/css/tf2.css">
@@ -15,8 +16,11 @@
       <div id="itembox"></div>
       {% from 'macros.html' import showitem %}
       {{ showitem(item, False) }}
-      <script>showItemInfo(document.getElementById('{{item['index']}}'));document.getElementById('itemname').innerHTML="{{item['name']}}"</script>
-      <footer style="height:20px">{% include 'footer.html' %}</footer>
+      <footer>{% include 'footer.html' %}</footer>
     </div>
+    <script>
+      showItemInfo(document.getElementById('{{item['index']}}'));
+      document.getElementById('itemname').innerHTML="{{item['name']}}"
+    </script>
   </body>
 </html>

@@ -1,10 +1,10 @@
 {% macro showitem(item, showthumb=True) %}
 {% set style = "background-image:url({})".format(item['image']) if showthumb else "display: none" %}
-<div class="item"id="{{item['index']}}"title="{{item['name']}}"style="{{style}}"data-image="{{item['image_large']}}"{% for i in ['classes','tags'] %}{% if item[i] %}data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %} {% for i in ['storeprice','marketprice','description'] %}{% if item[i] %}data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}>
+<div class="item" id="{{item['index']}}" title="{{item['name']}}" style="{{style}}" data-image="{{item['image_large']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %} {% for i in ['storeprice','marketprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}>
 {%- for b in item['blueprints'] %}
-<ul data-chance="{{b['chance']}}"style="display:none">         
+<ul data-chance="{{b['chance']}}" style="display:none">         
   {%- for i in b['required'] %}
-  <li title="{{i['name']}}"{% if i['index'] %}id="{{i['index']}}"{% endif %}data-image="{{i['image']}}"data-count="{{i['count']}}"></li>
+  <li title="{{i['name']}}"{% if i['index'] %} data-index="{{i['index']}}"{% endif %} data-image="{{i['image']}}" data-count="{{i['count']}}"></li>
   {%- endfor %}
 </ul>
 {%- endfor %}
@@ -24,6 +24,6 @@
 
 {% macro showsearchlinks(stringlist) %}
 {% for string in stringlist %}
-<a href="/search?q={{string}}">{{string}}</a><br>
+<a href="/search?q={{string|replace(' ','%20')}}">{{string}}</a><br>
 {% endfor %}
 {% endmacro %}
