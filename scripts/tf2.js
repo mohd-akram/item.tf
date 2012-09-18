@@ -80,12 +80,10 @@
     return window.itemBox = document.getElementById("itembox");
   };
 
-  window.showItemInfo = function(element) {
-    var b, blueprints, blueprintsHTML, buyButton, buyHTML, chance, classes, classesHTML, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemId, itemName, j, listItem, marketPrice, name, quality, re, storePrice, style, tags, tagsHTML, title, url, wikiLink, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+  window.showItemInfo = function(item) {
+    var b, blueprints, blueprintsHTML, buyButton, buyHTML, chance, classes, classesHTML, hoverArea, i, image, imageUrl, index, isToken, isWeapon, j, listItem, marketPrice, name, option, quality, re, storePrice, style, tags, tagsHTML, title, url, wikiLink, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     init();
-    itemId = element.id;
-    itemName = element.title;
-    marketPrice = element.getAttribute('data-marketprice') || '';
+    marketPrice = item.getAttribute('data-marketprice') || '';
     if (marketPrice) {
       marketPrice = marketPrice.replace(/[{}']/g, '').replace(/, /g, '<br>');
       _ref = ['Unique', 'Vintage', 'Strange', 'Genuine', 'Haunted'];
@@ -96,9 +94,9 @@
       }
       marketPrice = "<h3 id='marketprice'>" + marketPrice + "</h3>";
     }
-    storePrice = element.getAttribute('data-storeprice');
-    imageUrl = element.getAttribute('data-image');
-    blueprints = element.getElementsByTagName('ul');
+    storePrice = item.getAttribute('data-storeprice');
+    imageUrl = item.getAttribute('data-image');
+    blueprints = item.getElementsByTagName('ul');
     blueprintsHTML = '<div id="blueprints">';
     for (_j = 0, _len1 = blueprints.length; _j < _len1; _j++) {
       b = blueprints[_j];
@@ -130,7 +128,7 @@
     blueprintsHTML += '</div>';
     buyHTML = storePrice ? "<form style='position:absolute;bottom:19px;left:345px;'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buybutton'></a>" : '';
     classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>";
-    classes = element.getAttribute('data-classes');
+    classes = item.getAttribute('data-classes');
     if (classes) {
       _ref3 = classes.split(',');
       for (_m = 0, _len3 = _ref3.length; _m < _len3; _m++) {
@@ -140,7 +138,7 @@
     }
     classesHTML += "</div>";
     tagsHTML = "<div id='tags' style='position:absolute;top:-5px;left:5px'>";
-    tags = getTags(element);
+    tags = getTags(item);
     if (tags.length) {
       isWeapon = __indexOf.call(tags, 'weapon') >= 0;
       isToken = __indexOf.call(tags, 'token') >= 0;
@@ -175,15 +173,15 @@
       }
     }
     tagsHTML += "</div>";
-    wikiLink = "http://wiki.teamfortress.com/wiki/" + itemName;
-    itemBox.innerHTML = "<h2 id='itemname'><a href='/item/" + itemId + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a></h2><a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a>" + marketPrice + "<form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1' value='440," + itemId + ",6'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6' selected=''>Unique</option>  <option value='3'>Vintage</option>  <option value='1'>Genuine</option>  <option value='5'>Unusual</option>  <option value='11'>Strange</option>  <option value='13'>Haunted</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
+    wikiLink = "http://wiki.teamfortress.com/wiki/" + item.title;
+    itemBox.innerHTML = "<h2 id='itemname'><a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + item.title + "</a></h2><a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a>" + marketPrice + "<form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1' value='440," + item.id + ",6'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
     hoverArea = document.createElement('div');
-    hoverArea.title = element.title;
-    hoverArea.setAttribute('data-description', getDescription(element));
-    hoverArea.setAttribute('data-tags', getTags(element));
+    hoverArea.title = item.title;
+    hoverArea.setAttribute('data-description', getDescription(item));
+    hoverArea.setAttribute('data-tags', tags);
     hoverArea.id = 'hoverarea';
     hoverArea.style.backgroundImage = "url('" + imageUrl + "')";
-    hoverArea.innerHTML = "<div style='display:none'>" + (getAttributes(element)) + "</div>";
+    hoverArea.innerHTML = "<div style='display:none'>" + (getAttributes(item)) + "</div>";
     hoverArea.addEventListener("mouseout", hide, false);
     hoverArea.addEventListener("mousemove", moveMouse, false);
     hoverArea.addEventListener("mouseover", show, false);
@@ -193,13 +191,21 @@
       buyButton.onclick = function() {
         var quantity;
         quantity = document.getElementById('quantity').value;
-        return window.open("http://store.steampowered.com/buyitem/440/" + itemId + "/" + quantity);
+        return window.open("http://store.steampowered.com/buyitem/440/" + item.id + "/" + quantity);
       };
     }
     quality = document.tf2outpostform.quality;
     quality.onchange = function() {
-      return document.tf2outpostform.has1.value = "440," + itemId + "," + quality.value;
+      return document.tf2outpostform.has1.value = "440," + item.id + "," + quality.value;
     };
+    _ref6 = quality.options;
+    for (i = _p = 0, _len6 = _ref6.length; _p < _len6; i = ++_p) {
+      option = _ref6[i];
+      if (marketPrice.indexOf(option.innerHTML) !== -1) {
+        quality.selectedIndex = i;
+        break;
+      }
+    }
     return itemBox.style.display = "block";
   };
 

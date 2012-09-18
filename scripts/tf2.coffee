@@ -59,13 +59,11 @@ init = ->
   window.hoverBox = document.getElementById("hoverbox")
   window.itemBox = document.getElementById("itembox")
 
-window.showItemInfo = (element) ->
+window.showItemInfo = (item) ->
   init()
-  itemId = element.id
-  itemName = element.title
 
   # Market price HTML
-  marketPrice = element.getAttribute('data-marketprice') or ''
+  marketPrice = item.getAttribute('data-marketprice') or ''
   if marketPrice
     marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
     for i in ['Unique','Vintage','Strange','Genuine','Haunted']
@@ -74,9 +72,9 @@ window.showItemInfo = (element) ->
                 .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
     marketPrice = "<h3 id='marketprice'>#{ marketPrice }</h3>"
 
-  storePrice = element.getAttribute('data-storeprice')
-  imageUrl = element.getAttribute('data-image')
-  blueprints = element.getElementsByTagName('ul')
+  storePrice = item.getAttribute('data-storeprice')
+  imageUrl = item.getAttribute('data-image')
+  blueprints = item.getElementsByTagName('ul')
 
   # Blueprints HTML
   blueprintsHTML = '<div id="blueprints">'
@@ -118,7 +116,7 @@ $#{ storePrice }<br>
 
   # Classes HTML
   classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>"
-  classes = element.getAttribute('data-classes')
+  classes = item.getAttribute('data-classes')
   if classes
     for i in classes.split(',')
       classesHTML += "<a href='/search?q=#{ i }' target='_blank'>
@@ -128,7 +126,7 @@ $#{ storePrice }<br>
 
   # Tags HTML
   tagsHTML = "<div id='tags' style='position:absolute;top:-5px;left:5px'>"
-  tags = getTags(element)
+  tags = getTags(item)
   if tags.length
     isWeapon = 'weapon' in tags
     isToken = 'token' in tags
@@ -159,13 +157,13 @@ $#{ storePrice }<br>
  src='/images/items/#{ image }.png'></a><br>"
   tagsHTML += "</div>"
 
-  wikiLink = "http://wiki.teamfortress.com/wiki/#{ itemName }"
+  wikiLink = "http://wiki.teamfortress.com/wiki/#{ item.title }"
   # Itembox HTML
   itemBox.innerHTML = "
 <h2 id='itemname'>
-<a href='/item/#{ itemId }'
+<a href='/item/#{ item.id }'
  target='_blank' class='glow' title='Go to Item Page'>
-#{ itemName }</a></h2>
+#{ item.title }</a></h2>
 <a class='button' target='_blank' title='Open in Wiki'
  style='position:absolute;bottom:10px;left:10px;'
  href=\"#{ wikiLink }\">Wiki</a>
@@ -173,7 +171,7 @@ $#{ storePrice }<br>
 <form name='tf2outpostform' method='POST'
  action='http://www.tf2outpost.com/search'>
 
-<input type='hidden' name='has1' value='440,#{ itemId },6'>
+<input type='hidden' name='has1' value='440,#{ item.id },6'>
 <input class='button'
  style='position:absolute;bottom:10px;left:70px;margin:0;'
  type='submit'
@@ -181,12 +179,12 @@ $#{ storePrice }<br>
 
 <input type='hidden' name='type' value='any'>
 <select id='quality' class='textbox' style='text-align:left'>
-  <option value='6' selected=''>Unique</option>
+  <option value='6'>Unique</option>
   <option value='3'>Vintage</option>
-  <option value='1'>Genuine</option>
-  <option value='5'>Unusual</option>
   <option value='11'>Strange</option>
+  <option value='1'>Genuine</option>
   <option value='13'>Haunted</option>
+  <option value='5'>Unusual</option>
 </select>
 
 </form>
@@ -198,13 +196,13 @@ $#{ storePrice }<br>
 
   # Hover area
   hoverArea = document.createElement('div')
-  hoverArea.title = element.title
-  hoverArea.setAttribute('data-description', getDescription(element))
-  hoverArea.setAttribute('data-tags', getTags(element))
+  hoverArea.title = item.title
+  hoverArea.setAttribute('data-description', getDescription(item))
+  hoverArea.setAttribute('data-tags', tags)
   hoverArea.id = 'hoverarea'
   hoverArea.style.backgroundImage = "url('#{ imageUrl }')"
   hoverArea.innerHTML = "<div style='display:none'>
-#{ getAttributes(element) }</div>"
+#{ getAttributes(item) }</div>"
   hoverArea.addEventListener("mouseout", hide, false)
   hoverArea.addEventListener("mousemove", moveMouse, false)
   hoverArea.addEventListener("mouseover", show, false)
@@ -216,12 +214,18 @@ $#{ storePrice }<br>
     buyButton.onclick = ->
       quantity = document.getElementById('quantity').value
       window.open("http://store.steampowered.com/buyitem/440/
-#{ itemId }/#{ quantity }")
+#{ item.id }/#{ quantity }")
 
   # TF2Outpost link
   quality = document.tf2outpostform.quality
   quality.onchange = ->
-    document.tf2outpostform.has1.value = "440,#{ itemId },#{ quality.value }"
+    document.tf2outpostform.has1.value = "440,#{ item.id },#{ quality.value }"
+
+  # Auto quality selection
+  for option, i in quality.options
+    if marketPrice.indexOf(option.innerHTML) != -1
+      quality.selectedIndex = i
+      break
 
   itemBox.style.display = "block"
 
