@@ -19,8 +19,7 @@
       <footer>{% include 'footer.html' %}</footer>
     </div>
     <script>
-      showItemInfo(document.getElementById('{{item['index']}}'));
-      document.getElementById('itemname').innerHTML="{{item['name']}}"
+      showItemInfo(document.getElementById('{{item['index']}}'), false);
     </script>
   </body>
 </html>

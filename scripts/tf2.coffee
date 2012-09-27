@@ -59,7 +59,7 @@ init = ->
   window.hoverBox = document.getElementById("hoverbox")
   window.itemBox = document.getElementById("itembox")
 
-window.showItemInfo = (item) ->
+window.showItemInfo = (item, link=true) ->
   init()
 
   # Market price HTML
@@ -157,13 +157,17 @@ $#{ storePrice }<br>
  src='/images/items/#{ image }.png'></a><br>"
   tagsHTML += "</div>"
 
+  itemName = item.title
+  if link
+    itemName = "<a href='/item/#{ item.id }'
+ target='_blank' class='glow' title='Go to Item Page'>
+#{ itemName }</a>"
+
   wikiLink = "http://wiki.teamfortress.com/wiki/#{ item.title }"
+
   # Itembox HTML
   itemBox.innerHTML = "
-<h2 id='itemname'>
-<a href='/item/#{ item.id }'
- target='_blank' class='glow' title='Go to Item Page'>
-#{ item.title }</a></h2>
+<h2 id='itemname'>#{ itemName }</h2>
 <a class='button' target='_blank' title='Open in Wiki'
  style='position:absolute;bottom:10px;left:10px;'
  href=\"#{ wikiLink }\">Wiki</a>

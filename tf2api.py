@@ -308,6 +308,7 @@ def convertmarketname(row):
             'Submachine Gun':'SMG',
             'Monoculus':'MONOCULUS!',
             'The Milkman':'Milkman',
+            'The Triple A Badge':'Triple A Badge',
             'Superfan':'The Superfan',
             'Athletic Supporter':'The Athletic Supporter',
             'Essential Accessories':'The Essential Accessories',
