@@ -315,6 +315,7 @@
       "Holy Mackerel",
       "Candy Cane",
       "Boston Basher",
+      "Sun-on-a-Stick",
       "Fan O'War",
       "Atomizer",
       "Three-Rune Blade",
@@ -333,7 +334,8 @@
       "Sydney Sleeper",
       "Bazaar Bargain",
       "Machina",
-      "Hitman's Heatmaker"
+      "Hitman's Heatmaker",
+      "AWPer Hand"
     ]
   ],
   "Fabricate Class Weapons (Sniper, Secondary)": [
@@ -346,6 +348,7 @@
       "Razorback",
       "Jarate",
       "Darwin's Danger Shield",
+      "Cozy Camper",
       "Cleaner's Carbine"
     ]
   ],
@@ -567,6 +570,7 @@
       "Homewrecker",
       "Powerjack",
       "Back Scratcher",
+      "Sharpened Volcano Fragment",
       "Postal Pummeler",
       "Maul",
       "Third Degree",
@@ -1581,12 +1585,14 @@
       "Bootie Time",
       "Boston Boom-Bringer",
       "Fast Learner",
+      "Teufort Tooth Kicker",
       "Front Runner",
       "Cross-Comm Express",
       "Fed-Fightin' Fedora",
       "Dillinger's Duffel",
       "Triad Trinket",
-      "Champ Stamp"
+      "Champ Stamp",
+      "Track Terrorizer"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1616,11 +1622,14 @@
       "Outback Intellectual",
       "Itsy Bitsy Spyer",
       "Bushman's Boonie",
+      "Teufort Tooth Kicker",
       "Fruit Shoot",
       "Doublecross-Comm",
       "Liquidator's Lid",
       "Triad Trinket",
-      "Champ Stamp"
+      "Champ Stamp",
+      "Lone Star",
+      "Koala Compact"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1666,8 +1675,11 @@
       "Conquistador",
       "Captain's Cocktails",
       "Helmet Without a Home",
+      "Teufort Tooth Kicker",
       "Cross-Comm Crash Helmet",
-      "Professor's Pineapple"
+      "Professor's Pineapple",
+      "War Pig",
+      "Soldier's Stogie"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1703,9 +1715,11 @@
       "Bolgan",
       "Aladdin's Private Reserve",
       "Snapped Pupil",
+      "Teufort Tooth Kicker",
       "Professor's Pineapple",
       "Liquor Locker",
-      "Bird-Man of Aberdeen"
+      "Bird-Man of Aberdeen",
+      "Bearded Bombardier"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1749,7 +1763,8 @@
       "Toss-Proof Towel",
       "Apparatchik's Apparel",
       "Triad Trinket",
-      "Champ Stamp"
+      "Champ Stamp",
+      "Soviet Gentleman"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -1785,7 +1800,9 @@
       "Scrap Pack",
       "Quadwrangler",
       "Surgeon's Side Satchel",
-      "Gentleman's Ushanka"
+      "Gentleman's Ushanka",
+      "Medi-Mask",
+      "Archimedes"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -1831,7 +1848,9 @@
       "Waxy Wayfinder",
       "Scrap Pack",
       "Professor's Pineapple",
-      "HazMat Headcase"
+      "HazMat Headcase",
+      "Russian Rocketeer",
+      "Pyrotechnic Tote"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -1867,7 +1886,8 @@
       "Sneaky Spats of Sneaking",
       "Doublecross-Comm",
       "Business Casual",
-      "Triad Trinket"
+      "Triad Trinket",
+      "Hat of Cards"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
@@ -1889,6 +1909,7 @@
       "Industrial Festivizer",
       "Western Wear",
       "Big Country",
+      "Professor's Peculiarity",
       "Teddy Roosebelt",
       "Googly Gazer",
       "Ol' Geezer",
@@ -1903,10 +1924,12 @@
       "Virtual Reality Headset",
       "Itsy Bitsy Spyer",
       "Stocking Stuffer",
+      "Teufort Tooth Kicker",
       "Texas Half-Pants",
       "Idea Tube",
       "Triad Trinket",
-      "Champ Stamp"
+      "Champ Stamp",
+      "Pocket Purrer"
     ]
   ],
   "Rebuild Headgear": [
