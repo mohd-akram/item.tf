@@ -117,10 +117,10 @@ def getmarketprices(itemsbyname):
 
     for row in sheet:
         name = convertmarketname(row)
-        price = filtermarketstring(row['price'].replace('ref', '')).title()
+        price = filtermarketstring(row['price']).replace(' ref', '').title()
         quality = row['quality']
-        lowprice = filtermarketstring(row['lowprice'].replace('ref',
-                                                              '')).title()
+        lowprice = filtermarketstring(row['lowprice']).replace(' ref',
+                                                               '').title()
         lowquality = 'Unique'
 
         if name == 'Ghastlier/Ghastlierest Gibus':
