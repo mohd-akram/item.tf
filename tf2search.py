@@ -9,8 +9,8 @@ Requires TF2 API module to get items and prices.
 Usage:
     items = search('engi medic hats', itemsdict, itemsbyname, itemsets)
 
-Note: You must provide your own image URLs for the paint cans.
-      Replace the relative URL in createitemdict.
+Note: You must provide your own image URLs for paint cans and blueprints.
+      Replace the relative URLs in createitemdict and parseblueprints.
 
 """
 import re
@@ -43,7 +43,7 @@ def gettag(word):
             return tag
 
 def parseblueprints(blueprints, itemsbyname):
-    """Parse a human-readable dictionary of blueprint descriptions"""
+    """Parse a dictionary of blueprint descriptions"""
     url = '/images/items/'
     localrepl = {'Any Class Token':'class_token.png',
                  'Any Slot Token':'slot_token.png',

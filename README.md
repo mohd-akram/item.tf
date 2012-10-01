@@ -1,7 +1,7 @@
 TF2 Find
 ========
 
-This is a Google App Engine site that lets you search TF2 items and find the ones you want. It's still in progress, but the main idea is that it you can find everything you need to know about the store price, market price and crafting recipe to help you obtain it. The future plan is to create some sort of recommendation mechanism.
+This is a Google App Engine site that lets you search TF2 items and find the ones you want. There are two main ways to search - you can either use regular keyword search or search by classes and item tags (eg. weapon, misc, hat, etc.). Once you find an item you want, you can get all kinds of information about it such as its store price, market price and crafting recipes to help you obtain it. You can also search for item sets or view a list of them by typing 'sets'.
 
 Get Started
 -----------
@@ -14,14 +14,35 @@ Structure
 There are three main files:
 
  * tf2.py - Contains the page handlers
- * tf2api.py - Contains the main functions for getting items, store prices and market prices (tf2spreadsheet.blogspot.com)
- * tf2search.py - Contains the parsing and search functions. It also has a function called createitemdict - this function takes an item, store prices and market prices. It processes them and returns a special dictionary which has all the keys and values about the item that I need to use in the site.
+ * tf2api.py - Contains the main functions for getting items, store prices, market prices (tf2spreadsheet.blogspot.com) and other information.
+ * tf2search.py - Contains the parsing and search functions.
 
-tf2api.py has no dependencies and can be used separately.
+TF2 API
+-------
+tf2api.py has no dependencies and was designed to be used either for this project or separately. It contains many helpful functions to get information about items in TF2.
+
+Example:
+
+    >>> import tf2api
+    >>> schema = tf2api.getschema(apikey)
+    >>> items = tf2api.getitems(schema)
+    >>> itemsbyname = tf2api.getitemsbyname(schema)
+
+    >>> pan = items[264] # 264 is the defindex of the item, Or:
+    >>> pan = itemsbyname['Frying Pan']
+
+    >>> tf2api.getitemclasses(pan)
+    [u'Scout', u'Soldier', u'Pyro', u'Demoman', u'Heavy', u'Medic', u'Sniper']
+
+    >>> tf2api.getitemtags(pan)
+    ['weapon', u'melee']
+
 
 Dependencies
 ------------
 There are no external dependencies, only built-in Python modules.
+
+Tested with Python 2.7.
 
 Thanks
 ------
