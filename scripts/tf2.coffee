@@ -175,7 +175,7 @@ $#{ storePrice }<br>
 <form name='tf2outpostform' method='POST'
  action='http://www.tf2outpost.com/search'>
 
-<input type='hidden' name='has1' value='440,#{ item.id },6'>
+<input type='hidden' name='has1'>
 <input class='button'
  style='position:absolute;bottom:10px;left:70px;margin:0;'
  type='submit'
@@ -225,12 +225,16 @@ $#{ storePrice }<br>
   quality.onchange = ->
     document.tf2outpostform.has1.value = "440,#{ item.id },#{ quality.value }"
 
-  # Auto quality selection
-  for option, i in quality.options
-    if marketPrice.indexOf(option.innerHTML) != -1
-      quality.selectedIndex = i
-      break
+  if itemName.indexOf('Strange Part') == -1
+    # Auto quality selection
+    for option, i in quality.options
+      if marketPrice.indexOf(option.innerHTML) != -1
+        quality.selectedIndex = i
+        break
 
+  # Update the quality selection
+  quality.onchange()
+  # Show the item info box
   itemBox.style.display = "block"
 
 window.addHoverBox = ->

@@ -181,7 +181,7 @@
       itemName = "<a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
     }
     wikiLink = "http://wiki.teamfortress.com/wiki/" + item.title;
-    itemBox.innerHTML = "<h2 id='itemname'>" + itemName + "</h2><a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a>" + marketPrice + "<form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1' value='440," + item.id + ",6'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
+    itemBox.innerHTML = "<h2 id='itemname'>" + itemName + "</h2><a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a>" + marketPrice + "<form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
     hoverArea.setAttribute('data-description', getDescription(item));
@@ -205,14 +205,17 @@
     quality.onchange = function() {
       return document.tf2outpostform.has1.value = "440," + item.id + "," + quality.value;
     };
-    _ref6 = quality.options;
-    for (i = _p = 0, _len6 = _ref6.length; _p < _len6; i = ++_p) {
-      option = _ref6[i];
-      if (marketPrice.indexOf(option.innerHTML) !== -1) {
-        quality.selectedIndex = i;
-        break;
+    if (itemName.indexOf('Strange Part') === -1) {
+      _ref6 = quality.options;
+      for (i = _p = 0, _len6 = _ref6.length; _p < _len6; i = ++_p) {
+        option = _ref6[i];
+        if (marketPrice.indexOf(option.innerHTML) !== -1) {
+          quality.selectedIndex = i;
+          break;
+        }
       }
     }
+    quality.onchange();
     return itemBox.style.display = "block";
   };
 
