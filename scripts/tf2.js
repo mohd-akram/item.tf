@@ -100,35 +100,38 @@
     storePrice = item.getAttribute('data-storeprice');
     imageUrl = item.getAttribute('data-image');
     blueprints = item.getElementsByTagName('ul');
-    blueprintsHTML = '<div id="blueprints">';
-    for (_j = 0, _len1 = blueprints.length; _j < _len1; _j++) {
-      b = blueprints[_j];
-      chance = b.getAttribute('data-chance');
-      blueprintsHTML += '<div class="blueprint">';
-      _ref1 = b.getElementsByTagName('li');
-      for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-        i = _ref1[_k];
-        for (j = _l = 0, _ref2 = i.getAttribute('data-count'); 0 <= _ref2 ? _l < _ref2 : _l > _ref2; j = 0 <= _ref2 ? ++_l : --_l) {
-          name = i.title;
-          index = i.getAttribute('data-index');
-          style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
-          listItem = "<div title=\"" + name + "\" class='item-small' style='" + style + "'></div>";
-          if (index) {
-            url = "/item/" + index;
-          } else {
-            name = name.replace('Any ', '').replace('Spy Watch', 'PDA2');
-            if (name.split(' ').length > 2) {
-              name = name.replace('Weapon', 'Set');
+    blueprintsHTML = '';
+    if (blueprints.length) {
+      blueprintsHTML = '<div id="blueprints">';
+      for (_j = 0, _len1 = blueprints.length; _j < _len1; _j++) {
+        b = blueprints[_j];
+        chance = b.getAttribute('data-chance');
+        blueprintsHTML += '<div class="blueprint">';
+        _ref1 = b.getElementsByTagName('li');
+        for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+          i = _ref1[_k];
+          for (j = _l = 0, _ref2 = i.getAttribute('data-count'); 0 <= _ref2 ? _l < _ref2 : _l > _ref2; j = 0 <= _ref2 ? ++_l : --_l) {
+            name = i.title;
+            index = i.getAttribute('data-index');
+            style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
+            listItem = "<div title=\"" + name + "\" class='item-small'   style='" + style + "'></div>";
+            if (index) {
+              url = "/item/" + index;
+            } else {
+              name = name.replace('Any ', '').replace('Spy Watch', 'PDA2');
+              if (name.split(' ').length > 2) {
+                name = name.replace('Weapon', 'Set');
+              }
+              url = "/search?q=" + (encodeURIComponent(name));
             }
-            url = "/search?q=" + (encodeURIComponent(name));
+            listItem = "<a href=\"" + url + "\" target='_blank'>" + listItem + "</a>";
+            blueprintsHTML += listItem;
           }
-          listItem = "<a href=\"" + url + "\" target='_blank'>" + listItem + "</a>";
-          blueprintsHTML += listItem;
         }
+        blueprintsHTML += "<div title='Crafting Chance'   style='position:relative;top: 13px;margin-left:420px;'>  <h3>" + chance + "%</h3></div></div>";
       }
-      blueprintsHTML += "<div title='Crafting Chance' style='position:relative;top: 13px;margin-left:440px;'><h3>" + chance + "%</h3></div></div>";
+      blueprintsHTML += '</div>';
     }
-    blueprintsHTML += '</div>';
     buyHTML = storePrice ? "<form style='position:absolute;bottom:19px;left:345px;'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buybutton'></a>" : '';
     classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>";
     classes = item.getAttribute('data-classes');

@@ -50,11 +50,15 @@ header > a {
 }
 
 #blueprints {
-  text-align: center;
   position: absolute;
-  width: 100%;
   margin: auto;
-  bottom: 50px;
+  left: 4px;
+  bottom: 65px;
+  width: 492px;
+  height: 168px;
+  overflow-y: auto;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .blueprint {
@@ -308,4 +312,23 @@ a > img {
 
 .haunted {
   color: #8650AC;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+}
+::-webkit-scrollbar-corner {
+  background: #474742;
+}
+::-webkit-scrollbar-track {
+  background: #333331;
+}
+::-webkit-scrollbar-thumb {
+  background: #292927;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #242422;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #1F1F1D;
 }

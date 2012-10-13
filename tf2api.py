@@ -109,6 +109,7 @@ def getmarketprices(itemsbyname):
 
     pricesdict = defaultdict(dict)
     denoms = ['Key', 'Bud', 'Scrap']
+    botkillers = {'Diamond':'Carbonado', 'Gold':'Silver', 'Blood':'Rust'}
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality', 'class', 'name',
                                                     'price', 'lowprice',
@@ -124,7 +125,7 @@ def getmarketprices(itemsbyname):
         lowquality = 'Unique'
 
         if name == 'Ghastlier/Ghastlierest Gibus':
-            for i in ['Ghastlier','Ghastlierest']:
+            for i in ['Ghastlier', 'Ghastlierest']:
                 hat = row.copy()
                 hat['name'] = i + ' Gibus'
                 sheet.append(hat)
@@ -135,19 +136,34 @@ def getmarketprices(itemsbyname):
                 classmask['name'] = class_ + ' Mask'
                 sheet.append(classmask)
 
+        elif name == 'Class Token':
+            for class_ in getallclasses():
+                token = row.copy()
+                token['name'] = 'Class Token - ' + class_
+                sheet.append(token)
+
+        elif name == 'Slot Token':
+            for i in ['Primary', 'Secondary', 'Melee', 'PDA2']:
+                token = row.copy()
+                token['name'] = 'Slot Token - ' + i
+                sheet.append(token)
+
         elif 'Soldier Medal' in name:
             medal = row.copy()
             medal['name'] = "Gentle Manne's Service Medal"
-            medal['quality'] = name.replace('Soldier Medal ','')
+            medal['quality'] = name.replace('Soldier Medal ', '')
             sheet.append(medal)
 
         elif name in itemsbyname:
-            if name.startswith('Gold Botkiller'):
-                nongold = row.copy()
-                nongold['name'] = name.replace('Gold ','')
-                nongold['price'] = lowprice
-                nongold['lowprice'] = lowprice = ''
-                sheet.append(nongold)
+            if 'Botkiller' in name:
+                # Split the spreadsheet prices for botkiller items
+                for k, v in botkillers.items():
+                    if k in name:
+                        alt = row.copy()
+                        alt['name'] = name.replace(k, v)
+                        alt['price'] = lowprice
+                        alt['lowprice'] = lowprice = ''
+                        sheet.append(alt)
 
             index = itemsbyname[name]['defindex']
 

@@ -1,4 +1,85 @@
 {
+  "Smelt Class Weapons (Scout)": [
+    [
+      "Any Scout Weapon",
+      "Any Scout Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Sniper)": [
+    [
+      "Any Sniper Weapon",
+      "Any Sniper Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Soldier)": [
+    [
+      "Any Soldier Weapon",
+      "Any Soldier Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Demoman)": [
+    [
+      "Any Demoman Weapon",
+      "Any Demoman Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Heavy)": [
+    [
+      "Any Heavy Weapon",
+      "Any Heavy Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Medic)": [
+    [
+      "Any Medic Weapon",
+      "Any Medic Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Pyro)": [
+    [
+      "Any Pyro Weapon",
+      "Any Pyro Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Spy)": [
+    [
+      "Any Spy Weapon",
+      "Any Spy Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
+  "Smelt Class Weapons (Engineer)": [
+    [
+      "Any Engineer Weapon",
+      "Any Engineer Weapon"
+    ],
+    [
+      "Scrap Metal"
+    ]
+  ],
   "Combine Scrap Metal": [
     [
       "Scrap Metal",
@@ -320,7 +401,8 @@
       "Atomizer",
       "Three-Rune Blade",
       "Unarmed Combat",
-      "Wrap Assassin"
+      "Wrap Assassin",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Sniper, Primary)": [
@@ -361,7 +443,8 @@
     [
       "Tribalman's Shiv",
       "Bushwacka",
-      "Shahanshah"
+      "Shahanshah",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Soldier, Primary)": [
@@ -408,7 +491,8 @@
       "Half-Zatoichi",
       "Market Gardener",
       "Disciplinary Action",
-      "Escape Plan"
+      "Escape Plan",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Primary)": [
@@ -451,7 +535,8 @@
       "Half-Zatoichi",
       "Persian Persuader",
       "Nessie's Nine Iron",
-      "Scottish Handshake"
+      "Scottish Handshake",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Heavy, Primary)": [
@@ -493,7 +578,8 @@
       "Fists of Steel",
       "Eviction Notice",
       "Apoco-Fists",
-      "Holiday Punch"
+      "Holiday Punch",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Medic, Primary)": [
@@ -529,7 +615,8 @@
       "Ubersaw",
       "Vita-Saw",
       "Amputator",
-      "Solemn Vow"
+      "Solemn Vow",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Pyro, Primary)": [
@@ -575,7 +662,8 @@
       "Maul",
       "Third Degree",
       "Lollichop",
-      "Neon Annihilator"
+      "Neon Annihilator",
+      "Freedom Staff"
     ]
   ],
   "Fabricate Class Weapons (Spy, Secondary)": [
@@ -1629,7 +1717,8 @@
       "Triad Trinket",
       "Champ Stamp",
       "Lone Star",
-      "Koala Compact"
+      "Koala Compact",
+      "Stovepipe Sniper Shako"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1679,7 +1768,8 @@
       "Cross-Comm Crash Helmet",
       "Professor's Pineapple",
       "War Pig",
-      "Soldier's Stogie"
+      "Soldier's Stogie",
+      "Menpo"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1719,7 +1809,10 @@
       "Professor's Pineapple",
       "Liquor Locker",
       "Bird-Man of Aberdeen",
-      "Bearded Bombardier"
+      "Bearded Bombardier",
+      "King of Scotland Cape",
+      "Menpo",
+      "K-9 Mane"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1764,7 +1857,8 @@
       "Apparatchik's Apparel",
       "Triad Trinket",
       "Champ Stamp",
-      "Soviet Gentleman"
+      "Soviet Gentleman",
+      "K-9 Mane"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -1802,7 +1896,8 @@
       "Surgeon's Side Satchel",
       "Gentleman's Ushanka",
       "Medi-Mask",
-      "Archimedes"
+      "Archimedes",
+      "Foppish Physician"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -1887,7 +1982,8 @@
       "Doublecross-Comm",
       "Business Casual",
       "Triad Trinket",
-      "Hat of Cards"
+      "Hat of Cards",
+      "Distinguished Rogue"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
