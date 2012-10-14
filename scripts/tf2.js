@@ -118,7 +118,7 @@
             if (index) {
               url = "/item/" + index;
             } else {
-              name = name.replace('Any ', '').replace('Spy Watch', 'PDA2');
+              name = name.replace('Any ', '').replace('Spy Watch', 'PDA2 Weapon');
               if (name.split(' ').length > 2) {
                 name = name.replace('Weapon', 'Set');
               }

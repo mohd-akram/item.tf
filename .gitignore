@@ -163,6 +163,7 @@ pip-log.txt
 .DS_Store
 
 api_key.txt
+templates/message.html
 *~
 *.~py
 ~*
