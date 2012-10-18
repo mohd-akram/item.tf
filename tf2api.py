@@ -334,7 +334,6 @@ def convertmarketname(row):
             'High-Five': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',
             'Enemies Gibbed': 'Strange Part: Gib Kills',
-            "HHH's Axe": "Horseless Headless Horsemann's Headtaker",
             'Unusual Haunted Metal scrap': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
             'Spine-Chilling Skull 2010': 'Spine-Chilling Skull',
