@@ -1,4 +1,5 @@
-﻿# coding=utf-8
+﻿
+# coding: utf-8
 
 """This module is based on the Steam WebAPI and can be used to get information
 about items in TF2. Using this module, you can obtain the item schema,
@@ -13,11 +14,13 @@ import csv
 from urllib2 import urlopen
 from collections import defaultdict, OrderedDict
 
+
 def isprice(string):
     """Check if string starts with a number"""
     if string:
         return string[0].isdigit()
     return False
+
 
 def getschema(apikey):
     """Return the schema"""
@@ -26,12 +29,13 @@ def getschema(apikey):
 
     return json.loads(urlopen(url).read())
 
+
 def getitemsinfo(apikey, storeprices, indexes):
     """Return a dictionary of AssetClassInfo values with defindex as key"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
            '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
-                                                                   len(indexes))
-                                                                   )
+                                                                   len(indexes)
+                                                                   ))
 
     idtoindex = {}
     for n, index in enumerate(indexes):
@@ -42,8 +46,9 @@ def getitemsinfo(apikey, storeprices, indexes):
     infobyid = json.loads(urlopen(url).read())['result']
     del infobyid['success']
 
-    return {idtoindex[classid]:iteminfo for classid, iteminfo in
+    return {idtoindex[classid]: iteminfo for classid, iteminfo in
             infobyid.items()}
+
 
 def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
@@ -51,10 +56,12 @@ def getbundles(apikey, storeprices):
                if 'Bundles' in price['tags']]
     return getitemsinfo(apikey, storeprices, indexes)
 
+
 def getitemsets(schema):
     """Return a dictionary of itemsets with 'name' as key"""
-    return {itemset['name']:itemset for itemset in
+    return {itemset['name']: itemset for itemset in
             schema['result']['item_sets']}
+
 
 def getitems(schema):
     """Return an ordered dictionary of items in the schema where the key is
@@ -62,27 +69,31 @@ def getitems(schema):
     return OrderedDict([(item['defindex'], item) for item in
                         schema['result']['items']])
 
+
 def getitemsbyname(schema):
     """Return an ordered dictionary of items in the schema where the key is
     item_name for each item"""
     itemsbyname = OrderedDict()
     for item in schema['result']['items']:
         name = item['item_name']
-        if (name not in itemsbyname and
-           item['defindex'] not in (2007, 2015, 2049)):
-            itemsbyname[name] = item
+        if name not in itemsbyname:
+            if item['defindex'] not in (2007, 2015, 2049):
+                itemsbyname[name] = item
 
     return itemsbyname
 
+
 def getattributes(schema):
     """Return a dictionary with each attribute's name as key"""
-    return {attribute['name']:attribute for attribute in
+    return {attribute['name']: attribute for attribute in
             schema['result']['attributes']}
+
 
 def getparticleeffects(schema):
     """Return a dictionary with each particle effect's id as key"""
-    return {effect['id']:effect for effect in
+    return {effect['id']: effect for effect in
             schema['result']['attribute_controlled_attached_particles']}
+
 
 def getstoreprices(apikey):
     """Return a dictionary of store prices where the key is defindex for
@@ -92,12 +103,14 @@ def getstoreprices(apikey):
 
     prices = json.loads(urlopen(url).read())['result']['assets']
 
-    return {int(price['name']):price for price in prices}
+    return {int(price['name']): price for price in prices}
+
 
 def getnewstoreprices(storeprices):
     """Return a dictionary of store prices of new items with defindex as key"""
-    return {index:price for index, price in storeprices.items()
+    return {index: price for index, price in storeprices.items()
             if 'New' in price['tags']}
+
 
 def getmarketprices(itemsbyname):
     """Get market prices from tf2spreadsheet.blogspot.com
@@ -109,7 +122,7 @@ def getmarketprices(itemsbyname):
 
     pricesdict = defaultdict(dict)
     denoms = ['Key', 'Bud', 'Scrap']
-    botkillers = {'Diamond':'Carbonado', 'Gold':'Silver', 'Blood':'Rust'}
+    botkillers = {'Diamond': 'Carbonado', 'Gold': 'Silver', 'Blood': 'Rust'}
 
     reader = csv.DictReader(pricesdata, fieldnames=['quality', 'class', 'name',
                                                     'price', 'lowprice',
@@ -182,47 +195,53 @@ def getmarketprices(itemsbyname):
                 pricesdict[index][quality] = price
 
             if lowprice and lowprice != '-':
-                if not any(d in lowprice for d in denoms) and isprice(lowprice):
-                    lowprice += ' Refined'
+                if not any(d in lowprice for d in denoms):
+                    if isprice(lowprice):
+                        lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice
 
     return pricesdict
 
+
 def getweapontags():
     """Return all weapon tags"""
     return ['primary', 'secondary', 'melee', 'pda', 'pda2', 'building']
+
 
 def getalltags():
     """Return all item tags"""
     return (['hat', 'weapon', 'misc', 'tool', 'action',
              'taunt', 'paint', 'token', 'bundle'] + getweapontags())
 
+
 def getallclasses():
     """Return an OrderedDict of TF2 classes with name as key and
     a list of aliases as value"""
-    return OrderedDict(
-            [('Scout', ['Scoot']),
-            ('Soldier', ['Solly']),
-            ('Pyro', []),
-            ('Demoman', ['Demo']),
-            ('Heavy', []),
-            ('Engineer', ['Engi','Engie']),
-            ('Medic', []),
-            ('Sniper', []),
-            ('Spy', [])])
+    return OrderedDict([('Scout', ['Scoot']),
+                        ('Soldier', ['Solly']),
+                        ('Pyro', []),
+                        ('Demoman', ['Demo']),
+                        ('Heavy', []),
+                        ('Engineer', ['Engi', 'Engie']),
+                        ('Medic', []),
+                        ('Sniper', []),
+                        ('Spy', [])])
+
 
 def getstoreprice(item, storeprices):
     """Get store price of item"""
     index = item['defindex']
 
-    return (str(round(storeprices[index]['prices']['USD']/100.00, 2))
-            if index in storeprices else  '')
+    return (str(round(storeprices[index]['prices']['USD'] / 100.00, 2))
+            if index in storeprices else '')
+
 
 def getmarketprice(item, marketprices):
     """Get market price of item"""
     index = item['defindex']
     return marketprices[index] if index in marketprices else {}
+
 
 def getitemattributes(item, allattributes, effects):
     """Get attributes of item"""
@@ -239,7 +258,7 @@ def getitemattributes(item, allattributes, effects):
 
                 if descformat == 'value_is_particle_index':
                     value = effects[value]['name']
-                    description = description.replace('%s1','{}')
+                    description = description.replace('%s1', '{}')
                 else:
                     if descformat == 'value_is_percentage':
                         value = (value * 100) - 100
@@ -250,23 +269,25 @@ def getitemattributes(item, allattributes, effects):
                     elif descformat == 'value_is_additive_percentage':
                         value *= 100
 
-                    description = description.replace('%s1','{:g}')
+                    description = description.replace('%s1', '{:g}')
 
                 description = description.format(value)
 
-                attrdict = {'description':description,
-                            'type':attribute['effect_type']}
+                attrdict = {'description': description,
+                            'type': attribute['effect_type']}
                 attributelist.append(attrdict)
 
     order = ['neutral', 'positive', 'negative']
 
     return sorted(attributelist, key=lambda k: order.index(k['type']))
 
+
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
     return (sorted(item['used_by_classes'],
-                  key=getallclasses().keys().index)
-                  if 'used_by_classes' in item else [])
+            key=getallclasses().keys().index)
+            if 'used_by_classes' in item else [])
+
 
 def getitemtags(item):
     """Get a list of tags that describe the item"""
@@ -300,37 +321,39 @@ def getitemtags(item):
 
     return tags
 
+
 def filtermarketstring(string):
     """Clean up a string from the spreadsheet"""
-    return string.replace('(clean)','').replace('(dirty)','').strip()
+    return string.replace('(clean)', '').replace('(dirty)', '').strip()
+
 
 def convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
     name = filtermarketstring(row['name'])
-    repl = {'Meet the Medic':'Taunt: The Meet the Medic',
-            'High-Five':'Taunt: The High Five!',
-            'Schadenfreude':'Taunt: The Schadenfreude',
-            'Enemies Gibbed':'Strange Part: Gib Kills',
-            "HHH's Axe":"Horseless Headless Horsemann's Headtaker",
-            'Unusual Haunted Metal scrap':'Haunted Metal Scrap',
-            'Hazmat Headcase':'HazMat Headcase',
-            'Spine-Chilling Skull 2010':'Spine-Chilling Skull',
-            'Color No. 216-190-216 (Pink)':'Color No. 216-190-216',
-            "Zephaniah's Greed":"Zepheniah's Greed",
-            'Bolgan Helmet':'Bolgan',
-            'Full Head of Steam':'Full Head Of Steam',
-            'Detective Noir':u'Détective Noir',
-            'Helmet Without A Home':'Helmet Without a Home',
-            'Dueling mini game':'Dueling Mini-Game',
-            'Submachine Gun':'SMG',
-            'Monoculus':'MONOCULUS!',
-            'The Milkman':'Milkman',
-            'The Triple A Badge':'Triple A Badge',
-            'Superfan':'The Superfan',
-            'Athletic Supporter':'The Athletic Supporter',
-            'Essential Accessories':'The Essential Accessories',
-            "Dr. Grordbert's Copper Crest":"Dr. Grordbort's Copper Crest",
-            "Dr. Grordbert's Silver Crest":"Dr. Grordbort's Silver Crest",
+    repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
+            'High-Five': 'Taunt: The High Five!',
+            'Schadenfreude': 'Taunt: The Schadenfreude',
+            'Enemies Gibbed': 'Strange Part: Gib Kills',
+            "HHH's Axe": "Horseless Headless Horsemann's Headtaker",
+            'Unusual Haunted Metal scrap': 'Haunted Metal Scrap',
+            'Hazmat Headcase': 'HazMat Headcase',
+            'Spine-Chilling Skull 2010': 'Spine-Chilling Skull',
+            'Color No. 216-190-216 (Pink)': 'Color No. 216-190-216',
+            "Zephaniah's Greed": "Zepheniah's Greed",
+            'Bolgan Helmet': 'Bolgan',
+            'Full Head of Steam': 'Full Head Of Steam',
+            'Detective Noir': u'Détective Noir',
+            'Helmet Without A Home': 'Helmet Without a Home',
+            'Dueling mini game': 'Dueling Mini-Game',
+            'Submachine Gun': 'SMG',
+            'Monoculus': 'MONOCULUS!',
+            'The Milkman': 'Milkman',
+            'The Triple A Badge': 'Triple A Badge',
+            'Superfan': 'The Superfan',
+            'Athletic Supporter': 'The Athletic Supporter',
+            'Essential Accessories': 'The Essential Accessories',
+            "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
+            "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
             'Key': 'Mann Co. Supply Crate Key',
 
             'Mann Co. Supply Crate (series 40)':

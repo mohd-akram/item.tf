@@ -11,13 +11,16 @@ import tf2search
 
 from handler import Handler
 
+
 def gethomepage():
     return 'http://www.tf2find.com'
+
 
 def getapikey():
     with open('api_key.txt') as f:
         apikey = f.read()
     return apikey
+
 
 def updatecache():
     t0 = time.time()
@@ -69,7 +72,8 @@ def updatecache():
     t1 = time.time()
 
     memcache.set('lastupdated', t1)
-    logging.debug('Updated Cache. Time taken: {} seconds'.format(t1-t0))
+    logging.debug('Updated Cache. Time taken: {} seconds'.format(t1 - t0))
+
 
 def getfromcache(key):
     value = memcache.get(key)
@@ -81,19 +85,22 @@ def getfromcache(key):
 
     return value
 
+
 class TF2Handler(Handler):
+    """Homepage handler"""
     def get(self):
         if self.request.host.endswith('appspot.com'):
             return self.redirect(gethomepage(), True)
 
         t0 = getfromcache('lastupdated')
-        lastupdated = int(time.time()-t0) / 60
+        lastupdated = int(time.time() - t0) / 60
 
-        self.render('tf2.html', homepage=gethomepage(),
-                                tags=tf2api.getalltags(),
-                                newitems=random.sample(getfromcache('newitems'),
-                                                       5),
-                                lastupdated=lastupdated)
+        self.render('tf2.html',
+                    homepage=gethomepage(),
+                    tags=tf2api.getalltags(),
+                    newitems=random.sample(getfromcache('newitems'), 5),
+                    lastupdated=lastupdated)
+
 
 class TF2SearchHandler(Handler):
     def get(self):
@@ -104,12 +111,12 @@ class TF2SearchHandler(Handler):
 
             if query in itemsbyname:
                 return self.redirect(
-                       '/item/{}'.format(itemsbyname[query]['defindex']))
+                    '/item/{}'.format(itemsbyname[query]['defindex']))
 
             elif query == 'random':
                 filtereditems = getfromcache('filtereditems')
                 return self.redirect(
-                       '/item/{}'.format(random.choice(filtereditems)['index']))
+                    '/item/{}'.format(random.choice(filtereditems)['index']))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')
@@ -125,11 +132,13 @@ class TF2SearchHandler(Handler):
                                           key=lambda k: len(k[0]),
                                           reverse=True),
                         itemsets=itemsets,
-                        time=round(t1-t0,3))
+                        time=round(t1 - t0, 3))
         else:
             self.redirect('/')
 
+
 class TF2SuggestHandler(Handler):
+    """OpenSearch suggestions handler"""
     def get(self):
         query = self.request.get('q')
 
@@ -145,6 +154,7 @@ class TF2SuggestHandler(Handler):
         self.response.headers['Content-Type'] = ('application/json;'
                                                  'charset=UTF-8')
         self.write(json.dumps([query, suggestions], indent=2))
+
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
@@ -164,7 +174,7 @@ class TF2ItemHandler(Handler):
             desc_list = []
 
             if itemdict['description']:
-                desc_list.append(itemdict['description'].replace('\n',' '))
+                desc_list.append(itemdict['description'].replace('\n', ' '))
 
             desc_list.append(', '.join(itemdict['classes'])
                              if itemdict['classes'] else 'All Classes')
@@ -176,10 +186,12 @@ class TF2ItemHandler(Handler):
                         item=itemdict,
                         description=' | '.join(desc_list))
 
+
 class TF2SitemapHandler(Handler):
     def get(self):
-        self.response.headers['Content-Type'] = 'application/xml; charset=UTF-8'
+        self.response.headers['Content-Type'] = 'application/xml;charset=UTF-8'
         self.write(getfromcache('sitemap'))
+
 
 class CacheHandler(Handler):
     def get(self, option):
@@ -189,6 +201,7 @@ class CacheHandler(Handler):
         elif option == 'flush':
             memcache.flush_all()
             self.write('Cache Flushed')
+
 
 class Sitemap:
     """A class that is used to create XML sitemaps"""
