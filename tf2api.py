@@ -149,6 +149,15 @@ def getmarketprices(itemsbyname):
                 classmask['name'] = class_ + ' Mask'
                 sheet.append(classmask)
 
+        elif name == 'Halloween Spells':
+            spellnames = [i for i in itemsbyname if
+                          i.startswith('Halloween Spell')]
+
+            for spellname in spellnames:
+                spell = row.copy()
+                spell['name'] = spellname
+                sheet.append(spell)
+
         elif name == 'Class Token':
             for class_ in getallclasses():
                 token = row.copy()
@@ -354,6 +363,13 @@ def convertmarketname(row):
             "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
             "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
             'Key': 'Mann Co. Supply Crate Key',
+            # Halloween
+            'The Bat Outta Hell': 'Bat Outta Hell',
+            'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
+            'Pile of Curses': 'Pile Of Curses',
+            'Voodoo-Cursed Demo Soul': 'Voodoo-Cursed Demoman Soul',
+            'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
+            'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
 
             'Mann Co. Supply Crate (series 40)':
             'Salvaged Mann Co. Supply Crate',

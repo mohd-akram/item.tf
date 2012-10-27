@@ -43,6 +43,7 @@ def updatecache():
     newitems = [itemsdict[index] for index in
                 tf2api.getnewstoreprices(storeprices)]
 
+    nametoindexmap = {}
     itemnames = []
     filtereditems = []
 
@@ -53,19 +54,20 @@ def updatecache():
     for name, item in itemsbyname.items():
         index = item['defindex']
         itemdict = itemsdict[index]
+
         if tf2search.isvalidresult(itemdict):
+            nametoindexmap[name] = index
             itemnames.append(name)
             filtereditems.append(itemdict)
 
             path = '{0}/item/{1}'.format(homepage, index)
             sitemap.add(path)
-        else:
-            del itemsbyname[name]
 
     memcache.set_multi({'itemsdict': itemsdict,
-                        'itemsbyname': itemsbyname,
+                        'nametoindexmap': nametoindexmap,
                         'itemnames': itemnames,
                         'itemsets': itemsets,
+                        'bundles': bundles,
                         'filtereditems': filtereditems,
                         'newitems': newitems,
                         'sitemap': sitemap.toxml()})
@@ -107,11 +109,11 @@ class TF2SearchHandler(Handler):
         query = self.request.get('q')
 
         if query:
-            itemsbyname = getfromcache('itemsbyname')
+            nametoindexmap = getfromcache('nametoindexmap')
 
-            if query in itemsbyname:
+            if query in nametoindexmap:
                 return self.redirect(
-                    '/item/{}'.format(itemsbyname[query]['defindex']))
+                    '/item/{}'.format(nametoindexmap[query]))
 
             elif query == 'random':
                 filtereditems = getfromcache('filtereditems')
@@ -120,9 +122,11 @@ class TF2SearchHandler(Handler):
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')
+            bundles = getfromcache('bundles')
 
             t0 = time.time()
-            result = tf2search.search(query, itemsdict, itemsbyname, itemsets)
+            result = tf2search.search(query, itemsdict, nametoindexmap,
+                                      itemsets, bundles)
             t1 = time.time()
 
             self.render('tf2results.html',
@@ -153,7 +157,7 @@ class TF2SuggestHandler(Handler):
 
         self.response.headers['Content-Type'] = ('application/json;'
                                                  'charset=UTF-8')
-        self.write(json.dumps([query, suggestions], indent=2))
+        self.write(json.dumps([query, suggestions]))
 
 
 class TF2ItemHandler(Handler):

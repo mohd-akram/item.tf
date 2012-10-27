@@ -8,6 +8,8 @@ Get Started
 
 Create a file named api_key.txt with your Steam API key in the main directory. Then, simply add the directory to the Google App Engine Launcher and start the server.
 
+You can change the message on the homepage by editing templates/message.html.
+
 Structure
 ---------
 

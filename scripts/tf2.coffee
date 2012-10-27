@@ -159,6 +159,10 @@ $#{ storePrice }<br>
  src='/images/items/#{ image }.png'></a><br>"
   tagsHTML += "</div>"
 
+  # Link to bundle items HTML
+  bundleHTML = if 'bundle' in tags and getDescription(item).indexOf('---') != -1  then "
+<a href=\"/search?q=#{ item.title } Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" else ''
+  
   itemName = item.title
   if link
     itemName = "<a href='/item/#{ item.id }'
@@ -170,6 +174,7 @@ $#{ storePrice }<br>
   # Itembox HTML
   itemBox.innerHTML = "
 <h2 id='itemname'>#{ itemName }</h2>
+#{ bundleHTML }
 <a class='button' target='_blank' title='Open in Wiki'
  style='position:absolute;bottom:10px;left:10px;'
  href=\"#{ wikiLink }\">Wiki</a>

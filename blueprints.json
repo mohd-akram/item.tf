@@ -1599,7 +1599,7 @@
       "Red-Tape Recorder"
     ]
   ],
-  "Fabricate Huo-Long Heater": [
+  "Fabricate Huo Long Heatmaker": [
     [
       "Family Business",
       "Family Business",
@@ -1680,7 +1680,10 @@
       "Dillinger's Duffel",
       "Triad Trinket",
       "Champ Stamp",
-      "Track Terrorizer"
+      "Track Terrorizer",
+      "Crafty Hair",
+      "Spooky Shoes",
+      "Spooky Sleeves"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1718,7 +1721,8 @@
       "Champ Stamp",
       "Lone Star",
       "Koala Compact",
-      "Stovepipe Sniper Shako"
+      "Stovepipe Sniper Shako",
+      "Sir Hootsalot"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1769,7 +1773,9 @@
       "Professor's Pineapple",
       "War Pig",
       "Soldier's Stogie",
-      "Menpo"
+      "Crafty Hair",
+      "Menpo",
+      "Bonedolier"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1812,7 +1818,9 @@
       "Bearded Bombardier",
       "King of Scotland Cape",
       "Menpo",
-      "K-9 Mane"
+      "K-9 Mane",
+      "Bonedolier",
+      "Voodoo JuJu (Slight Return)"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1858,6 +1866,7 @@
       "Triad Trinket",
       "Champ Stamp",
       "Soviet Gentleman",
+      "Crafty Hair",
       "K-9 Mane"
     ]
   ],
@@ -1897,6 +1906,7 @@
       "Gentleman's Ushanka",
       "Medi-Mask",
       "Archimedes",
+      "Crafty Hair",
       "Foppish Physician"
     ]
   ],
@@ -1945,7 +1955,11 @@
       "Professor's Pineapple",
       "HazMat Headcase",
       "Russian Rocketeer",
-      "Pyrotechnic Tote"
+      "Area 451",
+      "Pyrotechnic Tote",
+      "Bonedolier",
+      "Wraith Wrap",
+      "Coffin Kit"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -1983,7 +1997,9 @@
       "Business Casual",
       "Triad Trinket",
       "Hat of Cards",
-      "Distinguished Rogue"
+      "Distinguished Rogue",
+      "Scarecrow",
+      "Exorcizor"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
@@ -2025,7 +2041,8 @@
       "Idea Tube",
       "Triad Trinket",
       "Champ Stamp",
-      "Pocket Purrer"
+      "Pocket Purrer",
+      "Crafty Hair"
     ]
   ],
   "Rebuild Headgear": [

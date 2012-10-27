@@ -212,15 +212,31 @@ def parseinput(query):
             'classes': classes, 'tags': tags}
 
 
-def getsetitems(itemset, itemsbyname, itemsdict):
+def getsetitems(itemset, nametoindexmap, itemsdict):
     """Get a list of the items in an item set"""
     setitems = []
     for name in itemset['items']:
         name = name.replace('The ', '').replace("Capone's Capper",
                                                 "Capo's Capper")
-        setitems.append(itemsdict[itemsbyname[name]['defindex']])
+        setitems.append(itemsdict[nametoindexmap[name]])
 
     return setitems
+
+
+def getbundleitems(bundle, nametoindexmap, itemsdict):
+    """Get a list of the items in a bundle"""
+    bundleitems = []
+    descriptions = bundle['descriptions']
+
+    for i in range(len(descriptions)):
+        key = str(i)
+        value = descriptions[key]['value']
+        if 'color' in descriptions[key]:
+            itemnames = [i for i in value.replace(', ', ',').split(',') if i]
+            for itemname in itemnames:
+                bundleitems.append(itemsdict[nametoindexmap[itemname]])
+
+    return bundleitems
 
 
 def isvalidresult(itemdict, strict=True):
@@ -238,7 +254,7 @@ def isvalidresult(itemdict, strict=True):
     return isvalid
 
 
-def search(query, itemsdict, itemsbyname, itemsets):
+def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     """This method parses the result obtained from parseinput and gets all the
     items that match this result. It returns a dict with two keys - mainitems,
     and otheritems. The mainitems value is a list for regular results while the
@@ -256,6 +272,7 @@ def search(query, itemsdict, itemsbyname, itemsets):
     itemsetmatch = re.match('(.+) [sS]et', query)
     hasweapontag = not set(tags).isdisjoint(getweapontags())
     if classes or tags:
+        # Search using classes and tags
         for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
             itemtags = itemdict['tags']
@@ -279,21 +296,35 @@ def search(query, itemsdict, itemsbyname, itemsets):
                     names.append(name)
 
     elif query == 'all':
+        # Get all the items in the schema as is
         mainitems = itemsdict.values()
 
     elif query == 'sets':
+        # Get all the item sets and their items
         for setname, itemset in itemsets.items():
-            otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+            otheritems[setname].extend(getsetitems(itemset, nametoindexmap,
                                                    itemsdict))
 
     elif itemsetmatch:
+        # Search for a particular item set or bundle and list its items
+        itemsetquery = itemsetmatch.group(1).lower()
+
         for setname, itemset in itemsets.items():
-            if setname.lower() == itemsetmatch.group(1).lower():
-                otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+            if setname.lower() == itemsetquery:
+                otheritems[setname].extend(getsetitems(itemset, nametoindexmap,
                                                        itemsdict))
                 break
 
+        if not otheritems:
+            for bundle in bundles.values():
+                if bundle['name'].lower() == itemsetquery:
+                    bundleitems = getbundleitems(bundle, nametoindexmap,
+                                                 itemsdict)
+                    otheritems[bundle['name']].extend(bundleitems)
+                    break
+
     else:
+        # Regular word search
         for itemdict in itemsdict.values():
             name = splitspecial(itemdict['name'])
 
@@ -306,7 +337,7 @@ def search(query, itemsdict, itemsbyname, itemsets):
 
         for setname, itemset in itemsets.items():
             if not set(splitspecial(setname)).isdisjoint(querylist):
-                otheritems[setname].extend(getsetitems(itemset, itemsbyname,
+                otheritems[setname].extend(getsetitems(itemset, nametoindexmap,
                                                        itemsdict))
 
         mainitems = getsorteditemlist(mainitems, querylist)
