@@ -72,6 +72,7 @@ window.showItemInfo = (item, link=true) ->
                 .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
     marketPrice = "<h3 id='marketprice'>#{ marketPrice }</h3>"
 
+  description = getDescription(item)
   storePrice = item.getAttribute('data-storeprice')
   imageUrl = item.getAttribute('data-image')
   blueprints = item.getElementsByTagName('ul')
@@ -160,8 +161,10 @@ $#{ storePrice }<br>
   tagsHTML += "</div>"
 
   # Link to bundle items HTML
-  bundleHTML = if 'bundle' in tags and getDescription(item).indexOf('---') != -1  then "
-<a href=\"/search?q=#{ item.title } Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" else ''
+  bundleHTML = if 'bundle' in tags and description.indexOf('---') != -1  then "
+<a href=\"/search?q=#{ item.title } Set\" target='_blank'>
+<div class='rounded glow' style='display: inline-block; padding: 7px;'>
+View items</div></a>" else ''
   
   itemName = item.title
   if link
@@ -208,7 +211,7 @@ $#{ storePrice }<br>
   # Hover area
   hoverArea = document.createElement('div')
   hoverArea.title = item.title
-  hoverArea.setAttribute('data-description', getDescription(item))
+  hoverArea.setAttribute('data-description', description)
   hoverArea.setAttribute('data-tags', tags)
   hoverArea.id = 'hoverarea'
   hoverArea.style.backgroundImage = "url('#{ imageUrl }')"

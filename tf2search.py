@@ -205,6 +205,8 @@ def parseinput(query):
         elif tag:
             tags.append(tag)
 
+    # Simple check to differentiate between word search and class/tag search
+    # Avoids conflicts such as 'meet the medic taunt'
     if (len(tags) + len(classes)) != len(querylist):
         classes = tags = []
 
@@ -240,16 +242,14 @@ def getbundleitems(bundle, nametoindexmap, itemsdict):
 
 
 def isvalidresult(itemdict, strict=True):
-    """Check if item has an image and is not a duplicate of
-    "Map Stamps Collection".
-    If strict is True, competition medals and bundle junk also return False"""
+    """Check if item has an image, is not a duplicate and is not bundle junk.
+    If strict is True, competition medals also return False"""
     index = itemdict['index']
     isvalid = (itemdict['image'] and
-               index not in (2007, 2015, 2049))
+               index not in (699, 2007, 2015, 2049) and
+               not itemdict['name'].startswith('TF_Bundle'))
     if strict:
-        isvalid = (isvalid and
-                   (index < 496 or (512 < index < 680) or (698 < index < 8000))
-                   and not itemdict['name'].startswith('TF_Bundle'))
+        isvalid = (isvalid and 'tournament' not in itemdict['tags'])
 
     return isvalid
 
@@ -269,24 +269,34 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     classes = result['classes']
     tags = result['tags']
 
+    # Check if searching for an item set
     itemsetmatch = re.match('(.+) [sS]et', query)
+    # Check if the weapon tag is specified (eg. primary, melee)
     hasweapontag = not set(tags).isdisjoint(getweapontags())
+    # Check if the user is searching for tournament medals
+    hidemedals = 'tournament' not in tags
+
     if classes or tags:
         # Search using classes and tags
         for itemdict in itemsdict.values():
             itemclasses = itemdict['classes']
             itemtags = itemdict['tags']
-
+            # Gives a match if there's an intersection between the item's
+            # classes and the parsed classes in the query. Also gives a match
+            # if the item doesn't have any classes specified (all-class item)
             isclassmatch = (not set(itemclasses).isdisjoint(classes) or
                             not itemclasses)
             if hasweapontag:
+                # This avoids showing slot tokens when searching for
+                # 'primary weapon', 'melee weapon', etc.
                 istagmatch = set(tags).issubset(itemtags)
             else:
                 istagmatch = not set(tags).isdisjoint(itemtags)
 
             if (isclassmatch or not classes) and (istagmatch or not tags):
                 name = itemdict['name']
-                if isvalidresult(itemdict) and name not in names:
+                # Don't show tournament medals unless explicitly searched
+                if isvalidresult(itemdict, hidemedals) and name not in names:
                     if len(itemclasses) == 1:
                         mainitems.append(itemdict)
                     elif len(itemclasses) > 1:
@@ -314,7 +324,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                 otheritems[setname].extend(getsetitems(itemset, nametoindexmap,
                                                        itemsdict))
                 break
-
+        # Check bundles if nothing found in item sets
         if not otheritems:
             for bundle in bundles.values():
                 if bundle['name'].lower() == itemsetquery:
@@ -334,7 +344,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                 if name not in names:
                     mainitems.append(itemdict)
                     names.append(name)
-
+        # Check if there's a match between an item set name and query
         for setname, itemset in itemsets.items():
             if not set(splitspecial(setname)).isdisjoint(querylist):
                 otheritems[setname].extend(getsetitems(itemset, nametoindexmap,

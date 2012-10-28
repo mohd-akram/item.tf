@@ -81,7 +81,7 @@
   };
 
   window.showItemInfo = function(item, link) {
-    var b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, quality, re, storePrice, style, tags, tagsHTML, title, url, wikiLink, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+    var b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, description, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, quality, re, storePrice, style, tags, tagsHTML, title, url, wikiLink, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     if (link == null) {
       link = true;
     }
@@ -97,6 +97,7 @@
       }
       marketPrice = "<h3 id='marketprice'>" + marketPrice + "</h3>";
     }
+    description = getDescription(item);
     storePrice = item.getAttribute('data-storeprice');
     imageUrl = item.getAttribute('data-image');
     blueprints = item.getElementsByTagName('ul');
@@ -179,7 +180,7 @@
       }
     }
     tagsHTML += "</div>";
-    bundleHTML = __indexOf.call(tags, 'bundle') >= 0 && getDescription(item).indexOf('---') !== -1 ? "<a href=\"/search?q=" + item.title + " Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" : '';
+    bundleHTML = __indexOf.call(tags, 'bundle') >= 0 && description.indexOf('---') !== -1 ? "<a href=\"/search?q=" + item.title + " Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" : '';
     itemName = item.title;
     if (link) {
       itemName = "<a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
@@ -188,7 +189,7 @@
     itemBox.innerHTML = "<h2 id='itemname'>" + itemName + "</h2>" + bundleHTML + "<a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a>" + marketPrice + "<form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
-    hoverArea.setAttribute('data-description', getDescription(item));
+    hoverArea.setAttribute('data-description', description);
     hoverArea.setAttribute('data-tags', tags);
     hoverArea.id = 'hoverarea';
     hoverArea.style.backgroundImage = "url('" + imageUrl + "')";

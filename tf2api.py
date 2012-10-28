@@ -77,7 +77,7 @@ def getitemsbyname(schema):
     for item in schema['result']['items']:
         name = item['item_name']
         if name not in itemsbyname:
-            if item['defindex'] not in (2007, 2015, 2049):
+            if item['defindex'] not in (699, 2007, 2015, 2049):
                 itemsbyname[name] = item
 
     return itemsbyname
@@ -220,8 +220,8 @@ def getweapontags():
 
 def getalltags():
     """Return all item tags"""
-    return (['hat', 'weapon', 'misc', 'tool', 'action',
-             'taunt', 'paint', 'token', 'bundle'] + getweapontags())
+    return (['hat', 'weapon', 'misc', 'tool', 'action', 'taunt', 'paint',
+             'token', 'bundle', 'tournament'] + getweapontags())
 
 
 def getallclasses():
@@ -302,9 +302,11 @@ def getitemtags(item):
     """Get a list of tags that describe the item"""
     tags = []
     itemclass = item['item_class']
+    itemtypename = item['item_type_name']
 
     if itemclass == 'bundle':
         tags.append(itemclass)
+
     elif itemclass.endswith('_token'):
         tags.append('token')
 
@@ -319,8 +321,11 @@ def getitemtags(item):
 
             tags.append(slot)
 
-    if item['item_type_name'] == 'Special Taunt':
+    if itemtypename == 'Special Taunt':
         tags.append('taunt')
+
+    elif itemtypename == 'Tournament Medal':
+        tags.append('tournament')
 
     if 'tool' in item:
         tags.append('tool')
@@ -363,7 +368,10 @@ def convertmarketname(row):
             "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
             "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
             'Key': 'Mann Co. Supply Crate Key',
-            # Halloween
+            'Koto': 'Noise Maker - Koto',
+            'Vuvuzela': 'Noise Maker - Vuvuzela',
+            'Winter Holiday': 'Noise Maker - Winter Holiday',
+            # Halloween 2012
             'The Bat Outta Hell': 'Bat Outta Hell',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Pile of Curses': 'Pile Of Curses',
@@ -384,7 +392,5 @@ def convertmarketname(row):
         name = repl[name]
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
-    elif row['class'] == 'Noisemaker':
-        name = 'Noise Maker - ' + name
 
     return name
