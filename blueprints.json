@@ -2337,5 +2337,19 @@
     [
       "Power Up Canteen"
     ]
+  ],
+  "Fabricate Pile Of Curses": [
+    [
+      "Any Cursed Object",
+      "Any Cursed Object",
+      "Any Cursed Object",
+      "Any Cursed Object",
+      "Any Cursed Object",
+      "Any Cursed Object",
+      "Any Cursed Object"
+    ],
+    [
+      "Pile Of Curses"
+    ]
   ]
 }

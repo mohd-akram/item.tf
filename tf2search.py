@@ -60,7 +60,8 @@ def parseblueprints(blueprints, itemsbyname):
     repl = {"Any Santa's Little Accomplice Weapon":
             "Santa's Little Accomplice Bundle",
 
-            "Any Burned Item": "Burned Banana Peel"}
+            "Any Burned Item": "Burned Banana Peel",
+            "Any Cursed Object": "Voodoo-Cursed Object"}
 
     polyweps = ["The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
                 "The Croc-o-Style Kit", "The Special Delivery"]
