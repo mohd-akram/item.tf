@@ -353,7 +353,9 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
         mainitems = getsorteditemlist(mainitems, querylist)
 
-    return {'mainitems': mainitems, 'otheritems': otheritems}
+    length = len(mainitems) + sum([len(i) for i in otheritems.values()])
+
+    return {'mainitems': mainitems, 'otheritems': otheritems, 'length': length}
 
 
 def getsorteditemlist(itemlist, querylist):

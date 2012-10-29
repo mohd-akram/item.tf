@@ -125,17 +125,18 @@ class TF2SearchHandler(Handler):
             bundles = getfromcache('bundles')
 
             t0 = time.time()
-            result = tf2search.search(query, itemsdict, nametoindexmap,
-                                      itemsets, bundles)
+            results = tf2search.search(query, itemsdict, nametoindexmap,
+                                       itemsets, bundles)
             t1 = time.time()
 
             self.render('tf2results.html',
                         query=query,
-                        mainitems=result['mainitems'],
-                        otheritems=sorted(result['otheritems'].items(),
+                        mainitems=results['mainitems'],
+                        otheritems=sorted(results['otheritems'].items(),
                                           key=lambda k: len(k[0]),
                                           reverse=True),
                         itemsets=itemsets,
+                        resultslength=results['length'],
                         time=round(t1 - t0, 3))
         else:
             self.redirect('/')

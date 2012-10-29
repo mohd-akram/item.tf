@@ -34,10 +34,10 @@
         border: none;
       }
     </style>
-    <style>.itemlist{width:540px;margin-top:100px;}</style>
+    <style>.itemlist{width:540px;margin-top:50px;}</style>
     {% include 'analytics.html' %}
   </head>
-{% from 'macros.html' import showitems, showsearchlinks %}
+{% from 'macros.html' import showitems, showsearchlinks, getcount %}
   <body>
     <div id="container">
       <header style="height: 10px"></header>
@@ -60,17 +60,17 @@
       <div id="itembox"></div>
 
       <div id="body">
-      <h1 style="margin-top:140px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
+      <h1 style="margin-top:120px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
       <form action="/search">
         <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
-      {{ showitems(newitems) }}
+      {{ showitems(newitems, False) }}
       {% include 'message.html' %}
       </div>
-      <footer>Last Updated - {{lastupdated}} minutes ago<br>{% include 'footer.html' %}</footer>
+      <footer>Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% include 'footer.html' %}</footer>
     </div>
   <script>
     $('#searchbox').focus();

@@ -25,7 +25,7 @@
     <div id="itembox"></div>  
 
     <div id="body">
-    {% from 'macros.html' import showitems %}
+    {% from 'macros.html' import showitems, getcount %}
 
     {%- if mainitems %}
     {{ showitems(mainitems) }}
@@ -44,7 +44,7 @@
     <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
     {%- endif -%}
     </div>
-    <footer>{{time}} seconds<br>{% include 'footer.html' %}</footer>
+    <footer>{{getcount(resultslength,'result')}} ({{time}} seconds)<br>{% include 'footer.html' %}</footer>
     </div>
     <script>addHoverBox()</script>
   </body>

@@ -14,8 +14,16 @@
 {% endfor %}</div>{%- endif %}</div>
 {% endmacro %}
 
-{% macro showitems(itemslist) %}
+{% macro getcount(length, unit) %}
+{{length}} {{unit}}{% if length != 1 %}s{% endif %}
+{% endmacro %}
+
+{% macro showitems(itemslist, showlength=True) %}
 <div class="itemlist">
+{% if showlength %}
+{% set length = itemslist | length %}
+<div style="color: gray; padding-bottom: 20px;">{{getcount(length, 'item')}}</div>
+{% endif %}
 {% for item in itemslist %}
 <a href="/item/{{item['index']}}">{{ showitem(item) }}</a>
 {%- endfor %}

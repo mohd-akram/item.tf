@@ -89,7 +89,7 @@
     marketPrice = item.getAttribute('data-marketprice') || '';
     if (marketPrice) {
       marketPrice = marketPrice.replace(/[{}']/g, '').replace(/, /g, '<br>');
-      _ref = ['Unique', 'Vintage', 'Strange', 'Genuine', 'Haunted'];
+      _ref = ['Unique', 'Vintage', 'Strange', 'Genuine', 'Haunted', 'Unusual'];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
         re = new RegExp(i, "g");

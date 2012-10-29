@@ -66,7 +66,7 @@ window.showItemInfo = (item, link=true) ->
   marketPrice = item.getAttribute('data-marketprice') or ''
   if marketPrice
     marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
-    for i in ['Unique','Vintage','Strange','Genuine','Haunted']
+    for i in ['Unique','Vintage','Strange','Genuine','Haunted','Unusual']
       re = new RegExp(i,"g")
       marketPrice = marketPrice
                 .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
