@@ -45,7 +45,7 @@ def updatecache():
 
     nametoindexmap = {}
     itemnames = []
-    filtereditems = []
+    itemindexes = []
 
     homepage = gethomepage()
     sitemap = Sitemap()
@@ -58,17 +58,17 @@ def updatecache():
         if tf2search.isvalidresult(itemdict):
             nametoindexmap[name] = index
             itemnames.append(name)
-            filtereditems.append(itemdict)
+            itemindexes.append(index)
 
             path = '{0}/item/{1}'.format(homepage, index)
             sitemap.add(path)
 
     memcache.set_multi({'itemsdict': itemsdict,
-                        'nametoindexmap': nametoindexmap,
-                        'itemnames': itemnames,
                         'itemsets': itemsets,
                         'bundles': bundles,
-                        'filtereditems': filtereditems,
+                        'nametoindexmap': nametoindexmap,
+                        'itemnames': itemnames,
+                        'itemindexes': itemindexes,
                         'newitems': newitems,
                         'sitemap': sitemap.toxml()})
     t1 = time.time()
@@ -116,9 +116,9 @@ class TF2SearchHandler(Handler):
                     '/item/{}'.format(nametoindexmap[query]))
 
             elif query == 'random':
-                filtereditems = getfromcache('filtereditems')
+                itemindexes = getfromcache('itemindexes')
                 return self.redirect(
-                    '/item/{}'.format(random.choice(filtereditems)['index']))
+                    '/item/{}'.format(random.choice(itemindexes)))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')

@@ -367,6 +367,7 @@ def convertmarketname(row):
             'Essential Accessories': 'The Essential Accessories',
             "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
             "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
+            "Lord C***swain's Pith Helmet": "Lord Cockswain's Pith Helmet",
             'Key': 'Mann Co. Supply Crate Key',
             'Koto': 'Noise Maker - Koto',
             'Vuvuzela': 'Noise Maker - Vuvuzela',
@@ -375,14 +376,14 @@ def convertmarketname(row):
             'The Bat Outta Hell': 'Bat Outta Hell',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Pile of Curses': 'Pile Of Curses',
-            'Voodoo-Cursed Demo Soul': 'Voodoo-Cursed Demoman Soul',
             'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
             'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
+            'Plutinodome': 'Plutonidome',
 
             'Mann Co. Supply Crate (series 40)':
             'Salvaged Mann Co. Supply Crate',
 
-            "Lord Cockswain's Novelty Pipe and Mutton Chops":
+            "Lord C***swain's Novelty Pipe and Mutton Chops":
             "Lord Cockswain's Novelty Mutton Chops and Pipe",
 
             "Color of a Gentlemann's Business Pants":
