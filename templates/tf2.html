@@ -75,8 +75,36 @@
   <script>
     $('#searchbox').focus();
     $('#hover').hover(function() {$('#list').show('slow')});
-    $.getJSON('/suggest', function (data) {$("#searchbox").autocomplete({source: data[1], autoFocus: true, delay: 50, minLength: 2})});
     addHoverBox();
+    $(function() {
+      var accentMap = {
+          'ä': 'a',
+          'é': 'e',
+          'ò': 'o'
+      };
+
+      var normalize = function( term ) {
+          var ret = "";
+          for ( var i = 0; i < term.length; i++ ) {
+              ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+          }
+          return ret;
+      };
+
+      $.getJSON('/suggest', function (data) {
+
+        $( "#searchbox" ).autocomplete({
+          source: function( request, response ) {
+              var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
+              response( $.grep( data[1], function( value ) {
+                  value = value.label || value.value || value;
+                  return matcher.test( value ) || matcher.test( normalize( value ) );
+              }) );
+          },
+          autoFocus: true, delay: 50, minLength: 2
+        });
+      });
+    });
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
   </script>
   </body>

@@ -74,10 +74,12 @@ def getitemsbyname(schema):
     """Return an ordered dictionary of items in the schema where the key is
     item_name for each item"""
     itemsbyname = OrderedDict()
+    duplicates = getobsoleteindexes()
+
     for item in schema['result']['items']:
         name = item['item_name']
         if name not in itemsbyname:
-            if item['defindex'] not in (699, 2007, 2015, 2049):
+            if item['defindex'] not in duplicates:
                 itemsbyname[name] = item
 
     return itemsbyname
@@ -336,6 +338,11 @@ def getitemtags(item):
     return tags
 
 
+def getobsoleteindexes():
+    """Return the indexes of obsolete items that have newer versions"""
+    return (699, 2007, 2015, 2049, 2093) + tuple(range(2018, 2027))
+
+
 def filtermarketstring(string):
     """Clean up a string from the spreadsheet"""
     return string.replace('(clean)', '').replace('(dirty)', '').strip()
@@ -355,7 +362,7 @@ def convertmarketname(row):
             "Zephaniah's Greed": "Zepheniah's Greed",
             'Bolgan Helmet': 'Bolgan',
             'Full Head of Steam': 'Full Head Of Steam',
-            'Detective Noir': u'Détective Noir',
+            'Detective Noir': 'Détective Noir',
             'Helmet Without A Home': 'Helmet Without a Home',
             'Dueling mini game': 'Dueling Mini-Game',
             'Submachine Gun': 'SMG',
@@ -378,7 +385,6 @@ def convertmarketname(row):
             'Pile of Curses': 'Pile Of Curses',
             'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
             'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
-            'Plutinodome': 'Plutonidome',
 
             'Mann Co. Supply Crate (series 40)':
             'Salvaged Mann Co. Supply Crate',
@@ -394,4 +400,4 @@ def convertmarketname(row):
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
 
-    return name
+    return name.decode('utf-8')

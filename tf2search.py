@@ -1,3 +1,6 @@
+﻿
+# coding: utf-8
+
 """A module for parsing a query and searching for TF2 items
 It supports class based search, eg: 'engineer hats'
 It also supports alias based search, eg: 'engi hats'
@@ -19,7 +22,19 @@ from collections import defaultdict, OrderedDict
 from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
                     getalltags, getallclasses, getweapontags,
                     getitemattributes, getitemclasses, getitemtags,
-                    getstoreprice, getmarketprice)
+                    getstoreprice, getmarketprice, getobsoleteindexes)
+
+
+def pluralize(wordlist):
+    """Take a list of words and return a list of their plurals"""
+    return [i + 's' for i in wordlist]
+
+
+def foldaccents(string):
+    """Fold accents in a string"""
+    return (string.replace(u'ä', 'a')
+                  .replace(u'é', 'e')
+                  .replace(u'ò', 'o'))
 
 
 def splitspecial(string):
@@ -40,7 +55,7 @@ def gettag(word):
     weapon = ['wep', 'weap']
     tags = getalltags()
     for tag in tags:
-        if word in weapon or word in [i + 's' for i in weapon]:
+        if word in weapon or word in pluralize(weapon):
             return 'weapon'
         elif word == tag or word == tag + 's':
             return tag
@@ -192,7 +207,7 @@ def getitemsdict(schema, bundles, blueprints, storeprices, marketprices):
 
 def parseinput(query):
     """Parse a search query and return a dict to be used in search function"""
-    querylist = [i for i in splitspecial(query) if i not in
+    querylist = [i for i in splitspecial(foldaccents(query)) if i not in
                  ['the', 'a', 'of', 's']]
 
     classes = []
@@ -246,8 +261,9 @@ def isvalidresult(itemdict, strict=True):
     """Check if item has an image, is not a duplicate and is not bundle junk.
     If strict is True, competition medals also return False"""
     index = itemdict['index']
+    duplicates = getobsoleteindexes()
     isvalid = (itemdict['image'] and
-               index not in (699, 2007, 2015, 2049) and
+               index not in duplicates and
                not itemdict['name'].startswith('TF_Bundle'))
     if strict:
         isvalid = (isvalid and 'tournament' not in itemdict['tags'])
@@ -337,14 +353,15 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     else:
         # Regular word search
         for itemdict in itemsdict.values():
-            name = splitspecial(itemdict['name'])
+            name = splitspecial(foldaccents(itemdict['name']))
 
-            match = not set(name).isdisjoint(querylist)
+            match = not set(name).isdisjoint(querylist + pluralize(querylist))
 
             if match and isvalidresult(itemdict, False):
                 if name not in names:
                     mainitems.append(itemdict)
                     names.append(name)
+
         # Check if there's a match between an item set name and query
         for setname, itemset in itemsets.items():
             if not set(splitspecial(setname)).isdisjoint(querylist):

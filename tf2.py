@@ -1,3 +1,6 @@
+
+# coding: utf-8
+
 """This module contains all the page handlers and caching mechanisms."""
 import json
 import logging
@@ -151,7 +154,8 @@ class TF2SuggestHandler(Handler):
         if query:
             suggestions = []
             for name in itemnames:
-                if query in name or query in name.lower():
+                foldedname = tf2search.foldaccents(name)
+                if query in foldedname or query in foldedname.lower():
                     suggestions.append(name)
         else:
             suggestions = itemnames
