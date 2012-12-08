@@ -369,6 +369,7 @@ def convertmarketname(row):
             'Monoculus': 'MONOCULUS!',
             'The Milkman': 'Milkman',
             'The Triple A Badge': 'Triple A Badge',
+            'The Tuxxy': 'Tuxxy',
             'Superfan': 'The Superfan',
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
