@@ -42,7 +42,7 @@
     <div id="container">
       <header style="height: 10px"></header>
       <div id="sidebar" class="rounded">
-        <h3 id="hover">Help</h3>
+        <div id="help">?</div>
         <div id="list">
         <h4>Examples</h4>
         <p>
@@ -74,7 +74,7 @@
     </div>
   <script>
     $('#searchbox').focus();
-    $('#hover').hover(function() {$('#list').show('slow')});
+    $('#help').click(function() {$('#list').toggle('slow')});
     addHoverBox();
     $(function() {
       var accentMap = {

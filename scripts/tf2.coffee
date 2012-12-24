@@ -172,7 +172,10 @@ View items</div></a>" else ''
  target='_blank' class='glow' title='Go to Item Page'>
 #{ itemName }</a>"
 
-  wikiLink = "http://wiki.teamfortress.com/wiki/#{ item.title }"
+  wikiPage = if item.title.indexOf('Botkiller') != -1 then 'Botkiller_weapons'
+  else item.title
+
+  wikiLink = "http://wiki.teamfortress.com/wiki/#{ wikiPage }"
 
   # Itembox HTML
   itemBox.innerHTML = "

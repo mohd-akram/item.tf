@@ -504,7 +504,8 @@
     [
       "Loch-n-Load",
       "Ali Baba's Wee Booties",
-      "Bootlegger"
+      "Bootlegger",
+      "Loose Cannon"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Secondary)": [
@@ -602,7 +603,8 @@
     ],
     [
       "Kritzkrieg",
-      "Quick-Fix"
+      "Quick-Fix",
+      "Vaccinator"
     ]
   ],
   "Fabricate Class Weapons (Medic, Melee)": [
@@ -702,7 +704,8 @@
     ],
     [
       "Dead Ringer",
-      "Cloak and Dagger"
+      "Cloak and Dagger",
+      "Quäckenbirdt"
     ]
   ],
   "Fabricate Class Weapons (Engineer, Primary)": [
@@ -714,7 +717,8 @@
     [
       "Frontier Justice",
       "Widowmaker",
-      "Pomson 6000"
+      "Pomson 6000",
+      "Rescue Ranger"
     ]
   ],
   "Fabricate Class Weapons (Engineer, Secondary)": [
@@ -1631,6 +1635,39 @@
       "Neon Annihilator"
     ]
   ],
+  "Fabricate Rescue Ranger": [
+    [
+      "Eureka Effect",
+      "Eureka Effect",
+      "Eureka Effect",
+      "Reclaimed Metal"
+    ],
+    [
+      "Rescue Ranger"
+    ]
+  ],
+  "Fabricate Loose Cannon": [
+    [
+      "Loch-n-Load",
+      "Loch-n-Load",
+      "Loch-n-Load",
+      "Reclaimed Metal"
+    ],
+    [
+      "Loose Cannon"
+    ]
+  ],
+  "Fabricate Vaccinator": [
+    [
+      "Quick-Fix",
+      "Quick-Fix",
+      "Quick-Fix",
+      "Reclaimed Metal"
+    ],
+    [
+      "Vaccinator"
+    ]
+  ],
   "Fabricate Headgear": [
     [
       "Refined Metal",
@@ -1682,6 +1719,9 @@
       "Champ Stamp",
       "Track Terrorizer",
       "Crafty Hair",
+      "Flunkyware",
+      "Hanger-On Hood",
+      "Flight of the Monarch",
       "Spooky Shoes",
       "Spooky Sleeves"
     ]
@@ -1722,7 +1762,8 @@
       "Lone Star",
       "Koala Compact",
       "Stovepipe Sniper Shako",
-      "Sir Hootsalot"
+      "Sir Hootsalot",
+      "Deadliest Duckling"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1775,7 +1816,9 @@
       "Soldier's Stogie",
       "Crafty Hair",
       "Menpo",
-      "Bonedolier"
+      "Bonedolier",
+      "Chief Constable",
+      "Deadliest Duckling"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1820,7 +1863,8 @@
       "Menpo",
       "K-9 Mane",
       "Bonedolier",
-      "Voodoo JuJu (Slight Return)"
+      "Voodoo JuJu (Slight Return)",
+      "Deadliest Duckling"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1867,7 +1911,12 @@
       "Champ Stamp",
       "Soviet Gentleman",
       "Crafty Hair",
-      "K-9 Mane"
+      "K-9 Mane",
+      "Siberian Sophisticate",
+      "Brock's Locks",
+      "Carl",
+      "Aqua Flops",
+      "Hunger Force"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -1959,7 +2008,11 @@
       "Pyrotechnic Tote",
       "Bonedolier",
       "Wraith Wrap",
-      "Coffin Kit"
+      "Coffin Kit",
+      "Deadliest Duckling",
+      "DethKapp",
+      "Nose Candy",
+      "Rail Spikes"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -1997,6 +2050,7 @@
       "Business Casual",
       "Triad Trinket",
       "Hat of Cards",
+      "Lacking Moral Fiber Mask",
       "Distinguished Rogue",
       "Scarecrow",
       "Exorcizor"
@@ -2042,7 +2096,8 @@
       "Triad Trinket",
       "Champ Stamp",
       "Pocket Purrer",
-      "Crafty Hair"
+      "Crafty Hair",
+      "Deadliest Duckling"
     ]
   ],
   "Rebuild Headgear": [
@@ -2327,17 +2382,6 @@
       "Pile Of Ash"
     ]
   ],
-  "Fabricate Power Up Canteen": [
-    [
-      "Scrap Metal",
-      "Scrap Metal",
-      "Scrap Metal",
-      "Scrap Metal"
-    ],
-    [
-      "Power Up Canteen"
-    ]
-  ],
   "Fabricate Pile Of Curses": [
     [
       "Any Cursed Object",
@@ -2350,6 +2394,17 @@
     ],
     [
       "Pile Of Curses"
+    ]
+  ],
+  "Fabricate Power Up Canteen": [
+    [
+      "Scrap Metal",
+      "Scrap Metal",
+      "Scrap Metal",
+      "Scrap Metal"
+    ],
+    [
+      "Power Up Canteen"
     ]
   ]
 }

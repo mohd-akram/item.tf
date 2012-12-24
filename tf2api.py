@@ -354,7 +354,7 @@ def convertmarketname(row):
     repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
             'High-Five': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',
-            'Enemies Gibbed': 'Strange Part: Gib Kills',
+            'Kills While Ubercharged': 'Strange Part: Kills While Übercharged',
             'Unusual Haunted Metal scrap': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
             'Spine-Chilling Skull 2010': 'Spine-Chilling Skull',
@@ -400,5 +400,7 @@ def convertmarketname(row):
         name = repl[name]
     elif row['quality'] == 'Strange Part':
         name = 'Strange Part: ' + name
+    elif 'Botkiller' in name and 'Mk.' not in name:
+        name += ' Mk.I'
 
     return name.decode('utf-8')
