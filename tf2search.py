@@ -34,11 +34,12 @@ def foldaccents(string):
     """Fold accents in a string"""
     return (string.replace(u'ä', 'a')
                   .replace(u'é', 'e')
-                  .replace(u'ò', 'o'))
+                  .replace(u'ò', 'o')
+                  .replace(u'Ü', 'U'))
 
 
 def splitspecial(string):
-    """Split a string at special characters"""
+    """Split a string at special characters and convert it to lowercase"""
     return [i for i in re.split(r'\W+', string.lower()) if i]
 
 
@@ -157,7 +158,7 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
             value = descriptions[key]['value']
             if 'color' in descriptions[key]:
                 items.append(value)
-            else:
+            elif not items:
                 text.append(value)
 
         description = '{0}---{1}'.format('\n'.join(text), '\n'.join(items))
@@ -286,6 +287,8 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     classes = result['classes']
     tags = result['tags']
 
+    querylength = len(query)
+
     # Check if searching for an item set
     itemsetmatch = re.match('(.+) [sS]et', query)
     # Check if the weapon tag is specified (eg. primary, melee)
@@ -353,9 +356,16 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     else:
         # Regular word search
         for itemdict in itemsdict.values():
-            name = splitspecial(foldaccents(itemdict['name']))
+            name = foldaccents(itemdict['name'])
+            namelist = splitspecial(name)
 
-            match = not set(name).isdisjoint(querylist + pluralize(querylist))
+            wordmatch = not set(namelist).isdisjoint(querylist +
+                                                     pluralize(querylist))
+
+            stringmatch = (querylength > 2 and
+                           (query in name or query in name.lower()))
+
+            match = wordmatch or stringmatch
 
             if match and isvalidresult(itemdict, False):
                 if name not in names:
@@ -368,18 +378,20 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                 otheritems[setname].extend(getsetitems(itemset, nametoindexmap,
                                                        itemsdict))
 
-        mainitems = getsorteditemlist(mainitems, querylist)
+        mainitems = getsorteditemlist(mainitems, querylist, query)
 
     length = len(mainitems) + sum([len(i) for i in otheritems.values()])
 
     return {'mainitems': mainitems, 'otheritems': otheritems, 'length': length}
 
 
-def getsorteditemlist(itemlist, querylist):
+def getsorteditemlist(itemslist, querylist, query):
     """Return sorted itemlist based on the intersection between the
-    search query words and each item's name"""
-    key = lambda k: set(querylist).intersection(splitspecial(k['name']))
+    search query words and each item's name. Items without a word intersection
+    are sorted based on where the query is found in their names."""
+    key = lambda k: (len(set(querylist).intersection(splitspecial(k['name'])))
+                     or -k['name'].lower().find(query.lower()))
 
-    return sorted(itemlist,
+    return sorted(itemslist,
                   key=key,
                   reverse=True)
