@@ -156,9 +156,9 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
         for i in range(len(descriptions)):
             key = str(i)
             value = descriptions[key]['value']
-            if 'color' in descriptions[key]:
+            if 'color' in descriptions[key] or items:
                 items.append(value)
-            elif not items:
+            else:
                 text.append(value)
 
         description = '{0}---{1}'.format('\n'.join(text), '\n'.join(items))
@@ -250,7 +250,7 @@ def getbundleitems(bundle, nametoindexmap, itemsdict):
     for i in range(len(descriptions)):
         key = str(i)
         value = descriptions[key]['value']
-        if 'color' in descriptions[key]:
+        if 'color' in descriptions[key] or bundleitems:
             itemnames = [i for i in value.replace(', ', ',').split(',') if i]
             for itemname in itemnames:
                 bundleitems.append(itemsdict[nametoindexmap[itemname]])

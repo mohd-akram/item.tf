@@ -1635,17 +1635,6 @@
       "Neon Annihilator"
     ]
   ],
-  "Fabricate Rescue Ranger": [
-    [
-      "Eureka Effect",
-      "Eureka Effect",
-      "Eureka Effect",
-      "Reclaimed Metal"
-    ],
-    [
-      "Rescue Ranger"
-    ]
-  ],
   "Fabricate Loose Cannon": [
     [
       "Loch-n-Load",
@@ -1655,6 +1644,17 @@
     ],
     [
       "Loose Cannon"
+    ]
+  ],
+  "Fabricate Rescue Ranger": [
+    [
+      "Eureka Effect",
+      "Eureka Effect",
+      "Eureka Effect",
+      "Reclaimed Metal"
+    ],
+    [
+      "Rescue Ranger"
     ]
   ],
   "Fabricate Vaccinator": [
