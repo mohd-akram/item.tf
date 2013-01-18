@@ -33,7 +33,7 @@
 
     {% set issetpage = query.lower().endswith(' set') %}
     {% for name, items in otheritems %}
-    {%- if name in itemsets and not issetpage %}<h2><a href="/search?q={{name|replace('#','%23')}} Set" class="glow" target="_blank">{{name}}</a></h2>
+    {%- if name in itemsets and not issetpage %}<h2><a href="/search?q={{name|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{name}}</a></h2>
     {% else %}
     <h2>{{name}}</h2>
     {% endif -%}

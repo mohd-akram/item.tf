@@ -14,6 +14,17 @@ getDescription = (item) ->
 getTags = (item) ->
   (item.getAttribute('data-tags') or '').split(',')
 
+getMarketPrice = (item, source) ->
+  marketPrice = item.getAttribute("data-#{ source }") or ''
+  if marketPrice
+    marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
+    for i in ['Unique','Vintage','Strange','Genuine','Haunted','Unusual']
+      re = new RegExp(i,"g")
+      marketPrice = marketPrice
+                .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
+
+  return marketPrice
+
 show = (e) ->
   title = e.target.title
 
@@ -59,18 +70,20 @@ init = ->
   window.hoverBox = document.getElementById("hoverbox")
   window.itemBox = document.getElementById("itembox")
 
-window.showItemInfo = (item, link=true) ->
+window.showItemInfo = (item, link=true, price='spreadsheet') ->
   init()
 
+  source = if price == 'spreadsheet' then 'backpack.tf' else 'spreadsheet'
+
   # Market price HTML
-  marketPrice = item.getAttribute('data-marketprice') or ''
+  marketPrice = getMarketPrice(item, price)
+  if not marketPrice
+    [price, source] = [source, price]
+    marketPrice = getMarketPrice(item, price)
+
   if marketPrice
-    marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
-    for i in ['Unique','Vintage','Strange','Genuine','Haunted','Unusual']
-      re = new RegExp(i,"g")
-      marketPrice = marketPrice
-                .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
-    marketPrice = "<h3 id='marketprice'>#{ marketPrice }</h3>"
+    marketPrice = "<span id='pricesource'>#{ capitalize(price) }</span><br>
+<h3 id='prices'>#{ marketPrice }</h3>"
 
   description = getDescription(item)
   storePrice = item.getAttribute('data-storeprice')
@@ -123,7 +136,7 @@ $#{ storePrice }<br>
   if classes
     for i in classes.split(',')
       classesHTML += "<a href='/search?q=#{ i }' target='_blank'>
-<img title='#{ i }' width='40px' height='40px'
+<img title='#{ i }' alt='#{ i }' width='40' height='40'
  src='/images/items/#{ i }_icon.png'></a><br>"
   classesHTML += "</div>"
 
@@ -156,7 +169,7 @@ $#{ storePrice }<br>
 
     if title and image
       tagsHTML += "<a href='/search?q=#{ title }' target='_blank'>
-<img title='#{ title }' width='50px' height='50px'
+<img title='#{ title }' alt='#{ title }' width='50' height='50'
  src='/images/items/#{ image }.png'></a><br>"
   tagsHTML += "</div>"
 
@@ -175,7 +188,8 @@ View items</div></a>" else ''
   wikiPage = if item.title.indexOf('Botkiller') != -1 then 'Botkiller_weapons'
   else item.title
 
-  wikiLink = "http://wiki.teamfortress.com/wiki/#{ wikiPage }"
+  wikiLink = "http://wiki.teamfortress.com/wiki/
+#{ encodeURIComponent(wikiPage) }"
 
   # Itembox HTML
   itemBox.innerHTML = "
@@ -184,7 +198,7 @@ View items</div></a>" else ''
 <a class='button' target='_blank' title='Open in Wiki'
  style='position:absolute;bottom:10px;left:10px;'
  href=\"#{ wikiLink }\">Wiki</a>
-#{ marketPrice }
+<div id='marketprice'>#{ marketPrice }</div>
 <form name='tf2outpostform' method='POST'
  action='http://www.tf2outpost.com/search'>
 
@@ -237,6 +251,26 @@ View items</div></a>" else ''
   quality = document.tf2outpostform.quality
   quality.onchange = ->
     document.tf2outpostform.has1.value = "440,#{ item.id },#{ quality.value }"
+
+  # Market price link
+  priceButton = document.getElementById('pricesource')
+  prices = document.getElementById('prices')
+
+  if priceButton and item.getAttribute("data-#{ source }")
+    priceButton.style.cursor = 'pointer'
+
+    priceButton.onclick = ->
+      source = if priceButton.innerHTML == 'Spreadsheet'
+      then 'backpack.tf' else 'spreadsheet'
+
+      priceButton.innerHTML = capitalize(source)
+      prices.innerHTML = getMarketPrice(item, source)
+
+    priceButton.onmouseover = ->
+      priceButton.style.textShadow = '0 0 10px rgb(196, 241, 128)'
+
+    priceButton.onmouseout = ->
+      priceButton.style.textShadow = ''
 
   if itemName.indexOf('Strange Part') == -1
     # Auto quality selection

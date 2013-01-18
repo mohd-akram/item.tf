@@ -29,22 +29,11 @@ def updatecache():
     t0 = time.time()
     apikey = getapikey()
 
-    schema = tf2api.getschema(apikey)
-    itemsets = tf2api.getitemsets(schema)
-    storeprices = tf2api.getstoreprices(apikey)
-    bundles = tf2api.getbundles(apikey, storeprices)
+    tf2info = tf2search.gettf2info(apikey, 'blueprints.json')
+    itemsdict = tf2search.getitemsdict(tf2info)
 
-    itemsbyname = tf2api.getitemsbyname(schema)
-    marketprices = tf2api.getmarketprices(itemsbyname)
-
-    with open('blueprints.json') as f:
-        data = json.loads(f.read().decode('utf-8'))
-    blueprints = tf2search.parseblueprints(data, itemsbyname)
-
-    itemsdict = tf2search.getitemsdict(schema, bundles, blueprints,
-                                       storeprices, marketprices)
     newitems = [itemsdict[index] for index in
-                tf2api.getnewstoreprices(storeprices)]
+                tf2info.newstoreprices]
 
     nametoindexmap = {}
     itemnames = []
@@ -54,7 +43,7 @@ def updatecache():
     sitemap = Sitemap()
     sitemap.add(homepage)
 
-    for name, item in itemsbyname.items():
+    for name, item in tf2info.itemsbyname.items():
         index = item['defindex']
         itemdict = itemsdict[index]
 
@@ -67,8 +56,8 @@ def updatecache():
             sitemap.add(path)
 
     memcache.set_multi({'itemsdict': itemsdict,
-                        'itemsets': itemsets,
-                        'bundles': bundles,
+                        'itemsets': tf2info.itemsets,
+                        'bundles': tf2info.bundles,
                         'nametoindexmap': nametoindexmap,
                         'itemnames': itemnames,
                         'itemindexes': itemindexes,

@@ -17,12 +17,9 @@ Note: You must provide your own image URLs for paint cans and blueprints.
 
 """
 import re
-from collections import defaultdict, OrderedDict
+from collections import namedtuple, defaultdict, OrderedDict
 
-from tf2api import (getitems, getattributes, getparticleeffects, getitemsets,
-                    getalltags, getallclasses, getweapontags,
-                    getitemattributes, getitemclasses, getitemtags,
-                    getstoreprice, getmarketprice, getobsoleteindexes)
+from tf2api import *
 
 
 def pluralize(wordlist):
@@ -134,22 +131,57 @@ def parseblueprints(blueprints, itemsbyname):
     return blueprintsdict
 
 
-def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
-                   storeprices, marketprices):
+def gettf2info(apikey, blueprintsfilename):
+    """Return a named tuple which contains information from multiple sources
+    about TF2 items"""
+    schema = getschema(apikey)
+
+    items = getitems(schema)
+    itemsbyname = getitemsbyname(schema)
+    itemsets = getitemsets(schema)
+    attributes = getattributes(schema)
+    effects = getparticleeffects(schema)
+    itemsets = getitemsets(schema)
+
+    storeprices = getstoreprices(apikey)
+    newstoreprices = getnewstoreprices(storeprices)
+    bundles = getbundles(apikey, storeprices)
+
+    spreadsheetprices = getspreadsheetprices(itemsbyname)
+    backpackprices = getbackpackprices(items, itemsbyname)
+
+    with open(blueprintsfilename) as f:
+        data = json.loads(f.read().decode('utf-8'))
+    blueprints = parseblueprints(data, itemsbyname)
+
+    fields = ('items itemsbyname itemsets attributes effects '
+              'blueprints storeprices newstoreprices bundles '
+              'spreadsheetprices backpackprices')
+
+    TF2info = namedtuple('TF2info', fields)
+
+    return TF2info(items, itemsbyname, itemsets, attributes, effects,
+                   blueprints, storeprices, newstoreprices, bundles,
+                   spreadsheetprices, backpackprices)
+
+
+def createitemdict(index, tf2info):
     """Take a TF2 item and return a custom dict with a limited number of
     keys that are used for search"""
-    index = item['defindex']
+    item = tf2info.items[index]
     name = item['item_name']
     classes = getitemclasses(item)
-    attributes = getitemattributes(item, attributes, effects)
-    storeprice = getstoreprice(item, storeprices)
-    marketprice = getmarketprice(item, marketprices)
+    attributes = getitemattributes(item, tf2info.attributes, tf2info.effects)
+    storeprice = getstoreprice(item, tf2info.storeprices)
+    spreadsheetprice = getmarketprice(item, tf2info.spreadsheetprices)
+    backpackprice = getmarketprice(item, tf2info.backpackprices)
     tags = getitemtags(item)
-    blueprint = sorted(blueprints[index], reverse=True)  # Sort by chance
+    # Sort blueprints by crafting chance
+    blueprint = sorted(tf2info.blueprints[index], reverse=True)
 
     description = ''
     if 'bundle' in tags and storeprice:
-        descriptions = bundles[index]['descriptions']
+        descriptions = tf2info.bundles[index]['descriptions']
         text = []
         items = []
 
@@ -165,8 +197,8 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
 
     elif 'item_description' in item:
         description = item['item_description']
-        if 'bundle' in tags and name in itemsets:
-            description += '---' + '\n'.join(itemsets[name]['items'])
+        if 'bundle' in tags and name in tf2info.itemsets:
+            description += '---' + '\n'.join(tf2info.itemsets[name]['items'])
 
     itemdict = {'index': index,
                 'name': name,
@@ -177,7 +209,8 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
                 'classes': classes,
                 'tags': tags,
                 'storeprice': storeprice,
-                'marketprice': marketprice,
+                'marketprice': {'spreadsheet': spreadsheetprice,
+                                'backpack.tf': backpackprice},
                 'blueprints': blueprint}
 
     if 'paint' in tags:
@@ -190,18 +223,11 @@ def createitemdict(item, attributes, effects, itemsets, bundles, blueprints,
     return itemdict
 
 
-def getitemsdict(schema, bundles, blueprints, storeprices, marketprices):
+def getitemsdict(tf2info):
     """Returns an ordered dictionary with index as key and itemdict as value"""
     itemsdict = OrderedDict()
-    items = getitems(schema)
-    itemsets = getitemsets(schema)
-    attributes = getattributes(schema)
-    effects = getparticleeffects(schema)
-    for idx in items:
-        itemdict = createitemdict(items[idx], attributes, effects,
-                                  itemsets, bundles, blueprints,
-                                  storeprices, marketprices)
-        itemsdict[idx] = itemdict
+    for idx in tf2info.items:
+        itemsdict[idx] = createitemdict(idx, tf2info)
 
     return itemsdict
 

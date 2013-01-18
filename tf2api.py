@@ -114,7 +114,7 @@ def getnewstoreprices(storeprices):
             if 'New' in price['tags']}
 
 
-def getmarketprices(itemsbyname):
+def getspreadsheetprices(itemsbyname):
     """Get market prices from tf2spreadsheet.blogspot.com
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
@@ -211,6 +211,52 @@ def getmarketprices(itemsbyname):
                         lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice
+
+    return pricesdict
+
+
+def getbackpackprices(items, itemsbyname):
+    """Get market prices from backpack.tf.
+    Return a dictionary where the key is defindex and value is a dictionary of
+    prices for the item"""
+    url = 'http://backpack.tf/api/IGetPrices/v2/'
+    pricesdata = json.loads(urlopen(url).read())['response']['prices']
+
+    pricesdict = defaultdict(dict)
+    qualities = {'1': 'Genuine', '3': 'Vintage', '6': 'Unique',
+                 '11': 'Strange', '13': 'Haunted', '600': 'Uncraftable'}
+
+    for index, prices in pricesdata.items():
+        for quality, price in prices.items():
+            if quality in qualities:
+                if '0' in price:
+                    value = price['0']['value']
+                else:
+                    value = price.values()[0]['value']
+
+                # Backpack.tf uses different indexes. This gets the name of the
+                # item from their API and finds its proper index.
+                idx = itemsbyname[items[int(index)]['item_name']]['defindex']
+                qualityname = qualities[quality]
+                denom = 'Refined'
+
+                budvalue = pricesdata['143']['6']['0']['value']
+                keyvalue = pricesdata['5021']['6']['0']['value']
+
+                if value >= budvalue and not (idx == 143 and quality == '6'):
+                    value = value / budvalue
+                    denom = 'Bud'
+
+                elif value >= keyvalue and idx != 5021:
+                    value = value / keyvalue
+                    denom = 'Key'
+
+                value = round(value, 2)
+
+                if value != 1 and denom != 'Refined':
+                    denom += 's'
+
+                pricesdict[idx][qualityname] = '{:g} {}'.format(value, denom)
 
     return pricesdict
 
@@ -365,11 +411,9 @@ def convertmarketname(row):
             'Detective Noir': 'Détective Noir',
             'Helmet Without A Home': 'Helmet Without a Home',
             'Dueling mini game': 'Dueling Mini-Game',
-            'Submachine Gun': 'SMG',
             'Monoculus': 'MONOCULUS!',
             'The Milkman': 'Milkman',
             'The Triple A Badge': 'Triple A Badge',
-            'The Tuxxy': 'Tuxxy',
             'Superfan': 'The Superfan',
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
