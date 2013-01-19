@@ -104,7 +104,7 @@ window.showItemInfo = (item, link=true, price='spreadsheet') ->
           index = i.getAttribute('data-index')
           style = "background-image:url(#{ i.getAttribute('data-image') });"
           listItem =  "<div title=\"#{ name }\" class='item-small'
-   style='#{ style }'></div>"
+ style='#{ style }'></div>"
           if index
             url = "/item/#{ index }"
           else
@@ -117,15 +117,14 @@ window.showItemInfo = (item, link=true, price='spreadsheet') ->
           blueprintsHTML += listItem
 
       blueprintsHTML += "<div title='Crafting Chance'
-   style='position:absolute;right:10px;'>
-  <h3>#{ chance }%</h3></div></div>"
+ style='position:absolute;right:10px;'>
+<h3>#{ chance }%</h3></div></div>"
 
     blueprintsHTML += '</div>'
 
   # Buy button and price HTML
   buyHTML = if storePrice then "<div id='buy'><form
- style='display:inline-block'>
-$#{ storePrice }<br>
+ style='display:inline-block'>$#{ storePrice }<br>
 <input type='text' value='1' size='1' id='quantity'
  class='textbox'>
 </form><a href='#' id='buybutton'></a></div>" else ''
@@ -158,7 +157,7 @@ $#{ storePrice }<br>
           title = 'Slot Token'
           image = 'slot_token'
 
-    for i in ['hat','misc','tool']
+    for i in ['hat','misc','tool','bundle']
       if i in tags
         title = capitalize(i)
         image = i
@@ -176,7 +175,8 @@ $#{ storePrice }<br>
 
   # Link to bundle items HTML
   bundleHTML = if 'bundle' in tags and description.indexOf('---') != -1  then "
-<a href=\"/search?q=#{ item.title } Set\" target='_blank'>
+<a href=\"/search?q=#{ encodeURIComponent(item.title) }%20Set\"
+ target='_blank'>
 <div class='rounded glow' style='display: inline-block; padding: 7px;'>
 View items</div></a>" else ''
   

@@ -131,7 +131,7 @@
             name = i.title;
             index = i.getAttribute('data-index');
             style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
-            listItem = "<div title=\"" + name + "\" class='item-small'   style='" + style + "'></div>";
+            listItem = "<div title=\"" + name + "\" class='item-small' style='" + style + "'></div>";
             if (index) {
               url = "/item/" + index;
             } else {
@@ -145,7 +145,7 @@
             blueprintsHTML += listItem;
           }
         }
-        blueprintsHTML += "<div title='Crafting Chance'   style='position:absolute;right:10px;'>  <h3>" + chance + "%</h3></div></div>";
+        blueprintsHTML += "<div title='Crafting Chance' style='position:absolute;right:10px;'><h3>" + chance + "%</h3></div></div>";
       }
       blueprintsHTML += '</div>';
     }
@@ -179,7 +179,7 @@
           }
         }
       }
-      _ref5 = ['hat', 'misc', 'tool'];
+      _ref5 = ['hat', 'misc', 'tool', 'bundle'];
       for (_n = 0, _len4 = _ref5.length; _n < _len4; _n++) {
         i = _ref5[_n];
         if (__indexOf.call(tags, i) >= 0) {
@@ -196,7 +196,7 @@
       }
     }
     tagsHTML += "</div>";
-    bundleHTML = __indexOf.call(tags, 'bundle') >= 0 && description.indexOf('---') !== -1 ? "<a href=\"/search?q=" + item.title + " Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" : '';
+    bundleHTML = __indexOf.call(tags, 'bundle') >= 0 && description.indexOf('---') !== -1 ? "<a href=\"/search?q=" + (encodeURIComponent(item.title)) + "%20Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" : '';
     itemName = item.title;
     if (link) {
       itemName = "<a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
