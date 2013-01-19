@@ -50,10 +50,12 @@ Thanks
 ------
 This project was inspired by and depends on the great TF2 community to function, so a special thanks to the following:
 
+[TF2 Spreadsheet](http://tf2spreadsheet.blogspot.com)
+
+[Backpack.tf](http://backpack.tf)
+
 [TF2 Outpost](http://tf2outpost.com)
 
 [TF2 Crafting Advisor](http://tf2crafting.info)
-
-[TF2 Spreadsheet](http://tf2spreadsheet.blogspot.com)
 
 [TF2B](http://tf2b.com)

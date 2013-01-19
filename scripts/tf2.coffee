@@ -117,18 +117,18 @@ window.showItemInfo = (item, link=true, price='spreadsheet') ->
           blueprintsHTML += listItem
 
       blueprintsHTML += "<div title='Crafting Chance'
-   style='position:relative;top: 13px;margin-left:420px;'>
+   style='position:absolute;right:10px;'>
   <h3>#{ chance }%</h3></div></div>"
 
     blueprintsHTML += '</div>'
 
   # Buy button and price HTML
-  buyHTML = if storePrice then "<form
- style='position:absolute;bottom:19px;left:345px;'>
+  buyHTML = if storePrice then "<div id='buy'><form
+ style='display:inline-block'>
 $#{ storePrice }<br>
 <input type='text' value='1' size='1' id='quantity'
  class='textbox'>
-</form><a href='#' id='buybutton'></a>" else ''
+</form><a href='#' id='buybutton'></a></div>" else ''
 
   # Classes HTML
   classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>"
@@ -146,8 +146,8 @@ $#{ storePrice }<br>
   if tags.length
     isWeapon = 'weapon' in tags
     isToken = 'token' in tags
-
     title = image = ''
+
     for i in ['primary','secondary','melee','pda2']
       if i in tags
         if isWeapon
@@ -158,7 +158,7 @@ $#{ storePrice }<br>
           title = 'Slot Token'
           image = 'slot_token'
 
-    for i in ['hat','misc']
+    for i in ['hat','misc','tool']
       if i in tags
         title = capitalize(i)
         image = i
@@ -168,7 +168,8 @@ $#{ storePrice }<br>
       image = 'class_token'
 
     if title and image
-      tagsHTML += "<a href='/search?q=#{ title }' target='_blank'>
+      tagsHTML += "<a href='/search?q=#{ encodeURIComponent(title) }'
+ target='_blank'>
 <img title='#{ title }' alt='#{ title }' width='50' height='50'
  src='/images/items/#{ image }.png'></a><br>"
   tagsHTML += "</div>"
@@ -193,19 +194,24 @@ View items</div></a>" else ''
 
   # Itembox HTML
   itemBox.innerHTML = "
+#{ tagsHTML }
 <h2 id='itemname'>#{ itemName }</h2>
+#{ classesHTML }
 #{ bundleHTML }
-<a class='button' target='_blank' title='Open in Wiki'
- style='position:absolute;bottom:10px;left:10px;'
- href=\"#{ wikiLink }\">Wiki</a>
 <div id='marketprice'>#{ marketPrice }</div>
-<form name='tf2outpostform' method='POST'
+#{ blueprintsHTML }
+<div id='buttons'>
+<a class='button-small' target='_blank' title='Open in Wiki'
+ href=\"#{ wikiLink }\">Wiki</a>
+<a class='button-small' target='_blank' title='Community Market'
+ href=\"http://steamcommunity.com/market/listings/440/
+#{ encodeURIComponent(item.title) }\">Market</a>
+
+<form name='tf2outpostform' method='POST' style='display:inline-block'
  action='http://www.tf2outpost.com/search'>
 
 <input type='hidden' name='has1'>
-<input class='button'
- style='position:absolute;bottom:10px;left:70px;margin:0;'
- type='submit'
+<input class='button-small' type='submit'
  title='Find Trades' name='submit' value='Trades'>
 
 <input type='hidden' name='type' value='any'>
@@ -219,10 +225,8 @@ View items</div></a>" else ''
 </select>
 
 </form>
+</div>
 #{ buyHTML }
-#{ blueprintsHTML }
-#{ classesHTML }
-#{ tagsHTML }
 "
 
   # Hover area
@@ -237,7 +241,7 @@ View items</div></a>" else ''
   hoverArea.addEventListener("mouseout", hide, false)
   hoverArea.addEventListener("mousemove", moveMouse, false)
   hoverArea.addEventListener("mouseover", show, false)
-  itemBox.appendChild(hoverArea)
+  itemBox.insertBefore(hoverArea, document.getElementById('blueprints'))
 
   # Buy button link
   buyButton = document.getElementById('buybutton')

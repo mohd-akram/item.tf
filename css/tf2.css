@@ -53,9 +53,8 @@ header > a {
 #blueprints {
   position: absolute;
   margin: auto;
-  left: 4px;
-  bottom: 65px;
-  width: 492px;
+  bottom: 60px;
+  width: 100%;
   height: 168px;
   overflow-y: auto;
   border-radius: 10px;
@@ -63,6 +62,7 @@ header > a {
 }
 
 .blueprint {
+  position: relative;
   margin: auto;
   width: auto;
   overflow: hidden;
@@ -143,7 +143,7 @@ ul {
   width: 80px;
 }
 
-.button {
+.button, .button-small {
   color: white;
   text-decoration: none;
   text-shadow: 2px 2px rgba(0,0,0,0.2);
@@ -160,14 +160,25 @@ ul {
   cursor: pointer;
 }
 
+.button-small {
+  font-size: 1.05em;
+}
+
+#buy {
+  position: absolute;
+  bottom: 10px;
+  right: 7px;
+}
+
 #buybutton {
+  display: inline-block;
+  position: relative;
   background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
   background-position: top;
-  position: absolute;
-  bottom: 20px;
-  left: 395px;
+  top: 7px;
+  margin-left: 5px;
   width: 97px;
-  height: 24px;  
+  height: 24px;
 }
 
 #buybutton:hover {
@@ -181,10 +192,10 @@ ul {
   background-color: #31312F;
   box-shadow: 0 0 8px 8px rgba(0, 0, 0, .2);
   border-radius: 10px;
-  width: 500px;
+  width: 540px;
   height: 650px;
   margin-top: -325px;
-  margin-left: -250px;
+  margin-left: -270px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -221,10 +232,14 @@ ul {
   margin: 5px 0 5px 0;
 }
 
-#quality {
+#buttons {
   position: absolute;
-  left: 150px;
-  bottom: 20px;
+  left: 3px;
+  bottom: 10px;
+}
+
+#buttons a, input, select {
+  margin: 0 0 0 5px;
 }
 
 .positive {

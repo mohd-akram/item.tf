@@ -145,11 +145,11 @@
             blueprintsHTML += listItem;
           }
         }
-        blueprintsHTML += "<div title='Crafting Chance'   style='position:relative;top: 13px;margin-left:420px;'>  <h3>" + chance + "%</h3></div></div>";
+        blueprintsHTML += "<div title='Crafting Chance'   style='position:absolute;right:10px;'>  <h3>" + chance + "%</h3></div></div>";
       }
       blueprintsHTML += '</div>';
     }
-    buyHTML = storePrice ? "<form style='position:absolute;bottom:19px;left:345px;'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buybutton'></a>" : '';
+    buyHTML = storePrice ? "<div id='buy'><form style='display:inline-block'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buybutton'></a></div>" : '';
     classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>";
     classes = item.getAttribute('data-classes');
     if (classes) {
@@ -179,7 +179,7 @@
           }
         }
       }
-      _ref5 = ['hat', 'misc'];
+      _ref5 = ['hat', 'misc', 'tool'];
       for (_n = 0, _len4 = _ref5.length; _n < _len4; _n++) {
         i = _ref5[_n];
         if (__indexOf.call(tags, i) >= 0) {
@@ -192,7 +192,7 @@
         image = 'class_token';
       }
       if (title && image) {
-        tagsHTML += "<a href='/search?q=" + title + "' target='_blank'><img title='" + title + "' alt='" + title + "' width='50' height='50' src='/images/items/" + image + ".png'></a><br>";
+        tagsHTML += "<a href='/search?q=" + (encodeURIComponent(title)) + "' target='_blank'><img title='" + title + "' alt='" + title + "' width='50' height='50' src='/images/items/" + image + ".png'></a><br>";
       }
     }
     tagsHTML += "</div>";
@@ -203,7 +203,7 @@
     }
     wikiPage = item.title.indexOf('Botkiller') !== -1 ? 'Botkiller_weapons' : item.title;
     wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(wikiPage));
-    itemBox.innerHTML = "<h2 id='itemname'>" + itemName + "</h2>" + bundleHTML + "<a class='button' target='_blank' title='Open in Wiki' style='position:absolute;bottom:10px;left:10px;' href=\"" + wikiLink + "\">Wiki</a><div id='marketprice'>" + marketPrice + "</div><form name='tf2outpostform' method='POST' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input class='button' style='position:absolute;bottom:10px;left:70px;margin:0;' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + buyHTML + "" + blueprintsHTML + "" + classesHTML + "" + tagsHTML + "";
+    itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/listings/440/" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
     hoverArea.setAttribute('data-description', description);
@@ -214,7 +214,7 @@
     hoverArea.addEventListener("mouseout", hide, false);
     hoverArea.addEventListener("mousemove", moveMouse, false);
     hoverArea.addEventListener("mouseover", show, false);
-    itemBox.appendChild(hoverArea);
+    itemBox.insertBefore(hoverArea, document.getElementById('blueprints'));
     buyButton = document.getElementById('buybutton');
     if (buyButton) {
       buyButton.onclick = function() {
