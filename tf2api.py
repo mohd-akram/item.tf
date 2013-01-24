@@ -425,7 +425,6 @@ def convertmarketname(row):
             'Vuvuzela': 'Noise Maker - Vuvuzela',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
             # Halloween 2012
-            'The Bat Outta Hell': 'Bat Outta Hell',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Pile of Curses': 'Pile Of Curses',
             'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',

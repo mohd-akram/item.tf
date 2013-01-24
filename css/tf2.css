@@ -37,13 +37,12 @@ header > a {
 }
 
 #sidebar {
-  width: auto;
+  min-width: 100px;
   text-align: right;
   font-size: 0.9em;
   position: absolute;
-  top: 20px;
+  top: 30px;
   right: 10px;
-  padding: 5px;
 }
 
 #sidebar a {
@@ -152,6 +151,7 @@ ul {
   padding: 8px;
   display: inline-block;
   background-color: #444;
+  background-image: linear-gradient(#585857, #333333);
   background-image: -webkit-linear-gradient(#585857, #333333);
   background-image: -moz-linear-gradient(#585857, #333333);
   background-image: -o-linear-gradient(#585857, #333333);
@@ -160,13 +160,21 @@ ul {
   cursor: pointer;
 }
 
+.button:hover, .button-small:hover {
+  background-color: #515151;
+  background-image: linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
+  background-image: -webkit-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
+  background-image: -moz-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
+  background-image: -o-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
+}
+
 .button-small {
   font-size: 1.05em;
 }
 
 #buy {
   position: absolute;
-  bottom: 10px;
+  bottom: 8px;
   right: 7px;
 }
 
@@ -216,7 +224,7 @@ ul {
 }
 
 .textbox {
-  text-align: right;
+  text-align: left;
   background-color: #414040;
   border-color: #55544F;
   border-style: solid;
@@ -235,7 +243,7 @@ ul {
 #buttons {
   position: absolute;
   left: 3px;
-  bottom: 10px;
+  bottom: 6px;
 }
 
 #buttons a, input, select {
@@ -296,45 +304,24 @@ a > img {
   text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
 }
 
-@-webkit-keyframes glowing {
-  0%   {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-  50%  {text-shadow: 0 0 20px rgba(255, 255, 255, 1);}
-  100% {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-}
-
-@-moz-keyframes glowing {
-  0%   {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-  50%  {text-shadow: 0 0 20px rgba(255, 255, 255, 1);}
-  100% {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-}
-
-@-ms-keyframes glowing {
-  0%   {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-  50%  {text-shadow: 0 0 20px rgba(255, 255, 255, 1);}
-  100% {text-shadow: 0 0 20px rgba(255, 255, 255, 0);}
-}
-
-#help {
-  display: inline-block;
-  margin: 0;
-  cursor: pointer;
-  font-size: 3em;
-  font-weight: bold;
-  padding: 0 15px 0 15px;
-  -webkit-animation: glowing 5s infinite;
-  -moz-animation: glowing 5s infinite;
-  -ms-animation: glowing 5s infinite;
-}
-
-#list {
+#help-list, #settings-list {
   display: none;
+  margin-top: 20px;
 }
 
-.rounded {
+.rounded, .button-icon {
   color: rgb(160, 158, 146);
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   padding: 10px;
+}
+
+.button-icon {
+  cursor: pointer;
+}
+
+.button-icon:hover {
+  color: rgb(175, 174, 164);
 }
 
 .unique {

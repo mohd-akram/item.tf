@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/tf2.css">
     <link rel="stylesheet" href="/css/message.css">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
     <script src="/scripts/tf2.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
@@ -42,19 +43,34 @@
   <body>
     <div id="container">
       <header style="height: 10px"></header>
-      <div id="sidebar" class="rounded">
-        <div id="help">?</div>
-        <div id="list">
-        <h4>Examples</h4>
-        <p>
-        {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set']) }}
-        </p>
-        <h4>Keywords</h4>
-        <p>
-        {{ showsearchlinks(['all','sets','random']) }}
-        <br>
-        {{ showsearchlinks(tags) }}
-        </p>
+      
+      <div id="sidebar" >     
+        <i id="settings" class="button-icon icon-cog icon-2x"></i>
+        <i id="help" class="button-icon icon-question-sign icon-2x"></i>
+        
+        <div id="settings-list" class="rounded">
+          <form id="settingsform">
+            <label for="pricesetting">Price Source:</label>
+            <select id="pricesetting" class="textbox">
+              <option value="spreadsheet">Spreadsheet</option>
+              <option value="backpack.tf">Backpack.tf</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Save" class="button-small">
+          </form>
+        </div>
+        
+        <div id="help-list" class="rounded">
+          <h4>Examples</h4>
+          <p>
+          {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set']) }}
+          </p>
+          <h4>Keywords</h4>
+          <p>
+          {{ showsearchlinks(['all','sets','random']) }}
+          <br>
+          {{ showsearchlinks(tags) }}
+          </p>
         </div>
       </div>
       <div id="hoverbox"></div>
@@ -75,8 +91,16 @@
     </div>
   <script>
     $('#searchbox').focus();
-    $('#help').click(function() {$('#list').toggle('slow')});
+    $('#pricesetting').val(getCookie('price_source'));
+    $('#help').click(function() {$('#settings-list').hide();$('#help-list').toggle('slide', {'direction': 'right'}, 'fast')});
+    $('#settings').click(function() {$('#help-list').hide();$('#settings-list').toggle('slide', {'direction': 'right'}, 'fast')});
+    $('#settingsform').submit(function() {
+      setCookie('price_source', $('#pricesetting').val(), 365);
+      $('#settings-list').hide('fast');
+      return false;
+    })
     addHoverBox();
+    
     $(function() {
       var accentMap = {
           'ä': 'a',

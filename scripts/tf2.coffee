@@ -70,19 +70,22 @@ init = ->
   window.hoverBox = document.getElementById("hoverbox")
   window.itemBox = document.getElementById("itembox")
 
-window.showItemInfo = (item, link=true, price='spreadsheet') ->
+window.showItemInfo = (item, link=true) ->
   init()
 
-  source = if price == 'spreadsheet' then 'backpack.tf' else 'spreadsheet'
+  cookiePrice = getCookie('price_source')
+  source = cookiePrice or 'spreadsheet'
+
+  altSource = if source == 'spreadsheet' then 'backpack.tf' else 'spreadsheet'
 
   # Market price HTML
-  marketPrice = getMarketPrice(item, price)
+  marketPrice = getMarketPrice(item, source)
   if not marketPrice
-    [price, source] = [source, price]
-    marketPrice = getMarketPrice(item, price)
+    [source, altSource] = [altSource, source]
+    marketPrice = getMarketPrice(item, source)
 
   if marketPrice
-    marketPrice = "<span id='pricesource'>#{ capitalize(price) }</span><br>
+    marketPrice = "<span id='pricesource'>#{ capitalize(source) }</span><br>
 <h3 id='prices'>#{ marketPrice }</h3>"
 
   description = getDescription(item)
@@ -126,7 +129,7 @@ window.showItemInfo = (item, link=true, price='spreadsheet') ->
   buyHTML = if storePrice then "<div id='buy'><form
  style='display:inline-block'>$#{ storePrice }<br>
 <input type='text' value='1' size='1' id='quantity'
- class='textbox'>
+ class='textbox' style='text-align: right'>
 </form><a href='#' id='buybutton'></a></div>" else ''
 
   # Classes HTML
@@ -211,11 +214,19 @@ View items</div></a>" else ''
  action='http://www.tf2outpost.com/search'>
 
 <input type='hidden' name='has1'>
+<input type='hidden' name='wants1'>
+
 <input class='button-small' type='submit'
  title='Find Trades' name='submit' value='Trades'>
 
 <input type='hidden' name='type' value='any'>
-<select id='quality' class='textbox' style='text-align:left'>
+
+<select id='tradesetting' class='textbox'>
+  <option value='want'>Want</option>
+  <option value='have'>Have</option>
+</select>
+
+<select id='quality' class='textbox'>
   <option value='6'>Unique</option>
   <option value='3'>Vintage</option>
   <option value='11'>Strange</option>
@@ -252,23 +263,31 @@ View items</div></a>" else ''
 #{ item.id }/#{ quantity }")
 
   # TF2Outpost link
-  quality = document.tf2outpostform.quality
-  quality.onchange = ->
-    document.tf2outpostform.has1.value = "440,#{ item.id },#{ quality.value }"
+  form = document.tf2outpostform
+  quality = form.quality
+
+  form.onsubmit = ->
+    tradeSetting = document.getElementById('tradesetting')
+    tradeValue = "440,#{ item.id },#{ quality.value }"
+    
+    if tradeSetting.value == 'want'
+      document.tf2outpostform.has1.value = tradeValue
+    else
+      document.tf2outpostform.wants1.value = tradeValue
 
   # Market price link
   priceButton = document.getElementById('pricesource')
   prices = document.getElementById('prices')
 
-  if priceButton and item.getAttribute("data-#{ source }")
+  if priceButton and item.getAttribute("data-#{ altSource }")
     priceButton.style.cursor = 'pointer'
 
     priceButton.onclick = ->
-      source = if priceButton.innerHTML == 'Spreadsheet'
+      altSource = if priceButton.innerHTML == 'Spreadsheet'
       then 'backpack.tf' else 'spreadsheet'
 
-      priceButton.innerHTML = capitalize(source)
-      prices.innerHTML = getMarketPrice(item, source)
+      priceButton.innerHTML = capitalize(altSource)
+      prices.innerHTML = getMarketPrice(item, altSource)
 
     priceButton.onmouseover = ->
       priceButton.style.textShadow = '0 0 10px rgb(196, 241, 128)'
@@ -283,8 +302,6 @@ View items</div></a>" else ''
         quality.selectedIndex = i
         break
 
-  # Update the quality selection
-  quality.onchange()
   # Show the item info box
   itemBox.style.display = "block"
 
@@ -302,3 +319,22 @@ window.addHoverBox = ->
   document.onkeydown = (e) ->
     if e.keyCode == 27
       itemBox.style.display = 'none'
+
+window.setCookie = (name, value, days) ->
+  expires = ''
+
+  if days
+    date = new Date()
+    date.setDate(date.getDate() + days)
+    expires = ";expires=#{ date.toUTCString() }"
+
+   document.cookie = "#{ name }=#{ escape(value) }#{ expires }"
+
+window.getCookie = (name) ->
+  cookies = document.cookie.split(';')
+  
+  for cookie in cookies
+    cookie = cookie[1...] if cookie[0] == ' '
+
+    if cookie[0...name.length] == name
+      return cookie[name.length+1...]

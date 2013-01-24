@@ -95,23 +95,22 @@
     return window.itemBox = document.getElementById("itembox");
   };
 
-  window.showItemInfo = function(item, link, price) {
-    var b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, description, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, priceButton, prices, quality, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, wikiPage, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+  window.showItemInfo = function(item, link) {
+    var altSource, b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, cookiePrice, description, form, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, priceButton, prices, quality, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, wikiPage, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     if (link == null) {
       link = true;
     }
-    if (price == null) {
-      price = 'spreadsheet';
-    }
     init();
-    source = price === 'spreadsheet' ? 'backpack.tf' : 'spreadsheet';
-    marketPrice = getMarketPrice(item, price);
+    cookiePrice = getCookie('price_source');
+    source = cookiePrice || 'spreadsheet';
+    altSource = source === 'spreadsheet' ? 'backpack.tf' : 'spreadsheet';
+    marketPrice = getMarketPrice(item, source);
     if (!marketPrice) {
-      _ref = [source, price], price = _ref[0], source = _ref[1];
-      marketPrice = getMarketPrice(item, price);
+      _ref = [altSource, source], source = _ref[0], altSource = _ref[1];
+      marketPrice = getMarketPrice(item, source);
     }
     if (marketPrice) {
-      marketPrice = "<span id='pricesource'>" + (capitalize(price)) + "</span><br><h3 id='prices'>" + marketPrice + "</h3>";
+      marketPrice = "<span id='pricesource'>" + (capitalize(source)) + "</span><br><h3 id='prices'>" + marketPrice + "</h3>";
     }
     description = getDescription(item);
     storePrice = item.getAttribute('data-storeprice');
@@ -149,7 +148,7 @@
       }
       blueprintsHTML += '</div>';
     }
-    buyHTML = storePrice ? "<div id='buy'><form style='display:inline-block'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox'></form><a href='#' id='buybutton'></a></div>" : '';
+    buyHTML = storePrice ? "<div id='buy'><form style='display:inline-block'>$" + storePrice + "<br><input type='text' value='1' size='1' id='quantity' class='textbox' style='text-align: right'></form><a href='#' id='buybutton'></a></div>" : '';
     classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>";
     classes = item.getAttribute('data-classes');
     if (classes) {
@@ -203,7 +202,7 @@
     }
     wikiPage = item.title.indexOf('Botkiller') !== -1 ? 'Botkiller_weapons' : item.title;
     wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(wikiPage));
-    itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/listings/440/" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='quality' class='textbox' style='text-align:left'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
+    itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/listings/440/" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input type='hidden' name='wants1'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='tradesetting' class='textbox'>  <option value='want'>Want</option>  <option value='have'>Have</option></select><select id='quality' class='textbox'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
     hoverArea.setAttribute('data-description', description);
@@ -223,18 +222,26 @@
         return window.open("http://store.steampowered.com/buyitem/440/" + item.id + "/" + quantity);
       };
     }
-    quality = document.tf2outpostform.quality;
-    quality.onchange = function() {
-      return document.tf2outpostform.has1.value = "440," + item.id + "," + quality.value;
+    form = document.tf2outpostform;
+    quality = form.quality;
+    form.onsubmit = function() {
+      var tradeSetting, tradeValue;
+      tradeSetting = document.getElementById('tradesetting');
+      tradeValue = "440," + item.id + "," + quality.value;
+      if (tradeSetting.value === 'want') {
+        return document.tf2outpostform.has1.value = tradeValue;
+      } else {
+        return document.tf2outpostform.wants1.value = tradeValue;
+      }
     };
     priceButton = document.getElementById('pricesource');
     prices = document.getElementById('prices');
-    if (priceButton && item.getAttribute("data-" + source)) {
+    if (priceButton && item.getAttribute("data-" + altSource)) {
       priceButton.style.cursor = 'pointer';
       priceButton.onclick = function() {
-        source = priceButton.innerHTML === 'Spreadsheet' ? 'backpack.tf' : 'spreadsheet';
-        priceButton.innerHTML = capitalize(source);
-        return prices.innerHTML = getMarketPrice(item, source);
+        altSource = priceButton.innerHTML === 'Spreadsheet' ? 'backpack.tf' : 'spreadsheet';
+        priceButton.innerHTML = capitalize(altSource);
+        return prices.innerHTML = getMarketPrice(item, altSource);
       };
       priceButton.onmouseover = function() {
         return priceButton.style.textShadow = '0 0 10px rgb(196, 241, 128)';
@@ -253,7 +260,6 @@
         }
       }
     }
-    quality.onchange();
     return itemBox.style.display = "block";
   };
 
@@ -274,6 +280,31 @@
         return itemBox.style.display = 'none';
       }
     };
+  };
+
+  window.setCookie = function(name, value, days) {
+    var date, expires;
+    expires = '';
+    if (days) {
+      date = new Date();
+      date.setDate(date.getDate() + days);
+      expires = ";expires=" + (date.toUTCString());
+    }
+    return document.cookie = "" + name + "=" + (escape(value)) + expires;
+  };
+
+  window.getCookie = function(name) {
+    var cookie, cookies, _i, _len;
+    cookies = document.cookie.split(';');
+    for (_i = 0, _len = cookies.length; _i < _len; _i++) {
+      cookie = cookies[_i];
+      if (cookie[0] === ' ') {
+        cookie = cookie.slice(1);
+      }
+      if (cookie.slice(0, name.length) === name) {
+        return cookie.slice(name.length + 1);
+      }
+    }
   };
 
 }).call(this);
