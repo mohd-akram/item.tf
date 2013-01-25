@@ -264,6 +264,10 @@ View items</div></a>" else ''
 
   # TF2Outpost link
   form = document.tf2outpostform
+
+  if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') == -1
+    form.setAttribute('target', '_blank')
+
   quality = form.quality
 
   form.onsubmit = ->

@@ -223,6 +223,9 @@
       };
     }
     form = document.tf2outpostform;
+    if (window.navigator.userAgent.indexOf('Valve Steam GameOverlay') === -1) {
+      form.setAttribute('target', '_blank');
+    }
     quality = form.quality;
     form.onsubmit = function() {
       var tradeSetting, tradeValue;
