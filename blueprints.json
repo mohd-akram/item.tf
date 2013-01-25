@@ -1723,7 +1723,8 @@
       "Hanger-On Hood",
       "Flight of the Monarch",
       "Spooky Shoes",
-      "Spooky Sleeves"
+      "Spooky Sleeves",
+      "Digit Divulger"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1763,7 +1764,9 @@
       "Koala Compact",
       "Stovepipe Sniper Shako",
       "Sir Hootsalot",
-      "Deadliest Duckling"
+      "Deadliest Duckling",
+      "Cold Killer",
+      "Mutton Mann"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1818,7 +1821,8 @@
       "Menpo",
       "Bonedolier",
       "Chief Constable",
-      "Deadliest Duckling"
+      "Deadliest Duckling",
+      "Soldier's Slope Scopers"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1864,7 +1868,9 @@
       "K-9 Mane",
       "Bonedolier",
       "Voodoo JuJu (Slight Return)",
-      "Deadliest Duckling"
+      "Deadliest Duckling",
+      "Cool Breeze",
+      "Mutton Mann"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1914,6 +1920,7 @@
       "K-9 Mane",
       "Siberian Sophisticate",
       "Brock's Locks",
+      "Heavy's Hockey Hair",
       "Carl",
       "Aqua Flops",
       "Hunger Force"
@@ -1956,7 +1963,10 @@
       "Medi-Mask",
       "Archimedes",
       "Crafty Hair",
-      "Foppish Physician"
+      "Foppish Physician",
+      "Der Wintermantel",
+      "Doc's Holiday",
+      "Mutton Mann"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -2012,7 +2022,8 @@
       "Deadliest Duckling",
       "DethKapp",
       "Nose Candy",
-      "Rail Spikes"
+      "Rail Spikes",
+      "Winter Wonderland Wrap"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -2053,7 +2064,8 @@
       "Lacking Moral Fiber Mask",
       "Distinguished Rogue",
       "Scarecrow",
-      "Exorcizor"
+      "Exorcizor",
+      "Cut Throat Concierge"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
@@ -2097,7 +2109,12 @@
       "Champ Stamp",
       "Pocket Purrer",
       "Crafty Hair",
-      "Deadliest Duckling"
+      "Deadliest Duckling",
+      "Mutton Mann",
+      "Barnstormer",
+      "Prize Plushy",
+      "Grizzled Growth",
+      "Last Straw"
     ]
   ],
   "Rebuild Headgear": [
