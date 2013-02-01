@@ -213,17 +213,16 @@ View items</div></a>" else ''
 <form name='tf2outpostform' method='POST' style='display:inline-block'
  action='http://www.tf2outpost.com/search'>
 
-<input type='hidden' name='has1'>
-<input type='hidden' name='wants1'>
+<input type='hidden' name='json'>
 
 <input class='button-small' type='submit'
  title='Find Trades' name='submit' value='Trades'>
 
 <input type='hidden' name='type' value='any'>
 
-<select id='tradesetting' class='textbox'>
-  <option value='want'>Want</option>
-  <option value='have'>Have</option>
+<select id='tradetype' class='textbox'>
+  <option value='has1'>Want</option>
+  <option value='wants1'>Have</option>
 </select>
 
 <select id='quality' class='textbox'>
@@ -271,13 +270,10 @@ View items</div></a>" else ''
   quality = form.quality
 
   form.onsubmit = ->
-    tradeSetting = document.getElementById('tradesetting')
-    tradeValue = "440,#{ item.id },#{ quality.value }"
-    
-    if tradeSetting.value == 'want'
-      document.tf2outpostform.has1.value = tradeValue
-    else
-      document.tf2outpostform.wants1.value = tradeValue
+    tradeType = document.getElementById('tradetype').value
+
+    document.tf2outpostform.json.value = "{\"filters\":{},
+\"#{ tradeType }\":\"440,#{ item.id },#{ quality.value }\"}"
 
   # Market price link
   priceButton = document.getElementById('pricesource')

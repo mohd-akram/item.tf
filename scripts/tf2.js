@@ -202,7 +202,7 @@
     }
     wikiPage = item.title.indexOf('Botkiller') !== -1 ? 'Botkiller_weapons' : item.title;
     wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(wikiPage));
-    itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/listings/440/" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='has1'><input type='hidden' name='wants1'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='tradesetting' class='textbox'>  <option value='want'>Want</option>  <option value='have'>Have</option></select><select id='quality' class='textbox'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
+    itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/listings/440/" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='json'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='tradetype' class='textbox'>  <option value='has1'>Want</option>  <option value='wants1'>Have</option></select><select id='quality' class='textbox'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
     hoverArea.setAttribute('data-description', description);
@@ -228,14 +228,9 @@
     }
     quality = form.quality;
     form.onsubmit = function() {
-      var tradeSetting, tradeValue;
-      tradeSetting = document.getElementById('tradesetting');
-      tradeValue = "440," + item.id + "," + quality.value;
-      if (tradeSetting.value === 'want') {
-        return document.tf2outpostform.has1.value = tradeValue;
-      } else {
-        return document.tf2outpostform.wants1.value = tradeValue;
-      }
+      var tradeType;
+      tradeType = document.getElementById('tradetype').value;
+      return document.tf2outpostform.json.value = "{\"filters\":{},\"" + tradeType + "\":\"440," + item.id + "," + quality.value + "\"}";
     };
     priceButton = document.getElementById('pricesource');
     prices = document.getElementById('prices');
