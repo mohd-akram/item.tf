@@ -9,9 +9,6 @@ Slot search, eg: 'primary weps'
 Set search, eg: 'the saharan spy set'
 Requires TF2 API module to get items and prices.
 
-Usage:
-    items = search('engi medic hats', itemsdict, itemsbyname, itemsets)
-
 Note: You must provide your own image URLs for paint cans and blueprints.
       Replace the relative URLs in createitemdict and parseblueprints.
 

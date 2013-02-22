@@ -400,7 +400,6 @@ def convertmarketname(row):
     repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
             'High-Five': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',
-            'Kills While Ubercharged': 'Strange Part: Kills While Übercharged',
             'Unusual Haunted Metal scrap': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
             'Color No. 216-190-216 (Pink)': 'Color No. 216-190-216',
@@ -428,8 +427,11 @@ def convertmarketname(row):
             'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
             'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
 
-            'Mann Co. Supply Crate (series 40)':
+            'Salvaged Mann Co. Supply Crate (series 40)':
             'Salvaged Mann Co. Supply Crate',
+
+            'Strange Part: Kills While Ubercharged':
+            'Strange Part: Kills While Übercharged',
 
             "Lord C***swain's Novelty Pipe and Mutton Chops":
             "Lord Cockswain's Novelty Mutton Chops and Pipe",
