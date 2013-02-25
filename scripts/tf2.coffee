@@ -207,8 +207,8 @@ View items</div></a>" else ''
 <a class='button-small' target='_blank' title='Open in Wiki'
  href=\"#{ wikiLink }\">Wiki</a>
 <a class='button-small' target='_blank' title='Community Market'
- href=\"http://steamcommunity.com/market/listings/440/
-#{ encodeURIComponent(item.title) }\">Market</a>
+ href=\"http://steamcommunity.com/market/search?q=appid%3A440
+ #{ encodeURIComponent(item.title) }\">Market</a>
 
 <form name='tf2outpostform' method='POST' style='display:inline-block'
  action='http://www.tf2outpost.com/search'>
@@ -328,13 +328,14 @@ window.setCookie = (name, value, days) ->
     date.setDate(date.getDate() + days)
     expires = ";expires=#{ date.toUTCString() }"
 
-   document.cookie = "#{ name }=#{ escape(value) }#{ expires }"
+   document.cookie = "#{ name }=#{ value }#{ expires }"
 
 window.getCookie = (name) ->
   cookies = document.cookie.split(';')
   
   for cookie in cookies
-    cookie = cookie[1...] if cookie[0] == ' '
+    while cookie[0] == ' '
+      cookie = cookie[1...]
 
-    if cookie[0...name.length] == name
-      return cookie[name.length+1...]
+    if cookie[...name.length] == name
+      return cookie[name.length + 1...]
