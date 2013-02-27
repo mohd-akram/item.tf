@@ -96,7 +96,7 @@
   };
 
   window.showItemInfo = function(item, link) {
-    var altSource, b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, cookiePrice, description, form, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, priceButton, prices, quality, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, wikiPage, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+    var altSource, b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, cookiePrice, description, form, hoverArea, i, image, imageUrl, index, isToken, isWeapon, itemName, j, listItem, marketPrice, name, option, priceButton, prices, quality, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     if (link == null) {
       link = true;
     }
@@ -200,8 +200,7 @@
     if (link) {
       itemName = "<a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
     }
-    wikiPage = item.title.indexOf('Botkiller') !== -1 ? 'Botkiller_weapons' : item.title;
-    wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(wikiPage));
+    wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(item.title));
     itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/search?q=appid%3A440 " + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='json'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='tradetype' class='textbox'>  <option value='has1'>Want</option>  <option value='wants1'>Have</option></select><select id='quality' class='textbox'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form></div>" + buyHTML + "";
     hoverArea = document.createElement('div');
     hoverArea.title = item.title;
