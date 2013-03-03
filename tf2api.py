@@ -15,22 +15,15 @@ from urllib2 import urlopen
 from collections import defaultdict, OrderedDict
 
 
-def isprice(string):
-    """Check if string starts with a number"""
-    if string:
-        return string[0].isdigit()
-    return False
-
-
-def getschema(apikey):
+def getschema(apikey, timeout=30):
     """Return the schema"""
     url = ('http://api.steampowered.com/IEconItems_440/GetSchema/v0001/'
            '?key={}&language=en'.format(apikey))
 
-    return json.loads(urlopen(url).read())
+    return json.loads(urlopen(url, timeout=timeout).read())
 
 
-def getitemsinfo(apikey, storeprices, indexes):
+def getitemsinfo(apikey, storeprices, indexes, timeout=30):
     """Return a dictionary of AssetClassInfo values with defindex as key"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
            '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
@@ -43,7 +36,7 @@ def getitemsinfo(apikey, storeprices, indexes):
         idtoindex[classid] = index
         url += '&classid{0}={1}'.format(n, classid)
 
-    infobyid = json.loads(urlopen(url).read())['result']
+    infobyid = json.loads(urlopen(url, timeout=timeout).read())['result']
     del infobyid['success']
 
     return {idtoindex[classid]: iteminfo for classid, iteminfo in
@@ -97,13 +90,14 @@ def getparticleeffects(schema):
             schema['result']['attribute_controlled_attached_particles']}
 
 
-def getstoreprices(apikey):
+def getstoreprices(apikey, timeout=30):
     """Return a dictionary of store prices where the key is defindex for
     each item"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
            '?key={}&language=en&appid=440&currency=usd'.format(apikey))
 
-    prices = json.loads(urlopen(url).read())['result']['assets']
+    prices = json.loads(urlopen(url,
+                                timeout=timeout).read())['result']['assets']
 
     return {int(price['name']): price for price in prices}
 
@@ -132,11 +126,11 @@ def getspreadsheetprices(itemsbyname):
     sheet = list(reader)[1:-1]
 
     for row in sheet:
-        name = convertmarketname(row)
-        price = filtermarketstring(row['price']).replace(' ref', '').title()
+        name = _convertmarketname(row)
+        price = _filtermarketstring(row['price']).replace(' ref', '').title()
         quality = row['quality']
-        lowprice = filtermarketstring(row['lowprice']).replace(' ref',
-                                                               '').title()
+        lowprice = _filtermarketstring(row['lowprice']).replace(' ref',
+                                                                '').title()
         lowquality = 'Unique'
 
         if name == 'Ghastlier/Ghastlierest Gibus':
@@ -199,7 +193,7 @@ def getspreadsheetprices(itemsbyname):
 
             if price:
                 # Check if price starts with a number and has no denomination
-                if not any(d in price for d in denoms) and isprice(price):
+                if not any(d in price for d in denoms) and _isprice(price):
                     # Add Refined denomination
                     price += ' Refined'
 
@@ -207,7 +201,7 @@ def getspreadsheetprices(itemsbyname):
 
             if lowprice and lowprice != '-':
                 if not any(d in lowprice for d in denoms):
-                    if isprice(lowprice):
+                    if _isprice(lowprice):
                         lowprice += ' Refined'
 
                 pricesdict[index][lowquality] = lowprice
@@ -215,12 +209,13 @@ def getspreadsheetprices(itemsbyname):
     return pricesdict
 
 
-def getbackpackprices(items, itemsbyname):
+def getbackpackprices(items, itemsbyname, timeout=30):
     """Get market prices from backpack.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
     url = 'http://backpack.tf/api/IGetPrices/v2/'
-    pricesdata = json.loads(urlopen(url).read())['response']['prices']
+    pricesdata = json.loads(
+        urlopen(url, timeout=timeout).read())['response']['prices']
 
     pricesdict = defaultdict(dict)
     qualities = {'1': 'Genuine', '3': 'Vintage', '6': 'Unique',
@@ -389,14 +384,21 @@ def getobsoleteindexes():
     return (699, 2007, 2015, 2049, 2093) + tuple(range(2018, 2027))
 
 
-def filtermarketstring(string):
+def _isprice(string):
+    """Check if string starts with a number"""
+    if string:
+        return string[0].isdigit()
+    return False
+
+
+def _filtermarketstring(string):
     """Clean up a string from the spreadsheet"""
     return string.replace('(clean)', '').replace('(dirty)', '').strip()
 
 
-def convertmarketname(row):
+def _convertmarketname(row):
     """Changes the market name to match the proper TF2 name"""
-    name = filtermarketstring(row['name'])
+    name = _filtermarketstring(row['name'])
     repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
             'High-Five': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',

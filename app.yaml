@@ -35,7 +35,10 @@ handlers:
 
 libraries:
 - name: webapp2
-  version: "2.5.1"
+  version: "latest"
 
 - name: jinja2
-  version: "2.6"
+  version: "latest"
+
+- name: markupsafe
+  version: "latest"
