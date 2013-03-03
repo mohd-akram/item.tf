@@ -19,17 +19,17 @@ def gethomepage():
     return 'http://www.tf2find.com'
 
 
-def getapikey():
-    with open('api_key.txt') as f:
-        apikey = f.read()
-    return apikey
+def getapikeys():
+    with open('api_keys.txt') as f:
+        apikeys = f.read().splitlines()
+    return apikeys
 
 
 def updatecache():
     t0 = time.time()
-    apikey = getapikey()
+    apikey, backpackkey = getapikeys()
 
-    tf2info = tf2search.gettf2info(apikey, 'blueprints.json')
+    tf2info = tf2search.gettf2info(apikey, backpackkey, 'blueprints.json')
     itemsdict = tf2search.getitemsdict(tf2info)
 
     newitems = [itemsdict[index] for index in

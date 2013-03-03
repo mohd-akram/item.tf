@@ -25,7 +25,7 @@ from tf2api import (getschema, getbundles, getitems, getitemsbyname,
                     getallclasses, getalltags, getobsoleteindexes)
 
 
-def gettf2info(apikey, blueprintsfilename):
+def gettf2info(apikey, backpackkey, blueprintsfilename):
     """Return a named tuple which contains information from multiple sources
     about TF2 items"""
     schema = getschema(apikey)
@@ -42,7 +42,7 @@ def gettf2info(apikey, blueprintsfilename):
     bundles = getbundles(apikey, storeprices)
 
     spreadsheetprices = getspreadsheetprices(itemsbyname)
-    backpackprices = getbackpackprices(items, itemsbyname)
+    backpackprices = getbackpackprices(backpackkey, items, itemsbyname)
 
     with open(blueprintsfilename) as f:
         data = json.loads(f.read().decode('utf-8'))

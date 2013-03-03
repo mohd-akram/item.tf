@@ -182,6 +182,7 @@ def getspreadsheetprices(itemsbyname):
                         alt['price'] = lowprice
                         alt['lowprice'] = lowprice = ''
                         sheet.append(alt)
+                        break
 
             index = itemsbyname[name]['defindex']
 
@@ -209,49 +210,62 @@ def getspreadsheetprices(itemsbyname):
     return pricesdict
 
 
-def getbackpackprices(items, itemsbyname, timeout=30):
+def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     """Get market prices from backpack.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = 'http://backpack.tf/api/IGetPrices/v2/'
+    url = ('http://backpack.tf/api/IGetPrices/v3/'
+           '?format=json&key={}'.format(apikey))
+
     pricesdata = json.loads(
         urlopen(url, timeout=timeout).read())['response']['prices']
 
     pricesdict = defaultdict(dict)
+
     qualities = {'1': 'Genuine', '3': 'Vintage', '6': 'Unique',
                  '11': 'Strange', '13': 'Haunted', '600': 'Uncraftable'}
 
+    denoms = {'metal': 'Refined', 'keys': 'Key',
+              'earbuds': 'Bud', 'usd': 'USD'}
+
     for index, prices in pricesdata.items():
+        index = int(index)
         for quality, price in prices.items():
             if quality in qualities:
-                if '0' in price:
-                    value = price['0']['value']
+                item = items[index]
+
+                iscrate = False
+
+                if 'attributes' in item:
+                    attribute = item['attributes'][0]
+                    if attribute['name'] == 'set supply crate series':
+                        iscrate = True
+                        crateno = str(int(attribute['value']))
+
+                if '0' in price and (not iscrate or crateno not in price):
+                    price = price['0']
                 else:
-                    value = price.values()[0]['value']
+                    price = price[crateno]
+
+                price = price['current']
+
+                value = price['value']
+                valuehigh = (' - {:g}'.format(price['value_high'])
+                             if 'value_high' in price else '')
+
+                denom = denoms[price['currency']]
 
                 # Backpack.tf uses different indexes. This gets the name of the
                 # item from their API and finds its proper index.
-                idx = itemsbyname[items[int(index)]['item_name']]['defindex']
+                idx = itemsbyname[items[index]['item_name']]['defindex']
                 qualityname = qualities[quality]
-                denom = 'Refined'
 
-                budvalue = pricesdata['143']['6']['0']['value']
-                keyvalue = pricesdata['5021']['6']['0']['value']
-
-                if value >= budvalue and not (idx == 143 and quality == '6'):
-                    value = value / budvalue
-                    denom = 'Bud'
-
-                elif value >= keyvalue and idx != 5021:
-                    value = value / keyvalue
-                    denom = 'Key'
-
-                value = round(value, 2)
-
-                if value != 1 and denom != 'Refined':
+                if value != 1 and denom not in ('Refined', 'USD'):
                     denom += 's'
 
-                pricesdict[idx][qualityname] = '{:g} {}'.format(value, denom)
+                pricesdict[idx][qualityname] = '{:g}{} {}'.format(value,
+                                                                  valuehigh,
+                                                                  denom)
 
     return pricesdict
 
