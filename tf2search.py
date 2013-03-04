@@ -17,32 +17,27 @@ import re
 import json
 from collections import namedtuple, defaultdict, OrderedDict
 
-from tf2api import (getschema, getbundles, getitems, getitemsbyname,
-                    getattributes, getitemsets, getparticleeffects,
-                    getstoreprices, getnewstoreprices, getspreadsheetprices,
-                    getbackpackprices, getitemclasses, getitemattributes,
-                    getstoreprice, getmarketprice, getitemtags, getweapontags,
-                    getallclasses, getalltags, getobsoleteindexes)
+import tf2api
 
 
 def gettf2info(apikey, backpackkey, blueprintsfilename):
     """Return a named tuple which contains information from multiple sources
     about TF2 items"""
-    schema = getschema(apikey)
+    schema = tf2api.getschema(apikey)
 
-    items = getitems(schema)
-    itemsbyname = getitemsbyname(schema)
-    itemsets = getitemsets(schema)
-    attributes = getattributes(schema)
-    effects = getparticleeffects(schema)
-    itemsets = getitemsets(schema)
+    items = tf2api.getitems(schema)
+    itemsbyname = tf2api.getitemsbyname(schema)
+    itemsets = tf2api.getitemsets(schema)
+    attributes = tf2api.getattributes(schema)
+    effects = tf2api.getparticleeffects(schema)
+    itemsets = tf2api.getitemsets(schema)
 
-    storeprices = getstoreprices(apikey)
-    newstoreprices = getnewstoreprices(storeprices)
-    bundles = getbundles(apikey, storeprices)
+    storeprices = tf2api.getstoreprices(apikey)
+    newstoreprices = tf2api.getnewstoreprices(storeprices)
+    bundles = tf2api.getbundles(apikey, storeprices)
 
-    spreadsheetprices = getspreadsheetprices(itemsbyname)
-    backpackprices = getbackpackprices(backpackkey, items, itemsbyname)
+    spreadsheetprices = tf2api.getspreadsheetprices(itemsbyname)
+    backpackprices = tf2api.getbackpackprices(backpackkey, items, itemsbyname)
 
     with open(blueprintsfilename) as f:
         data = json.loads(f.read().decode('utf-8'))
@@ -88,7 +83,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     # Check if searching for an item set
     itemsetmatch = re.match('(.+) [sS]et', query)
     # Check if the weapon tag is specified (eg. primary, melee)
-    hasweapontag = not set(tags).isdisjoint(getweapontags())
+    hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
     # Check if the user is searching for tournament medals
     hidemedals = 'tournament' not in tags
 
@@ -188,12 +183,14 @@ def createitemdict(index, tf2info):
     keys that are used for search"""
     item = tf2info.items[index]
     name = item['item_name']
-    classes = getitemclasses(item)
-    attributes = getitemattributes(item, tf2info.attributes, tf2info.effects)
-    storeprice = getstoreprice(item, tf2info.storeprices)
-    spreadsheetprice = getmarketprice(item, tf2info.spreadsheetprices)
-    backpackprice = getmarketprice(item, tf2info.backpackprices)
-    tags = getitemtags(item)
+    classes = tf2api.getitemclasses(item)
+    attributes = tf2api.getitemattributes(item,
+                                          tf2info.attributes, tf2info.effects)
+
+    storeprice = tf2api.getstoreprice(item, tf2info.storeprices)
+    spreadsheetprice = tf2api.getmarketprice(item, tf2info.spreadsheetprices)
+    backpackprice = tf2api.getmarketprice(item, tf2info.backpackprices)
+    tags = tf2api.getitemtags(item)
     # Sort blueprints by crafting chance
     blueprint = sorted(tf2info.blueprints[index], reverse=True)
 
@@ -245,7 +242,7 @@ def isvalidresult(itemdict, strict=True):
     """Check if item has an image, is not a duplicate and is not bundle junk.
     If strict is True, competition medals also return False"""
     index = itemdict['index']
-    duplicates = getobsoleteindexes()
+    duplicates = tf2api.getobsoleteindexes()
     isvalid = (itemdict['image'] and
                index not in duplicates and
                not itemdict['name'].startswith('TF_Bundle'))
@@ -315,7 +312,7 @@ def _splitspecial(string):
 def _getclass(word):
     """Parse a word and return TF2 class or alias if it matches one"""
     word = word.capitalize()
-    for name, aliases in getallclasses().items():
+    for name, aliases in tf2api.getallclasses().items():
         if word == name or word in aliases:
             return name
 
@@ -323,7 +320,7 @@ def _getclass(word):
 def _gettag(word):
     """Parse a word and return an item tag if it matches one"""
     weapon = ['wep', 'weap']
-    tags = getalltags()
+    tags = tf2api.getalltags()
     for tag in tags:
         if word in weapon or word in _pluralize(weapon):
             return 'weapon'
@@ -376,7 +373,7 @@ def _parseblueprints(blueprints, itemsbyname):
     polyweps = ["The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
                 "The Croc-o-Style Kit", "The Special Delivery"]
 
-    for class_ in getallclasses():
+    for class_ in tf2api.getallclasses():
         repl['Any {} Weapon'.format(class_)] = '{} Starter Pack'.format(class_)
 
     for name in polyweps:
