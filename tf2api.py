@@ -222,7 +222,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
 
     pricesdict = defaultdict(dict)
 
-    qualities = {'1': 'Genuine', '3': 'Vintage', '6': 'Unique',
+    qualities = {'1': 'Genuine', '3': 'Vintage', '5': 'Unusual', '6': 'Unique',
                  '11': 'Strange', '13': 'Haunted', '600': 'Uncraftable'}
 
     denoms = {'metal': 'Refined', 'keys': 'Key',
@@ -244,8 +244,10 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
 
                 if '0' in price and (not iscrate or crateno not in price):
                     price = price['0']
-                else:
+                elif iscrate:
                     price = price[crateno]
+                else:
+                    continue
 
                 price = price['current']
 
