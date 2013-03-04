@@ -47,9 +47,9 @@ def gettf2info(apikey, backpackkey, blueprintsfilename):
               'blueprints storeprices newstoreprices bundles '
               'spreadsheetprices backpackprices')
 
-    TF2info = namedtuple('TF2info', fields)
+    TF2Info = namedtuple('TF2Info', fields)
 
-    return TF2info(items, itemsbyname, itemsets, attributes, effects,
+    return TF2Info(items, itemsbyname, itemsets, attributes, effects,
                    blueprints, storeprices, newstoreprices, bundles,
                    spreadsheetprices, backpackprices)
 
