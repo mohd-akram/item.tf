@@ -70,7 +70,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     otheritems value is a dict of lists for several different results"""
     mainitems = []
     otheritems = defaultdict(list)
-    names = []
+    names = set()
 
     result = _parseinput(query)
     query = result['query']
@@ -81,7 +81,14 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     querylength = len(query)
 
     # Check if searching for an item set
-    itemsetmatch = re.match('(.+) [sS]et', query)
+    itemsetmatch = re.match(r'(.+) [sS]et$', query)
+    # Check if using price visualization
+    pricematch = re.match(r'(\d+(\.\d+)?) '
+                          '(([eE]arb|[bB])ud(s)?|'
+                          '[rR]ef(ined|s)?|'
+                          '[rR]ec(laimed|s)?|'
+                          '[kK]ey(s)?|'
+                          '[sS]crap)$', query)
     # Check if the weapon tag is specified (eg. primary, melee)
     hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
     # Check if the user is searching for tournament medals
@@ -114,7 +121,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                         otheritems['Multi-Class Items'].append(itemdict)
                     else:
                         otheritems['All-Class Items'].append(itemdict)
-                    names.append(name)
+                    names.add(name)
 
     elif query == 'all':
         # Get all the items in the schema as is
@@ -145,6 +152,20 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                     otheritems[bundle['name']].extend(bundleitems)
                     break
 
+    elif pricematch:
+        amount = float(pricematch.group(1))
+        denom = _getdenom(pricematch.group(3).lower())
+
+        items, counts = _getpriceasitems(amount, denom, itemsdict)
+
+        titlelist = ['{} {}'.format(v, k + 's' if k == 'Key' and v != 1 else k)
+                     for k, v in counts.items()]
+
+        title = ' + '.join(titlelist)
+
+        if items:
+            otheritems[title].extend(items)
+
     else:
         # Regular word search
         for itemdict in itemsdict.values():
@@ -162,7 +183,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
             if match and isvalidresult(itemdict, False):
                 if name not in names:
                     mainitems.append(itemdict)
-                    names.append(name)
+                    names.add(name)
 
         # Check if there's a match between an item set name and query
         for setname, itemset in itemsets.items():
@@ -299,6 +320,60 @@ def _getsorteditemlist(itemslist, querylist, query):
                   reverse=True)
 
 
+def _getpriceasitems(amount, denom, itemsdict):
+    """Return a list of itemdicts that visualize a given price and a dict
+    with the count of each item."""
+    items = []
+    counts = OrderedDict()
+
+    if denom in ('Refined', 'Reclaimed'):
+        # Allow common values such as 1.33 and 0.66
+        amount += 0.01
+
+    denomtoidx = tf2api.getalldenoms()
+    denoms = denomtoidx.keys()
+
+    # Convert denomination to Earbuds
+    for i in denoms[:denoms.index(denom)]:
+        amount /= _getdenomvalue(i, itemsdict)
+
+    denom = 'Earbuds'
+
+    if amount <= 2000:
+        # Get count of each denomination and add items to results
+        for i in denoms:
+            idx = denomtoidx[i]
+            count = int(amount)
+            value = _getdenomvalue(i, itemsdict)
+
+            if count:
+                items.extend([itemsdict[idx]] * count)
+                counts[i] = count
+
+            amount = ((amount - count) * value)
+
+    return items, counts
+
+
+def _getdenomvalue(denom, itemsdict):
+    """Return the value of a given denomination in terms of its lower
+    denomination"""
+    denomtoidx = tf2api.getalldenoms()
+
+    idx = denomtoidx[denom]
+
+    if denom in ('Earbuds', 'Key'):
+        value = float(
+            itemsdict[idx]['marketprice']['backpack.tf']['Unique']
+            .split()[0])
+    elif denom == 'Scrap':
+        value = 2
+    else:
+        value = 3
+
+    return value
+
+
 def _pluralize(wordlist):
     """Take a list of words and return a list of their plurals"""
     return [i + 's' for i in wordlist]
@@ -326,6 +401,16 @@ def _gettag(word):
             return 'weapon'
         elif word == tag or word == tag + 's':
             return tag
+
+
+def _getdenom(word):
+    """Parse a word and return a price denomination if it matches one"""
+    denomslist = ['bud', 'key', 'ref', 'rec', 'scrap']
+    denoms = dict(zip(denomslist, tf2api.getalldenoms().keys()))
+
+    hasdenom = re.search('|'.join(denomslist), word)
+    if hasdenom:
+        return denoms[hasdenom.group(0)]
 
 
 def _parseinput(query):

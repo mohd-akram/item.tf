@@ -17,7 +17,24 @@ getTags = (item) ->
 getMarketPrice = (item, source) ->
   marketPrice = item.getAttribute("data-#{ source }") or ''
   if marketPrice
-    marketPrice = marketPrice.replace(/[{}']/g,'').replace(/, /g,'<br>')
+    priceList = []
+    for i in marketPrice.split(', ')
+      denomMatch = i.match(/(Refined|Key(s)?|Bud(s)?)/g)
+
+      if not denomMatch
+        priceList.push i
+        continue
+
+      denom = denomMatch[0]
+
+      priceList.push i.replace(/(\d+(\.\d+)?)/g,
+      "<a href=\"/search?q=\$1%20#{ denom }\"
+ target='_blank' class='glow'>\$1</a>")
+
+    marketPrice = priceList.join(', ')
+                           .replace(/[{}']/g,'')
+                           .replace(/, /g,'<br>')
+
     for i in ['Unique','Vintage','Strange','Genuine','Haunted','Unusual']
       re = new RegExp(i,"g")
       marketPrice = marketPrice
@@ -74,7 +91,7 @@ window.showItemInfo = (item, link=true) ->
   init()
 
   cookiePrice = getCookie('price_source')
-  source = cookiePrice or 'spreadsheet'
+  source = cookiePrice or 'backpack.tf'
 
   altSource = if source == 'spreadsheet' then 'backpack.tf' else 'spreadsheet'
 

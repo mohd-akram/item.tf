@@ -221,6 +221,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
         urlopen(url, timeout=timeout).read())['response']['prices']
 
     pricesdict = defaultdict(dict)
+    itemnames = set()
 
     qualities = {'1': 'Genuine', '3': 'Vintage', '5': 'Unusual', '6': 'Unique',
                  '11': 'Strange', '13': 'Haunted', '600': 'Uncraftable'}
@@ -230,6 +231,16 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
 
     for index, prices in pricesdata.items():
         index = int(index)
+        name = items[index]['item_name']
+        # Backpack.tf uses different indexes. This gets the name of the
+        # item from their API and finds its proper index.
+        idx = itemsbyname[name]['defindex']
+
+        # Make sure that the proper index is used by not overwriting prices
+        # with the correct index
+        if index != idx and name in itemnames:
+            continue
+
         for quality, price in prices.items():
             if quality in qualities:
                 item = items[index]
@@ -256,15 +267,12 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
                              if 'value_high' in price else '')
 
                 denom = denoms[price['currency']]
-
-                # Backpack.tf uses different indexes. This gets the name of the
-                # item from their API and finds its proper index.
-                idx = itemsbyname[items[index]['item_name']]['defindex']
                 qualityname = qualities[quality]
 
                 if value != 1 and denom not in ('Refined', 'USD'):
                     denom += 's'
 
+                itemnames.add(name)
                 pricesdict[idx][qualityname] = '{:g}{} {}'.format(value,
                                                                   valuehigh,
                                                                   denom)
@@ -295,6 +303,17 @@ def getallclasses():
                         ('Medic', []),
                         ('Sniper', []),
                         ('Spy', [])])
+
+
+def getalldenoms():
+    """Return an OrderedDict of price denominations in descending order with
+    the index of their corresponding items as value"""
+    return OrderedDict([('Earbuds', 143),
+                        ('Key', 5021),
+                        ('Refined', 5002),
+                        ('Reclaimed', 5001),
+                        ('Scrap', 5000),
+                        ('Weapon', 0)])
 
 
 def getstoreprice(item, storeprices):

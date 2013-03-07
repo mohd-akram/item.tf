@@ -30,13 +30,25 @@
   };
 
   getMarketPrice = function(item, source) {
-    var i, marketPrice, re, _i, _len, _ref;
+    var denom, denomMatch, i, marketPrice, priceList, re, _i, _j, _len, _len1, _ref, _ref1;
     marketPrice = item.getAttribute("data-" + source) || '';
     if (marketPrice) {
-      marketPrice = marketPrice.replace(/[{}']/g, '').replace(/, /g, '<br>');
-      _ref = ['Unique', 'Vintage', 'Strange', 'Genuine', 'Haunted', 'Unusual'];
+      priceList = [];
+      _ref = marketPrice.split(', ');
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
+        denomMatch = i.match(/(Refined|Key(s)?|Bud(s)?)/g);
+        if (!denomMatch) {
+          priceList.push(i);
+          continue;
+        }
+        denom = denomMatch[0];
+        priceList.push(i.replace(/(\d+(\.\d+)?)/g, "<a href=\"/search?q=\$1%20" + denom + "\" target='_blank' class='glow'>\$1</a>"));
+      }
+      marketPrice = priceList.join(', ').replace(/[{}']/g, '').replace(/, /g, '<br>');
+      _ref1 = ['Unique', 'Vintage', 'Strange', 'Genuine', 'Haunted', 'Unusual'];
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        i = _ref1[_j];
         re = new RegExp(i, "g");
         marketPrice = marketPrice.replace(re, "<span class='" + (i.toLowerCase()) + "'>" + i + "</span>");
       }
@@ -102,7 +114,7 @@
     }
     init();
     cookiePrice = getCookie('price_source');
-    source = cookiePrice || 'spreadsheet';
+    source = cookiePrice || 'backpack.tf';
     altSource = source === 'spreadsheet' ? 'backpack.tf' : 'spreadsheet';
     marketPrice = getMarketPrice(item, source);
     if (!marketPrice) {
