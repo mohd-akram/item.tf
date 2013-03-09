@@ -1668,6 +1668,28 @@
       "Vaccinator"
     ]
   ],
+  "Fabricate Rocket Jumper": [
+    [
+      "Mantreads",
+      "Mantreads",
+      "Mantreads",
+      "Reclaimed Metal"
+    ],
+    [
+      "Rocket Jumper"
+    ]
+  ],
+  "Fabricate Sticky Jumper": [
+    [
+      "Ullapool Caber",
+      "Ullapool Caber",
+      "Ullapool Caber",
+      "Reclaimed Metal"
+    ],
+    [
+      "Sticky Jumper"
+    ]
+  ],
   "Fabricate Headgear": [
     [
       "Refined Metal",
@@ -1723,7 +1745,8 @@
       "Flight of the Monarch",
       "Spooky Shoes",
       "Spooky Sleeves",
-      "Digit Divulger"
+      "Digit Divulger",
+      "Buck Turner All-Stars"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1866,7 +1889,8 @@
       "Voodoo JuJu (Slight Return)",
       "Deadliest Duckling",
       "Cool Breeze",
-      "Mutton Mann"
+      "Mutton Mann",
+      "Buck Turner All-Stars"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [

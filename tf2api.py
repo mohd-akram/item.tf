@@ -307,7 +307,7 @@ def getallclasses():
 
 def getalldenoms():
     """Return an OrderedDict of price denominations in descending order with
-    the index of their corresponding items as value"""
+    the defindex of their corresponding items as value"""
     return OrderedDict([('Earbuds', 143),
                         ('Key', 5021),
                         ('Refined', 5002),
