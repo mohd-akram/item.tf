@@ -439,7 +439,9 @@ class _SpreadsheetParser(HTMLParser):
 
                 quality = quality.replace('(Dirty)', 'Uncraftable')
 
-                if not any(i in price for i in ['Bud', 'Key']):
+                isrefined = not any(i in price for i in ['Bud', 'Key'])
+
+                if price[0].isdigit() and isrefined:
                     price += ' Refined'
 
                 self.prices[self.name][quality] = price
