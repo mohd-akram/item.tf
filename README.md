@@ -50,7 +50,7 @@ Thanks
 ------
 This project was inspired by and depends on the great TF2 community to function, so a special thanks to the following:
 
-[TF2 Spreadsheet](http://tf2spreadsheet.blogspot.com)
+[TF2 Spreadsheet](http://tf2spreadsheet.traderempire.com)
 
 [Backpack.tf](http://backpack.tf)
 

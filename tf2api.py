@@ -10,8 +10,9 @@ There are also functions for parsing the information of each item.
 
 """
 import json
-import csv
-from urllib2 import urlopen
+import re
+from urllib2 import urlopen, build_opener
+from HTMLParser import HTMLParser
 from collections import defaultdict, OrderedDict
 
 
@@ -109,103 +110,47 @@ def getnewstoreprices(storeprices):
 
 
 def getspreadsheetprices(itemsbyname):
-    """Get market prices from tf2spreadsheet.blogspot.com
+    """Get market prices from TF2 Spreadsheet.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = ('https://spreadsheets.google.com/pub'
-           '?key=0AnM9vQU7XgF9dFM2cldGZlhweWFEUURQU2pmOGJVMlE&output=csv')
-    pricesdata = urlopen(url)
+    url = 'http://tf2spreadsheet.traderempire.com/spreadsheet/text/'
 
-    pricesdict = defaultdict(dict)
-    denoms = ['Key', 'Bud', 'Scrap']
-    botkillers = {'Diamond': 'Carbonado', 'Gold': 'Silver', 'Blood': 'Rust'}
+    opener = build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    data = opener.open(url).read()
 
-    reader = csv.DictReader(pricesdata, fieldnames=['quality', 'class', 'name',
-                                                    'price', 'lowprice',
-                                                    'notes', 'color'])
-    sheet = list(reader)[1:-1]
+    parser = _SpreadsheetParser()
+    parser.feed(data)
+    pricesdata = parser.prices.items()
 
-    for row in sheet:
-        name = _convertmarketname(row)
-        price = _filtermarketstring(row['price']).replace(' ref', '').title()
-        quality = row['quality']
-        lowprice = _filtermarketstring(row['lowprice']).replace(' ref',
-                                                                '').title()
-        lowquality = 'Unique'
+    botkillers = ['Gold', 'Silver', 'Blood', 'Rust', 'Diamond', 'Carbonado']
 
-        if name == 'Ghastlier/Ghastlierest Gibus':
-            for i in ['Ghastlier', 'Ghastlierest']:
-                hat = row.copy()
-                hat['name'] = i + ' Gibus'
-                sheet.append(hat)
+    pricesdict = {}
 
-        elif name == 'Halloween Masks':
-            for class_ in getallclasses():
-                classmask = row.copy()
-                classmask['name'] = class_ + ' Mask'
-                sheet.append(classmask)
+    for name, prices in pricesdata:
+        name = _convertmarketname(name)
 
-        elif name == 'Halloween Spells':
-            spellnames = [i for i in itemsbyname if
-                          i.startswith('Halloween Spell')]
+        if name in itemsbyname:
+            index = itemsbyname[name]['defindex']
+            pricesdict[index] = prices
 
-            for spellname in spellnames:
-                spell = row.copy()
-                spell['name'] = spellname
-                sheet.append(spell)
+        elif name == 'Slot Token':
+            for type_ in ['Primary', 'Secondary', 'Melee', 'PDA2']:
+                pricesdata.append(('Slot Token - ' + type_, prices))
 
         elif name == 'Class Token':
             for class_ in getallclasses():
-                token = row.copy()
-                token['name'] = 'Class Token - ' + class_
-                sheet.append(token)
+                pricesdata.append(('Class Token - ' + class_, prices))
 
-        elif name == 'Slot Token':
-            for i in ['Primary', 'Secondary', 'Melee', 'PDA2']:
-                token = row.copy()
-                token['name'] = 'Slot Token - ' + i
-                sheet.append(token)
+        elif name == 'Halloween Masks':
+            for class_ in getallclasses():
+                pricesdata.append((class_ + ' Mask', prices))
 
-        elif 'Soldier Medal' in name:
-            medal = row.copy()
-            medal['name'] = "Gentle Manne's Service Medal"
-            medal['quality'] = name.replace('Soldier Medal ', '')
-            sheet.append(medal)
-
-        elif name in itemsbyname:
-            if 'Botkiller' in name:
-                # Split the spreadsheet prices for botkiller items
-                for k, v in botkillers.items():
-                    if k in name:
-                        alt = row.copy()
-                        alt['name'] = name.replace(k, v)
-                        alt['price'] = lowprice
-                        alt['lowprice'] = lowprice = ''
-                        sheet.append(alt)
-                        break
-
-            index = itemsbyname[name]['defindex']
-
-            if 'dirty' in row['name']:
-                quality += ' (Dirty)'
-
-            if 'dirty' in row['lowprice']:
-                lowquality += ' (Dirty)'
-
-            if price:
-                # Check if price starts with a number and has no denomination
-                if not any(d in price for d in denoms) and _isprice(price):
-                    # Add Refined denomination
-                    price += ' Refined'
-
-                pricesdict[index][quality] = price
-
-            if lowprice and lowprice != '-':
-                if not any(d in lowprice for d in denoms):
-                    if _isprice(lowprice):
-                        lowprice += ' Refined'
-
-                pricesdict[index][lowquality] = lowprice
+        elif 'Mk.I' in name and 'Botkiller' not in name:
+            for quality, price in prices.items():
+                robothead = re.search('|'.join(botkillers), quality).group(0)
+                propername = '{} Botkiller {}'.format(robothead, name)
+                pricesdata.append((propername, {'Strange': price}))
 
     return pricesdict
 
@@ -419,31 +364,20 @@ def getobsoleteindexes():
     return (699, 2007, 2015, 2049, 2093) + tuple(range(2018, 2027))
 
 
-def _isprice(string):
-    """Check if string starts with a number"""
-    if string:
-        return string[0].isdigit()
-    return False
-
-
-def _filtermarketstring(string):
-    """Clean up a string from the spreadsheet"""
-    return string.replace('(clean)', '').replace('(dirty)', '').strip()
-
-
-def _convertmarketname(row):
+def _convertmarketname(name):
     """Changes the market name to match the proper TF2 name"""
-    name = _filtermarketstring(row['name'])
     repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
             'High-Five': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',
-            'Unusual Haunted Metal scrap': 'Haunted Metal Scrap',
+            'Unusual Haunted Metal': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
             'Color No. 216-190-216 (Pink)': 'Color No. 216-190-216',
             "Zephaniah's Greed": "Zepheniah's Greed",
             'Bolgan Helmet': 'Bolgan',
             'Full Head of Steam': 'Full Head Of Steam',
             'Detective Noir': 'Détective Noir',
+            'QuÃ¤ckenbirdt': 'Quäckenbirdt',
+            'Brutal Bouffant': 'Brütal Bouffant',
             'Helmet Without A Home': 'Helmet Without a Home',
             'Dueling mini game': 'Dueling Mini-Game',
             'Monoculus': 'MONOCULUS!',
@@ -454,7 +388,6 @@ def _convertmarketname(row):
             'Essential Accessories': 'The Essential Accessories',
             "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
             "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
-            "Lord C***swain's Pith Helmet": "Lord Cockswain's Pith Helmet",
             'Koto': 'Noise Maker - Koto',
             'Vuvuzela': 'Noise Maker - Vuvuzela',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
@@ -463,14 +396,15 @@ def _convertmarketname(row):
             'Pile of Curses': 'Pile Of Curses',
             'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
             'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
+            'Halloween Kills': 'Strange Part: Halloween Kills',
 
-            'Salvaged Mann Co. Supply Crate (series 40)':
+            'Salvaged Mann Co. Supply Crate (series 50)':
             'Salvaged Mann Co. Supply Crate',
 
             'Strange Part: Kills While Ubercharged':
             'Strange Part: Kills While Übercharged',
 
-            "Lord C***swain's Novelty Pipe and Mutton Chops":
+            "Lord Cockswain's Novelty Pipe and Mutton Chops":
             "Lord Cockswain's Novelty Mutton Chops and Pipe",
 
             "Color of a Gentlemann's Business Pants":
@@ -478,9 +412,41 @@ def _convertmarketname(row):
 
     if name in repl:
         name = repl[name]
-    elif row['quality'] == 'Strange Part':
-        name = 'Strange Part: ' + name
-    elif 'Botkiller' in name and 'Mk.' not in name:
-        name += ' Mk.I'
 
     return name.decode('utf-8')
+
+
+class _SpreadsheetParser(HTMLParser):
+    """A class to parse the TF2 Spreadsheet website"""
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.name = None
+        self.isname = False
+        self.prices = defaultdict(dict)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+
+        if 'class' in attrs:
+            class_ = attrs['class']
+
+            if tag == 'td' and class_ == 'tf2-ss-c10':
+                self.isname = True
+
+            elif tag == 'div' and class_.startswith('tf2-ss-quality'):
+                title = str(attrs['title'].replace(u'\u2013', '-').title())
+                quality, price = title.split('\r')
+
+                quality.replace('(dirty)', 'Uncraftable')
+
+                if not any(i in price for i in ['Bud', 'Key']):
+                    price += ' Refined'
+
+                self.prices[self.name][quality] = price
+
+    def handle_data(self, data):
+        if self.isname:
+            linkmatch = re.search(r'>.*?<', data)
+            self.name = linkmatch.group(0) if linkmatch else data
+
+        self.isname = False

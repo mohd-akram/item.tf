@@ -278,6 +278,7 @@ def foldaccents(string):
     return (string.replace(u'ä', 'a')
                   .replace(u'é', 'e')
                   .replace(u'ò', 'o')
+                  .replace(u'ü', 'u')
                   .replace(u'Ü', 'U'))
 
 
