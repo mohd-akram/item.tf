@@ -437,7 +437,7 @@ class _SpreadsheetParser(HTMLParser):
                 title = str(attrs['title'].replace(u'\u2013', '-').title())
                 quality, price = title.split('\r')
 
-                quality.replace('(dirty)', 'Uncraftable')
+                quality = quality.replace('(Dirty)', 'Uncraftable')
 
                 if not any(i in price for i in ['Bud', 'Key']):
                     price += ' Refined'
