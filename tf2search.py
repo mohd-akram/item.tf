@@ -224,7 +224,7 @@ def createitemdict(index, tf2info):
         for i in range(len(descriptions)):
             key = str(i)
             value = descriptions[key]['value']
-            if 'color' in descriptions[key] or items:
+            if value in tf2info.itemsbyname:
                 items.append(value)
             else:
                 text.append(value)
@@ -301,10 +301,8 @@ def _getbundleitems(bundle, nametoindexmap, itemsdict):
     for i in range(len(descriptions)):
         key = str(i)
         value = descriptions[key]['value']
-        if 'color' in descriptions[key] or bundleitems:
-            itemnames = [i for i in value.replace(', ', ',').split(',') if i]
-            for itemname in itemnames:
-                bundleitems.append(itemsdict[nametoindexmap[itemname]])
+        if value in nametoindexmap:
+            bundleitems.append(itemsdict[nametoindexmap[value]])
 
     return bundleitems
 
