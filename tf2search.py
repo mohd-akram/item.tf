@@ -89,6 +89,9 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                           '[rR]ec(laimed|s)?|'
                           '[kK]ey(s)?|'
                           '[sS]crap)$', query)
+    # Check if searching for specific indexes
+    indexmatch = re.match(r'\d+(, ?\d+)*$', query)
+    indexes = query.replace(' ', '').split(',') if indexmatch else []
     # Check if the weapon tag is specified (eg. primary, melee)
     hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
     # Check if the user is searching for tournament medals
@@ -137,19 +140,19 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
         # Search for a particular item set or bundle and list its items
         itemsetquery = itemsetmatch.group(1).lower()
 
-        for setname, itemset in itemsets.items():
-            if setname.lower() == itemsetquery:
-                otheritems[setname].extend(_getsetitems(itemset,
-                                                        nametoindexmap,
-                                                        itemsdict))
+        for bundle in bundles.values():
+            if bundle['name'].lower() == itemsetquery:
+                bundleitems = _getbundleitems(bundle, nametoindexmap,
+                                              itemsdict)
+                otheritems[bundle['name']].extend(bundleitems)
                 break
-        # Check bundles if nothing found in item sets
+        # Check item sets if nothing found in bundles
         if not otheritems:
-            for bundle in bundles.values():
-                if bundle['name'].lower() == itemsetquery:
-                    bundleitems = _getbundleitems(bundle, nametoindexmap,
-                                                  itemsdict)
-                    otheritems[bundle['name']].extend(bundleitems)
+            for setname, itemset in itemsets.items():
+                if setname.lower() == itemsetquery:
+                    otheritems[setname].extend(_getsetitems(itemset,
+                                                            nametoindexmap,
+                                                            itemsdict))
                     break
 
     elif pricematch:
@@ -165,6 +168,13 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
         if items:
             otheritems[title].extend(items)
+
+    elif len(indexes) > 1:
+        # Searching for specific indexes
+        for index in indexes:
+            index = int(index)
+            if index in itemsdict:
+                mainitems.append(itemsdict[index])
 
     else:
         # Regular word search

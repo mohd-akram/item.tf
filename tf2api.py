@@ -243,7 +243,7 @@ def getallclasses():
                         ('Soldier', ['Solly']),
                         ('Pyro', []),
                         ('Demoman', ['Demo']),
-                        ('Heavy', []),
+                        ('Heavy', ['Hoovy']),
                         ('Engineer', ['Engi', 'Engie']),
                         ('Medic', []),
                         ('Sniper', []),
@@ -451,4 +451,4 @@ class _SpreadsheetParser(HTMLParser):
             linkmatch = re.search(r'>.*?<', data)
             self.name = linkmatch.group(0) if linkmatch else data
 
-        self.isname = False
+            self.isname = False
