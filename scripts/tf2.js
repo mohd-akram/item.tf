@@ -109,7 +109,7 @@
   };
 
   window.showItemInfo = function(item, link) {
-    var altSource, b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, cookiePrice, description, form, hoverArea, i, idx, image, imageUrl, index, isOwnPage, isToken, isWeapon, itemName, j, listItem, loggedInId, marketPrice, name, option, priceButton, prices, quality, qualityNo, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, wish, wishIndex, wishlistAction, wishlistButton, wishlistHTML, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    var altSource, b, blueprints, blueprintsHTML, bundleHTML, buyButton, buyHTML, chance, classes, classesHTML, cookiePrice, description, form, hoverArea, i, idx, image, imageUrl, index, isOwnPage, isToken, isWeapon, itemId, itemName, j, listItem, loggedInId, marketPrice, name, option, priceButton, prices, quality, qualityNo, source, storePrice, style, tags, tagsHTML, title, url, wikiLink, wish, wishIndex, wishlistAction, wishlistButton, wishlistHTML, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
     if (link == null) {
       link = true;
     }
@@ -138,6 +138,7 @@
     if (marketPrice) {
       marketPrice = "<span id='pricesource'>" + (capitalize(source)) + "</span><br><h3 id='prices'>" + marketPrice + "</h3>";
     }
+    itemId = item.getAttribute('data-index');
     description = getDescription(item);
     storePrice = item.getAttribute('data-storeprice');
     imageUrl = item.getAttribute('data-image');
@@ -225,7 +226,7 @@
     bundleHTML = __indexOf.call(tags, 'bundle') >= 0 && description.indexOf('---') !== -1 ? "<a href=\"/search?q=" + (encodeURIComponent(item.title)) + "%20Set\" target='_blank'><div class='rounded glow' style='display: inline-block; padding: 7px;'>View items</div></a>" : '';
     itemName = item.title;
     if (link) {
-      itemName = "<a href='/item/" + item.id + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
+      itemName = "<a href='/item/" + itemId + "' target='_blank' class='glow' title='Go to Item Page'>" + itemName + "</a>";
     }
     wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(item.title));
     itemBox.innerHTML = "" + tagsHTML + "<h2 id='itemname'>" + itemName + "</h2>" + classesHTML + "" + bundleHTML + "<div id='marketprice'>" + marketPrice + "</div>" + blueprintsHTML + "<div id='buttons'><a class='button-small' target='_blank' title='Open in Wiki' href=\"" + wikiLink + "\">Wiki</a><a class='button-small' target='_blank' title='Community Market' href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(item.title)) + "\">Market</a><form name='tf2outpostform' method='POST' style='display:inline-block' action='http://www.tf2outpost.com/search'><input type='hidden' name='json'><input class='button-small' type='submit' title='Find Trades' name='submit' value='Trades'><input type='hidden' name='type' value='any'><select id='tradetype' class='textbox'>  <option value='has1'>Want</option>  <option value='wants1'>Have</option></select><select id='quality' class='textbox'>  <option value='6'>Unique</option>  <option value='3'>Vintage</option>  <option value='11'>Strange</option>  <option value='1'>Genuine</option>  <option value='13'>Haunted</option>  <option value='5'>Unusual</option></select></form>" + wishlistHTML + "</div>" + buyHTML + "";
@@ -245,7 +246,7 @@
       buyButton.onclick = function() {
         var quantity;
         quantity = document.getElementById('quantity').value;
-        return window.open("http://store.steampowered.com/buyitem/440/" + item.id + "/" + quantity);
+        return window.open("http://store.steampowered.com/buyitem/440/" + itemId + "/" + quantity);
       };
     }
     form = document.tf2outpostform;
@@ -256,7 +257,7 @@
     form.onsubmit = function() {
       var tradeType;
       tradeType = document.getElementById('tradetype').value;
-      return form.json.value = "{\"filters\":{},\"" + tradeType + "\":\"440," + item.id + "," + quality.value + "\"}";
+      return form.json.value = "{\"filters\":{},\"" + tradeType + "\":\"440," + itemId + "," + quality.value + "\"}";
     };
     if (wishlistHTML) {
       wishlistAction = '/wishlist/add';
@@ -268,7 +269,7 @@
       wishlistButton.onclick = function() {
         var wishlistData;
         wishlistData = {
-          'index': item.id,
+          'index': itemId,
           'quality': quality.value
         };
         if (isOwnPage) {
@@ -383,7 +384,6 @@
     ajaxRequest = getAjaxRequest(callback);
     ajaxRequest.open("POST", url, true);
     ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    ajaxRequest.setRequestHeader("Connection", "close");
     dataList = [];
     for (name in data) {
       value = data[name];

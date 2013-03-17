@@ -116,6 +116,7 @@ window.showItemInfo = (item, link=true) ->
     marketPrice = "<span id='pricesource'>#{ capitalize(source) }</span><br>
 <h3 id='prices'>#{ marketPrice }</h3>"
 
+  itemId = item.getAttribute('data-index')
   description = getDescription(item)
   storePrice = item.getAttribute('data-storeprice')
   imageUrl = item.getAttribute('data-image')
@@ -223,7 +224,7 @@ View items</div></a>" else ''
   
   itemName = item.title
   if link
-    itemName = "<a href='/item/#{ item.id }'
+    itemName = "<a href='/item/#{ itemId }'
  target='_blank' class='glow' title='Go to Item Page'>
 #{ itemName }</a>"
 
@@ -296,7 +297,7 @@ View items</div></a>" else ''
     buyButton.onclick = ->
       quantity = document.getElementById('quantity').value
       window.open("http://store.steampowered.com/buyitem/440/
-#{ item.id }/#{ quantity }")
+#{ itemId }/#{ quantity }")
 
   # TF2Outpost link
   form = document.tf2outpostform
@@ -310,7 +311,7 @@ View items</div></a>" else ''
     tradeType = document.getElementById('tradetype').value
 
     form.json.value = "{\"filters\":{},
-\"#{ tradeType }\":\"440,#{ item.id },#{ quality.value }\"}"
+\"#{ tradeType }\":\"440,#{ itemId },#{ quality.value }\"}"
 
   # Wishlist link
   if wishlistHTML
@@ -323,7 +324,7 @@ View items</div></a>" else ''
       
     # Add to wishlist or remove from wishlist
     wishlistButton.onclick = ->
-      wishlistData = {'index': item.id, 'quality': quality.value}
+      wishlistData = {'index': itemId, 'quality': quality.value}
 
       if isOwnPage
         wishlistData = {'i': wishIndex}
@@ -420,7 +421,6 @@ postAjax = (url, data, callback) ->
   ajaxRequest.open("POST", url, true)
   ajaxRequest.setRequestHeader("Content-Type",
                                "application/x-www-form-urlencoded")
-  ajaxRequest.setRequestHeader("Connection", "close")
 
   dataList = []
   for name, value of data
