@@ -90,8 +90,8 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                           '[kK]ey(s)?|'
                           '[sS]crap)$', query)
     # Check if searching for specific indexes
-    indexmatch = re.match(r'\d+(, ?\d+)*$', query)
-    indexes = query.replace(' ', '').split(',') if indexmatch else []
+    indexmatch = re.match(r'\d+( \d+)*$', query)
+    indexes = query.split() if indexmatch else []
     # Check if the weapon tag is specified (eg. primary, melee)
     hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
     # Check if the user is searching for tournament medals
