@@ -6,30 +6,25 @@ import json
 import logging
 import time
 import random
+from datetime import datetime, timedelta
+from httplib import HTTPException
 from xml.dom.minidom import getDOMImplementation
-from google.appengine.api import memcache
+
+from google.appengine.api import memcache, users
+from google.appengine.ext import ndb
 
 import tf2api
 import tf2search
 
+import config
 from handler import Handler
-
-
-def gethomepage():
-    return 'http://www.tf2find.com'
-
-
-def getapikeys():
-    with open('api_keys.txt') as f:
-        apikeys = f.read().splitlines()
-    return apikeys
 
 
 def updatecache():
     t0 = time.time()
-    apikey, backpackkey = getapikeys()
 
-    tf2info = tf2search.gettf2info(apikey, backpackkey, 'blueprints.json')
+    tf2info = tf2search.gettf2info(config.apikey, config.backpackkey,
+                                   config.blueprintsfile)
     itemsdict = tf2search.getitemsdict(tf2info)
 
     newitems = [itemsdict[index] for index in
@@ -37,11 +32,10 @@ def updatecache():
 
     nametoindexmap = {}
     itemnames = []
-    itemindexes = []
+    itemindexes = set()
 
-    homepage = gethomepage()
     sitemap = Sitemap()
-    sitemap.add(homepage)
+    sitemap.add(config.homepage)
 
     for name, item in tf2info.itemsbyname.items():
         index = item['defindex']
@@ -50,9 +44,9 @@ def updatecache():
         if tf2search.isvalidresult(itemdict):
             nametoindexmap[name] = index
             itemnames.append(name)
-            itemindexes.append(index)
+            itemindexes.add(index)
 
-            path = '{0}/item/{1}'.format(homepage, index)
+            path = '{0}/item/{1}'.format(config.homepage, index)
             sitemap.add(path)
 
     memcache.set_multi({'itemsdict': itemsdict,
@@ -80,17 +74,69 @@ def getfromcache(key):
     return value
 
 
+def getsteamid(openiduser):
+    return openiduser.nickname().split('/')[-1] if openiduser else ''
+
+
+def getuser(steamid, create=False):
+    user = User.get_by_id(steamid)
+
+    if user:
+        needsupdate = (datetime.now() - user.lastupdate) > timedelta(minutes=3)
+    else:
+        if not create:
+            return None
+        user = User(id=steamid)
+        needsupdate = True
+
+    if needsupdate:
+        try:
+            steamuser = tf2api.getplayersummary(config.apikey, steamid)
+
+        except HTTPException:
+            # Postpone update if this is not a new user
+            if not create:
+                return user
+
+        user.name = steamuser['personaname']
+        user.url = steamuser['profileurl'].split('/')[-2]
+        user.avatar = steamuser['avatar']
+        user.state = 'Online' if steamuser['personastate'] != 0 else 'Offline'
+
+        if 'gameid' in steamuser:
+            user.state = 'In-Game'
+
+        user.put()
+
+    return user
+
+
 class TF2Handler(Handler):
     """Homepage handler"""
     def get(self):
         if self.request.host.endswith('appspot.com'):
-            return self.redirect(gethomepage(), True)
+            return self.redirect(config.homepage, True)
 
         t0 = getfromcache('lastupdated')
         lastupdated = int(time.time() - t0) / 60
 
+        user = None
+
+        openidurl = 'http://steamcommunity.com/openid'
+        openiduser = users.get_current_user()
+
+        if openiduser:
+            steamid = getsteamid(openiduser)
+            user = getuser(steamid, True)
+
+            self.response.set_cookie('steam_id', steamid)
+        else:
+            self.response.delete_cookie('steam_id')
+
         self.render('tf2.html',
-                    homepage=gethomepage(),
+                    homepage=config.homepage,
+                    user=user,
+                    loginurl=users.create_login_url('/', None, openidurl),
                     tags=tf2api.getalltags(),
                     newitems=random.sample(getfromcache('newitems'), 5),
                     lastupdated=lastupdated)
@@ -101,16 +147,17 @@ class TF2SearchHandler(Handler):
         query = self.request.get('q')
 
         if query:
+            if query == 'random':
+                itemindexes = getfromcache('itemindexes')
+                return self.redirect(
+                    # random.choice does not support sets
+                    '/item/{}'.format(random.choice(list(itemindexes))))
+
             nametoindexmap = getfromcache('nametoindexmap')
 
             if query in nametoindexmap:
                 return self.redirect(
                     '/item/{}'.format(nametoindexmap[query]))
-
-            elif query == 'random':
-                itemindexes = getfromcache('itemindexes')
-                return self.redirect(
-                    '/item/{}'.format(random.choice(itemindexes)))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')
@@ -152,6 +199,74 @@ class TF2SuggestHandler(Handler):
         self.response.headers['Content-Type'] = ('application/json;'
                                                  'charset=UTF-8')
         self.write(json.dumps([query, suggestions]))
+
+
+class TF2UserHandler(Handler):
+    def get(self, steamid):
+        usersteamid = getsteamid(users.get_current_user())
+        # Avoid a Steam API call if the user is visiting his own page
+        if usersteamid:
+            user = getuser(usersteamid)
+            # User is visiting his own page
+            if steamid in (usersteamid, user.url):
+                steamid = usersteamid
+
+        if steamid != usersteamid:
+            steamid = (tf2api.resolvevanityurl(config.apikey, steamid) or
+                       steamid)
+            user = getuser(steamid)
+
+        if user:
+            itemsdict = getfromcache('itemsdict')
+            items = []
+
+            wishlist = user.wishlist
+
+            for i, item in enumerate(wishlist):
+                itemdict = itemsdict[item['index']].copy()
+                item.update({'i': i})
+                itemdict.update(item)
+                items.append(itemdict)
+
+        else:
+            return self.redirect('/')
+
+        self.render('tf2user.html',
+                    user=user,
+                    wishlist=user.wishlist,
+                    items=items)
+
+
+class TF2WishlistHandler(Handler):
+    def post(self, option):
+        openiduser = users.get_current_user()
+
+        if not openiduser:
+            return self.redirect('/')
+
+        steamid = getsteamid(openiduser)
+        user = getuser(steamid)
+
+        if option == 'add':
+            index = int(self.request.get('index'))
+            quality = int(self.request.get('quality'))
+
+            if (index in getfromcache('itemindexes') and
+                    quality in tf2api.getallqualities()):
+
+                user.wishlist.append({'index': index,
+                                      'quality': quality})
+                user.put()
+
+                self.write('Added')
+
+        elif option == 'remove':
+            i = int(self.request.get('i'))
+
+            del user.wishlist[i]
+            user.put()
+
+            self.write('Removed')
 
 
 class TF2ItemHandler(Handler):
@@ -199,6 +314,16 @@ class CacheHandler(Handler):
         elif option == 'flush':
             memcache.flush_all()
             self.write('Cache Flushed')
+
+
+class User(ndb.Model):
+    name = ndb.StringProperty('n')
+    url = ndb.StringProperty('u')
+    avatar = ndb.StringProperty('a')
+    state = ndb.StringProperty('s')
+    wishlist = ndb.PickleProperty('w', default=[])
+
+    lastupdate = ndb.DateTimeProperty('t', auto_now=True)
 
 
 class Sitemap:

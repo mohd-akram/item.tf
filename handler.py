@@ -2,6 +2,7 @@
 import webapp2
 import jinja2
 import os
+import logging
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -22,3 +23,13 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kwargs):
         """Render HTML template and write it to HTTP response body"""
         self.write(self._render_str(template, **kwargs))
+
+    def handle_exception(self, exception, debug_mode):
+        """Render a custom default error page"""
+        if isinstance(exception, webapp2.HTTPException):
+            self.response.set_status(exception.code)
+        else:
+            self.response.set_status(500)
+
+        logging.exception(exception)
+        self.render('error.html')

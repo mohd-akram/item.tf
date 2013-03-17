@@ -6,7 +6,7 @@ This is a Google App Engine site that lets you search TF2 items and find the one
 Get Started
 -----------
 
-Create a file named api_keys.txt with your Steam API key as the first line and your Backpack.tf key as the second line in the main directory. Then, simply add the directory to the Google App Engine Launcher and start the server.
+Rename config.default.py to config.py and fill in your API keys in the file. Then, simply add the directory to the Google App Engine Launcher and start the server.
 
 You can change the message on the homepage by editing templates/message.html.
 

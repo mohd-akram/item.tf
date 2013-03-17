@@ -317,6 +317,8 @@ a > img {
 }
 
 .button-icon {
+  border-radius: 7px;
+  padding: 7px;
   cursor: pointer;
 }
 
@@ -324,28 +326,59 @@ a > img {
   color: rgb(175, 174, 164);
 }
 
-.unique {
+div[class^="quality-"] {
+  border-width: 2px;
+}
+
+.unique, .vintage, .strange, .genuine, .haunted, .unusual {
+  border-width: 2px;
+}
+
+.unique, .quality-6 {
   color: #FFD700;
+  border-color: #FFD700;
 }
 
-.vintage {
+.vintage, .quality-3 {
   color: #476291;
+  border-color: #476291;
 }
 
-.strange {
+.strange, .quality-11 {
   color: #CF6A32;
+  border-color: #CF6A32;
 }
 
-.genuine {
+.genuine, .quality-1 {
   color: #4D7455;
+  border-color: #4D7455;
 }
 
-.haunted {
+.haunted, .quality-13 {
   color: #38F3AB;
+  border-color: #38F3AB;
 }
 
-.unusual {
+.unusual, .quality-5 {
   color: #8650AC;
+  border-color: #8650AC;
+}
+
+.offline, .online, .in-game {
+  border: 3px solid;
+  border-radius: 3px;
+}
+
+.offline {
+  border-color: #5e5b58;
+}
+
+.online {
+  border-color: #86b5d9;
+}
+
+.in-game {
+  border-color: #8cb359;
 }
 
 ::-webkit-scrollbar {

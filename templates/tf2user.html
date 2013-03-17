@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{user.name}} - TF2 Find</title>
+    <link rel="stylesheet" href="/css/tf2.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+    
+    <script src="/scripts/tf2.js"></script>
+
+  <body>
+    {% from 'macros.html' import showitems %}
+    <div id="container">
+      <header>
+        <h1 id="back"><a href="/">&lt;</a></h1>
+        <h1 style="font-size: 2.1em">{{user.name}}'s Wishlist</h1>
+        <form action="/search" style="position: absolute; top:20px; right: 20px;">
+          <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.4em;">
+          <input type="submit" value="Search" class="button">
+        </form>
+      </header>
+      <div id="steamid" data-id="{{user.key.id()}}"></div>
+      <div id="hoverbox"></div>
+      <div id="itembox"></div>
+
+      <div id="body">
+        {{ showitems(items) }}
+      </div>
+    </div>
+    <script>addHoverBox()</script>
+  </body>
+</html>

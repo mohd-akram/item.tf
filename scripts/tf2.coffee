@@ -90,10 +90,21 @@ init = ->
 window.showItemInfo = (item, link=true) ->
   init()
 
+  loggedInId = getCookie('steam_id')
   cookiePrice = getCookie('price_source')
+
   source = cookiePrice or 'backpack.tf'
 
   altSource = if source == 'spreadsheet' then 'backpack.tf' else 'spreadsheet'
+
+  isOwnPage = (loggedInId and loggedInId == document.getElementById('steamid')
+                                                   ?.getAttribute('data-id'))
+  if isOwnPage
+    wishIndex = item.getAttribute('data-i')
+    for wish, idx in document.getElementsByClassName('item')
+      if wish.getAttribute('data-i') == wishIndex
+        wishIndex = idx.toString()
+        break
 
   # Market price HTML
   marketPrice = getMarketPrice(item, source)
@@ -141,6 +152,16 @@ window.showItemInfo = (item, link=true) ->
 <h3>#{ chance }%</h3></div></div>"
 
     blueprintsHTML += '</div>'
+
+  # Wishlist HTML
+  wishlistHTML = if loggedInId then "
+<div style='display: inline-block; width: 40px'>
+<div id='wishlistmessage'
+ style='display: none;margin:0 0 4px -18px'>Added</div>
+<i id='wishlistbutton' class='button-icon rounded icon-star icon-large'
+ style='background-color: transparent'
+ title='Add to wishlist'></i>
+</div>" else ''
 
   # Buy button and price HTML
   buyHTML = if storePrice then "<div id='buy'><form
@@ -222,7 +243,7 @@ View items</div></a>" else ''
  href=\"#{ wikiLink }\">Wiki</a>
 <a class='button-small' target='_blank' title='Community Market'
  href=\"http://steamcommunity.com/market/search?q=appid%3A440
- #{ encodeURIComponent(item.title) }\">Market</a>
+%20#{ encodeURIComponent(item.title) }\">Market</a>
 
 <form name='tf2outpostform' method='POST' style='display:inline-block'
  action='http://www.tf2outpost.com/search'>
@@ -249,6 +270,8 @@ View items</div></a>" else ''
 </select>
 
 </form>
+
+#{ wishlistHTML }
 </div>
 #{ buyHTML }
 "
@@ -286,8 +309,36 @@ View items</div></a>" else ''
   form.onsubmit = ->
     tradeType = document.getElementById('tradetype').value
 
-    document.tf2outpostform.json.value = "{\"filters\":{},
+    form.json.value = "{\"filters\":{},
 \"#{ tradeType }\":\"440,#{ item.id },#{ quality.value }\"}"
+
+  # Wishlist link
+  if wishlistHTML
+    wishlistAction = '/wishlist/add'
+    wishlistButton = document.getElementById('wishlistbutton')
+
+    if isOwnPage
+      wishlistAction = '/wishlist/remove'
+      wishlistButton.setAttribute('title', 'Remove from wishlist')
+      
+    # Add to wishlist or remove from wishlist
+    wishlistButton.onclick = ->
+      wishlistData = {'index': item.id, 'quality': quality.value}
+
+      if isOwnPage
+        wishlistData = {'i': wishIndex}
+
+      postAjax wishlistAction, wishlistData, (response) ->
+        if response == 'Added'
+          wishlistMessage = document.getElementById('wishlistmessage')
+          wishlistMessage.style.display = 'block'
+          wishlistMessage.setAttribute('class', 'animated fadeInLeft')
+          setTimeout((->
+            wishlistMessage.setAttribute('class', 'animated fadeOut')),
+              1000)
+        else if response == 'Removed'
+          itemBox.style.display = 'none'
+          item.parentNode.removeChild(item)
 
   # Market price link
   priceButton = document.getElementById('pricesource')
@@ -311,10 +362,14 @@ View items</div></a>" else ''
 
   if itemName.indexOf('Strange Part') == -1
     # Auto quality selection
-    for option, i in quality.options
-      if marketPrice.indexOf(option.innerHTML) != -1
-        quality.selectedIndex = i
-        break
+    qualityNo = item.getAttribute('class').match(/quality-(\d+)/)
+    if qualityNo
+      quality.value = qualityNo[1]
+    else
+      for option, i in quality.options
+        if marketPrice.indexOf(option.innerHTML) != -1
+          quality.selectedIndex = i
+          break
 
   # Show the item info box
   itemBox.style.display = "block"
@@ -353,3 +408,40 @@ window.getCookie = (name) ->
 
     if cookie[...name.length] == name
       return cookie[name.length + 1...]
+
+ajax = (url, callback) ->
+  ajaxRequest = getAjaxRequest(callback)
+  ajaxRequest.open("GET", url, true)
+  ajaxRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+  ajaxRequest.send(null)
+
+postAjax = (url, data, callback) ->
+  ajaxRequest = getAjaxRequest(callback)
+  ajaxRequest.open("POST", url, true)
+  ajaxRequest.setRequestHeader("Content-Type",
+                               "application/x-www-form-urlencoded")
+  ajaxRequest.setRequestHeader("Connection", "close")
+
+  dataList = []
+  for name, value of data
+    dataList.push  "#{ name }=#{ value }"
+
+  ajaxRequest.send(dataList.join('&'))
+
+getAjaxRequest = (callback) ->
+  try
+    ajaxRequest = new XMLHttpRequest()
+  catch e
+    try
+      ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP")
+    catch e
+      try
+        ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP")
+      catch e
+        return null
+
+  ajaxRequest.onreadystatechange = ->
+    if ajaxRequest.readyState == 4
+      callback(ajaxRequest.responseText)
+
+  return ajaxRequest

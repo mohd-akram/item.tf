@@ -8,35 +8,34 @@
     {% set searchurl = homepage+'/searchdescription.xml' -%}
     <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{searchurl}}">
     <link rel="stylesheet" href="/css/tf2.css">
+    <link rel="stylesheet" href="/css/animate-custom.css">
     <link rel="stylesheet" href="/css/message.css">
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/ui-lightness/jquery-ui.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
     <script src="/scripts/tf2.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
     <style>
       .ui-autocomplete {
         max-height: 100px;
         overflow-y: auto;
-        /* prevent horizontal scrollbar */
         overflow-x: hidden;
-        /* add padding to account for vertical scrollbar */
-        padding-right: 20px;
-      }
-      .ui-widget-content {
         background: #292927;
         border: none;
       }
-      .ui-widget-content a {
+      .ui-menu-item a {
         color: rgb(150,150,150);
       }
-      .ui-widget-content .ui-state-hover{
+      .ui-menu-item .ui-state-focus {
         color: white;
         background: #1E1D1C;
         border: none;
       }
+      .itemlist {
+        width: 540px;
+        margin-top: 50px;
+      }
     </style>
-    <style>.itemlist{width:540px;margin-top:50px;}</style>
     {% include 'analytics.html' %}
   </head>
 {% from 'macros.html' import showitems, showsearchlinks, getcount %}
@@ -44,7 +43,15 @@
     <div id="container">
       <header style="height: 10px"></header>
       
-      <div id="sidebar" >     
+      <div id="sidebar">
+        {% if user %}
+        <a href="/id/{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
+          <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
+        {% else %}
+        <a href="{{loginurl}}" style="position:relative; left:3px">
+          <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
+        {% endif %}
+        <br><br>
         <i id="settings" class="button-icon icon-cog icon-2x"></i>
         <i id="help" class="button-icon icon-question-sign icon-2x"></i>
         

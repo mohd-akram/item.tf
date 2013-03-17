@@ -1,6 +1,6 @@
 {% macro showitem(item, showthumb=True) %}
 {% set style = "background-image:url({})".format(item['image']) if showthumb else "display: none" %}
-<div class="item" id="{{item['index']}}" title="{{item['name']}}" style="{{style}}" data-image="{{item['image_large']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %} {% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in ['spreadsheet','backpack.tf'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]}}"{% endif %}{% endfor %}>
+<div class="{% if 'quality' in item %}quality-{{item['quality']}} {% endif %}item" id="{{item['index']}}" title="{{item['name']}}" style="{{style}}" data-image="{{item['image_large']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in ['spreadsheet','backpack.tf'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
 {%- for b in item['blueprints'] %}
 <ul data-chance="{{b['chance']}}" style="display:none">
   {%- for i in b['required'] %}

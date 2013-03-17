@@ -250,6 +250,17 @@ def getallclasses():
                         ('Spy', [])])
 
 
+def getallqualities():
+    """Return a dictionary of TF2 item qualities with number as key and
+    description as value"""
+    return {6: 'Unique',
+            3: 'Vintage',
+            11: 'Strange',
+            1: 'Genuine',
+            13: 'Haunted',
+            5: 'Unusual'}
+
+
 def getalldenoms():
     """Return an OrderedDict of price denominations in descending order with
     the defindex of their corresponding items as value"""
@@ -362,6 +373,31 @@ def getitemtags(item):
 def getobsoleteindexes():
     """Return the indexes of obsolete items that have newer versions"""
     return (699, 2007, 2015, 2049, 2093) + tuple(range(2018, 2027))
+
+
+def getplayersummary(apikey, steamid):
+    """Return the player summary of the given steamid"""
+    return getplayersummaries(apikey, [steamid])[0]
+
+
+def getplayersummaries(apikey, steamids):
+    """Return the player summaries of a list of steamids"""
+    url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
+           '?key={}&steamids='.format(apikey))
+
+    url += ','.join(steamids)
+    return json.loads(urlopen(url).read())['response']['players']
+
+
+def resolvevanityurl(apikey, vanityurl):
+    """Return the steamid of a given vanity url"""
+    url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
+           '?key={}&vanityurl={}'.format(apikey, vanityurl))
+
+    response = json.loads(urlopen(url).read())['response']
+
+    if response['success'] == 1:
+        return response['steamid']
 
 
 def _convertmarketname(name):
