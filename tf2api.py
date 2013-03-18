@@ -407,7 +407,6 @@ def _convertmarketname(name):
             'Schadenfreude': 'Taunt: The Schadenfreude',
             'Unusual Haunted Metal': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
-            'Color No. 216-190-216 (Pink)': 'Color No. 216-190-216',
             "Zephaniah's Greed": "Zepheniah's Greed",
             'Bolgan Helmet': 'Bolgan',
             'Full Head of Steam': 'Full Head Of Steam',
@@ -429,9 +428,6 @@ def _convertmarketname(name):
             'Winter Holiday': 'Noise Maker - Winter Holiday',
             # Halloween 2012
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
-            'Pile of Curses': 'Pile Of Curses',
-            'Voodoo-Cursed Bag of Quicklime': 'Voodoo-Cursed Bag Of Quicklime',
-            'Mann Co. Supply Crate (series 51)': 'Eerie Crate',
             'Halloween Kills': 'Strange Part: Halloween Kills',
 
             'Salvaged Mann Co. Supply Crate (series 50)':

@@ -67,7 +67,7 @@ def getfromcache(key):
     value = memcache.get(key)
 
     if not value:
-        logging.debug('Cache is empty')
+        logging.debug("Could not find key '{}'. Updating cache.".format(key))
         updatecache()
         value = memcache.get(key)
 
