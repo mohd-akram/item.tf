@@ -75,7 +75,7 @@ def getfromcache(key):
 
 
 def getsteamid(openiduser):
-    return openiduser.nickname().split('/')[-1] if openiduser else ''
+    return openiduser.nickname().split('/')[-1]
 
 
 def getuser(steamid, create=False):
