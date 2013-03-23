@@ -410,6 +410,7 @@ def _convertmarketname(name):
             "Zephaniah's Greed": "Zepheniah's Greed",
             'Bolgan Helmet': 'Bolgan',
             'Full Head of Steam': 'Full Head Of Steam',
+            'Claidheamh Mr': 'Claidheamh Mòr',
             'Detective Noir': 'Détective Noir',
             'QuÃ¤ckenbirdt': 'Quäckenbirdt',
             'Brutal Bouffant': 'Brütal Bouffant',
