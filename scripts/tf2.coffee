@@ -176,9 +176,8 @@ window.showItemInfo = (item, link=true) ->
   classes = item.getAttribute('data-classes')
   if classes
     for i in classes.split(',')
-      classesHTML += "<a href='/search?q=#{ i }' target='_blank'>
-<img title='#{ i }' alt='#{ i }' width='40' height='40'
- src='/images/items/#{ i }_icon.png'></a><br>"
+      classesHTML += "<a href='/search?q=#{ i }' target='_blank'
+ title='#{ i }' class='#{ i.toLowerCase() }'></a>"
   classesHTML += "</div>"
 
   # Tags HTML
@@ -197,7 +196,7 @@ window.showItemInfo = (item, link=true) ->
 
         else if isToken
           title = 'Slot Token'
-          image = 'slot_token'
+          image = 'slot-token'
 
     for i in ['hat','misc','tool','bundle']
       if i in tags
@@ -206,13 +205,11 @@ window.showItemInfo = (item, link=true) ->
 
     if isToken and classes
       title = 'Class Token'
-      image = 'class_token'
+      image = 'class-token'
 
     if title and image
       tagsHTML += "<a href='/search?q=#{ encodeURIComponent(title) }'
- target='_blank'>
-<img title='#{ title }' alt='#{ title }' width='50' height='50'
- src='/images/items/#{ image }.png'></a><br>"
+ target='_blank' title='#{ title }' class='#{ image }'></a>"
   tagsHTML += "</div>"
 
   # Link to bundle items HTML

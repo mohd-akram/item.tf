@@ -187,7 +187,7 @@
       _ref5 = classes.split(',');
       for (_m = 0, _len3 = _ref5.length; _m < _len3; _m++) {
         i = _ref5[_m];
-        classesHTML += "<a href='/search?q=" + i + "' target='_blank'><img title='" + i + "' alt='" + i + "' width='40' height='40' src='/images/items/" + i + "_icon.png'></a><br>";
+        classesHTML += "<a href='/search?q=" + i + "' target='_blank' title='" + i + "' class='" + (i.toLowerCase()) + "'></a>";
       }
     }
     classesHTML += "</div>";
@@ -206,7 +206,7 @@
             image = i;
           } else if (isToken) {
             title = 'Slot Token';
-            image = 'slot_token';
+            image = 'slot-token';
           }
         }
       }
@@ -220,10 +220,10 @@
       }
       if (isToken && classes) {
         title = 'Class Token';
-        image = 'class_token';
+        image = 'class-token';
       }
       if (title && image) {
-        tagsHTML += "<a href='/search?q=" + (encodeURIComponent(title)) + "' target='_blank'><img title='" + title + "' alt='" + title + "' width='50' height='50' src='/images/items/" + image + ".png'></a><br>";
+        tagsHTML += "<a href='/search?q=" + (encodeURIComponent(title)) + "' target='_blank' title='" + title + "' class='" + image + "'></a>";
       }
     }
     tagsHTML += "</div>";

@@ -364,6 +364,88 @@ div[class^="quality-"] {
   border-color: #8650AC;
 }
 
+.primary, .secondary, .melee, .pda2, .hat, .misc, .tool, .bundle, .class-token, .slot-token {
+  display: block;
+  width: 50px;
+  height: 50px;
+  background-image: url('/images/tags.png');
+}
+
+.secondary {
+  background-position: 0 -50px;
+}
+
+.melee {
+  background-position: 0 -100px;
+}
+
+.pda2 {
+  background-position: 0 -150px;
+}
+
+.hat {
+  background-position: 0 -200px;
+}
+
+.misc {
+  background-position: 0 -250px;
+}
+
+.tool {
+  background-position: 0 -300px;
+}
+
+.bundle {
+  background-position: 0 -350px;
+}
+
+.class-token {
+  background-position: 0 -400px;
+}
+
+.slot-token {
+  background-position: 0 -450px;
+}
+
+.scout, .soldier, .pyro, .demoman, .heavy, .engineer, .medic, .sniper, .spy {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-image: url('/images/classes.png');
+}
+
+.soldier {
+  background-position: 0 -40px;
+}
+
+.pyro {
+  background-position: 0 -80px;
+}
+
+.demoman {
+  background-position: 0 -120px;
+}
+
+.heavy {
+  background-position: 0 -160px;
+}
+
+.engineer {
+  background-position: 0 -200px;
+}
+
+.medic {
+  background-position: 0 -240px
+}
+
+.sniper {
+  background-position: 0 -280px;
+}
+
+.spy {
+  background-position: 0 -320px;
+}
+
 .offline, .online, .in-game {
   border: 3px solid;
   border-radius: 3px;
