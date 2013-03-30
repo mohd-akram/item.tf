@@ -51,7 +51,6 @@ header > a {
 
 #blueprints {
   position: absolute;
-  margin: auto;
   bottom: 60px;
   width: 100%;
   height: 168px;
@@ -62,8 +61,6 @@ header > a {
 
 .blueprint {
   position: relative;
-  margin: auto;
-  width: auto;
   overflow: hidden;
 }
 
@@ -126,10 +123,10 @@ ul {
   box-shadow: 1px 1px 0px rgba(0, 0, 0, .15);
   cursor: pointer;
   float: left;
-  height: 90px;
-  margin: 4px;
+  height: 77px;
+  margin: 3px;
   position: relative;
-  width: 98px;  
+  width: 100px;  
 }
 
 .item-small {
@@ -324,14 +321,6 @@ a > img {
 
 .button-icon:hover {
   color: rgb(175, 174, 164);
-}
-
-div[class^="quality-"] {
-  border-width: 2px;
-}
-
-.unique, .vintage, .strange, .genuine, .haunted, .unusual {
-  border-width: 2px;
 }
 
 .unique, .quality-6 {

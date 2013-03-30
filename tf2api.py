@@ -431,6 +431,9 @@ def _convertmarketname(name):
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Halloween Kills': 'Strange Part: Halloween Kills',
 
+            'Chromatic Corruption (halloween spell)':
+            'Halloween Spell: Chromatic Corruption',
+
             'Salvaged Mann Co. Supply Crate (series 50)':
             'Salvaged Mann Co. Supply Crate',
 
