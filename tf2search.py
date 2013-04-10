@@ -85,10 +85,11 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     # Check if using price visualization
     pricematch = re.match(r'(\d+(\.\d+)?) '
                           '(([eE]arb|[bB])ud(s)?|'
+                          '[kK]ey(s)?|'
                           '[rR]ef(ined|s)?|'
                           '[rR]ec(laimed|s)?|'
-                          '[kK]ey(s)?|'
-                          '[sS]crap)$', query)
+                          '[sS]crap|'
+                          '[wW]e(a)?p(on)?(s)?)$', query)
     # Check if searching for specific indexes
     indexmatch = re.match(r'\d+( \d+)*$', query)
     indexes = query.split() if indexmatch else []
@@ -375,10 +376,8 @@ def _getdenomvalue(denom, itemsdict):
         value = float(
             itemsdict[idx]['marketprice']['backpack.tf']['Unique']
             .split()[0])
-    elif denom == 'Scrap':
-        value = 2
     else:
-        value = 3
+        value = {'Refined': 3, 'Reclaimed': 3, 'Scrap': 2, 'Weapon': 1}[denom]
 
     return value
 
@@ -414,7 +413,7 @@ def _gettag(word):
 
 def _getdenom(word):
     """Parse a word and return a price denomination if it matches one"""
-    denomslist = ['bud', 'key', 'ref', 'rec', 'scrap']
+    denomslist = ['bud', 'key', 'ref', 'rec', 'scrap', 'we']
     denoms = dict(zip(denomslist, tf2api.getalldenoms().keys()))
 
     hasdenom = re.search('|'.join(denomslist), word)

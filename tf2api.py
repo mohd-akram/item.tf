@@ -484,7 +484,5 @@ class _SpreadsheetParser(HTMLParser):
 
     def handle_data(self, data):
         if self.isname:
-            linkmatch = re.search(r'>.*?<', data)
-            self.name = linkmatch.group(0) if linkmatch else data
-
+            self.name = data
             self.isname = False
