@@ -109,7 +109,7 @@ def getnewstoreprices(storeprices):
             if 'New' in price['tags']}
 
 
-def getspreadsheetprices(itemsbyname):
+def getspreadsheetprices(itemsbyname, timeout=30):
     """Get market prices from TF2 Spreadsheet.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
@@ -117,7 +117,7 @@ def getspreadsheetprices(itemsbyname):
 
     opener = build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-    data = opener.open(url).read()
+    data = opener.open(url, timeout=timeout).read()
 
     parser = _SpreadsheetParser()
     parser.feed(data)
@@ -192,7 +192,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
 
                 iscrate = False
 
-                if 'attributes' in item:
+                if 'attributes' in item and item['attributes']:
                     attribute = item['attributes'][0]
                     if attribute['name'] == 'set supply crate series':
                         iscrate = True
@@ -408,7 +408,6 @@ def _convertmarketname(name):
             'Unusual Haunted Metal': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
             "Zephaniah's Greed": "Zepheniah's Greed",
-            'Bolgan Helmet': 'Bolgan',
             'Full Head of Steam': 'Full Head Of Steam',
             'Claidheamh Mr': 'Claidheamh Mòr',
             'Detective Noir': 'Détective Noir',
@@ -422,8 +421,6 @@ def _convertmarketname(name):
             'Superfan': 'The Superfan',
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
-            "Dr. Grordbert's Copper Crest": "Dr. Grordbort's Copper Crest",
-            "Dr. Grordbert's Silver Crest": "Dr. Grordbort's Silver Crest",
             'Koto': 'Noise Maker - Koto',
             'Vuvuzela': 'Noise Maker - Vuvuzela',
             'Winter Holiday': 'Noise Maker - Winter Holiday',

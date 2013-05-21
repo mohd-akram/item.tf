@@ -402,7 +402,8 @@
       "Three-Rune Blade",
       "Unarmed Combat",
       "Wrap Assassin",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Sniper, Primary)": [
@@ -444,7 +445,8 @@
       "Tribalman's Shiv",
       "Bushwacka",
       "Shahanshah",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Soldier, Primary)": [
@@ -492,7 +494,8 @@
       "Market Gardener",
       "Disciplinary Action",
       "Escape Plan",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Primary)": [
@@ -537,7 +540,8 @@
       "Persian Persuader",
       "Nessie's Nine Iron",
       "Scottish Handshake",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Heavy, Primary)": [
@@ -580,7 +584,8 @@
       "Eviction Notice",
       "Apoco-Fists",
       "Holiday Punch",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Medic, Primary)": [
@@ -618,7 +623,8 @@
       "Vita-Saw",
       "Amputator",
       "Solemn Vow",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Pyro, Primary)": [
@@ -665,7 +671,8 @@
       "Third Degree",
       "Lollichop",
       "Neon Annihilator",
-      "Freedom Staff"
+      "Freedom Staff",
+      "Ham Shank"
     ]
   ],
   "Fabricate Class Weapons (Spy, Secondary)": [
@@ -1746,7 +1753,9 @@
       "Spooky Shoes",
       "Spooky Sleeves",
       "Digit Divulger",
-      "Buck Turner All-Stars"
+      "Wilson Weave",
+      "Buck Turner All-Stars",
+      "Tomb Wrapper"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1787,7 +1796,9 @@
       "Sir Hootsalot",
       "Deadliest Duckling",
       "Cold Killer",
-      "Mutton Mann"
+      "Mutton Mann",
+      "Sydney Straw Boat",
+      "Steel Songbird"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1842,7 +1853,8 @@
       "Bonedolier",
       "Chief Constable",
       "Deadliest Duckling",
-      "Soldier's Slope Scopers"
+      "Soldier's Slope Scopers",
+      "Doe-Boy"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1890,7 +1902,9 @@
       "Deadliest Duckling",
       "Cool Breeze",
       "Mutton Mann",
-      "Buck Turner All-Stars"
+      "Wilson Weave",
+      "Buck Turner All-Stars",
+      "Blind Justice"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1942,7 +1956,9 @@
       "Heavy's Hockey Hair",
       "Carl",
       "Aqua Flops",
-      "Hunger Force"
+      "Hunger Force",
+      "Wilson Weave",
+      "Pounding Father"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -1984,7 +2000,8 @@
       "Foppish Physician",
       "Der Wintermantel",
       "Doc's Holiday",
-      "Mutton Mann"
+      "Mutton Mann",
+      "Wilson Weave"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -2040,7 +2057,8 @@
       "DethKapp",
       "Nose Candy",
       "Rail Spikes",
-      "Winter Wonderland Wrap"
+      "Winter Wonderland Wrap",
+      "Person in the Iron Mask"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -2129,7 +2147,9 @@
       "Barnstormer",
       "Prize Plushy",
       "Grizzled Growth",
-      "Last Straw"
+      "Last Straw",
+      "Wilson Weave",
+      "Vox Diabolus"
     ]
   ],
   "Rebuild Headgear": [
