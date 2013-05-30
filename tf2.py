@@ -242,7 +242,9 @@ class TF2WishlistHandler(Handler):
         openiduser = users.get_current_user()
 
         if not openiduser:
-            return self.redirect('/')
+            self.response.headers['WWW-Authenticate'] = (
+                'OpenID identifier="http://steamcommunity.com/openid"')
+            return self.response.set_status(401)
 
         steamid = getsteamid(openiduser)
         user = getuser(steamid)
