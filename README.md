@@ -24,21 +24,21 @@ TF2 API
 tf2api.py has no dependencies and was designed to be used either for this project or separately. It contains many helpful functions to get information about items in TF2.
 
 Example:
+```python
+>>> import tf2api
+>>> schema = tf2api.getschema(apikey)
+>>> items = tf2api.getitems(schema)
+>>> itemsbyname = tf2api.getitemsbyname(schema)
 
-    >>> import tf2api
-    >>> schema = tf2api.getschema(apikey)
-    >>> items = tf2api.getitems(schema)
-    >>> itemsbyname = tf2api.getitemsbyname(schema)
+>>> pan = items[264] # 264 is the defindex of the item, Or:
+>>> pan = itemsbyname['Frying Pan']
 
-    >>> pan = items[264] # 264 is the defindex of the item, Or:
-    >>> pan = itemsbyname['Frying Pan']
+>>> tf2api.getitemclasses(pan)
+[u'Scout', u'Soldier', u'Pyro', u'Demoman', u'Heavy', u'Medic', u'Sniper']
 
-    >>> tf2api.getitemclasses(pan)
-    [u'Scout', u'Soldier', u'Pyro', u'Demoman', u'Heavy', u'Medic', u'Sniper']
-
-    >>> tf2api.getitemtags(pan)
-    ['weapon', u'melee']
-
+>>> tf2api.getitemtags(pan)
+['weapon', u'melee']
+```
 
 Dependencies
 ------------
