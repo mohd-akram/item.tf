@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="/css/tf2.css">
     <link rel="stylesheet" href="/css/animate-custom.css">
     <link rel="stylesheet" href="/css/message.css">
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css">
     <script src="/scripts/tf2.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <style>
       .ui-autocomplete {
         max-height: 100px;
@@ -42,7 +42,7 @@
   <body>
     <div id="container">
       <header style="height: 10px"></header>
-      
+
       <div id="sidebar">
         {% if user %}
         <a href="/id/{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
@@ -54,7 +54,7 @@
         <br><br>
         <i id="settings" class="button-icon icon-cog icon-2x"></i>
         <i id="help" class="button-icon icon-question-sign icon-2x"></i>
-        
+
         <div id="settings-list" class="rounded">
           <form id="settingsform">
             <label for="pricesetting">Price Source:</label>
@@ -66,7 +66,7 @@
             <input type="submit" value="Save" class="button-small">
           </form>
         </div>
-        
+
         <div id="help-list" class="rounded">
           <h4>Examples</h4>
           <p>
@@ -107,7 +107,7 @@
       return false;
     })
     addHoverBox();
-    
+
     $(function() {
       var accentMap = {
           'ä': 'a',

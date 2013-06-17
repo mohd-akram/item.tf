@@ -403,7 +403,7 @@ def resolvevanityurl(apikey, vanityurl):
 def _convertmarketname(name):
     """Changes the market name to match the proper TF2 name"""
     repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
-            'High-Five': 'Taunt: The High Five!',
+            'Taunt: The High-Five!': 'Taunt: The High Five!',
             'Schadenfreude': 'Taunt: The Schadenfreude',
             'Unusual Haunted Metal': 'Haunted Metal Scrap',
             'Hazmat Headcase': 'HazMat Headcase',
@@ -422,11 +422,14 @@ def _convertmarketname(name):
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
             'Koto': 'Noise Maker - Koto',
-            'Vuvuzela': 'Noise Maker - Vuvuzela',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
             # Halloween 2012
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Halloween Kills': 'Strange Part: Halloween Kills',
+            'Die Job (halloween spell)': 'Halloween Spell: Die Job',
+
+            'Sinister Staining (halloween spell)':
+            'Halloween Spell: Sinister Staining',
 
             'Chromatic Corruption (halloween spell)':
             'Halloween Spell: Chromatic Corruption',

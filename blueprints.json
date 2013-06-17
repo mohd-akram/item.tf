@@ -400,9 +400,11 @@
       "Fan O'War",
       "Atomizer",
       "Three-Rune Blade",
+      "Conscientious Objector",
       "Unarmed Combat",
       "Wrap Assassin",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -445,7 +447,9 @@
       "Tribalman's Shiv",
       "Bushwacka",
       "Shahanshah",
+      "Conscientious Objector",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -493,8 +497,10 @@
       "Half-Zatoichi",
       "Market Gardener",
       "Disciplinary Action",
+      "Conscientious Objector",
       "Escape Plan",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -538,9 +544,11 @@
       "Claidheamh Mòr",
       "Half-Zatoichi",
       "Persian Persuader",
+      "Conscientious Objector",
       "Nessie's Nine Iron",
       "Scottish Handshake",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -582,9 +590,11 @@
       "Warrior's Spirit",
       "Fists of Steel",
       "Eviction Notice",
+      "Conscientious Objector",
       "Apoco-Fists",
       "Holiday Punch",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -623,7 +633,9 @@
       "Vita-Saw",
       "Amputator",
       "Solemn Vow",
+      "Conscientious Objector",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -668,10 +680,12 @@
       "Sharpened Volcano Fragment",
       "Postal Pummeler",
       "Maul",
+      "Conscientious Objector",
       "Third Degree",
       "Lollichop",
       "Neon Annihilator",
       "Freedom Staff",
+      "Bat Outta Hell",
       "Ham Shank"
     ]
   ],
@@ -1755,7 +1769,8 @@
       "Digit Divulger",
       "Wilson Weave",
       "Buck Turner All-Stars",
-      "Tomb Wrapper"
+      "Tomb Wrapper",
+      "Bacteria Blocker"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -2001,7 +2016,8 @@
       "Der Wintermantel",
       "Doc's Holiday",
       "Mutton Mann",
-      "Wilson Weave"
+      "Wilson Weave",
+      "Weather Master"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -2058,7 +2074,8 @@
       "Nose Candy",
       "Rail Spikes",
       "Winter Wonderland Wrap",
-      "Person in the Iron Mask"
+      "Person in the Iron Mask",
+      "Breather Bag"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
