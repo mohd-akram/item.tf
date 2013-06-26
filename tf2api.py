@@ -440,6 +440,9 @@ def _convertmarketname(name):
             'Strange Part: Kills While Ubercharged':
             'Strange Part: Kills While Übercharged',
 
+            'Strange Parts: Medics Killed That Have Full UberCharge':
+            'Strange Part: Medics Killed That Have Full ÜberCharge',
+
             "Lord Cockswain's Novelty Pipe and Mutton Chops":
             "Lord Cockswain's Novelty Mutton Chops and Pipe",
 

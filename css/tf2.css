@@ -21,7 +21,7 @@ body {
 
 header {
   height: 100px;
-/* SVG as background image (IE9/Chrome/Safari/Opera) */ 
+/* SVG as background image (IE9/Chrome/Safari/Opera) */
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc1NTUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiM0RjRENDkiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiMzMzMyMkQiIG9mZnNldD0iMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2c1NTUpIiAvPgo8L3N2Zz4=);
   background-color: rgb(87, 84, 79);
   box-shadow: 1px 1px 6px rgba(0,0,0,0.3);
@@ -99,7 +99,7 @@ h1 {
 
 .glow:hover {
   color: rgb(230,230,230);
-  text-shadow: 0 0 10px #999;
+  text-shadow: 0 0 10px rgba(255,255,255,0.4);
 }
 
 .itemlist {
@@ -126,7 +126,7 @@ ul {
   height: 77px;
   margin: 3px;
   position: relative;
-  width: 100px;  
+  width: 100px;
 }
 
 .item-small {
@@ -308,13 +308,19 @@ a > img {
 
 .rounded, .button-icon {
   color: rgb(160, 158, 146);
+}
+
+.rounded, .rounded-tight {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   padding: 10px;
 }
 
+.rounded-tight {
+  padding: 2px;
+}
+
 .button-icon {
-  border-radius: 7px;
   padding: 7px;
   cursor: pointer;
 }

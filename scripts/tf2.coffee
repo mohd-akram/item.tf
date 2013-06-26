@@ -112,8 +112,13 @@ window.showItemInfo = (item, link=true) ->
     [source, altSource] = [altSource, source]
     marketPrice = getMarketPrice(item, source)
 
+  classifiedsURL = "http://backpack.tf/classifieds/search/
+#{ encodeURIComponent(item.title) }"
+
   if marketPrice
     marketPrice = "<span id='pricesource'>#{ capitalize(source) }</span><br>
+<a href='#{ classifiedsURL }' id='classifieds' class='rounded-tight glow'
+ target='_blank' style='color:rgb(129, 170, 197);display:none'>Classifieds</a>
 <h3 id='prices'>#{ marketPrice }</h3>"
 
   itemId = item.getAttribute('data-index')
@@ -218,7 +223,7 @@ window.showItemInfo = (item, link=true) ->
  target='_blank'>
 <div class='rounded glow' style='display: inline-block; padding: 7px;'>
 View items</div></a>" else ''
-  
+
   itemName = item.title
   if link
     itemName = "<a href='/item/#{ itemId }'
@@ -237,21 +242,24 @@ View items</div></a>" else ''
 <div id='marketprice'>#{ marketPrice }</div>
 #{ blueprintsHTML }
 <div id='buttons'>
-<a class='button-small' target='_blank' title='Open in Wiki'
- href=\"#{ wikiLink }\">Wiki</a>
-<a class='button-small' target='_blank' title='Community Market'
+
+<a target='_blank' title='Open in Wiki'
+ href=\"#{ wikiLink }\"><i class='icon-info icon-large button-icon'></i></a>
+
+<a target='_blank' title='Community Market'
  href=\"http://steamcommunity.com/market/search?q=appid%3A440
-%20#{ encodeURIComponent(item.title) }\">Market</a>
+%20#{ encodeURIComponent(item.title) }\">
+<i class='icon-shopping-cart icon-large button-icon'></i></a>
+
+<a href='#' id='find-trades-btn' title='Find Trades'>
+<i class='icon-exchange icon-large button-icon'></i></a>
 
 <form name='tf2outpostform' method='POST' style='display:inline-block'
  action='http://www.tf2outpost.com/search'>
 
 <input type='hidden' name='json'>
-
-<input class='button-small' type='submit'
- title='Find Trades' name='submit' value='Trades'>
-
 <input type='hidden' name='type' value='any'>
+<input type='submit' name='submit' value='Search' style='display:none'>
 
 <select id='tradetype' class='textbox'>
   <option value='has1'>Want</option>
@@ -304,11 +312,13 @@ View items</div></a>" else ''
 
   quality = form.quality
 
-  form.onsubmit = ->
+  document.getElementById('find-trades-btn').onclick = (event) ->
     tradeType = document.getElementById('tradetype').value
 
     form.json.value = "{\"filters\":{},
 \"#{ tradeType }\":\"440,#{ itemId },#{ quality.value }\"}"
+
+    form.submit.click()
 
   # Wishlist link
   if wishlistHTML
@@ -318,7 +328,7 @@ View items</div></a>" else ''
     if isOwnPage
       wishlistAction = '/wishlist/remove'
       wishlistButton.setAttribute('title', 'Remove from wishlist')
-      
+
     # Add to wishlist or remove from wishlist
     wishlistButton.onclick = ->
       wishlistData = {'index': itemId, 'quality': quality.value}
@@ -341,6 +351,11 @@ View items</div></a>" else ''
   # Market price link
   priceButton = document.getElementById('pricesource')
   prices = document.getElementById('prices')
+  classifieds = document.getElementById('classifieds')
+
+  # Show classifieds
+  if source is 'backpack.tf'
+    classifieds.style.display = 'inline'
 
   if priceButton and item.getAttribute("data-#{ altSource }")
     priceButton.style.cursor = 'pointer'
@@ -352,13 +367,18 @@ View items</div></a>" else ''
       priceButton.innerHTML = capitalize(altSource)
       prices.innerHTML = getMarketPrice(item, altSource)
 
+      if altSource is 'backpack.tf'
+        classifieds.style.display = 'inline'
+      else
+        classifieds.style.display = 'none'
+
     priceButton.onmouseover = ->
       priceButton.style.textShadow = '0 0 10px rgb(196, 241, 128)'
 
     priceButton.onmouseout = ->
       priceButton.style.textShadow = ''
 
-  if itemName.indexOf('Strange Part') == -1
+  if itemName.indexOf('Strange') == -1
     # Auto quality selection
     qualityNo = item.getAttribute('class').match(/quality-(\d+)/)
     if qualityNo
@@ -399,7 +419,7 @@ window.setCookie = (name, value, days) ->
 
 window.getCookie = (name) ->
   cookies = document.cookie.split(';')
-  
+
   for cookie in cookies
     while cookie[0] == ' '
       cookie = cookie[1...]
