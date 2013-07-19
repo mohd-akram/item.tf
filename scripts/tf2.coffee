@@ -29,6 +29,9 @@ class Item
   marketPrice: (source) ->
     JSON.parse(@elem.getAttribute("data-#{ source }"))
 
+  remove: ->
+    @elem.parentNode.removeChild(@elem)
+
 class ItemBox
   constructor: (showLink=true) ->
     @showLink = showLink
@@ -353,7 +356,7 @@ class ItemBox
               wishlistMessage.setAttribute('class', 'animated fadeOut')), 1000)
           else if response == 'Removed'
             @hide()
-            @item.parentNode.removeChild(@item)
+            @item.remove()
 
   _buyLink: ->
     buyButton = document.getElementById('buybutton')

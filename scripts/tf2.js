@@ -40,6 +40,10 @@
       return JSON.parse(this.elem.getAttribute("data-" + source));
     };
 
+    Item.prototype.remove = function() {
+      return this.elem.parentNode.removeChild(this.elem);
+    };
+
     return Item;
 
   })();
@@ -323,7 +327,7 @@
               }), 1000);
             } else if (response === 'Removed') {
               _this.hide();
-              return _this.item.parentNode.removeChild(_this.item);
+              return _this.item.remove();
             }
           });
         };
