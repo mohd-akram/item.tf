@@ -204,6 +204,7 @@ ul {
   position: fixed;
   top: 50%;
   left: 50%;
+  text-align: center;
   text-shadow: 0 0 10px black;
 }
 
@@ -226,6 +227,18 @@ ul {
   border-color: #55544F;
   border-style: solid;
   color: white;
+}
+
+#tags {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+}
+
+#classes {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 #pricesource {

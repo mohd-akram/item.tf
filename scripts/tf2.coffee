@@ -1,78 +1,48 @@
 root = exports ? this
 
-capitalize = (word) ->
-  word[0].toUpperCase() + word[1...]
+class User
+  constructor: ->
+    @id = getCookie('steam_id')
+    @loggedIn = Boolean(@id)
+    @isOwnPage = (@loggedIn and @id == document.getElementById('steamid')
+                                              ?.getAttribute('data-id'))
 
-escapeHTML = (string) ->
-  string.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    @priceSource = getCookie('price_source') or 'backpack.tf'
 
-getAttributes = (item) ->
-  divs = item.getElementsByTagName('div')
-  if divs.length then divs[0].innerHTML else ''
+class Item
+  constructor: (elem) ->
+    @name = elem.title
+    @id = elem.getAttribute('data-index')
+    @imageUrl = elem.getAttribute('data-image')
+    @description = elem.getAttribute('data-description') or ''
+    @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
+    @classes = elem.getAttribute('data-classes')
+    @tags = (elem.getAttribute('data-tags') or '').split(',')
+    @storePrice = elem.getAttribute('data-storeprice')
+    @blueprints = elem.getElementsByTagName('ul')
 
-getDescription = (item) ->
-  item.getAttribute('data-description') or ''
+    @wishIndex = elem.getAttribute('data-i')
+    @qualityNo = elem.getAttribute('class')?.match(/quality-(\d+)/)?[1]
 
-getTags = (item) ->
-  (item.getAttribute('data-tags') or '').split(',')
+    @elem = elem
 
-getMarketPrice = (item, source) ->
-  marketPrice = item.getAttribute("data-#{ source }") or ''
-  if marketPrice
-    priceList = []
-    for i in marketPrice.split(', ')
-      denomMatch = i.match(/(Refined|Key(s)?|Bud(s)?)/g)
-
-      if not denomMatch
-        priceList.push i
-        continue
-
-      denom = denomMatch[0]
-
-      priceList.push i.replace(/(\d+(\.\d+)?)/g,
-        """
-        <a href=\"/search?q=\$1%20#{ denom }\"
-         target='_blank' class='glow'>\$1</a>
-        """)
-
-    marketPrice = priceList.join(', ')
-                           .replace(/[{}']/g,'')
-                           .replace(/, /g,'<br>')
-
-    for i in ['Unique','Vintage','Strange','Genuine','Haunted','Unusual']
-      re = new RegExp(i,"g")
-      marketPrice = marketPrice
-                .replace(re,"<span class='#{ i.toLowerCase() }'>#{ i }</span>")
-
-  return marketPrice
+  marketPrice: (source) ->
+    JSON.parse(@elem.getAttribute("data-#{ source }"))
 
 class ItemBox
   constructor: (showLink=true) ->
     @showLink = showLink
-    @loggedInId = getCookie('steam_id')
-    @isOwnPage = (@loggedInId and
-                  @loggedInId == document.getElementById('steamid')
-                                        ?.getAttribute('data-id'))
+
+    @user = new User()
 
     @itemBox = document.createElement('div')
     @itemBox.id = 'itembox'
-    document.getElementById('container').appendChild(@itemBox)
+    document.getElementsByTagName('body')[0].appendChild(@itemBox)
 
-  show: (item) ->
-    @id = item.getAttribute('data-index')
-    @name = item.title
-    @description = getDescription(item)
-    @storePrice = item.getAttribute('data-storeprice')
-    @imageUrl = item.getAttribute('data-image')
-    @blueprints = item.getElementsByTagName('ul')
-    @classes = item.getAttribute('data-classes')
-    @tags = getTags(item)
+  show: (elem) ->
+    @item = new Item(elem)
 
-    @item = item
-
-    @cookiePrice = getCookie('price_source')
-    @source = @cookiePrice or 'backpack.tf'
-
+    @source = @user.priceSource
     @altSource = if @source is 'spreadsheet' then 'backpack.tf'
     else 'spreadsheet'
 
@@ -83,14 +53,14 @@ class ItemBox
     @itemBox.style.display = 'none'
 
   _tagsHTML: ->
-    tagsHTML = "<div id='tags' style='position:absolute;top:-5px;left:5px'>"
-    if @tags.length
-      isWeapon = 'weapon' in @tags
-      isToken = 'token' in @tags
+    if @item.tags.length
+      tagsHTML = "<div id='tags'>"
+      isWeapon = 'weapon' in @item.tags
+      isToken = 'token' in @item.tags
       title = image = ''
 
       for i in ['primary','secondary','melee','pda2']
-        if i in @tags
+        if i in @item.tags
           if isWeapon
             title =  capitalize(i)+' Weapon'
             image = i
@@ -100,11 +70,11 @@ class ItemBox
             image = 'slot-token'
 
       for i in ['hat','misc','tool','bundle']
-        if i in @tags
+        if i in @item.tags
           title = capitalize(i)
           image = i
 
-      if isToken and @classes
+      if isToken and @item.classes
         title = 'Class Token'
         image = 'class-token'
 
@@ -116,83 +86,93 @@ class ItemBox
           """
 
       tagsHTML += "</div>"
-
-    return tagsHTML
+    else tagsHTML = ''
 
   _nameHTML: ->
-    nameHTML = @name
+    nameHTML = @item.name
 
     if @showLink
       nameHTML =
         """
-        <a href='/item/#{ @id }'
+        <a href='/item/#{ @item.id }'
          target='_blank' class='glow' title='Go to Item Page'>
         #{ nameHTML }</a>
         """
     nameHTML = "<h2 id='itemname'>#{ nameHTML }</h2>"
 
-    return nameHTML
-
   _classesHTML: ->
-    classesHTML = "<div id='classes' style='position:absolute;top:0;right:0'>"
-    if @classes
-      for i in @classes.split(',')
+    if @item.classes
+      classesHTML = "<div id='classes'>"
+      for i in @item.classes.split(',')
         classesHTML +=
           """
           <a href='/search?q=#{ i }' target='_blank'
            class='#{ i.toLowerCase() }'></a>
          """
-    classesHTML += '</div>'
-
-    return classesHTML
+      classesHTML += '</div>'
+    else classesHTML = ''
 
   _bundleHTML: ->
     # Link to bundle items HTML
-    if 'bundle' in @tags and @description.indexOf('---') != -1
+    if 'bundle' in @item.tags and @item.description.indexOf('---') != -1
       bundleHTML =
         """
-        <a href=\"/search?q=#{ encodeURIComponent(@name) }%20Set\"
+        <a href=\"/search?q=#{ encodeURIComponent(@item.name) }%20Set\"
          target='_blank'>
         <div class='rounded glow' style='display: inline-block; padding: 7px;'>
         View items
         </div>
         </a>
         """
-    else
-      bundleHTML = ''
+    else bundleHTML = ''
 
-    return bundleHTML
+  _priceSourceHTML: (source) ->
+    priceHTML = ''
+
+    for quality, price of @item.marketPrice(source)
+      denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
+
+      if denomMatch
+        denom = denomMatch[0]
+
+        price = price.replace(/(\d+(\.\d+)?)/g,
+          """
+          <a href="/search?q=\$1%20#{ denom }"
+           target="_blank" class="glow">\$1</a>
+          """)
+      priceHTML += "<span class='#{ quality.toLowerCase() }'>#{
+        quality }</span>: #{ price }<br>"
+
+    return priceHTML
 
   _pricesHTML: ->
-    pricesHTML = getMarketPrice(@item, @source)
-    if not pricesHTML
-      [@source, @altSource] = [@altSource, @source]
-      pricesHTML = getMarketPrice(@item, @source)
-
     classifiedsURL = "http://backpack.tf/classifieds/search/#{
-      encodeURIComponent(@name) }"
+      encodeURIComponent(@item.name) }"
 
-    if pricesHTML
+    priceSourceHTML = @_priceSourceHTML(@source)
+
+    if not priceSourceHTML
+      [@source, @altSource] = [@altSource, @source]
+      priceSourceHTML = @_priceSourceHTML(@item, @source)
+
+    if priceSourceHTML
       pricesHTML =
         """
-        <div id='marketprice'>
-        <span id='pricesource'>#{ capitalize(@source) }</span><br>
-        <a href='#{ classifiedsURL }'
-         id='classifieds' class='rounded-tight glow'
-         target='_blank' style='color:rgb(129, 170, 197);display:none'>
+        <div id="marketprice">
+        <span id="pricesource">#{ capitalize(@source) }</span><br>
+        <a href="#{ classifiedsURL }"
+         id="classifieds" class="rounded-tight glow"
+         target="_blank" style="color:rgb(129, 170, 197);display:none">
         Classifieds
         </a>
-        <h3 id='prices'>#{ pricesHTML }</h3>
-        </div>
+        <h3 id="prices">#{ priceSourceHTML }</h3></div>
         """
-
-    return pricesHTML
+    else pricesHTML = ''
 
   _blueprintsHTML: ->
-    blueprintsHTML = ''
-    if @blueprints.length
+    if @item.blueprints.length
       blueprintsHTML = '<div id="blueprints">'
-      for b in @blueprints
+      for b in @item.blueprints
         chance = b.getAttribute('data-chance')
 
         blueprintsHTML += '<div class="blueprint">'
@@ -221,11 +201,39 @@ class ItemBox
           """
 
       blueprintsHTML += '</div>'
+    else blueprintsHTML = ''
 
-    return blueprintsHTML
+  _outpostHTML: ->
+    """
+    <a href='#' id='find-trades-btn'
+     class='icon-exchange icon-large button-icon' title='Find Trades'></a>
+
+    <form name='tf2outpostform' method='POST' style='display:inline-block'
+     action='http://www.tf2outpost.com/search'>
+
+    <input type='hidden' name='json'>
+    <input type='hidden' name='type' value='any'>
+    <input type='submit' name='submit' value='Search' style='display:none'>
+
+    <select id='tradetype' class='textbox'>
+      <option value='has1'>Want</option>
+      <option value='wants1'>Have</option>
+    </select>
+
+    <select id='quality' class='textbox'>
+      <option value='6'>Unique</option>
+      <option value='3'>Vintage</option>
+      <option value='11'>Strange</option>
+      <option value='1'>Genuine</option>
+      <option value='13'>Haunted</option>
+      <option value='5'>Unusual</option>
+    </select>
+
+    </form>
+    """
 
   _wishlistHTML: ->
-    if @loggedInId
+    if @user.loggedIn
       wishlistHTML =
         """
         <div style='display: inline-block; width: 40px'>
@@ -236,28 +244,42 @@ class ItemBox
          title='Add to wishlist'></i>
         </div>
         """
-    else
-      wishlistHTML = ''
+    else wishlistHTML = ''
 
-    return wishlistHTML
+  _buttonsHTML: ->
+    wikiLink = "http://wiki.teamfortress.com/wiki/#{
+      encodeURIComponent(@item.name) }"
+
+    """
+    <div id='buttons'>
+
+    <a class='icon-info icon-large button-icon' target='_blank'
+     title='Open in Wiki' href=\"#{ wikiLink }\"></a>
+
+    <a class='icon-shopping-cart icon-large button-icon'
+     target='_blank' title='Community Market'
+     href=\"http://steamcommunity.com/market/search?q=appid%3A440
+    %20#{ encodeURIComponent(@item.name) }\"></a>
+
+    #{ @_outpostHTML() }
+    #{ @_wishlistHTML() }
+    </div>
+    """
 
   _buyHTML: ->
     # Buy button and store price HTML
-    if @storePrice
+    if @item.storePrice
       buyHTML =
         """
         <div id='buy'>
-        <form style='display:inline-block'>$#{ @storePrice }<br>
+        <form style='display:inline-block'>$#{ @item.storePrice }<br>
         <input type='text' value='1' size='1' id='quantity'
          class='textbox' style='text-align: right'>
         </form><a href='#' id='buybutton'></a></div>
         """
-    else
-      buyHTML = ''
+    else buyHTML = ''
 
-    return buyHTML
-
-  _marketPriceLink: ->
+  _pricesLink: ->
     priceButton = document.getElementById('pricesource')
     classifieds = document.getElementById('classifieds')
 
@@ -265,7 +287,7 @@ class ItemBox
     if classifieds and @source is 'backpack.tf'
       classifieds.style.display = 'inline'
 
-    if priceButton and @item.getAttribute("data-#{ @altSource }")
+    if priceButton and @item.marketPrice(@altSource)
       priceButton.style.cursor = 'pointer'
 
       priceButton.onclick = =>
@@ -273,7 +295,7 @@ class ItemBox
         then 'backpack.tf' else 'spreadsheet'
 
         priceButton.innerHTML = capitalize(@altSource)
-        @prices.innerHTML = getMarketPrice(@item, @altSource)
+        @prices.innerHTML = @_priceSourceHTML(@altSource)
 
         if @altSource is 'backpack.tf'
           classifieds.style.display = 'inline'
@@ -295,32 +317,32 @@ class ItemBox
       tradeType = document.getElementById('tradetype').value
 
       @form.json.value = "{\"filters\":{},\"#{
-        tradeType }\":\"440,#{ @id },#{ @form.quality.value }\"}"
+        tradeType }\":\"440,#{ @item.id },#{ @form.quality.value }\"}"
 
       @form.submit.click()
 
   _wishlistLink: ->
-    if @isOwnPage
-      wishIndex = @item.getAttribute('data-i')
+    # Update wishlist item index
+    if @user.isOwnPage
       for wish, idx in document.getElementsByClassName('item')
-        if wish.getAttribute('data-i') == wishIndex
-          wishIndex = idx.toString()
+        if wish.getAttribute('data-i') == @item.wishIndex
+          @item.wishIndex = idx.toString()
           break
 
-    if @_wishlistHTML()
+    if @user.loggedIn
       wishlistAction = '/wishlist/add'
       wishlistButton = document.getElementById('wishlistbutton')
 
-      if @isOwnPage
+      if @user.isOwnPage
         wishlistAction = '/wishlist/remove'
         wishlistButton.setAttribute('title', 'Remove from wishlist')
 
       # Add to wishlist or remove from wishlist
       wishlistButton.onclick = =>
-        wishlistData = {'index': @id, 'quality': @form.quality.value}
+        wishlistData = {'index': @item.id, 'quality': @form.quality.value}
 
-        if @isOwnPage
-          wishlistData = {'i': wishIndex}
+        if @user.isOwnPage
+          wishlistData = {'i': @item.wishIndex}
 
         postAjax wishlistAction, wishlistData, (response) =>
           if response == 'Added'
@@ -328,8 +350,7 @@ class ItemBox
             wishlistMessage.style.display = 'block'
             wishlistMessage.setAttribute('class', 'animated fadeInLeft')
             setTimeout((->
-              wishlistMessage.setAttribute('class', 'animated fadeOut')),
-                1000)
+              wishlistMessage.setAttribute('class', 'animated fadeOut')), 1000)
           else if response == 'Removed'
             @hide()
             @item.parentNode.removeChild(@item)
@@ -340,12 +361,9 @@ class ItemBox
       buyButton.onclick = =>
         quantity = document.getElementById('quantity').value
         window.open("http://store.steampowered.com/buyitem/440/#{
-          @id }/#{ quantity }")
+          @item.id }/#{ quantity }")
 
   _generateItemBox: ->
-    wikiLink = "http://wiki.teamfortress.com/wiki/#{
-      encodeURIComponent(@name) }"
-
     # Itembox HTML
     @itemBox.innerHTML =
       """
@@ -355,75 +373,39 @@ class ItemBox
       #{ @_bundleHTML() }
       #{ @_pricesHTML() }
       #{ @_blueprintsHTML() }
-      <div id='buttons'>
-
-      <a class='icon-info icon-large button-icon' target='_blank'
-       title='Open in Wiki' href=\"#{ wikiLink }\"></a>
-
-      <a class='icon-shopping-cart icon-large button-icon'
-       target='_blank' title='Community Market'
-       href=\"http://steamcommunity.com/market/search?q=appid%3A440
-      %20#{ encodeURIComponent(@name) }\"></a>
-
-      <a href='#' id='find-trades-btn'
-       class='icon-exchange icon-large button-icon' title='Find Trades'></a>
-
-      <form name='tf2outpostform' method='POST' style='display:inline-block'
-       action='http://www.tf2outpost.com/search'>
-
-      <input type='hidden' name='json'>
-      <input type='hidden' name='type' value='any'>
-      <input type='submit' name='submit' value='Search' style='display:none'>
-
-      <select id='tradetype' class='textbox'>
-        <option value='has1'>Want</option>
-        <option value='wants1'>Have</option>
-      </select>
-
-      <select id='quality' class='textbox'>
-        <option value='6'>Unique</option>
-        <option value='3'>Vintage</option>
-        <option value='11'>Strange</option>
-        <option value='1'>Genuine</option>
-        <option value='13'>Haunted</option>
-        <option value='5'>Unusual</option>
-      </select>
-
-      </form>
-
-      #{ @_wishlistHTML() }
-      </div>
+      #{ @_buttonsHTML() }
       #{ @_buyHTML() }
       """
 
     @form = document.tf2outpostform
     @prices = document.getElementById('prices')
 
-    @_marketPriceLink()
+    @_pricesLink()
     @_outpostLink()
     @_wishlistLink()
     @_buyLink()
 
     # Hover area
     hoverArea = document.createElement('div')
-    hoverArea.title = @name
-    hoverArea.setAttribute('data-description', @description)
-    hoverArea.setAttribute('data-tags', @tags)
+    hoverArea.title = @item.name
+    hoverArea.setAttribute('data-description', @item.description)
+    hoverArea.setAttribute('data-tags', @item.tags)
     hoverArea.id = 'hoverarea'
-    hoverArea.style.backgroundImage = "url('#{ @imageUrl }')"
-    @hoverBox = new HoverBox(hoverArea)
+    hoverArea.style.backgroundImage = "url('#{ @item.imageUrl }')"
 
     # Add hover area to itembox
     ref = document.getElementById('blueprints') or
       document.getElementById('buttons')
     @itemBox.insertBefore(hoverArea, ref)
 
+    # Enable hover box
+    new HoverBox(hoverArea)
+
     # Auto quality selection
-    if @name.indexOf('Strange') == -1
+    if @item.name.indexOf('Strange') == -1
       # Wishlist item quality
-      qualityNo = @item.getAttribute('class').match(/quality-(\d+)/)
-      if qualityNo
-        @form.quality.value = qualityNo[1]
+      if @item.qualityNo
+        @form.quality.value = @item.qualityNo
       else if @prices
         for option, i in @form.quality.options
           if @prices.innerHTML.indexOf(option.innerHTML) != -1
@@ -441,7 +423,7 @@ class HoverBox
     if not @hoverBox
       @hoverBox = document.createElement('div')
       @hoverBox.id = 'hoverbox'
-      document.getElementById('container').appendChild(@hoverBox)
+      document.getElementsByTagName('body')[0].appendChild(@hoverBox)
 
     @_add(elem)
 
@@ -466,14 +448,14 @@ class HoverBox
   _show: (e) =>
     title = e.target.title
 
-    attributes = getAttributes(e.target)
-    description = escapeHTML(getDescription(e.target))
+    item = new Item(e.target)
+    description = escapeHTML(item.description)
 
     if description
-      if 'bundle' in getTags(e.target) and description.indexOf('---') != -1
+      if 'bundle' in item.tags and description.indexOf('---') != -1
         descList = description.split('---')
         description = """
-                      #{ descList[0] }<br>
+                      #{ descList[0] }
                       <span style='color:#95af0c'>#{ descList[1] }</span>
                       """
       description = "<br>#{ description }"
@@ -481,7 +463,7 @@ class HoverBox
     @hoverBox.innerHTML =
       """
       <div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{
-      attributes }#{ description }
+      item.attributes }#{ description }
       """
 
     @hoverBox.style.display = 'block'
@@ -508,6 +490,12 @@ class HoverBox
     @itemBox.show(e.target)
     e.preventDefault()
     e.stopPropagation()
+
+capitalize = (word) ->
+  word[0].toUpperCase() + word[1...]
+
+escapeHTML = (string) ->
+  string.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
 
 setCookie = (name, value, days) ->
   expires = ''
