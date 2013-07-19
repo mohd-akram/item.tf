@@ -5,7 +5,7 @@
     <title>{{user.name}} - TF2 Find</title>
     <link rel="stylesheet" href="/css/tf2.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    
+
     <script src="/scripts/tf2.js"></script>
     {% include 'analytics.html' %}
   </head>
@@ -28,6 +28,6 @@
         {{ showitems(items) }}
       </div>
     </div>
-    <script>addHoverBox()</script>
+    <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
   </body>
 </html>

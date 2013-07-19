@@ -80,12 +80,12 @@
           </p>
         </div>
       </div>
-      <div id="hoverbox"></div>
-      <div id="itembox"></div>
 
       <div id="body">
       <h1 style="margin-top:120px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
-      <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none"><a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a></h4>
+      <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
+        <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
+      </h4>
       <form action="/search">
         <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
@@ -99,14 +99,22 @@
   <script>
     $('#searchbox').focus();
     $('#pricesetting').val(getCookie('price_source'));
-    $('#help').click(function() {$('#settings-list').hide();$('#help-list').toggle('slide', {'direction': 'right'}, 'fast')});
-    $('#settings').click(function() {$('#help-list').hide();$('#settings-list').toggle('slide', {'direction': 'right'}, 'fast')});
+
+    $('#help').click(function(){
+      $('#settings-list').hide();
+      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast')});
+
+    $('#settings').click(function() {
+      $('#help-list').hide();
+      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast')});
+
     $('#settingsform').submit(function() {
       setCookie('price_source', $('#pricesetting').val(), 365);
       $('#settings-list').hide('fast');
       return false;
-    })
-    addHoverBox();
+    });
+
+    var itemBox = new ItemBox(); new HoverBox(itemBox);
 
     $(function() {
       var accentMap = {
@@ -139,6 +147,7 @@
         });
       });
     });
+
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
   </script>
   </body>

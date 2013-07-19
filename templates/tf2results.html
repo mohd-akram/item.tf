@@ -23,9 +23,6 @@
     </form>
     </header>
 
-    <div id="hoverbox"></div>
-    <div id="itembox"></div>  
-
     <div id="body">
     {% from 'macros.html' import showitems, getcount %}
 
@@ -48,6 +45,6 @@
     </div>
     <footer>{{getcount(resultslength,'result')}} ({{time}} seconds)<br>{% include 'footer.html' %}</footer>
     </div>
-    <script>addHoverBox()</script>
+    <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
   </body>
 </html>

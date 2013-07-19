@@ -14,14 +14,13 @@
   <body>
     <div id="container">
       <h1 id="back"><a href="/">&lt;</a></h1>
-      <div id="hoverbox"></div>
-      <div id="itembox"></div>
       {% from 'macros.html' import showitem %}
       {{ showitem(item, False) }}
       <footer>{% include 'footer.html' %}</footer>
     </div>
     <script>
-      showItemInfo(document.getElementsByClassName('item')[0], false);
+      var itemBox = new ItemBox(false);
+      itemBox.show(document.getElementsByClassName('item')[0]);
     </script>
   </body>
 </html>

@@ -423,19 +423,24 @@ def _convertmarketname(name):
             'Essential Accessories': 'The Essential Accessories',
             'Koto': 'Noise Maker - Koto',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
-            # Halloween 2012
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Halloween Kills': 'Strange Part: Halloween Kills',
             'Die Job (halloween spell)': 'Halloween Spell: Die Job',
 
-            'Sinister Staining (halloween spell)':
-            'Halloween Spell: Sinister Staining',
-
             'Chromatic Corruption (halloween spell)':
             'Halloween Spell: Chromatic Corruption',
 
+            'Putrescent Pigmentation (halloween spell)':
+            'Halloween Spell: Putrescent Pigmentation',
+
+            'Sinister Staining (halloween spell)':
+            'Halloween Spell: Sinister Staining',
+
             'Salvaged Mann Co. Supply Crate (series 50)':
             'Salvaged Mann Co. Supply Crate',
+
+            'Summer Appetizer Crate (series 61)':
+            'Summer Appetizer Crate',
 
             'Strange Part: Kills While Ubercharged':
             'Strange Part: Kills While Übercharged',
@@ -451,6 +456,8 @@ def _convertmarketname(name):
 
     if name in repl:
         name = repl[name]
+    elif 'Summer 2013 Cooler' in name and 'Key' not in name:
+        name = name[:-11]
 
     return name.decode('utf-8')
 
