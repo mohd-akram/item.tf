@@ -57,12 +57,12 @@ class ItemBox
 
   _tagsHTML: ->
     if @item.tags.length
-      tagsHTML = "<div id='tags'>"
+      tagsHTML = '<div id="tags">'
       isWeapon = 'weapon' in @item.tags
       isToken = 'token' in @item.tags
       title = image = ''
 
-      for i in ['primary','secondary','melee','pda2']
+      for i in ['primary', 'secondary', 'melee', 'pda2']
         if i in @item.tags
           if isWeapon
             title =  capitalize(i)+' Weapon'
@@ -72,7 +72,7 @@ class ItemBox
             title = 'Slot Token'
             image = 'slot-token'
 
-      for i in ['hat','misc','tool','bundle']
+      for i in ['hat', 'misc', 'tool', 'bundle']
         if i in @item.tags
           title = capitalize(i)
           image = i
@@ -84,11 +84,11 @@ class ItemBox
       if title and image
         tagsHTML +=
           """
-          <a href='/search?q=#{ encodeURIComponent(title) }'
-           target='_blank' title='#{ title }' class='#{ image }'></a>
+          <a href="/search?q=#{ encodeURIComponent(title) }"
+           target="_blank" title="#{ title }" class="#{ image }"></a>
           """
 
-      tagsHTML += "</div>"
+      tagsHTML += '</div>'
     else tagsHTML = ''
 
   _nameHTML: ->
@@ -97,20 +97,20 @@ class ItemBox
     if @showLink
       nameHTML =
         """
-        <a href='/item/#{ @item.id }'
-         target='_blank' class='glow' title='Go to Item Page'>
+        <a href="/item/#{ @item.id }"
+         target="_blank" class="glow" title="Go to Item Page">
         #{ nameHTML }</a>
         """
     nameHTML = "<h2 id='itemname'>#{ nameHTML }</h2>"
 
   _classesHTML: ->
     if @item.classes
-      classesHTML = "<div id='classes'>"
+      classesHTML = '<div id="classes">'
       for i in @item.classes.split(',')
         classesHTML +=
           """
-          <a href='/search?q=#{ i }' target='_blank'
-           class='#{ i.toLowerCase() }'></a>
+          <a href="/search?q=#{ i }" target="_blank"
+           title="#{ i }" class="#{ i.toLowerCase() }"></a>
          """
       classesHTML += '</div>'
     else classesHTML = ''
@@ -120,9 +120,9 @@ class ItemBox
     if 'bundle' in @item.tags and @item.description.indexOf('---') != -1
       bundleHTML =
         """
-        <a href=\"/search?q=#{ encodeURIComponent(@item.name) }%20Set\"
-         target='_blank'>
-        <div class='rounded glow' style='display: inline-block; padding: 7px;'>
+        <a href="/search?q=#{ encodeURIComponent(@item.name) }%20Set"
+         target="_blank">
+        <div class="rounded glow" style="display: inline-block; padding: 7px">
         View items
         </div>
         </a>
@@ -165,7 +165,7 @@ class ItemBox
         <span id="pricesource">#{ capitalize(@source) }</span><br>
         <a href="#{ classifiedsURL }"
          id="classifieds" class="rounded-tight glow"
-         target="_blank" style="color:rgb(129, 170, 197);display:none">
+         target="_blank" style="color: rgb(129, 170, 197); display: none">
         Classifieds
         </a>
         <h3 id="prices">#{ priceSourceHTML }</h3></div>
@@ -183,15 +183,16 @@ class ItemBox
           for j in [0...i.getAttribute('data-count')]
             name = i.title
             index = i.getAttribute('data-index')
-            style = "background-image:url(#{ i.getAttribute('data-image') });"
+            style = "background-image:url(#{ i.getAttribute('data-image') })"
             listItem =  "<div title=\"#{ name }\" class='item-small' style='#{
               style }'></div>"
             if index
               url = "/item/#{ index }"
             else
-              name = name.replace('Any ','').replace('Spy Watch','PDA2 Weapon')
+              name = name.replace('Any ', '')
+                         .replace('Spy Watch', 'PDA2 Weapon')
               if name.split(' ').length > 2
-                name = name.replace('Weapon','Set')
+                name = name.replace('Weapon', 'Set')
               url = "/search?q=#{ encodeURIComponent(name) }"
 
             listItem = "<a href=\"#{ url }\" target='_blank'>#{ listItem }</a>"
@@ -199,7 +200,7 @@ class ItemBox
 
         blueprintsHTML +=
           """
-          <div title='Crafting Chance' style='position:absolute;right:10px;'>
+          <div title="Crafting Chance" style="position: absolute; right: 10px">
           <h3>#{ chance }%</h3></div></div>
           """
 
@@ -208,28 +209,28 @@ class ItemBox
 
   _outpostHTML: ->
     """
-    <a href='#' id='find-trades-btn'
-     class='icon-exchange icon-large button-icon' title='Find Trades'></a>
+    <a href="#" id="find-trades-btn"
+     class="icon-exchange icon-large button-icon" title="Find Trades"></a>
 
-    <form name='tf2outpostform' method='POST' style='display:inline-block'
-     action='http://www.tf2outpost.com/search'>
+    <form name="tf2outpostform" method="POST" style="display:inline-block"
+     action="http://www.tf2outpost.com/search">
 
-    <input type='hidden' name='json'>
-    <input type='hidden' name='type' value='any'>
-    <input type='submit' name='submit' value='Search' style='display:none'>
+    <input type="hidden" name="json">
+    <input type="hidden" name="type" value="any">
+    <input type="submit" name="submit" value="Search" style="display:none">
 
-    <select id='tradetype' class='textbox'>
-      <option value='has1'>Want</option>
-      <option value='wants1'>Have</option>
+    <select id="tradetype" class="textbox">
+      <option value="has1">Want</option>
+      <option value="wants1">Have</option>
     </select>
 
-    <select id='quality' class='textbox'>
-      <option value='6'>Unique</option>
-      <option value='3'>Vintage</option>
-      <option value='11'>Strange</option>
-      <option value='1'>Genuine</option>
-      <option value='13'>Haunted</option>
-      <option value='5'>Unusual</option>
+    <select id="quality" class="textbox">
+      <option value="6">Unique</option>
+      <option value="3">Vintage</option>
+      <option value="11">Strange</option>
+      <option value="1">Genuine</option>
+      <option value="13">Haunted</option>
+      <option value="5">Unusual</option>
     </select>
 
     </form>
@@ -239,12 +240,12 @@ class ItemBox
     if @user.loggedIn
       wishlistHTML =
         """
-        <div style='display: inline-block; width: 40px'>
-        <div id='wishlistmessage'
-         style='display: none;margin:0 0 4px -18px'>Added</div>
-        <i id='wishlistbutton' class='button-icon rounded icon-star icon-large'
-         style='background-color: transparent'
-         title='Add to wishlist'></i>
+        <div style="display: inline-block; width: 40px">
+        <div id="wishlistmessage"
+         style="display: none; margin: 0 0 4px -18px">Added</div>
+        <i id="wishlistbutton" class="button-icon rounded icon-star icon-large"
+         style="background-color: transparent"
+         title="Add to wishlist"></i>
         </div>
         """
     else wishlistHTML = ''
@@ -254,15 +255,15 @@ class ItemBox
       encodeURIComponent(@item.name) }"
 
     """
-    <div id='buttons'>
+    <div id="buttons">
 
-    <a class='icon-info icon-large button-icon' target='_blank'
-     title='Open in Wiki' href=\"#{ wikiLink }\"></a>
+    <a class="icon-info icon-large button-icon" target="_blank"
+     title="Open in Wiki" href="#{ wikiLink }"></a>
 
-    <a class='icon-shopping-cart icon-large button-icon'
-     target='_blank' title='Community Market'
-     href=\"http://steamcommunity.com/market/search?q=appid%3A440
-    %20#{ encodeURIComponent(@item.name) }\"></a>
+    <a class="icon-shopping-cart icon-large button-icon"
+     target="_blank" title="Community Market"
+     href="http://steamcommunity.com/market/search?q=appid%3A440
+    %20#{ encodeURIComponent(@item.name) }"></a>
 
     #{ @_outpostHTML() }
     #{ @_wishlistHTML() }
@@ -274,11 +275,11 @@ class ItemBox
     if @item.storePrice
       buyHTML =
         """
-        <div id='buy'>
-        <form style='display:inline-block'>$#{ @item.storePrice }<br>
-        <input type='text' value='1' size='1' id='quantity'
-         class='textbox' style='text-align: right'>
-        </form><a href='#' id='buybutton'></a></div>
+        <div id="buy">
+        <form style="display: inline-block">$#{ @item.storePrice }<br>
+        <input type="text" value="1" size="1" id="quantity"
+         class="textbox" style="text-align: right">
+        </form><a href="#" id="buybutton"></a></div>
         """
     else buyHTML = ''
 
@@ -460,14 +461,14 @@ class HoverBox
         descList = description.split('---')
         description = """
                       #{ descList[0] }
-                      <span style='color:#95af0c'>#{ descList[1] }</span>
+                      <span style="color: #95af0c">#{ descList[1] }</span>
                       """
       description = "<br>#{ description }"
 
     @elem.innerHTML =
       """
-      <div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{
-      item.attributes }#{ description }
+      <div style="font-size: 1.2em; color: rgb(230, 230, 230)">#{
+      title }</div>#{ item.attributes }#{ description }
       """
 
     @elem.style.display = 'block'
@@ -499,7 +500,7 @@ capitalize = (word) ->
   word[0].toUpperCase() + word[1...]
 
 escapeHTML = (string) ->
-  string.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 setCookie = (name, value, days) ->
   expires = ''
@@ -523,15 +524,15 @@ getCookie = (name) ->
 
 ajax = (url, callback) ->
   ajaxRequest = getAjaxRequest(callback)
-  ajaxRequest.open("GET", url, true)
+  ajaxRequest.open('GET', url, true)
   ajaxRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
   ajaxRequest.send(null)
 
 postAjax = (url, data, callback) ->
   ajaxRequest = getAjaxRequest(callback)
-  ajaxRequest.open("POST", url, true)
-  ajaxRequest.setRequestHeader("Content-Type",
-                               "application/x-www-form-urlencoded")
+  ajaxRequest.open('POST', url, true)
+  ajaxRequest.setRequestHeader('Content-Type',
+                               'application/x-www-form-urlencoded')
 
   dataList = []
   for name, value of data

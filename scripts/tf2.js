@@ -75,7 +75,7 @@
     ItemBox.prototype._tagsHTML = function() {
       var i, image, isToken, isWeapon, tagsHTML, title, _i, _j, _len, _len1, _ref, _ref1;
       if (this.item.tags.length) {
-        tagsHTML = "<div id='tags'>";
+        tagsHTML = '<div id="tags">';
         isWeapon = __indexOf.call(this.item.tags, 'weapon') >= 0;
         isToken = __indexOf.call(this.item.tags, 'token') >= 0;
         title = image = '';
@@ -105,9 +105,9 @@
           image = 'class-token';
         }
         if (title && image) {
-          tagsHTML += "<a href='/search?q=" + (encodeURIComponent(title)) + "'\n target='_blank' title='" + title + "' class='" + image + "'></a>";
+          tagsHTML += "<a href=\"/search?q=" + (encodeURIComponent(title)) + "\"\n target=\"_blank\" title=\"" + title + "\" class=\"" + image + "\"></a>";
         }
-        return tagsHTML += "</div>";
+        return tagsHTML += '</div>';
       } else {
         return tagsHTML = '';
       }
@@ -117,7 +117,7 @@
       var nameHTML;
       nameHTML = this.item.name;
       if (this.showLink) {
-        nameHTML = "<a href='/item/" + this.item.id + "'\n target='_blank' class='glow' title='Go to Item Page'>\n" + nameHTML + "</a>";
+        nameHTML = "<a href=\"/item/" + this.item.id + "\"\n target=\"_blank\" class=\"glow\" title=\"Go to Item Page\">\n" + nameHTML + "</a>";
       }
       return nameHTML = "<h2 id='itemname'>" + nameHTML + "</h2>";
     };
@@ -125,11 +125,11 @@
     ItemBox.prototype._classesHTML = function() {
       var classesHTML, i, _i, _len, _ref;
       if (this.item.classes) {
-        classesHTML = "<div id='classes'>";
+        classesHTML = '<div id="classes">';
         _ref = this.item.classes.split(',');
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];
-          classesHTML += "<a href='/search?q=" + i + "' target='_blank'\n class='" + (i.toLowerCase()) + "'></a>";
+          classesHTML += "<a href=\"/search?q=" + i + "\" target=\"_blank\"\n title=\"" + i + "\" class=\"" + (i.toLowerCase()) + "\"></a>";
         }
         return classesHTML += '</div>';
       } else {
@@ -140,7 +140,7 @@
     ItemBox.prototype._bundleHTML = function() {
       var bundleHTML;
       if (__indexOf.call(this.item.tags, 'bundle') >= 0 && this.item.description.indexOf('---') !== -1) {
-        return bundleHTML = "<a href=\"/search?q=" + (encodeURIComponent(this.item.name)) + "%20Set\"\n target='_blank'>\n<div class='rounded glow' style='display: inline-block; padding: 7px;'>\nView items\n</div>\n</a>";
+        return bundleHTML = "<a href=\"/search?q=" + (encodeURIComponent(this.item.name)) + "%20Set\"\n target=\"_blank\">\n<div class=\"rounded glow\" style=\"display: inline-block; padding: 7px\">\nView items\n</div>\n</a>";
       } else {
         return bundleHTML = '';
       }
@@ -171,7 +171,7 @@
         priceSourceHTML = this._priceSourceHTML(this.item, this.source);
       }
       if (priceSourceHTML) {
-        return pricesHTML = "<div id=\"marketprice\">\n<span id=\"pricesource\">" + (capitalize(this.source)) + "</span><br>\n<a href=\"" + classifiedsURL + "\"\n id=\"classifieds\" class=\"rounded-tight glow\"\n target=\"_blank\" style=\"color:rgb(129, 170, 197);display:none\">\nClassifieds\n</a>\n<h3 id=\"prices\">" + priceSourceHTML + "</h3></div>";
+        return pricesHTML = "<div id=\"marketprice\">\n<span id=\"pricesource\">" + (capitalize(this.source)) + "</span><br>\n<a href=\"" + classifiedsURL + "\"\n id=\"classifieds\" class=\"rounded-tight glow\"\n target=\"_blank\" style=\"color: rgb(129, 170, 197); display: none\">\nClassifieds\n</a>\n<h3 id=\"prices\">" + priceSourceHTML + "</h3></div>";
       } else {
         return pricesHTML = '';
       }
@@ -192,7 +192,7 @@
             for (j = _k = 0, _ref2 = i.getAttribute('data-count'); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
               name = i.title;
               index = i.getAttribute('data-index');
-              style = "background-image:url(" + (i.getAttribute('data-image')) + ");";
+              style = "background-image:url(" + (i.getAttribute('data-image')) + ")";
               listItem = "<div title=\"" + name + "\" class='item-small' style='" + style + "'></div>";
               if (index) {
                 url = "/item/" + index;
@@ -207,7 +207,7 @@
               blueprintsHTML += listItem;
             }
           }
-          blueprintsHTML += "<div title='Crafting Chance' style='position:absolute;right:10px;'>\n<h3>" + chance + "%</h3></div></div>";
+          blueprintsHTML += "<div title=\"Crafting Chance\" style=\"position: absolute; right: 10px\">\n<h3>" + chance + "%</h3></div></div>";
         }
         return blueprintsHTML += '</div>';
       } else {
@@ -216,13 +216,13 @@
     };
 
     ItemBox.prototype._outpostHTML = function() {
-      return "<a href='#' id='find-trades-btn'\n class='icon-exchange icon-large button-icon' title='Find Trades'></a>\n\n<form name='tf2outpostform' method='POST' style='display:inline-block'\n action='http://www.tf2outpost.com/search'>\n\n<input type='hidden' name='json'>\n<input type='hidden' name='type' value='any'>\n<input type='submit' name='submit' value='Search' style='display:none'>\n\n<select id='tradetype' class='textbox'>\n  <option value='has1'>Want</option>\n  <option value='wants1'>Have</option>\n</select>\n\n<select id='quality' class='textbox'>\n  <option value='6'>Unique</option>\n  <option value='3'>Vintage</option>\n  <option value='11'>Strange</option>\n  <option value='1'>Genuine</option>\n  <option value='13'>Haunted</option>\n  <option value='5'>Unusual</option>\n</select>\n\n</form>";
+      return "<a href=\"#\" id=\"find-trades-btn\"\n class=\"icon-exchange icon-large button-icon\" title=\"Find Trades\"></a>\n\n<form name=\"tf2outpostform\" method=\"POST\" style=\"display:inline-block\"\n action=\"http://www.tf2outpost.com/search\">\n\n<input type=\"hidden\" name=\"json\">\n<input type=\"hidden\" name=\"type\" value=\"any\">\n<input type=\"submit\" name=\"submit\" value=\"Search\" style=\"display:none\">\n\n<select id=\"tradetype\" class=\"textbox\">\n  <option value=\"has1\">Want</option>\n  <option value=\"wants1\">Have</option>\n</select>\n\n<select id=\"quality\" class=\"textbox\">\n  <option value=\"6\">Unique</option>\n  <option value=\"3\">Vintage</option>\n  <option value=\"11\">Strange</option>\n  <option value=\"1\">Genuine</option>\n  <option value=\"13\">Haunted</option>\n  <option value=\"5\">Unusual</option>\n</select>\n\n</form>";
     };
 
     ItemBox.prototype._wishlistHTML = function() {
       var wishlistHTML;
       if (this.user.loggedIn) {
-        return wishlistHTML = "<div style='display: inline-block; width: 40px'>\n<div id='wishlistmessage'\n style='display: none;margin:0 0 4px -18px'>Added</div>\n<i id='wishlistbutton' class='button-icon rounded icon-star icon-large'\n style='background-color: transparent'\n title='Add to wishlist'></i>\n</div>";
+        return wishlistHTML = "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"button-icon rounded icon-star icon-large\"\n style=\"background-color: transparent\"\n title=\"Add to wishlist\"></i>\n</div>";
       } else {
         return wishlistHTML = '';
       }
@@ -231,13 +231,13 @@
     ItemBox.prototype._buttonsHTML = function() {
       var wikiLink;
       wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(this.item.name));
-      return "<div id='buttons'>\n\n<a class='icon-info icon-large button-icon' target='_blank'\n title='Open in Wiki' href=\"" + wikiLink + "\"></a>\n\n<a class='icon-shopping-cart icon-large button-icon'\n target='_blank' title='Community Market'\n href=\"http://steamcommunity.com/market/search?q=appid%3A440\n%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
+      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440\n%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
     };
 
     ItemBox.prototype._buyHTML = function() {
       var buyHTML;
       if (this.item.storePrice) {
-        return buyHTML = "<div id='buy'>\n<form style='display:inline-block'>$" + this.item.storePrice + "<br>\n<input type='text' value='1' size='1' id='quantity'\n class='textbox' style='text-align: right'>\n</form><a href='#' id='buybutton'></a></div>";
+        return buyHTML = "<div id=\"buy\">\n<form style=\"display: inline-block\">$" + this.item.storePrice + "<br>\n<input type=\"text\" value=\"1\" size=\"1\" id=\"quantity\"\n class=\"textbox\" style=\"text-align: right\">\n</form><a href=\"#\" id=\"buybutton\"></a></div>";
       } else {
         return buyHTML = '';
       }
@@ -441,11 +441,11 @@
       if (description) {
         if (__indexOf.call(item.tags, 'bundle') >= 0 && description.indexOf('---') !== -1) {
           descList = description.split('---');
-          description = "" + descList[0] + "\n<span style='color:#95af0c'>" + descList[1] + "</span>";
+          description = "" + descList[0] + "\n<span style=\"color: #95af0c\">" + descList[1] + "</span>";
         }
         description = "<br>" + description;
       }
-      this.elem.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>" + title + "</div>" + item.attributes + description;
+      this.elem.innerHTML = "<div style=\"font-size: 1.2em; color: rgb(230, 230, 230)\">" + title + "</div>" + item.attributes + description;
       return this.elem.style.display = 'block';
     };
 
@@ -519,7 +519,7 @@
   ajax = function(url, callback) {
     var ajaxRequest;
     ajaxRequest = getAjaxRequest(callback);
-    ajaxRequest.open("GET", url, true);
+    ajaxRequest.open('GET', url, true);
     ajaxRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     return ajaxRequest.send(null);
   };
@@ -527,8 +527,8 @@
   postAjax = function(url, data, callback) {
     var ajaxRequest, dataList, name, value;
     ajaxRequest = getAjaxRequest(callback);
-    ajaxRequest.open("POST", url, true);
-    ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    ajaxRequest.open('POST', url, true);
+    ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     dataList = [];
     for (name in data) {
       value = data[name];
