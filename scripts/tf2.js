@@ -55,9 +55,9 @@
       }
       this.showLink = showLink;
       this.user = new User();
-      this.itemBox = document.createElement('div');
-      this.itemBox.id = 'itembox';
-      document.getElementsByTagName('body')[0].appendChild(this.itemBox);
+      this.elem = document.createElement('div');
+      this.elem.id = 'itembox';
+      document.getElementsByTagName('body')[0].appendChild(this.elem);
     }
 
     ItemBox.prototype.show = function(elem) {
@@ -65,11 +65,11 @@
       this.source = this.user.priceSource;
       this.altSource = this.source === 'spreadsheet' ? 'backpack.tf' : 'spreadsheet';
       this._generateItemBox();
-      return this.itemBox.style.display = 'block';
+      return this.elem.style.display = 'block';
     };
 
     ItemBox.prototype.hide = function() {
-      return this.itemBox.style.display = 'none';
+      return this.elem.style.display = 'none';
     };
 
     ItemBox.prototype._tagsHTML = function() {
@@ -349,7 +349,7 @@
 
     ItemBox.prototype._generateItemBox = function() {
       var hoverArea, i, option, ref, _i, _len, _ref, _results;
-      this.itemBox.innerHTML = "" + (this._tagsHTML()) + "\n" + (this._nameHTML()) + "\n" + (this._classesHTML()) + "\n" + (this._bundleHTML()) + "\n" + (this._pricesHTML()) + "\n" + (this._blueprintsHTML()) + "\n" + (this._buttonsHTML()) + "\n" + (this._buyHTML());
+      this.elem.innerHTML = "" + (this._tagsHTML()) + "\n" + (this._nameHTML()) + "\n" + (this._classesHTML()) + "\n" + (this._bundleHTML()) + "\n" + (this._pricesHTML()) + "\n" + (this._blueprintsHTML()) + "\n" + (this._buttonsHTML()) + "\n" + (this._buyHTML());
       this.form = document.tf2outpostform;
       this.prices = document.getElementById('prices');
       this._pricesLink();
@@ -363,7 +363,7 @@
       hoverArea.id = 'hoverarea';
       hoverArea.style.backgroundImage = "url('" + this.item.imageUrl + "')";
       ref = document.getElementById('blueprints') || document.getElementById('buttons');
-      this.itemBox.insertBefore(hoverArea, ref);
+      this.elem.insertBefore(hoverArea, ref);
       new HoverBox(hoverArea);
       if (this.item.name.indexOf('Strange') === -1) {
         if (this.item.qualityNo) {
@@ -390,40 +390,40 @@
   })();
 
   HoverBox = (function() {
-    function HoverBox(itemBoxOrElem) {
+    function HoverBox(itemBoxOrArea) {
       this._clickItem = __bind(this._clickItem, this);
       this._moveMouse = __bind(this._moveMouse, this);
       this._hideItemBox = __bind(this._hideItemBox, this);
       this._hide = __bind(this._hide, this);
       this._show = __bind(this._show, this);
-      var elem;
-      this.itemBox = itemBoxOrElem instanceof ItemBox ? itemBoxOrElem : null;
+      var area;
+      this.itemBox = itemBoxOrArea instanceof ItemBox ? itemBoxOrArea : null;
       if (!this.itemBox) {
-        elem = itemBoxOrElem;
+        area = itemBoxOrArea;
       }
-      this.hoverBox = document.getElementById('hoverbox');
-      if (!this.hoverBox) {
-        this.hoverBox = document.createElement('div');
-        this.hoverBox.id = 'hoverbox';
-        document.getElementsByTagName('body')[0].appendChild(this.hoverBox);
+      this.elem = document.getElementById('hoverbox');
+      if (!this.elem) {
+        this.elem = document.createElement('div');
+        this.elem.id = 'hoverbox';
+        document.getElementsByTagName('body')[0].appendChild(this.elem);
       }
-      this._add(elem);
+      this._add(area);
     }
 
-    HoverBox.prototype._add = function(elem) {
+    HoverBox.prototype._add = function(area) {
       var item, list, _i, _len,
         _this = this;
-      list = elem ? [elem] : document.getElementsByClassName('item');
+      list = area ? [area] : document.getElementsByClassName('item');
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         item = list[_i];
         item.addEventListener("mouseout", this._hide, false);
         item.addEventListener("mousemove", this._moveMouse, false);
         item.addEventListener("mouseover", this._show, false);
-        if (!elem) {
+        if (!area) {
           item.addEventListener("click", this._clickItem, false);
         }
       }
-      if (!elem) {
+      if (!area) {
         document.getElementById('container').addEventListener("click", this._hideItemBox, false);
         return document.onkeydown = function(e) {
           if (e.keyCode === 27) {
@@ -445,12 +445,12 @@
         }
         description = "<br>" + description;
       }
-      this.hoverBox.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>" + title + "</div>" + item.attributes + description;
-      return this.hoverBox.style.display = 'block';
+      this.elem.innerHTML = "<div style='font-size:1.2em;color:rgb(230,230,230)'>" + title + "</div>" + item.attributes + description;
+      return this.elem.style.display = 'block';
     };
 
     HoverBox.prototype._hide = function() {
-      return this.hoverBox.style.display = 'none';
+      return this.elem.style.display = 'none';
     };
 
     HoverBox.prototype._hideItemBox = function(e) {
@@ -462,15 +462,15 @@
           els.push(a);
           a = a.parentNode;
         }
-        if (_ref = this.itemBox.itemBox, __indexOf.call(els, _ref) < 0) {
+        if (_ref = this.itemBox.elem, __indexOf.call(els, _ref) < 0) {
           return this.itemBox.hide();
         }
       }
     };
 
     HoverBox.prototype._moveMouse = function(e) {
-      this.hoverBox.style.top = "" + (e.pageY + 28) + "px";
-      return this.hoverBox.style.left = "" + (e.pageX - 154) + "px";
+      this.elem.style.top = "" + (e.pageY + 28) + "px";
+      return this.elem.style.left = "" + (e.pageX - 154) + "px";
     };
 
     HoverBox.prototype._clickItem = function(e) {

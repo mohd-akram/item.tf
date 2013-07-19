@@ -38,9 +38,9 @@ class ItemBox
 
     @user = new User()
 
-    @itemBox = document.createElement('div')
-    @itemBox.id = 'itembox'
-    document.getElementsByTagName('body')[0].appendChild(@itemBox)
+    @elem = document.createElement('div')
+    @elem.id = 'itembox'
+    document.getElementsByTagName('body')[0].appendChild(@elem)
 
   show: (elem) ->
     @item = new Item(elem)
@@ -50,10 +50,10 @@ class ItemBox
     else 'spreadsheet'
 
     @_generateItemBox()
-    @itemBox.style.display = 'block'
+    @elem.style.display = 'block'
 
   hide: ->
-    @itemBox.style.display = 'none'
+    @elem.style.display = 'none'
 
   _tagsHTML: ->
     if @item.tags.length
@@ -368,7 +368,7 @@ class ItemBox
 
   _generateItemBox: ->
     # Itembox HTML
-    @itemBox.innerHTML =
+    @elem.innerHTML =
       """
       #{ @_tagsHTML() }
       #{ @_nameHTML() }
@@ -399,7 +399,7 @@ class ItemBox
     # Add hover area to itembox
     ref = document.getElementById('blueprints') or
       document.getElementById('buttons')
-    @itemBox.insertBefore(hoverArea, ref)
+    @elem.insertBefore(hoverArea, ref)
 
     # Enable hover box
     new HoverBox(hoverArea)
@@ -416,31 +416,32 @@ class ItemBox
             break
 
 class HoverBox
-  constructor: (itemBoxOrElem) ->
-    @itemBox = if itemBoxOrElem instanceof ItemBox then itemBoxOrElem else null
+  constructor: (itemBoxOrArea) ->
+    @itemBox = if itemBoxOrArea instanceof ItemBox then itemBoxOrArea else null
     if not @itemBox
-      elem = itemBoxOrElem
+      # Hover area
+      area = itemBoxOrArea
 
-    @hoverBox = document.getElementById('hoverbox')
+    @elem = document.getElementById('hoverbox')
 
-    if not @hoverBox
-      @hoverBox = document.createElement('div')
-      @hoverBox.id = 'hoverbox'
-      document.getElementsByTagName('body')[0].appendChild(@hoverBox)
+    if not @elem
+      @elem = document.createElement('div')
+      @elem.id = 'hoverbox'
+      document.getElementsByTagName('body')[0].appendChild(@elem)
 
-    @_add(elem)
+    @_add(area)
 
-  _add: (elem) ->
-    list = if elem then [elem] else document.getElementsByClassName('item')
+  _add: (area) ->
+    list = if area then [area] else document.getElementsByClassName('item')
 
     for item in list
       item.addEventListener("mouseout", @_hide, false)
       item.addEventListener("mousemove", @_moveMouse, false)
       item.addEventListener("mouseover", @_show, false)
-      if not elem
+      if not area
         item.addEventListener("click", @_clickItem, false)
 
-    if not elem
+    if not area
       document.getElementById('container').addEventListener("click",
                                                             @_hideItemBox,
                                                             false)
@@ -463,16 +464,16 @@ class HoverBox
                       """
       description = "<br>#{ description }"
 
-    @hoverBox.innerHTML =
+    @elem.innerHTML =
       """
       <div style='font-size:1.2em;color:rgb(230,230,230)'>#{ title }</div>#{
       item.attributes }#{ description }
       """
 
-    @hoverBox.style.display = 'block'
+    @elem.style.display = 'block'
 
   _hide: =>
-    @hoverBox.style.display = 'none'
+    @elem.style.display = 'none'
 
   _hideItemBox: (e) =>
     a = e.target
@@ -482,12 +483,12 @@ class HoverBox
         els.push(a)
         a = a.parentNode
 
-      if @itemBox.itemBox not in els
+      if @itemBox.elem not in els
         @itemBox.hide()
 
   _moveMouse: (e) =>
-    @hoverBox.style.top = "#{ e.pageY + 28 }px"
-    @hoverBox.style.left = "#{ e.pageX - 154 }px"
+    @elem.style.top = "#{ e.pageY + 28 }px"
+    @elem.style.left = "#{ e.pageX - 154 }px"
 
   _clickItem: (e) =>
     @itemBox.show(e.target)
