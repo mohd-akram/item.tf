@@ -351,6 +351,7 @@
       hoverArea.setAttribute('data-description', this.item.description);
       hoverArea.setAttribute('data-tags', this.item.tags);
       hoverArea.style.backgroundImage = "url('" + this.item.imageUrl + "')";
+      hoverArea.innerHTML = "<div style='display:none'>" + this.item.attributes + "</div>";
       ref = document.getElementById('blueprints') || document.getElementById('buttons');
       this.elem.insertBefore(hoverArea, ref);
       new HoverBox(hoverArea);

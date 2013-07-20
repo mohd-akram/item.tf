@@ -385,6 +385,8 @@ class ItemBox
     hoverArea.setAttribute 'data-description', @item.description
     hoverArea.setAttribute 'data-tags', @item.tags
     hoverArea.style.backgroundImage = "url('#{@item.imageUrl}')"
+    hoverArea.innerHTML = "<div style='display:none'>#{
+      @item.attributes}</div>"
 
     # Add hover area to itembox
     ref = document.getElementById('blueprints') or
