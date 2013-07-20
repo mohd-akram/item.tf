@@ -58,18 +58,18 @@ def getitemsdict(tf2info, chunks=1):
     """Returns an ordered dictionary with index as key and itemdict as value
     If chunks > 1, a list of evenly split ordered dictionaries is returned"""
     size = len(tf2info.items) / chunks
-    result = [OrderedDict() for i in range(chunks)]
+    dicts = [OrderedDict() for i in range(chunks)]
 
     i = j = 0
     for idx in tf2info.items:
-        result[i][idx] = createitemdict(idx, tf2info)
+        dicts[i][idx] = createitemdict(idx, tf2info)
 
         j += 1
         if j == size and i < chunks - 1:
             j = 0
             i += 1
 
-    return result[0] if len(result) == 1 else result
+    return dicts[0] if len(dicts) == 1 else dicts
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles):
