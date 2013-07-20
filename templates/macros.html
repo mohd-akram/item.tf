@@ -8,10 +8,13 @@
   {%- endfor %}
 </ul>
 {%- endfor %}
-{%- if item['attributes'] %}
-<div>{% for a in item['attributes'] %}
+
+<div><span style="color: gray">{{item['level']}}</span>
+{% for a in item['attributes'] %}
 <span class="{{a['type']}}">{{a['description']}}</span>
-{% endfor %}</div>{%- endif %}</div>
+{% endfor %}
+</div>
+</div>
 {% endmacro %}
 
 {% macro getcount(length, unit) %}
@@ -22,7 +25,7 @@
 <div class="itemlist">
 {% if showlength %}
 {% set length = itemslist | length %}
-<div style="color: gray; padding-bottom: 20px;">{{getcount(length, 'item')}}</div>
+<div style="color: gray; padding-bottom: 20px">{{getcount(length, 'item')}}</div>
 {% endif %}
 {% for item in itemslist %}
 <a href="/item/{{item['index']}}">{{ showitem(item) }}</a>

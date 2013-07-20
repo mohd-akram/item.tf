@@ -25,10 +25,9 @@ def updatecache():
 
     tf2info = tf2search.gettf2info(config.apikey, config.backpackkey,
                                    config.blueprintsfile)
-    itemsdict = tf2search.getitemsdict(tf2info)
+    itemsdict = ItemsDict(tf2search.getitemsdict(tf2info, 2))
 
-    newitems = [itemsdict[index] for index in
-                tf2info.newstoreprices]
+    newitems = [itemsdict[index] for index in tf2info.newstoreprices]
 
     nametoindexmap = {}
     itemnames = []
@@ -37,7 +36,7 @@ def updatecache():
     sitemap = Sitemap()
     sitemap.add(config.homepage)
 
-    for name, item in tf2info.itemsbyname.items():
+    for name, item in tf2info.itemsbyname.iteritems():
         index = item['defindex']
         itemdict = itemsdict[index]
 
@@ -49,7 +48,8 @@ def updatecache():
             path = '{0}/item/{1}'.format(config.homepage, index)
             sitemap.add(path)
 
-    memcache.set_multi({'itemsdict': itemsdict,
+    memcache.set_multi({'itemsdict0': itemsdict.dicts[0],
+                        'itemsdict1': itemsdict.dicts[1],
                         'itemsets': tf2info.itemsets,
                         'bundles': tf2info.bundles,
                         'nametoindexmap': nametoindexmap,
@@ -64,12 +64,19 @@ def updatecache():
 
 
 def getfromcache(key):
-    value = memcache.get(key)
+    if key == 'itemsdict':
+        dicts = memcache.get_multi(['0', '1'], 'itemsdict')
+        try:
+            value = ItemsDict([dicts['0'], dicts['1']])
+        except KeyError:
+            value = None
+    else:
+        value = memcache.get(key)
 
     if not value:
         logging.debug("Could not find key '{}'. Updating cache.".format(key))
         updatecache()
-        value = memcache.get(key)
+        return getfromcache(key)
 
     return value
 
@@ -171,7 +178,7 @@ class TF2SearchHandler(Handler):
             self.render('tf2results.html',
                         query=query,
                         mainitems=results['mainitems'],
-                        otheritems=sorted(results['otheritems'].items(),
+                        otheritems=sorted(results['otheritems'].iteritems(),
                                           key=lambda k: len(k[0]),
                                           reverse=True),
                         itemsets=itemsets,
@@ -326,6 +333,32 @@ class User(ndb.Model):
     wishlist = ndb.PickleProperty('w', default=[])
 
     lastupdate = ndb.DateTimeProperty('t', auto_now=True)
+
+
+class ItemsDict:
+    def __init__(self, dicts):
+        self.dicts = dicts
+
+    def __contains__(self, key):
+        return any(key in dict_ for dict_ in self.dicts)
+
+    def __getitem__(self, idx):
+        for dict_ in self.dicts:
+            if idx in dict_:
+                return dict_[idx]
+
+    def __iter__(self):
+        for dict_ in self.dicts:
+            for idx in dict_:
+                yield idx
+
+    def itervalues(self):
+        for dict_ in self.dicts:
+            for idx in dict_:
+                yield dict_[idx]
+
+    def values(self):
+        return list(self.itervalues())
 
 
 class Sitemap:

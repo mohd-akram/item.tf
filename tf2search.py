@@ -54,13 +54,22 @@ def gettf2info(apikey, backpackkey, blueprintsfilename):
                    spreadsheetprices, backpackprices)
 
 
-def getitemsdict(tf2info):
-    """Returns an ordered dictionary with index as key and itemdict as value"""
-    itemsdict = OrderedDict()
-    for idx in tf2info.items:
-        itemsdict[idx] = createitemdict(idx, tf2info)
+def getitemsdict(tf2info, chunks=1):
+    """Returns an ordered dictionary with index as key and itemdict as value
+    If chunks > 1, a list of evenly split ordered dictionaries is returned"""
+    size = len(tf2info.items) / chunks
+    result = [OrderedDict() for i in range(chunks)]
 
-    return itemsdict
+    i = j = 0
+    for idx in tf2info.items:
+        result[i][idx] = createitemdict(idx, tf2info)
+
+        j += 1
+        if j == size and i < chunks - 1:
+            j = 0
+            i += 1
+
+    return result[0] if len(result) == 1 else result
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles):
@@ -100,7 +109,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
     if classes or tags:
         # Search using classes and tags
-        for itemdict in itemsdict.values():
+        for itemdict in itemsdict.itervalues():
             itemclasses = itemdict['classes']
             itemtags = itemdict['tags']
             # Gives a match if there's an intersection between the item's
@@ -133,7 +142,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
     elif query == 'sets':
         # Get all the item sets and their items
-        for setname, itemset in itemsets.items():
+        for setname, itemset in itemsets.iteritems():
             otheritems[setname].extend(_getsetitems(itemset, nametoindexmap,
                                                     itemsdict))
 
@@ -141,7 +150,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
         # Search for a particular item set or bundle and list its items
         itemsetquery = itemsetmatch.group(1).lower()
 
-        for bundle in bundles.values():
+        for bundle in bundles.itervalues():
             if bundle['name'].lower() == itemsetquery:
                 bundleitems = _getbundleitems(bundle, nametoindexmap,
                                               itemsdict)
@@ -149,7 +158,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                 break
         # Check item sets if nothing found in bundles
         if not otheritems:
-            for setname, itemset in itemsets.items():
+            for setname, itemset in itemsets.iteritems():
                 if setname.lower() == itemsetquery:
                     otheritems[setname].extend(_getsetitems(itemset,
                                                             nametoindexmap,
@@ -163,7 +172,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
         items, counts = _getpriceasitems(amount, denom, itemsdict)
 
         titlelist = ['{} {}'.format(v, k + 's' if k == 'Key' and v != 1 else k)
-                     for k, v in counts.items()]
+                     for k, v in counts.iteritems()]
 
         title = ' + '.join(titlelist)
 
@@ -179,7 +188,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
     else:
         # Regular word search
-        for itemdict in itemsdict.values():
+        for itemdict in itemsdict.itervalues():
             name = foldaccents(itemdict['name'])
             namelist = _splitspecial(name)
 
@@ -197,7 +206,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
                     names.add(name)
 
         # Check if there's a match between an item set name and query
-        for setname, itemset in itemsets.items():
+        for setname, itemset in itemsets.iteritems():
             if not set(_splitspecial(setname)).isdisjoint(querylist):
                 otheritems[setname].extend(_getsetitems(itemset,
                                                         nametoindexmap,
@@ -205,7 +214,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
         mainitems = _getsorteditemlist(mainitems, querylist, query)
 
-    length = len(mainitems) + sum([len(i) for i in otheritems.values()])
+    length = len(mainitems) + sum(len(i) for i in otheritems.itervalues())
 
     return {'mainitems': mainitems, 'otheritems': otheritems, 'length': length}
 
@@ -247,11 +256,16 @@ def createitemdict(index, tf2info):
         if 'bundle' in tags and name in tf2info.itemsets:
             description += '---' + '\n'.join(tf2info.itemsets[name]['items'])
 
+    levels = OrderedDict.fromkeys(
+        str(item[i]) for i in ('min_ilevel', 'max_ilevel'))
+    level = 'Level {} {}'.format('-'.join(levels), item['item_type_name'])
+
     itemdict = {'index': index,
                 'name': name,
                 'image': item['image_url'],
                 'image_large': item['image_url_large'],
                 'description': description,
+                'level': level,
                 'attributes': attributes,
                 'classes': classes,
                 'tags': tags,
@@ -395,7 +409,7 @@ def _splitspecial(string):
 def _getclass(word):
     """Parse a word and return TF2 class or alias if it matches one"""
     word = word.capitalize()
-    for name, aliases in tf2api.getallclasses().items():
+    for name, aliases in tf2api.getallclasses().iteritems():
         if word == name or word in aliases:
             return name
 
@@ -424,7 +438,7 @@ def _getdenom(word):
 def _parseinput(query):
     """Parse a search query and return a dict to be used in search function"""
     querylist = [i for i in _splitspecial(foldaccents(query)) if i not in
-                 ['the', 'a', 'of', 's']]
+                 ('the', 'a', 'of', 's')]
 
     classes = []
     tags = []
@@ -463,8 +477,8 @@ def _parseblueprints(blueprints, itemsbyname):
             "Any Burned Item": "Burned Banana Peel",
             "Any Cursed Object": "Voodoo-Cursed Object"}
 
-    polyweps = ["The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
-                "The Croc-o-Style Kit", "The Special Delivery"]
+    polyweps = ("The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
+                "The Croc-o-Style Kit", "The Special Delivery")
 
     for class_ in tf2api.getallclasses():
         repl['Any {} Weapon'.format(class_)] = '{} Starter Pack'.format(class_)

@@ -41,12 +41,12 @@ def getitemsinfo(apikey, storeprices, indexes, timeout=30):
     del infobyid['success']
 
     return {idtoindex[classid]: iteminfo for classid, iteminfo in
-            infobyid.items()}
+            infobyid.iteritems()}
 
 
 def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
-    indexes = [index for index, price in storeprices.items()
+    indexes = [index for index, price in storeprices.iteritems()
                if 'Bundles' in price['tags']]
     return getitemsinfo(apikey, storeprices, indexes)
 
@@ -105,7 +105,7 @@ def getstoreprices(apikey, timeout=30):
 
 def getnewstoreprices(storeprices):
     """Return a dictionary of store prices of new items with defindex as key"""
-    return {index: price for index, price in storeprices.items()
+    return {index: price for index, price in storeprices.iteritems()
             if 'New' in price['tags']}
 
 
@@ -147,7 +147,7 @@ def getspreadsheetprices(itemsbyname, timeout=30):
                 pricesdata.append((class_ + ' Mask', prices))
 
         elif 'Mk.I' in name and 'Botkiller' not in name:
-            for quality, price in prices.items():
+            for quality, price in prices.iteritems():
                 robothead = re.search('|'.join(botkillers), quality).group(0)
                 propername = '{} Botkiller {}'.format(robothead, name)
                 pricesdata.append((propername, {'Strange': price}))
@@ -174,7 +174,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     denoms = {'metal': 'Refined', 'keys': 'Key',
               'earbuds': 'Bud', 'usd': 'USD'}
 
-    for index, prices in pricesdata.items():
+    for index, prices in pricesdata.iteritems():
         index = int(index)
         name = items[index]['item_name']
         # Backpack.tf uses different indexes. This gets the name of the
@@ -186,7 +186,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
         if index != idx and name in itemnames:
             continue
 
-        for quality, price in prices.items():
+        for quality, price in prices.iteritems():
             if quality in qualities:
                 item = items[index]
 
