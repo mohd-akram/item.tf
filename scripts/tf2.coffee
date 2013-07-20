@@ -2,45 +2,39 @@ root = exports ? this
 
 class User
   constructor: ->
-    @id = getCookie('steam_id')
+    @id = getCookie 'steam_id'
     @loggedIn = Boolean(@id)
-    @isOwnPage = (@loggedIn and @id == document.getElementById('steamid')
+    @isOwnPage = (@loggedIn and @id is document.getElementById('steamid')
                                               ?.getAttribute('data-id'))
 
     @priceSource = getCookie('price_source') or 'backpack.tf'
 
 class Item
-  constructor: (elem) ->
+  constructor: (@elem) ->
     @name = elem.title
-    @id = elem.getAttribute('data-index')
-    @imageUrl = elem.getAttribute('data-image')
+    @id = elem.getAttribute 'data-index'
+    @imageUrl = elem.getAttribute 'data-image'
     @description = elem.getAttribute('data-description') or ''
     @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
-    @classes = elem.getAttribute('data-classes')
+    @classes = elem.getAttribute 'data-classes'
     @tags = (elem.getAttribute('data-tags') or '').split(',')
-    @storePrice = elem.getAttribute('data-storeprice')
-    @blueprints = elem.getElementsByTagName('ul')
+    @storePrice = elem.getAttribute 'data-storeprice'
+    @blueprints = elem.getElementsByTagName 'ul'
 
-    @wishIndex = elem.getAttribute('data-i')
+    @wishIndex = elem.getAttribute 'data-i'
     @qualityNo = elem.getAttribute('class')?.match(/quality-(\d+)/)?[1]
 
-    @elem = elem
+  marketPrice: (source) -> JSON.parse @elem.getAttribute "data-#{source}"
 
-  marketPrice: (source) ->
-    JSON.parse(@elem.getAttribute("data-#{ source }"))
-
-  remove: ->
-    @elem.parentNode.removeChild(@elem)
+  remove: -> @elem.parentNode.removeChild @elem
 
 class ItemBox
-  constructor: (showLink=true) ->
-    @showLink = showLink
+  constructor: (@showLink=true) ->
+    @user = new User
 
-    @user = new User()
-
-    @elem = document.createElement('div')
+    @elem = document.createElement 'div'
     @elem.id = 'itembox'
-    document.getElementsByTagName('body')[0].appendChild(@elem)
+    document.getElementsByTagName('body')[0].appendChild @elem
 
   show: (elem) ->
     @item = new Item(elem)
@@ -52,87 +46,80 @@ class ItemBox
     @_generateItemBox()
     @elem.style.display = 'block'
 
-  hide: ->
-    @elem.style.display = 'none'
+  hide: -> @elem.style.display = 'none'
 
   _tagsHTML: ->
     if @item.tags.length
-      tagsHTML = '<div id="tags">'
+      html = '<div id="tags">'
       isWeapon = 'weapon' in @item.tags
       isToken = 'token' in @item.tags
-      title = image = ''
 
       for i in ['primary', 'secondary', 'melee', 'pda2']
         if i in @item.tags
           if isWeapon
-            title =  capitalize(i)+' Weapon'
-            image = i
+            [title, image] = ["#{capitalize i} Weapon", i]
 
           else if isToken
-            title = 'Slot Token'
-            image = 'slot-token'
+            [title, image] = ['Slot Token', 'slot-token']
 
       for i in ['hat', 'misc', 'tool', 'bundle']
         if i in @item.tags
-          title = capitalize(i)
-          image = i
+          [title, image] = [capitalize(i), i]
 
       if isToken and @item.classes
-        title = 'Class Token'
-        image = 'class-token'
+        [title, image] = ['Class Token', 'class-token']
 
-      if title and image
-        tagsHTML +=
+      if title? and image?
+        html +=
           """
-          <a href="/search?q=#{ encodeURIComponent(title) }"
-           target="_blank" title="#{ title }" class="#{ image }"></a>
+          <a href="/search?q=#{encodeURIComponent title}"
+           target="_blank" title="#{title}" class="#{image}"></a>
           """
 
-      tagsHTML += '</div>'
-    else tagsHTML = ''
+      html += '</div>'
+    else ''
 
   _nameHTML: ->
-    nameHTML = @item.name
+    html = @item.name
 
     if @showLink
-      nameHTML =
+      html =
         """
-        <a href="/item/#{ @item.id }"
+        <a href="/item/#{@item.id}"
          target="_blank" class="glow" title="Go to Item Page">
-        #{ nameHTML }</a>
+        #{html}</a>
         """
-    nameHTML = "<h2 id='itemname'>#{ nameHTML }</h2>"
+    html = "<h2 id='itemname'>#{html}</h2>"
 
   _classesHTML: ->
     if @item.classes
-      classesHTML = '<div id="classes">'
-      for i in @item.classes.split(',')
-        classesHTML +=
+      html = '<div id="classes">'
+      for i in @item.classes.split ','
+        html +=
           """
-          <a href="/search?q=#{ i }" target="_blank"
-           title="#{ i }" class="#{ i.toLowerCase() }"></a>
+          <a href="/search?q=#{i}" target="_blank"
+           title="#{i}" class="#{i.toLowerCase()}"></a>
          """
-      classesHTML += '</div>'
-    else classesHTML = ''
+      html += '</div>'
+    else ''
 
   _bundleHTML: ->
     # Link to bundle items HTML
-    if 'bundle' in @item.tags and @item.description.indexOf('---') != -1
-      bundleHTML =
-        """
-        <a href="/search?q=#{ encodeURIComponent(@item.name) }%20Set"
-         target="_blank">
-        <div class="rounded glow" style="display: inline-block; padding: 7px">
-        View items
-        </div>
-        </a>
-        """
-    else bundleHTML = ''
+    if 'bundle' in @item.tags and @item.description.indexOf('---') isnt -1
+      """
+      <a href="/search?q=#{encodeURIComponent @item.name}%20Set"
+       target="_blank">
+      <div class="rounded glow" style="display: inline-block; padding: 7px">
+      View items
+      </div>
+      </a>
+      """
+    else ''
 
   _priceSourceHTML: (source) ->
-    priceHTML = ''
+    html = ''
 
-    for quality, price of @item.marketPrice(source)
+    for quality, price of @item.marketPrice source
       denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
 
       if denomMatch
@@ -140,72 +127,75 @@ class ItemBox
 
         price = price.replace(/(\d+(\.\d+)?)/g,
           """
-          <a href="/search?q=\$1%20#{ denom }"
+          <a href="/search?q=\$1%20#{denom}"
            target="_blank" class="glow">\$1</a>
           """)
-      priceHTML += "<span class='#{ quality.toLowerCase() }'>#{
-        quality }</span>: #{ price }<br>"
+      html += "<span class='#{quality.toLowerCase()}'>#{
+        quality}</span>: #{price}<br>"
 
-    return priceHTML
+    return html
 
   _pricesHTML: ->
     classifiedsURL = "http://backpack.tf/classifieds/search/#{
-      encodeURIComponent(@item.name) }"
+      encodeURIComponent @item.name}"
 
-    priceSourceHTML = @_priceSourceHTML(@source)
+    html = @_priceSourceHTML(@source)
 
-    if not priceSourceHTML
+    if not html
       [@source, @altSource] = [@altSource, @source]
-      priceSourceHTML = @_priceSourceHTML(@item, @source)
+      html = @_priceSourceHTML(@item, @source)
 
-    if priceSourceHTML
-      pricesHTML =
-        """
-        <div id="marketprice">
-        <span id="pricesource">#{ capitalize(@source) }</span><br>
-        <a href="#{ classifiedsURL }"
-         id="classifieds" class="rounded-tight glow"
-         target="_blank" style="color: rgb(129, 170, 197); display: none">
-        Classifieds
-        </a>
-        <h3 id="prices">#{ priceSourceHTML }</h3></div>
-        """
-    else pricesHTML = ''
+    if html
+      """
+      <div id="marketprice">
+      <span id="pricesource">#{capitalize @source}</span><br>
+      <a href="#{classifiedsURL}"
+       id="classifieds" class="rounded-tight glow"
+       target="_blank" style="color: rgb(129, 170, 197); display: none">
+      Classifieds
+      </a>
+      <h3 id="prices">#{html}</h3></div>
+      """
+    else ''
 
   _blueprintsHTML: ->
     if @item.blueprints.length
-      blueprintsHTML = '<div id="blueprints">'
+      html = '<div id="blueprints">'
       for b in @item.blueprints
-        chance = b.getAttribute('data-chance')
+        chance = b.getAttribute 'data-chance'
 
-        blueprintsHTML += '<div class="blueprint">'
-        for i in b.getElementsByTagName('li')
-          for j in [0...i.getAttribute('data-count')]
+        html += '<div class="blueprint">'
+        for i in b.getElementsByTagName 'li'
+          for j in [0...i.getAttribute 'data-count']
             name = i.title
-            index = i.getAttribute('data-index')
-            style = "background-image:url(#{ i.getAttribute('data-image') })"
-            listItem =  "<div title=\"#{ name }\" class='item-small' style='#{
-              style }'></div>"
+            index = i.getAttribute 'data-index'
+            style = "background-image:url(#{i.getAttribute 'data-image'})"
+
+            listItem =  "<div title=\"#{name}\" class='item-small' style='#{
+              style}'></div>"
+
             if index
-              url = "/item/#{ index }"
+              url = "/item/#{index}"
             else
               name = name.replace('Any ', '')
                          .replace('Spy Watch', 'PDA2 Weapon')
+
               if name.split(' ').length > 2
-                name = name.replace('Weapon', 'Set')
-              url = "/search?q=#{ encodeURIComponent(name) }"
+                name = name.replace 'Weapon', 'Set'
 
-            listItem = "<a href=\"#{ url }\" target='_blank'>#{ listItem }</a>"
-            blueprintsHTML += listItem
+              url = "/search?q=#{encodeURIComponent name}"
 
-        blueprintsHTML +=
+            listItem = "<a href=\"#{url}\" target='_blank'>#{listItem}</a>"
+            html += listItem
+
+        html +=
           """
           <div title="Crafting Chance" style="position: absolute; right: 10px">
-          <h3>#{ chance }%</h3></div></div>
+          <h3>#{chance}%</h3></div></div>
           """
 
-      blueprintsHTML += '</div>'
-    else blueprintsHTML = ''
+      html += '</div>'
+    else ''
 
   _outpostHTML: ->
     """
@@ -238,67 +228,65 @@ class ItemBox
 
   _wishlistHTML: ->
     if @user.loggedIn
-      wishlistHTML =
-        """
-        <div style="display: inline-block; width: 40px">
-        <div id="wishlistmessage"
-         style="display: none; margin: 0 0 4px -18px">Added</div>
-        <i id="wishlistbutton" class="button-icon rounded icon-star icon-large"
-         style="background-color: transparent"
-         title="Add to wishlist"></i>
-        </div>
-        """
-    else wishlistHTML = ''
+      """
+      <div style="display: inline-block; width: 40px">
+      <div id="wishlistmessage"
+       style="display: none; margin: 0 0 4px -18px">Added</div>
+      <i id="wishlistbutton" class="button-icon rounded icon-star icon-large"
+       style="background-color: transparent"
+       title="Add to wishlist"></i>
+      </div>
+      """
+    else ''
 
   _buttonsHTML: ->
     wikiLink = "http://wiki.teamfortress.com/wiki/#{
-      encodeURIComponent(@item.name) }"
+      encodeURIComponent @item.name}"
 
     """
     <div id="buttons">
 
     <a class="icon-info icon-large button-icon" target="_blank"
-     title="Open in Wiki" href="#{ wikiLink }"></a>
+     title="Open in Wiki" href="#{wikiLink}"></a>
 
     <a class="icon-shopping-cart icon-large button-icon"
      target="_blank" title="Community Market"
      href="http://steamcommunity.com/market/search?q=appid%3A440
-    %20#{ encodeURIComponent(@item.name) }"></a>
+    %20#{encodeURIComponent @item.name}"></a>
 
-    #{ @_outpostHTML() }
-    #{ @_wishlistHTML() }
+    #{@_outpostHTML()}
+    #{@_wishlistHTML()}
     </div>
     """
 
   _buyHTML: ->
     # Buy button and store price HTML
     if @item.storePrice
-      buyHTML =
-        """
-        <div id="buy">
-        <form style="display: inline-block">$#{ @item.storePrice }<br>
-        <input type="text" value="1" size="1" id="quantity"
-         class="textbox" style="text-align: right">
-        </form><a href="#" id="buybutton"></a></div>
-        """
-    else buyHTML = ''
+      """
+      <div id="buy">
+      <form style="display: inline-block">$#{@item.storePrice}<br>
+      <input type="text" value="1" size="1" id="quantity"
+       class="textbox" style="text-align: right">
+      </form><a href="#" id="buybutton"></a></div>
+      """
+    else ''
 
   _pricesLink: ->
-    priceButton = document.getElementById('pricesource')
+    button = document.getElementById('pricesource')
     classifieds = document.getElementById('classifieds')
 
     # Show classifieds
     if classifieds and @source is 'backpack.tf'
       classifieds.style.display = 'inline'
 
-    if priceButton and @item.marketPrice(@altSource)
-      priceButton.style.cursor = 'pointer'
+    if button and @item.marketPrice(@altSource)
+      button.style.cursor = 'pointer'
 
-      priceButton.onclick = =>
-        @altSource = if priceButton.innerHTML == 'Spreadsheet'
+      button.onclick = =>
+        @altSource = if button.innerHTML is 'Spreadsheet'
         then 'backpack.tf' else 'spreadsheet'
 
-        priceButton.innerHTML = capitalize(@altSource)
+        button.innerHTML = capitalize @altSource
         @prices.innerHTML = @_priceSourceHTML(@altSource)
 
         if @altSource is 'backpack.tf'
@@ -306,83 +294,84 @@ class ItemBox
         else
           classifieds.style.display = 'none'
 
-      priceButton.onmouseover = ->
-        priceButton.style.textShadow = '0 0 10px rgb(196, 241, 128)'
+      button.onmouseover = ->
+        button.style.textShadow = '0 0 10px rgb(196, 241, 128)'
 
-      priceButton.onmouseout = ->
-        priceButton.style.textShadow = ''
+      button.onmouseout = ->
+        button.style.textShadow = ''
 
   _outpostLink: ->
     # TF2Outpost link
-    if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') == -1
+    if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') is -1
       @form.setAttribute('target', '_blank')
 
     document.getElementById('find-trades-btn').onclick = (event) =>
       tradeType = document.getElementById('tradetype').value
 
       @form.json.value = "{\"filters\":{},\"#{
-        tradeType }\":\"440,#{ @item.id },#{ @form.quality.value }\"}"
+        tradeType}\":\"440,#{@item.id},#{@form.quality.value}\"}"
 
       @form.submit.click()
 
   _wishlistLink: ->
     # Update wishlist item index
     if @user.isOwnPage
-      for wish, idx in document.getElementsByClassName('item')
-        if wish.getAttribute('data-i') == @item.wishIndex
+      for wish, idx in document.getElementsByClassName 'item'
+        if wish.getAttribute('data-i') is @item.wishIndex
           @item.wishIndex = idx.toString()
           break
 
     if @user.loggedIn
-      wishlistAction = '/wishlist/add'
-      wishlistButton = document.getElementById('wishlistbutton')
+      action = '/wishlist/add'
+      button = document.getElementById 'wishlistbutton'
 
       if @user.isOwnPage
-        wishlistAction = '/wishlist/remove'
-        wishlistButton.setAttribute('title', 'Remove from wishlist')
+        action = '/wishlist/remove'
+        button.setAttribute 'title', 'Remove from wishlist'
 
       # Add to wishlist or remove from wishlist
-      wishlistButton.onclick = =>
-        wishlistData = {'index': @item.id, 'quality': @form.quality.value}
+      button.onclick = =>
+        data = 'index': @item.id, 'quality': @form.quality.value
 
         if @user.isOwnPage
-          wishlistData = {'i': @item.wishIndex}
+          data = {'i': @item.wishIndex}
 
-        postAjax wishlistAction, wishlistData, (response) =>
-          if response == 'Added'
-            wishlistMessage = document.getElementById('wishlistmessage')
-            wishlistMessage.style.display = 'block'
-            wishlistMessage.setAttribute('class', 'animated fadeInLeft')
+        postAjax action, data, (response) =>
+          if response is 'Added'
+            message = document.getElementById 'wishlistmessage'
+            message.style.display = 'block'
+            message.setAttribute 'class', 'animated fadeInLeft'
             setTimeout((->
-              wishlistMessage.setAttribute('class', 'animated fadeOut')), 1000)
-          else if response == 'Removed'
+              message.setAttribute 'class', 'animated fadeOut'), 1000)
+
+          else if response is 'Removed'
             @hide()
             @item.remove()
 
   _buyLink: ->
-    buyButton = document.getElementById('buybutton')
+    buyButton = document.getElementById 'buybutton'
     if buyButton
       buyButton.onclick = =>
         quantity = document.getElementById('quantity').value
         window.open("http://store.steampowered.com/buyitem/440/#{
-          @item.id }/#{ quantity }")
+          @item.id}/#{quantity}")
 
   _generateItemBox: ->
     # Itembox HTML
     @elem.innerHTML =
       """
-      #{ @_tagsHTML() }
-      #{ @_nameHTML() }
-      #{ @_classesHTML() }
-      #{ @_bundleHTML() }
-      #{ @_pricesHTML() }
-      #{ @_blueprintsHTML() }
-      #{ @_buttonsHTML() }
-      #{ @_buyHTML() }
+      #{@_tagsHTML()}
+      #{@_nameHTML()}
+      #{@_classesHTML()}
+      #{@_bundleHTML()}
+      #{@_pricesHTML()}
+      #{@_blueprintsHTML()}
+      #{@_buttonsHTML()}
+      #{@_buyHTML()}
       """
 
     @form = document.tf2outpostform
-    @prices = document.getElementById('prices')
+    @prices = document.getElementById 'prices'
 
     @_pricesLink()
     @_outpostLink()
@@ -390,12 +379,12 @@ class ItemBox
     @_buyLink()
 
     # Hover area
-    hoverArea = document.createElement('div')
-    hoverArea.title = @item.name
-    hoverArea.setAttribute('data-description', @item.description)
-    hoverArea.setAttribute('data-tags', @item.tags)
+    hoverArea = document.createElement 'div'
     hoverArea.id = 'hoverarea'
-    hoverArea.style.backgroundImage = "url('#{ @item.imageUrl }')"
+    hoverArea.title = @item.name
+    hoverArea.setAttribute 'data-description', @item.description
+    hoverArea.setAttribute 'data-tags', @item.tags
+    hoverArea.style.backgroundImage = "url('#{@item.imageUrl}')"
 
     # Add hover area to itembox
     ref = document.getElementById('blueprints') or
@@ -406,29 +395,28 @@ class ItemBox
     new HoverBox(hoverArea)
 
     # Auto quality selection
-    if @item.name.indexOf('Strange') == -1
+    if @item.name.indexOf('Strange') is -1
       # Wishlist item quality
       if @item.qualityNo
         @form.quality.value = @item.qualityNo
       else if @prices
         for option, i in @form.quality.options
-          if @prices.innerHTML.indexOf(option.innerHTML) != -1
+          if @prices.innerHTML.indexOf(option.innerHTML) isnt -1
             @form.quality.selectedIndex = i
             break
 
 class HoverBox
-  constructor: (itemBoxOrArea) ->
-    @itemBox = if itemBoxOrArea instanceof ItemBox then itemBoxOrArea else null
-    if not @itemBox
-      # Hover area
-      area = itemBoxOrArea
+  constructor: (arg) ->
+    @itemBox = arg if arg instanceof ItemBox
+    # Hover area
+    area = arg if not @itemBox?
 
-    @elem = document.getElementById('hoverbox')
+    @elem = document.getElementById 'hoverbox'
 
     if not @elem
-      @elem = document.createElement('div')
+      @elem = document.createElement 'div'
       @elem.id = 'hoverbox'
-      document.getElementsByTagName('body')[0].appendChild(@elem)
+      document.getElementsByTagName('body')[0].appendChild @elem
 
     @_add(area)
 
@@ -436,39 +424,39 @@ class HoverBox
     list = if area then [area] else document.getElementsByClassName('item')
 
     for item in list
-      item.addEventListener("mouseout", @_hide, false)
-      item.addEventListener("mousemove", @_moveMouse, false)
-      item.addEventListener("mouseover", @_show, false)
-      if not area
-        item.addEventListener("click", @_clickItem, false)
+      item.addEventListener "mouseout", @_hide, false
+      item.addEventListener "mousemove", @_moveMouse, false
+      item.addEventListener "mouseover", @_show, false
+      if @itemBox?
+        item.addEventListener "click", @_clickItem, false
 
-    if not area
-      document.getElementById('container').addEventListener("click",
-                                                            @_hideItemBox,
-                                                            false)
+    if @itemBox?
+      document.getElementsByTagName('body')[0].addEventListener "click",
+                                                                @_hideItemBox,
+                                                                false
       document.onkeydown = (e) =>
-        if e.keyCode == 27
+        if e.keyCode is 27
           @itemBox.hide()
 
   _show: (e) =>
     title = e.target.title
 
     item = new Item(e.target)
-    description = escapeHTML(item.description)
+    description = escapeHTML item.description
 
     if description
-      if 'bundle' in item.tags and description.indexOf('---') != -1
-        descList = description.split('---')
+      if 'bundle' in item.tags and description.indexOf('---') isnt -1
+        descList = description.split '---'
         description = """
-                      #{ descList[0] }
-                      <span style="color: #95af0c">#{ descList[1] }</span>
+                      #{descList[0]}
+                      <span style="color: #95af0c">#{descList[1]}</span>
                       """
-      description = "<br>#{ description }"
+      description = "<br>#{description}"
 
     @elem.innerHTML =
       """
       <div style="font-size: 1.2em; color: rgb(230, 230, 230)">#{
-      title }</div>#{ item.attributes }#{ description }
+      title}</div>#{item.attributes}#{description}
       """
 
     @elem.style.display = 'block'
@@ -477,22 +465,22 @@ class HoverBox
     @elem.style.display = 'none'
 
   _hideItemBox: (e) =>
-    a = e.target
-    if a.getAttribute('class') != 'item'
+    el = e.target
+    if el.getAttribute('class') isnt 'item'
       els = []
-      while a
-        els.push(a)
-        a = a.parentNode
+      while el
+        els.push(el)
+        el = el.parentNode
 
       if @itemBox.elem not in els
         @itemBox.hide()
 
   _moveMouse: (e) =>
-    @elem.style.top = "#{ e.pageY + 28 }px"
-    @elem.style.left = "#{ e.pageX - 154 }px"
+    @elem.style.top = "#{e.pageY + 28}px"
+    @elem.style.left = "#{e.pageX - 154}px"
 
   _clickItem: (e) =>
-    @itemBox.show(e.target)
+    @itemBox.show e.target
     e.preventDefault()
     e.stopPropagation()
 
@@ -506,57 +494,44 @@ setCookie = (name, value, days) ->
   expires = ''
 
   if days
-    date = new Date()
+    date = new Date
     date.setDate(date.getDate() + days)
-    expires = ";expires=#{ date.toUTCString() }"
+    expires = ";expires=#{date.toUTCString()}"
 
-   document.cookie = "#{ name }=#{ value }#{ expires }"
+  document.cookie = "#{name}=#{value}#{expires}"
 
 getCookie = (name) ->
   cookies = document.cookie.split(';')
 
   for cookie in cookies
-    while cookie[0] == ' '
+    while cookie[0] is ' '
       cookie = cookie[1...]
 
-    if cookie[...name.length] == name
+    if cookie[...name.length] is name
       return cookie[name.length + 1...]
 
 ajax = (url, callback) ->
-  ajaxRequest = getAjaxRequest(callback)
-  ajaxRequest.open('GET', url, true)
-  ajaxRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-  ajaxRequest.send(null)
+  request = _getAjaxRequest(callback)
+  request.open 'GET', url, true
+  request.setRequestHeader 'X-Requested-With', 'XMLHttpRequest'
+  request.send()
 
 postAjax = (url, data, callback) ->
-  ajaxRequest = getAjaxRequest(callback)
-  ajaxRequest.open('POST', url, true)
-  ajaxRequest.setRequestHeader('Content-Type',
-                               'application/x-www-form-urlencoded')
+  request = _getAjaxRequest(callback)
+  request.open 'POST', url, true
+  request.setRequestHeader('Content-Type',
+                           'application/x-www-form-urlencoded')
 
-  dataList = []
-  for name, value of data
-    dataList.push  "#{ name }=#{ value }"
+  request.send ("#{name}=#{value}" for name, value of data).join('&')
 
-  ajaxRequest.send(dataList.join('&'))
+_getAjaxRequest = (callback) ->
+  request = new XMLHttpRequest
 
-getAjaxRequest = (callback) ->
-  try
-    ajaxRequest = new XMLHttpRequest()
-  catch e
-    try
-      ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP")
-    catch e
-      try
-        ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP")
-      catch e
-        return null
+  request.onreadystatechange = ->
+    if request.readyState is 4 and request.status is 200
+      callback request.responseText
 
-  ajaxRequest.onreadystatechange = ->
-    if ajaxRequest.readyState == 4
-      callback(ajaxRequest.responseText)
-
-  return ajaxRequest
+  return request
 
 root.ItemBox = ItemBox
 root.HoverBox = HoverBox

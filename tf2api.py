@@ -423,6 +423,7 @@ def _convertmarketname(name):
             'Essential Accessories': 'The Essential Accessories',
             'Koto': 'Noise Maker - Koto',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
+            'Das Metalmeatenca': 'Das Metalmeatencasen',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Halloween Kills': 'Strange Part: Halloween Kills',
             'Die Job (halloween spell)': 'Halloween Spell: Die Job',
