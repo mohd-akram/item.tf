@@ -1,5 +1,7 @@
 root = exports ? this
 
+priceSources = ['backpack.tf', 'spreadsheet']
+
 class User
   constructor: ->
     @id = getCookie 'steam_id'
@@ -7,7 +9,7 @@ class User
     @isOwnPage = (@loggedIn and @id is document.getElementById('steamid')
                                               ?.getAttribute('data-id'))
 
-    @priceSource = getCookie('price_source') or 'backpack.tf'
+    @priceSource = getCookie('price_source') or priceSources[0]
 
 class Item
   constructor: (@elem) ->
@@ -21,10 +23,15 @@ class Item
     @storePrice = elem.getAttribute 'data-storeprice'
     @blueprints = elem.getElementsByTagName 'ul'
 
+    @prices = {}
+    for source in priceSources
+      price = @_getMarketPrice source
+      @prices[source] = price if price
+
     @wishIndex = elem.getAttribute 'data-i'
     @qualityNo = elem.getAttribute('class')?.match(/quality-(\d+)/)?[1]
 
-  marketPrice: (source) -> JSON.parse @elem.getAttribute "data-#{source}"
+  _getMarketPrice: (source) -> JSON.parse @elem.getAttribute "data-#{source}"
 
   remove: -> @elem.parentNode.removeChild @elem
 
@@ -38,15 +45,15 @@ class ItemBox
 
   show: (elem) ->
     @item = new Item(elem)
-
     @source = @user.priceSource
-    @altSource = if @source is 'spreadsheet' then 'backpack.tf'
-    else 'spreadsheet'
 
     @_generateItemBox()
     @elem.style.display = 'block'
 
   hide: -> @elem.style.display = 'none'
+
+  _nextPriceSource: -> @source =
+    priceSources[(priceSources.indexOf(@source) + 1) % priceSources.length]
 
   _tagsHTML: ->
     if @item.tags.length
@@ -86,8 +93,7 @@ class ItemBox
       html =
         """
         <a href="/item/#{@item.id}"
-         target="_blank" class="glow" title="Go to Item Page">
-        #{html}</a>
+         target="_blank" class="glow" title="Go to Item Page">#{html}</a>
         """
     html = "<h2 id='itemname'>#{html}</h2>"
 
@@ -99,7 +105,7 @@ class ItemBox
           """
           <a href="/search?q=#{i}" target="_blank"
            title="#{i}" class="#{i.toLowerCase()}"></a>
-         """
+          """
       html += '</div>'
     else ''
 
@@ -116,47 +122,44 @@ class ItemBox
       """
     else ''
 
-  _priceSourceHTML: (source) ->
+  _priceSourceHTML: ->
     html = ''
 
-    for quality, price of @item.marketPrice source
-      denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
+    if not @item.prices[@source]
+      @_nextPriceSource()
 
-      if denomMatch
-        denom = denomMatch[0]
+    if @item.prices[@source]
+      if @source is 'backpack.tf'
+        classifiedsURL = "http://backpack.tf/classifieds/search/#{
+          encodeURIComponent @item.name}"
 
-        price = price.replace(/(\d+(\.\d+)?)/g,
+        html +=
           """
-          <a href="/search?q=\$1%20#{denom}"
-           target="_blank" class="glow">\$1</a>
-          """)
-      html += "<span class='#{quality.toLowerCase()}'>#{
-        quality}</span>: #{price}<br>"
+          <a href="#{classifiedsURL}" class="rounded-tight glow"
+           target="_blank" style="color: rgb(129, 170, 197)">
+          Classifieds</a><br>
+          """
+
+      for quality, price of @item.prices[@source]
+        denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
+
+        if denomMatch
+          denom = denomMatch[0]
+
+          price = price.replace(/(\d+(\.\d+)?)/g,
+            """
+            <a href="/search?q=\$1%20#{denom}"
+             target="_blank" class="glow">\$1</a>
+            """)
+        html += "<span class='#{quality.toLowerCase()}'>#{
+          quality}</span>: #{price}<br>"
 
     return html
 
   _pricesHTML: ->
-    classifiedsURL = "http://backpack.tf/classifieds/search/#{
-      encodeURIComponent @item.name}"
-
-    html = @_priceSourceHTML(@source)
-
-    if not html
-      [@source, @altSource] = [@altSource, @source]
-      html = @_priceSourceHTML(@item, @source)
-
-    if html
-      """
-      <div id="marketprice">
-      <span id="pricesource">#{capitalize @source}</span><br>
-      <a href="#{classifiedsURL}"
-       id="classifieds" class="rounded-tight glow"
-       target="_blank" style="color: rgb(129, 170, 197); display: none">
-      Classifieds
-      </a>
-      <h3 id="prices">#{html}</h3></div>
-      """
-    else ''
+    html = @_priceSourceHTML()
+    if html then "<div id='marketprice'><span id='pricesource'>#{
+      capitalize @source}</span><h3 id='prices'>#{html}</h3></div>" else ''
 
   _blueprintsHTML: ->
     if @item.blueprints.length
@@ -272,27 +275,16 @@ class ItemBox
     else ''
 
   _pricesLink: ->
-    button = document.getElementById('pricesource')
-    classifieds = document.getElementById('classifieds')
+    button = document.getElementById 'pricesource'
 
-    # Show classifieds
-    if classifieds and @source is 'backpack.tf'
-      classifieds.style.display = 'inline'
-
-    if button and @item.marketPrice(@altSource)
+    if button and Object.keys(@item.prices).length > 1
       button.style.cursor = 'pointer'
 
       button.onclick = =>
-        @altSource = if button.innerHTML is 'Spreadsheet'
-        then 'backpack.tf' else 'spreadsheet'
+        @_nextPriceSource()
 
-        button.innerHTML = capitalize @altSource
-        @prices.innerHTML = @_priceSourceHTML(@altSource)
-
-        if @altSource is 'backpack.tf'
-          classifieds.style.display = 'inline'
-        else
-          classifieds.style.display = 'none'
+        button.innerHTML = capitalize @source
+        @prices.innerHTML = @_priceSourceHTML()
 
       button.onmouseover = ->
         button.style.textShadow = '0 0 10px rgb(196, 241, 128)'
@@ -303,7 +295,7 @@ class ItemBox
   _outpostLink: ->
     # TF2Outpost link
     if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') is -1
-      @form.setAttribute('target', '_blank')
+      @form.setAttribute 'target', '_blank'
 
     document.getElementById('find-trades-btn').onclick = (event) =>
       tradeType = document.getElementById('tradetype').value
@@ -334,40 +326,37 @@ class ItemBox
         data = 'index': @item.id, 'quality': @form.quality.value
 
         if @user.isOwnPage
-          data = {'i': @item.wishIndex}
+          data = 'i': @item.wishIndex
 
         postAjax action, data, (response) =>
           if response is 'Added'
             message = document.getElementById 'wishlistmessage'
             message.style.display = 'block'
             message.setAttribute 'class', 'animated fadeInLeft'
-            setTimeout((->
-              message.setAttribute 'class', 'animated fadeOut'), 1000)
+            setTimeout (->
+              message.setAttribute 'class', 'animated fadeOut'), 1000
 
           else if response is 'Removed'
             @hide()
             @item.remove()
 
   _buyLink: ->
-    buyButton = document.getElementById 'buybutton'
-    if buyButton
-      buyButton.onclick = =>
+    button = document.getElementById 'buybutton'
+    if button
+      button.onclick = =>
         quantity = document.getElementById('quantity').value
-        window.open("http://store.steampowered.com/buyitem/440/#{
-          @item.id}/#{quantity}")
+        window.open "http://store.steampowered.com/buyitem/440/#{
+          @item.id}/#{quantity}"
 
   _generateItemBox: ->
     # Itembox HTML
     @elem.innerHTML =
       """
-      #{@_tagsHTML()}
-      #{@_nameHTML()}
-      #{@_classesHTML()}
+      #{@_tagsHTML()}#{@_nameHTML()}#{@_classesHTML()}
       #{@_bundleHTML()}
       #{@_pricesHTML()}
       #{@_blueprintsHTML()}
-      #{@_buttonsHTML()}
-      #{@_buyHTML()}
+      #{@_buttonsHTML()}#{@_buyHTML()}
       """
 
     @form = document.tf2outpostform
@@ -385,13 +374,12 @@ class ItemBox
     hoverArea.setAttribute 'data-description', @item.description
     hoverArea.setAttribute 'data-tags', @item.tags
     hoverArea.style.backgroundImage = "url('#{@item.imageUrl}')"
-    hoverArea.innerHTML = "<div style='display:none'>#{
-      @item.attributes}</div>"
+    hoverArea.innerHTML = "<div style='display:none'>#{@item.attributes}</div>"
 
     # Add hover area to itembox
-    ref = document.getElementById('blueprints') or
+    @elem.insertBefore hoverArea,
+      document.getElementById('blueprints') or
       document.getElementById('buttons')
-    @elem.insertBefore(hoverArea, ref)
 
     # Enable hover box
     new HoverBox(hoverArea)
@@ -423,7 +411,7 @@ class HoverBox
     @_add(area)
 
   _add: (area) ->
-    list = if area then [area] else document.getElementsByClassName('item')
+    list = if area then [area] else document.getElementsByClassName 'item'
 
     for item in list
       item.addEventListener "mouseout", @_hide, false
@@ -436,9 +424,8 @@ class HoverBox
       document.getElementsByTagName('body')[0].addEventListener "click",
                                                                 @_hideItemBox,
                                                                 false
-      document.onkeydown = (e) =>
-        if e.keyCode is 27
-          @itemBox.hide()
+
+      document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>
     title = e.target.title
@@ -474,8 +461,7 @@ class HoverBox
         els.push(el)
         el = el.parentNode
 
-      if @itemBox.elem not in els
-        @itemBox.hide()
+      @itemBox.hide() if @itemBox.elem not in els
 
   _moveMouse: (e) =>
     @elem.style.top = "#{e.pageY + 28}px"
@@ -506,11 +492,8 @@ getCookie = (name) ->
   cookies = document.cookie.split(';')
 
   for cookie in cookies
-    while cookie[0] is ' '
-      cookie = cookie[1...]
-
-    if cookie[...name.length] is name
-      return cookie[name.length + 1...]
+    cookie = cookie[1...] while cookie[0] is ' '
+    return cookie[name.length + 1...] if cookie[...name.length] is name
 
 ajax = (url, callback) ->
   request = _getAjaxRequest(callback)
@@ -521,8 +504,8 @@ ajax = (url, callback) ->
 postAjax = (url, data, callback) ->
   request = _getAjaxRequest(callback)
   request.open 'POST', url, true
-  request.setRequestHeader('Content-Type',
-                           'application/x-www-form-urlencoded')
+  request.setRequestHeader 'Content-Type',
+                           'application/x-www-form-urlencoded'
 
   request.send ("#{name}=#{value}" for name, value of data).join('&')
 
