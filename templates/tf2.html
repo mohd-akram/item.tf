@@ -98,7 +98,7 @@
     </div>
   <script>
     $('#searchbox').focus();
-    $('#pricesetting').val(getCookie('price_source'));
+    $('#pricesetting').val(user.priceSource);
 
     $('#help').click(function(){
       $('#settings-list').hide();
@@ -109,7 +109,7 @@
       $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast')});
 
     $('#settingsform').submit(function() {
-      setCookie('price_source', $('#pricesetting').val(), 365);
+      user.priceSource = $('#pricesetting').val()
       $('#settings-list').hide('fast');
       return false;
     });

@@ -14,7 +14,16 @@
       this.id = getCookie('steam_id');
       this.loggedIn = Boolean(this.id);
       this.isOwnPage = this.loggedIn && this.id === ((_ref = document.getElementById('steamid')) != null ? _ref.getAttribute('data-id') : void 0);
-      this.priceSource = getCookie('price_source') || priceSources[0];
+      Object.defineProperties(this, {
+        priceSource: {
+          get: function() {
+            return getCookie('price_source') || priceSources[0];
+          },
+          set: function(source) {
+            return setCookie('price_source', source, 365);
+          }
+        }
+      });
     }
 
     return User;
@@ -61,7 +70,6 @@
   ItemBox = (function() {
     function ItemBox(showLink) {
       this.showLink = showLink != null ? showLink : true;
-      this.user = new User;
       this.elem = document.createElement('div');
       this.elem.id = 'itembox';
       document.getElementsByTagName('body')[0].appendChild(this.elem);
@@ -69,8 +77,8 @@
 
     ItemBox.prototype.show = function(elem) {
       this.item = new Item(elem);
-      this.source = this.user.priceSource;
-      this._generateItemBox();
+      this.source = user.priceSource;
+      this._generate();
       return this.elem.style.display = 'block';
     };
 
@@ -228,7 +236,7 @@
     };
 
     ItemBox.prototype._wishlistHTML = function() {
-      if (this.user.loggedIn) {
+      if (user.loggedIn) {
         return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"button-icon rounded icon-star icon-large\"\n style=\"background-color: transparent\"\n title=\"Add to wishlist\"></i>\n</div>";
       } else {
         return '';
@@ -238,7 +246,7 @@
     ItemBox.prototype._buttonsHTML = function() {
       var wikiLink;
       wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(this.item.name));
-      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440\n%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
+      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
     };
 
     ItemBox.prototype._buyHTML = function() {
@@ -285,7 +293,7 @@
     ItemBox.prototype._wishlistLink = function() {
       var action, button, idx, wish, _i, _len, _ref,
         _this = this;
-      if (this.user.isOwnPage) {
+      if (user.isOwnPage) {
         _ref = document.getElementsByClassName('item');
         for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
           wish = _ref[idx];
@@ -295,10 +303,10 @@
           }
         }
       }
-      if (this.user.loggedIn) {
+      if (user.loggedIn) {
         action = '/wishlist/add';
         button = document.getElementById('wishlistbutton');
-        if (this.user.isOwnPage) {
+        if (user.isOwnPage) {
           action = '/wishlist/remove';
           button.setAttribute('title', 'Remove from wishlist');
         }
@@ -308,7 +316,7 @@
             'index': _this.item.id,
             'quality': _this.form.quality.value
           };
-          if (_this.user.isOwnPage) {
+          if (user.isOwnPage) {
             data = {
               'i': _this.item.wishIndex
             };
@@ -344,7 +352,7 @@
       }
     };
 
-    ItemBox.prototype._generateItemBox = function() {
+    ItemBox.prototype._generate = function() {
       var hoverArea, i, option, _i, _len, _ref, _results;
       this.elem.innerHTML = "" + (this._tagsHTML()) + (this._nameHTML()) + (this._classesHTML()) + "\n" + (this._bundleHTML()) + "\n" + (this._pricesHTML()) + "\n" + (this._blueprintsHTML()) + "\n" + (this._buttonsHTML()) + (this._buyHTML());
       this.form = document.tf2outpostform;
@@ -490,17 +498,6 @@
     return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   };
 
-  setCookie = function(name, value, days) {
-    var date, expires;
-    expires = '';
-    if (days) {
-      date = new Date;
-      date.setDate(date.getDate() + days);
-      expires = ";expires=" + (date.toUTCString());
-    }
-    return document.cookie = "" + name + "=" + value + expires;
-  };
-
   getCookie = function(name) {
     var cookie, cookies, _i, _len;
     cookies = document.cookie.split(';');
@@ -513,6 +510,17 @@
         return cookie.slice(name.length + 1);
       }
     }
+  };
+
+  setCookie = function(name, value, days) {
+    var date, expires;
+    expires = '';
+    if (days) {
+      date = new Date;
+      date.setDate(date.getDate() + days);
+      expires = ";expires=" + (date.toUTCString());
+    }
+    return document.cookie = "" + name + "=" + value + expires;
   };
 
   ajax = function(url, callback) {
@@ -550,13 +558,11 @@
     return request;
   };
 
+  root.user = new User;
+
   root.ItemBox = ItemBox;
 
   root.HoverBox = HoverBox;
-
-  root.getCookie = getCookie;
-
-  root.setCookie = setCookie;
 
 }).call(this);
 

@@ -6,10 +6,13 @@ class User
   constructor: ->
     @id = getCookie 'steam_id'
     @loggedIn = Boolean(@id)
-    @isOwnPage = (@loggedIn and @id is document.getElementById('steamid')
-                                              ?.getAttribute('data-id'))
+    @isOwnPage = @loggedIn and @id is document.getElementById('steamid')
+                                             ?.getAttribute('data-id')
 
-    @priceSource = getCookie('price_source') or priceSources[0]
+    Object.defineProperties @,
+      priceSource:
+        get: -> getCookie('price_source') or priceSources[0]
+        set: (source) -> setCookie 'price_source', source, 365
 
 class Item
   constructor: (@elem) ->
@@ -19,7 +22,7 @@ class Item
     @description = elem.getAttribute('data-description') or ''
     @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
     @classes = elem.getAttribute 'data-classes'
-    @tags = (elem.getAttribute('data-tags') or '').split(',')
+    @tags = (elem.getAttribute('data-tags') or '').split ','
     @storePrice = elem.getAttribute 'data-storeprice'
     @blueprints = elem.getElementsByTagName 'ul'
 
@@ -37,17 +40,15 @@ class Item
 
 class ItemBox
   constructor: (@showLink=true) ->
-    @user = new User
-
     @elem = document.createElement 'div'
     @elem.id = 'itembox'
     document.getElementsByTagName('body')[0].appendChild @elem
 
   show: (elem) ->
     @item = new Item(elem)
-    @source = @user.priceSource
+    @source = user.priceSource
 
-    @_generateItemBox()
+    @_generate()
     @elem.style.display = 'block'
 
   hide: -> @elem.style.display = 'none'
@@ -230,7 +231,7 @@ class ItemBox
     """
 
   _wishlistHTML: ->
-    if @user.loggedIn
+    if user.loggedIn
       """
       <div style="display: inline-block; width: 40px">
       <div id="wishlistmessage"
@@ -254,8 +255,8 @@ class ItemBox
 
     <a class="icon-shopping-cart icon-large button-icon"
      target="_blank" title="Community Market"
-     href="http://steamcommunity.com/market/search?q=appid%3A440
-    %20#{encodeURIComponent @item.name}"></a>
+     href="http://steamcommunity.com/market/search?q=appid%3A440%20#{
+     encodeURIComponent @item.name}"></a>
 
     #{@_outpostHTML()}
     #{@_wishlistHTML()}
@@ -307,17 +308,17 @@ class ItemBox
 
   _wishlistLink: ->
     # Update wishlist item index
-    if @user.isOwnPage
+    if user.isOwnPage
       for wish, idx in document.getElementsByClassName 'item'
         if wish.getAttribute('data-i') is @item.wishIndex
           @item.wishIndex = idx.toString()
           break
 
-    if @user.loggedIn
+    if user.loggedIn
       action = '/wishlist/add'
       button = document.getElementById 'wishlistbutton'
 
-      if @user.isOwnPage
+      if user.isOwnPage
         action = '/wishlist/remove'
         button.setAttribute 'title', 'Remove from wishlist'
 
@@ -325,7 +326,7 @@ class ItemBox
       button.onclick = =>
         data = 'index': @item.id, 'quality': @form.quality.value
 
-        if @user.isOwnPage
+        if user.isOwnPage
           data = 'i': @item.wishIndex
 
         postAjax action, data, (response) =>
@@ -348,7 +349,7 @@ class ItemBox
         window.open "http://store.steampowered.com/buyitem/440/#{
           @item.id}/#{quantity}"
 
-  _generateItemBox: ->
+  _generate: ->
     # Itembox HTML
     @elem.innerHTML =
       """
@@ -458,7 +459,7 @@ class HoverBox
     if el.getAttribute('class') isnt 'item'
       els = []
       while el
-        els.push(el)
+        els.push el
         el = el.parentNode
 
       @itemBox.hide() if @itemBox.elem not in els
@@ -478,6 +479,13 @@ capitalize = (word) ->
 escapeHTML = (string) ->
   string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+getCookie = (name) ->
+  cookies = document.cookie.split ';'
+
+  for cookie in cookies
+    cookie = cookie[1...] while cookie[0] is ' '
+    return cookie[name.length + 1...] if cookie[...name.length] is name
+
 setCookie = (name, value, days) ->
   expires = ''
 
@@ -487,13 +495,6 @@ setCookie = (name, value, days) ->
     expires = ";expires=#{date.toUTCString()}"
 
   document.cookie = "#{name}=#{value}#{expires}"
-
-getCookie = (name) ->
-  cookies = document.cookie.split(';')
-
-  for cookie in cookies
-    cookie = cookie[1...] while cookie[0] is ' '
-    return cookie[name.length + 1...] if cookie[...name.length] is name
 
 ajax = (url, callback) ->
   request = _getAjaxRequest(callback)
@@ -518,8 +519,7 @@ _getAjaxRequest = (callback) ->
 
   return request
 
+root.user = new User
+
 root.ItemBox = ItemBox
 root.HoverBox = HoverBox
-
-root.getCookie = getCookie
-root.setCookie = setCookie
