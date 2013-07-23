@@ -28,13 +28,11 @@ class Item
 
     @prices = {}
     for source in priceSources
-      price = @_getMarketPrice source
+      price = JSON.parse @elem.getAttribute "data-#{source}"
       @prices[source] = price if price
 
     @wishIndex = elem.getAttribute 'data-i'
     @qualityNo = elem.getAttribute('class')?.match(/quality-(\d+)/)?[1]
-
-  _getMarketPrice: (source) -> JSON.parse @elem.getAttribute "data-#{source}"
 
   remove: -> @elem.parentNode.removeChild @elem
 

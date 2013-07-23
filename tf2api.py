@@ -214,7 +214,8 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
                 denom = denoms[price['currency']]
                 qualityname = qualities[quality]
 
-                if value != 1 and denom not in ('Refined', 'USD'):
+                if (value != 1 or valuehigh) and denom not in ('Refined',
+                                                               'USD'):
                     denom += 's'
 
                 itemnames.add(name)

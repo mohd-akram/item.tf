@@ -46,7 +46,7 @@
       this.prices = {};
       for (_i = 0, _len = priceSources.length; _i < _len; _i++) {
         source = priceSources[_i];
-        price = this._getMarketPrice(source);
+        price = JSON.parse(this.elem.getAttribute("data-" + source));
         if (price) {
           this.prices[source] = price;
         }
@@ -54,10 +54,6 @@
       this.wishIndex = elem.getAttribute('data-i');
       this.qualityNo = (_ref2 = elem.getAttribute('class')) != null ? (_ref3 = _ref2.match(/quality-(\d+)/)) != null ? _ref3[1] : void 0 : void 0;
     }
-
-    Item.prototype._getMarketPrice = function(source) {
-      return JSON.parse(this.elem.getAttribute("data-" + source));
-    };
 
     Item.prototype.remove = function() {
       return this.elem.parentNode.removeChild(this.elem);
