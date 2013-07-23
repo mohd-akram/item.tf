@@ -517,7 +517,7 @@ _getAjaxRequest = (callback) ->
 
   return request
 
-root.user = new User
+document.addEventListener 'DOMContentLoaded', -> root.user = new User
 
 root.ItemBox = ItemBox
 root.HoverBox = HoverBox

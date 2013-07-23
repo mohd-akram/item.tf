@@ -554,7 +554,9 @@
     return request;
   };
 
-  root.user = new User;
+  document.addEventListener('DOMContentLoaded', function() {
+    return root.user = new User;
+  });
 
   root.ItemBox = ItemBox;
 
