@@ -10,10 +10,8 @@
 
   User = (function() {
     function User() {
-      var _ref;
       this.id = getCookie('steam_id');
       this.loggedIn = Boolean(this.id);
-      this.isOwnPage = this.loggedIn && this.id === ((_ref = document.getElementById('steamid')) != null ? _ref.getAttribute('data-id') : void 0);
       Object.defineProperties(this, {
         priceSource: {
           get: function() {
@@ -25,6 +23,11 @@
         }
       });
     }
+
+    User.prototype.isOwnPage = function() {
+      var _ref;
+      return this.loggedIn && this.id === ((_ref = document.getElementById('steamid')) != null ? _ref.getAttribute('data-id') : void 0);
+    };
 
     return User;
 
@@ -289,7 +292,7 @@
     ItemBox.prototype._wishlistLink = function() {
       var action, button, idx, wish, _i, _len, _ref,
         _this = this;
-      if (user.isOwnPage) {
+      if (user.isOwnPage()) {
         _ref = document.getElementsByClassName('item');
         for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
           wish = _ref[idx];
@@ -302,7 +305,7 @@
       if (user.loggedIn) {
         action = '/wishlist/add';
         button = document.getElementById('wishlistbutton');
-        if (user.isOwnPage) {
+        if (user.isOwnPage()) {
           action = '/wishlist/remove';
           button.setAttribute('title', 'Remove from wishlist');
         }
@@ -312,7 +315,7 @@
             'index': _this.item.id,
             'quality': _this.form.quality.value
           };
-          if (user.isOwnPage) {
+          if (user.isOwnPage()) {
             data = {
               'i': _this.item.wishIndex
             };
@@ -554,9 +557,7 @@
     return request;
   };
 
-  document.addEventListener('DOMContentLoaded', function() {
-    return root.user = new User;
-  });
+  root.user = new User;
 
   root.ItemBox = ItemBox;
 

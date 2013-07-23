@@ -6,13 +6,14 @@ class User
   constructor: ->
     @id = getCookie 'steam_id'
     @loggedIn = Boolean(@id)
-    @isOwnPage = @loggedIn and @id is document.getElementById('steamid')
-                                             ?.getAttribute('data-id')
 
     Object.defineProperties @,
       priceSource:
         get: -> getCookie('price_source') or priceSources[0]
         set: (source) -> setCookie 'price_source', source, 365
+
+  isOwnPage: -> @loggedIn and @id is document.getElementById('steamid')
+                                            ?.getAttribute('data-id')
 
 class Item
   constructor: (@elem) ->
@@ -306,7 +307,7 @@ class ItemBox
 
   _wishlistLink: ->
     # Update wishlist item index
-    if user.isOwnPage
+    if user.isOwnPage()
       for wish, idx in document.getElementsByClassName 'item'
         if wish.getAttribute('data-i') is @item.wishIndex
           @item.wishIndex = idx.toString()
@@ -316,7 +317,7 @@ class ItemBox
       action = '/wishlist/add'
       button = document.getElementById 'wishlistbutton'
 
-      if user.isOwnPage
+      if user.isOwnPage()
         action = '/wishlist/remove'
         button.setAttribute 'title', 'Remove from wishlist'
 
@@ -324,7 +325,7 @@ class ItemBox
       button.onclick = =>
         data = 'index': @item.id, 'quality': @form.quality.value
 
-        if user.isOwnPage
+        if user.isOwnPage()
           data = 'i': @item.wishIndex
 
         postAjax action, data, (response) =>
@@ -517,7 +518,7 @@ _getAjaxRequest = (callback) ->
 
   return request
 
-document.addEventListener 'DOMContentLoaded', -> root.user = new User
+root.user = new User
 
 root.ItemBox = ItemBox
 root.HoverBox = HoverBox
