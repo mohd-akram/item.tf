@@ -208,7 +208,7 @@ ul {
   text-shadow: 0 0 10px black;
 }
 
-#itemname {
+#itemname, .itemname {
   margin-bottom: 5px;
   color: #D1D0D0;
 }
@@ -241,11 +241,11 @@ ul {
   right: 0;
 }
 
-#pricesource {
+#pricesource, .pricesource {
   color: rgb(179, 233, 99);
 }
 
-#prices {
+#prices, .prices {
   font-size: 1.1em;
   margin: 5px 0 5px 0;
 }

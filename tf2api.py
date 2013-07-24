@@ -483,9 +483,11 @@ class _SpreadsheetParser(HTMLParser):
 
             elif tag == 'div' and class_.startswith('tf2-ss-quality'):
                 title = str(attrs['title'].replace(u'\u2013', '-').title())
-                quality, price = title.split('\r')
+                quality, price = title.replace('Keya', 'Keys').split('\r')
 
                 quality = quality.replace('(Dirty)', 'Uncraftable')
+                # Remove everything in parentheses
+                price = re.sub(r' ?\([^)]*\)?', '', price)
 
                 isrefined = not any(i in price for i in ['Bud', 'Key'])
 
