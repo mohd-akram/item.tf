@@ -190,7 +190,7 @@ ul {
   background-position: bottom;
 }
 
-#itembox {
+#itembox, .itembox {
   display: none;
   z-index: 1;
   color: #EAEBD7;
@@ -270,10 +270,6 @@ ul {
 
 .neutral {
   color: #A1A1A1;
-}
-
-.item > div {
-  display: none;
 }
 
 #hoverbox {

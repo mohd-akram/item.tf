@@ -35,14 +35,15 @@
 
   Item = (function() {
     function Item(elem) {
-      var price, source, _i, _len, _ref, _ref1, _ref2, _ref3;
+      var price, source, _i, _len, _ref, _ref1, _ref2;
       this.elem = elem;
       this.name = elem.title;
       this.id = elem.getAttribute('data-index');
       this.imageUrl = elem.getAttribute('data-image');
       this.description = elem.getAttribute('data-description') || '';
+      this.level = elem.getAttribute('data-level');
       this.attributes = ((_ref = elem.getElementsByTagName('div')) != null ? (_ref1 = _ref[0]) != null ? _ref1.innerHTML : void 0 : void 0) || '';
-      this.classes = elem.getAttribute('data-classes');
+      this.classes = (elem.getAttribute('data-classes') || '').split(',');
       this.tags = (elem.getAttribute('data-tags') || '').split(',');
       this.storePrice = elem.getAttribute('data-storeprice');
       this.blueprints = elem.getElementsByTagName('ul');
@@ -55,7 +56,7 @@
         }
       }
       this.wishIndex = elem.getAttribute('data-i');
-      this.qualityNo = (_ref2 = elem.getAttribute('class')) != null ? (_ref3 = _ref2.match(/quality-(\d+)/)) != null ? _ref3[1] : void 0 : void 0;
+      this.qualityNo = (_ref2 = elem.className.match(/quality-(\d+)/)) != null ? _ref2[1] : void 0;
     }
 
     Item.prototype.remove = function() {
@@ -113,7 +114,7 @@
             _ref4 = [capitalize(i), i], title = _ref4[0], image = _ref4[1];
           }
         }
-        if (isToken && this.item.classes) {
+        if (isToken && this.item.classes.length) {
           _ref5 = ['Class Token', 'class-token'], title = _ref5[0], image = _ref5[1];
         }
         if ((title != null) && (image != null)) {
@@ -136,9 +137,9 @@
 
     ItemBox.prototype._classesHTML = function() {
       var html, i, _i, _len, _ref;
-      if (this.item.classes) {
+      if (this.item.classes.length) {
         html = '<div id="classes">';
-        _ref = this.item.classes.split(',');
+        _ref = this.item.classes;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           i = _ref[_i];
           html += "<a href=\"/search?q=" + i + "\" target=\"_blank\"\n title=\"" + i + "\" class=\"" + (i.toLowerCase()) + "\"></a>";
@@ -207,7 +208,7 @@
             for (j = _k = 0, _ref2 = i.getAttribute('data-count'); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
               name = i.title;
               index = i.getAttribute('data-index');
-              style = "background-image:url(" + (i.getAttribute('data-image')) + ")";
+              style = "background-image: url(" + (i.getAttribute('data-image')) + ")";
               listItem = "<div title=\"" + name + "\" class='item-small' style='" + style + "'></div>";
               if (index) {
                 url = "/item/" + index;
@@ -218,8 +219,7 @@
                 }
                 url = "/search?q=" + (encodeURIComponent(name));
               }
-              listItem = "<a href=\"" + url + "\" target='_blank'>" + listItem + "</a>";
-              html += listItem;
+              html += "<a href=\"" + url + "\" target='_blank'>" + listItem + "</a>";
             }
           }
           html += "<div title=\"Crafting Chance\" style=\"position: absolute; right: 10px\">\n<h3>" + chance + "%</h3></div></div>";
@@ -231,7 +231,7 @@
     };
 
     ItemBox.prototype._outpostHTML = function() {
-      return "<a href=\"#\" id=\"find-trades-btn\"\n class=\"icon-exchange icon-large button-icon\" title=\"Find Trades\"></a>\n\n<form name=\"tf2outpostform\" method=\"POST\" style=\"display:inline-block\"\n action=\"http://www.tf2outpost.com/search\">\n\n<input type=\"hidden\" name=\"json\">\n<input type=\"hidden\" name=\"type\" value=\"any\">\n<input type=\"submit\" name=\"submit\" value=\"Search\" style=\"display:none\">\n\n<select id=\"tradetype\" class=\"textbox\">\n  <option value=\"has1\">Want</option>\n  <option value=\"wants1\">Have</option>\n</select>\n\n<select id=\"quality\" class=\"textbox\">\n  <option value=\"6\">Unique</option>\n  <option value=\"3\">Vintage</option>\n  <option value=\"11\">Strange</option>\n  <option value=\"1\">Genuine</option>\n  <option value=\"13\">Haunted</option>\n  <option value=\"5\">Unusual</option>\n</select>\n\n</form>";
+      return "<a href=\"#\" id=\"find-trades-btn\"\n class=\"icon-exchange icon-large button-icon\" title=\"Find Trades\"></a>\n\n<form name=\"tf2outpostform\" method=\"POST\" style=\"display: inline-block\"\n action=\"http://www.tf2outpost.com/search\">\n\n<input type=\"hidden\" name=\"json\">\n<input type=\"hidden\" name=\"type\" value=\"any\">\n<input type=\"submit\" name=\"submit\" value=\"Search\" style=\"display: none\">\n\n<select id=\"tradetype\" class=\"textbox\">\n  <option value=\"has1\">Want</option>\n  <option value=\"wants1\">Have</option>\n</select>\n\n<select id=\"quality\" class=\"textbox\">\n  <option value=\"6\">Unique</option>\n  <option value=\"3\">Vintage</option>\n  <option value=\"11\">Strange</option>\n  <option value=\"1\">Genuine</option>\n  <option value=\"13\">Haunted</option>\n  <option value=\"5\">Unusual</option>\n</select>\n\n</form>";
     };
 
     ItemBox.prototype._wishlistHTML = function() {
@@ -279,7 +279,7 @@
     ItemBox.prototype._outpostLink = function() {
       var _this = this;
       if (window.navigator.userAgent.indexOf('Valve Steam GameOverlay') === -1) {
-        this.form.setAttribute('target', '_blank');
+        this.form.target = '_blank';
       }
       return document.getElementById('find-trades-btn').onclick = function(event) {
         var tradeType;
@@ -307,7 +307,7 @@
         button = document.getElementById('wishlistbutton');
         if (user.isOwnPage()) {
           action = '/wishlist/remove';
-          button.setAttribute('title', 'Remove from wishlist');
+          button.title = 'Remove from wishlist';
         }
         return button.onclick = function() {
           var data;
@@ -325,9 +325,9 @@
             if (response === 'Added') {
               message = document.getElementById('wishlistmessage');
               message.style.display = 'block';
-              message.setAttribute('class', 'animated fadeInLeft');
+              message.className = 'animated fadeInLeft';
               return setTimeout((function() {
-                return message.setAttribute('class', 'animated fadeOut');
+                return message.className = 'animated fadeOut';
               }), 1000);
             } else if (response === 'Removed') {
               _this.hide();
@@ -360,32 +360,27 @@
       this._outpostLink();
       this._wishlistLink();
       this._buyLink();
-      hoverArea = document.createElement('div');
+      hoverArea = this.item.elem.cloneNode(true);
       hoverArea.id = 'hoverarea';
-      hoverArea.title = this.item.name;
-      hoverArea.setAttribute('data-description', this.item.description);
-      hoverArea.setAttribute('data-tags', this.item.tags);
-      hoverArea.style.backgroundImage = "url('" + this.item.imageUrl + "')";
-      hoverArea.innerHTML = "<div style='display:none'>" + this.item.attributes + "</div>";
+      hoverArea.className = '';
+      hoverArea.setAttribute('style', "background-image: url(" + this.item.imageUrl + ")");
       this.elem.insertBefore(hoverArea, document.getElementById('blueprints') || document.getElementById('buttons'));
       new HoverBox(hoverArea);
-      if (this.item.name.indexOf('Strange') === -1) {
-        if (this.item.qualityNo) {
-          return this.form.quality.value = this.item.qualityNo;
-        } else if (this.prices) {
-          _ref = this.form.quality.options;
-          _results = [];
-          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-            option = _ref[i];
-            if (this.prices.innerHTML.indexOf(option.innerHTML) !== -1) {
-              this.form.quality.selectedIndex = i;
-              break;
-            } else {
-              _results.push(void 0);
-            }
+      if (this.item.qualityNo) {
+        return this.form.quality.value = this.item.qualityNo;
+      } else if (this.prices) {
+        _ref = this.form.quality.options;
+        _results = [];
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          option = _ref[i];
+          if (this.prices.innerHTML.indexOf(option.innerHTML) !== -1) {
+            this.form.quality.selectedIndex = i;
+            break;
+          } else {
+            _results.push(void 0);
           }
-          return _results;
         }
+        return _results;
       }
     };
 
@@ -440,8 +435,7 @@
     };
 
     HoverBox.prototype._show = function(e) {
-      var descList, description, item, title;
-      title = e.target.title;
+      var descList, description, item;
       item = new Item(e.target);
       description = escapeHTML(item.description);
       if (description) {
@@ -451,7 +445,7 @@
         }
         description = "<br>" + description;
       }
-      this.elem.innerHTML = "<div style=\"font-size: 1.2em; color: rgb(230, 230, 230)\">" + title + "</div>" + item.attributes + description;
+      this.elem.innerHTML = "<div style=\"font-size: 1.2em; color: rgb(230, 230, 230)\">" + item.name + "</div><span style=\"color: gray\">" + item.level + "</span>" + item.attributes + description;
       return this.elem.style.display = 'block';
     };
 
@@ -462,7 +456,7 @@
     HoverBox.prototype._hideItemBox = function(e) {
       var el, els, _ref;
       el = e.target;
-      if (el.getAttribute('class') !== 'item') {
+      if (el.className !== 'item') {
         els = [];
         while (el) {
           els.push(el);

@@ -21,8 +21,9 @@ class Item
     @id = elem.getAttribute 'data-index'
     @imageUrl = elem.getAttribute 'data-image'
     @description = elem.getAttribute('data-description') or ''
+    @level = elem.getAttribute 'data-level'
     @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
-    @classes = elem.getAttribute 'data-classes'
+    @classes = (elem.getAttribute('data-classes') or '').split ','
     @tags = (elem.getAttribute('data-tags') or '').split ','
     @storePrice = elem.getAttribute 'data-storeprice'
     @blueprints = elem.getElementsByTagName 'ul'
@@ -33,7 +34,7 @@ class Item
       @prices[source] = price if price
 
     @wishIndex = elem.getAttribute 'data-i'
-    @qualityNo = elem.getAttribute('class')?.match(/quality-(\d+)/)?[1]
+    @qualityNo = elem.className.match(/quality-(\d+)/)?[1]
 
   remove: -> @elem.parentNode.removeChild @elem
 
@@ -73,7 +74,7 @@ class ItemBox
         if i in @item.tags
           [title, image] = [capitalize(i), i]
 
-      if isToken and @item.classes
+      if isToken and @item.classes.length
         [title, image] = ['Class Token', 'class-token']
 
       if title? and image?
@@ -98,9 +99,9 @@ class ItemBox
     html = "<h2 id='itemname'>#{html}</h2>"
 
   _classesHTML: ->
-    if @item.classes
+    if @item.classes.length
       html = '<div id="classes">'
-      for i in @item.classes.split ','
+      for i in @item.classes
         html +=
           """
           <a href="/search?q=#{i}" target="_blank"
@@ -172,7 +173,7 @@ class ItemBox
           for j in [0...i.getAttribute 'data-count']
             name = i.title
             index = i.getAttribute 'data-index'
-            style = "background-image:url(#{i.getAttribute 'data-image'})"
+            style = "background-image: url(#{i.getAttribute 'data-image'})"
 
             listItem =  "<div title=\"#{name}\" class='item-small' style='#{
               style}'></div>"
@@ -188,8 +189,7 @@ class ItemBox
 
               url = "/search?q=#{encodeURIComponent name}"
 
-            listItem = "<a href=\"#{url}\" target='_blank'>#{listItem}</a>"
-            html += listItem
+            html += "<a href=\"#{url}\" target='_blank'>#{listItem}</a>"
 
         html +=
           """
@@ -205,12 +205,12 @@ class ItemBox
     <a href="#" id="find-trades-btn"
      class="icon-exchange icon-large button-icon" title="Find Trades"></a>
 
-    <form name="tf2outpostform" method="POST" style="display:inline-block"
+    <form name="tf2outpostform" method="POST" style="display: inline-block"
      action="http://www.tf2outpost.com/search">
 
     <input type="hidden" name="json">
     <input type="hidden" name="type" value="any">
-    <input type="submit" name="submit" value="Search" style="display:none">
+    <input type="submit" name="submit" value="Search" style="display: none">
 
     <select id="tradetype" class="textbox">
       <option value="has1">Want</option>
@@ -295,7 +295,7 @@ class ItemBox
   _outpostLink: ->
     # TF2Outpost link
     if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') is -1
-      @form.setAttribute 'target', '_blank'
+      @form.target = '_blank'
 
     document.getElementById('find-trades-btn').onclick = (event) =>
       tradeType = document.getElementById('tradetype').value
@@ -319,7 +319,7 @@ class ItemBox
 
       if user.isOwnPage()
         action = '/wishlist/remove'
-        button.setAttribute 'title', 'Remove from wishlist'
+        button.title = 'Remove from wishlist'
 
       # Add to wishlist or remove from wishlist
       button.onclick = =>
@@ -332,9 +332,9 @@ class ItemBox
           if response is 'Added'
             message = document.getElementById 'wishlistmessage'
             message.style.display = 'block'
-            message.setAttribute 'class', 'animated fadeInLeft'
+            message.className = 'animated fadeInLeft'
             setTimeout (->
-              message.setAttribute 'class', 'animated fadeOut'), 1000
+              message.className = 'animated fadeOut'), 1000
 
           else if response is 'Removed'
             @hide()
@@ -368,13 +368,10 @@ class ItemBox
     @_buyLink()
 
     # Hover area
-    hoverArea = document.createElement 'div'
+    hoverArea = @item.elem.cloneNode true
     hoverArea.id = 'hoverarea'
-    hoverArea.title = @item.name
-    hoverArea.setAttribute 'data-description', @item.description
-    hoverArea.setAttribute 'data-tags', @item.tags
-    hoverArea.style.backgroundImage = "url('#{@item.imageUrl}')"
-    hoverArea.innerHTML = "<div style='display:none'>#{@item.attributes}</div>"
+    hoverArea.className = ''
+    hoverArea.setAttribute 'style', "background-image: url(#{@item.imageUrl})"
 
     # Add hover area to itembox
     @elem.insertBefore hoverArea,
@@ -385,15 +382,14 @@ class ItemBox
     new HoverBox(hoverArea)
 
     # Auto quality selection
-    if @item.name.indexOf('Strange') is -1
-      # Wishlist item quality
-      if @item.qualityNo
-        @form.quality.value = @item.qualityNo
-      else if @prices
-        for option, i in @form.quality.options
-          if @prices.innerHTML.indexOf(option.innerHTML) isnt -1
-            @form.quality.selectedIndex = i
-            break
+    # Wishlist item quality
+    if @item.qualityNo
+      @form.quality.value = @item.qualityNo
+    else if @prices
+      for option, i in @form.quality.options
+        if @prices.innerHTML.indexOf(option.innerHTML) isnt -1
+          @form.quality.selectedIndex = i
+          break
 
 class HoverBox
   constructor: (arg) ->
@@ -428,8 +424,6 @@ class HoverBox
       document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>
-    title = e.target.title
-
     item = new Item(e.target)
     description = escapeHTML item.description
 
@@ -445,7 +439,8 @@ class HoverBox
     @elem.innerHTML =
       """
       <div style="font-size: 1.2em; color: rgb(230, 230, 230)">#{
-      title}</div>#{item.attributes}#{description}
+      item.name}</div><span style="color: gray">#{item.level}</span>#{
+      item.attributes}#{description}
       """
 
     @elem.style.display = 'block'
@@ -455,7 +450,7 @@ class HoverBox
 
   _hideItemBox: (e) =>
     el = e.target
-    if el.getAttribute('class') isnt 'item'
+    if el.className isnt 'item'
       els = []
       while el
         els.push el

@@ -14,6 +14,16 @@
   <body>
     <div id="container">
       <h1 id="back"><a href="/">&lt;</a></h1>
+      <div class='itembox' style='display: block'>
+        <h2 id="itemname">{{item['name']}}</h2>
+        {% if item['marketprice']['backpack.tf'] %}
+        <span id="pricesource">Backpack.tf</span>
+        <h3 id="prices">{% for quality, value in item['marketprice']['backpack.tf'].items() %}
+          <span class="{{quality|lower}}">{{quality}}</span>: {{value}}<br>
+        {% endfor %}</h3>
+        {% endif %}
+        <img src="{{item['image_large']}}">
+      </div>
       {% from 'macros.html' import showitem %}
       {{ showitem(item, False) }}
       <footer>{% include 'footer.html' %}</footer>
