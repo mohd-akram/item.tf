@@ -368,12 +368,12 @@
       new HoverBox(hoverArea);
       if (this.item.qualityNo) {
         return this.form.quality.value = this.item.qualityNo;
-      } else if (this.prices) {
+      } else if (this.item.prices[this.source]) {
         _ref = this.form.quality.options;
         _results = [];
         for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
           option = _ref[i];
-          if (this.prices.innerHTML.indexOf(option.innerHTML) !== -1) {
+          if (option.innerHTML in this.item.prices[this.source]) {
             this.form.quality.selectedIndex = i;
             break;
           } else {

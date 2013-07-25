@@ -385,9 +385,9 @@ class ItemBox
     # Wishlist item quality
     if @item.qualityNo
       @form.quality.value = @item.qualityNo
-    else if @prices
+    else if @item.prices[@source]
       for option, i in @form.quality.options
-        if @prices.innerHTML.indexOf(option.innerHTML) isnt -1
+        if option.innerHTML of @item.prices[@source]
           @form.quality.selectedIndex = i
           break
 
