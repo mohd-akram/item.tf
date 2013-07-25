@@ -276,6 +276,7 @@ class ItemBox
 
   _pricesLink: ->
     button = document.getElementById 'pricesource'
+    prices = document.getElementById 'prices'
 
     if button and Object.keys(@item.prices).length > 1
       button.style.cursor = 'pointer'
@@ -284,7 +285,7 @@ class ItemBox
         @_nextPriceSource()
 
         button.innerHTML = capitalize @source
-        @prices.innerHTML = @_priceSourceHTML()
+        prices.innerHTML = @_priceSourceHTML()
 
       button.onmouseover = ->
         button.style.textShadow = '0 0 10px rgb(196, 241, 128)'
@@ -360,7 +361,6 @@ class ItemBox
       """
 
     @form = document.tf2outpostform
-    @prices = document.getElementById 'prices'
 
     @_pricesLink()
     @_outpostLink()

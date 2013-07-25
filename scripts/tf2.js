@@ -257,15 +257,16 @@
     };
 
     ItemBox.prototype._pricesLink = function() {
-      var button,
+      var button, prices,
         _this = this;
       button = document.getElementById('pricesource');
+      prices = document.getElementById('prices');
       if (button && Object.keys(this.item.prices).length > 1) {
         button.style.cursor = 'pointer';
         button.onclick = function() {
           _this._nextPriceSource();
           button.innerHTML = capitalize(_this.source);
-          return _this.prices.innerHTML = _this._priceSourceHTML();
+          return prices.innerHTML = _this._priceSourceHTML();
         };
         button.onmouseover = function() {
           return button.style.textShadow = '0 0 10px rgb(196, 241, 128)';
@@ -355,7 +356,6 @@
       var hoverArea, i, option, _i, _len, _ref, _results;
       this.elem.innerHTML = "" + (this._tagsHTML()) + (this._nameHTML()) + (this._classesHTML()) + "\n" + (this._bundleHTML()) + "\n" + (this._pricesHTML()) + "\n" + (this._blueprintsHTML()) + "\n" + (this._buttonsHTML()) + (this._buyHTML());
       this.form = document.tf2outpostform;
-      this.prices = document.getElementById('prices');
       this._pricesLink();
       this._outpostLink();
       this._wishlistLink();
