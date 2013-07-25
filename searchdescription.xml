@@ -2,7 +2,7 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>TF2 Find</ShortName>
   <Description>Find TF2 items</Description>
-  <Url type="text/html" 
+  <Url type="text/html"
        template="http://www.tf2find.com/search?q={searchTerms}"/>
   <Url type="application/x-suggestions+json"
        template="http://www.tf2find.com/suggest?q={searchTerms}"/>

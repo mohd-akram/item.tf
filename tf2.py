@@ -6,6 +6,7 @@ import json
 import logging
 import time
 import random
+from itertools import izip
 from datetime import datetime, timedelta
 from httplib import HTTPException
 from xml.dom.minidom import getDOMImplementation
@@ -30,8 +31,8 @@ def updatecache():
     newitems = [itemsdict[index] for index in tf2info.newstoreprices]
 
     nametoindexmap = {}
-    itemnames = []
     itemindexes = set()
+    suggestions = [[], [], []]
 
     sitemap = Sitemap()
     sitemap.add(config.homepage)
@@ -42,10 +43,15 @@ def updatecache():
 
         if tf2search.isvalidresult(itemdict):
             nametoindexmap[name] = index
-            itemnames.append(name)
             itemindexes.add(index)
 
             path = '{0}/item/{1}'.format(config.homepage, index)
+
+            suggestions[0].append(name)
+            suggestions[1].append('{} - {}'.format(
+                ', '.join(itemdict['classes']), ', '.join(itemdict['tags'])))
+            suggestions[2].append(path)
+
             sitemap.add(path)
 
     memcache.set_multi({'itemsdict0': itemsdict.dicts[0],
@@ -53,9 +59,9 @@ def updatecache():
                         'itemsets': tf2info.itemsets,
                         'bundles': tf2info.bundles,
                         'nametoindexmap': nametoindexmap,
-                        'itemnames': itemnames,
                         'itemindexes': itemindexes,
                         'newitems': newitems,
+                        'suggestions': suggestions,
                         'sitemap': sitemap.toxml()})
     t1 = time.time()
 
@@ -158,13 +164,12 @@ class TF2SearchHandler(Handler):
                 itemindexes = getfromcache('itemindexes')
                 return self.redirect(
                     # random.choice does not support sets
-                    '/item/{}'.format(random.choice(list(itemindexes))))
+                    '/item/{}'.format(random.choice(tuple(itemindexes))))
 
             nametoindexmap = getfromcache('nametoindexmap')
 
             if query in nametoindexmap:
-                return self.redirect(
-                    '/item/{}'.format(nametoindexmap[query]))
+                return self.redirect('/item/{}'.format(nametoindexmap[query]))
 
             itemsdict = getfromcache('itemsdict')
             itemsets = getfromcache('itemsets')
@@ -193,19 +198,23 @@ class TF2SuggestHandler(Handler):
     def get(self):
         query = self.request.get('q')
 
-        itemnames = getfromcache('itemnames')
+        allsuggestions = getfromcache('suggestions')
+        suggestions = [query, [], [], []]
+
         if query:
-            suggestions = []
-            for name in itemnames:
+            for name, desc, path in izip(*allsuggestions):
                 foldedname = tf2search.foldaccents(name)
+
                 if query in foldedname or query in foldedname.lower():
-                    suggestions.append(name)
+                    suggestions[1].append(name)
+                    suggestions[2].append(desc)
+                    suggestions[3].append(path)
         else:
-            suggestions = itemnames
+            suggestions[1:] = allsuggestions
 
         self.response.headers['Content-Type'] = ('application/json;'
                                                  'charset=UTF-8')
-        self.write(json.dumps([query, suggestions]))
+        self.write(json.dumps(suggestions))
 
 
 class TF2UserHandler(Handler):

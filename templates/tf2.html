@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
     <script src="/scripts/tf2.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <style>
       .ui-autocomplete {
@@ -86,7 +86,7 @@
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
         <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
       </h4>
-      <form action="/search">
+      <form id="searchform" action="/search">
         <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
@@ -102,14 +102,16 @@
 
     $('#help').click(function(){
       $('#settings-list').hide();
-      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast')});
+      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
+    });
 
     $('#settings').click(function() {
       $('#help-list').hide();
-      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast')});
+      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
+    });
 
     $('#settingsform').submit(function() {
-      user.priceSource = $('#pricesetting').val()
+      user.priceSource = $('#pricesetting').val();
       $('#settings-list').hide('fast');
       return false;
     });
@@ -135,15 +137,21 @@
 
       $.getJSON('/suggest', function (data) {
 
-        $( "#searchbox" ).autocomplete({
-          source: function( request, response ) {
-              var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
-              response( $.grep( data[1], function( value ) {
-                  value = value.label || value.value || value;
-                  return matcher.test( value ) || matcher.test( normalize( value ) );
-              }) );
-          },
-          autoFocus: true, delay: 50, minLength: 2
+        $('#searchbox').autocomplete({
+          source: function(request, response) {
+              var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+              response(function() {
+                var result = [];
+                for (var i = 0; i < data[1].length; i++) {
+                  var name = data[1][i];
+                  if (matcher.test(name) || matcher.test(normalize(name)))
+                    result.push({label: name, value: data[3][i]});
+                }
+                return result;
+              }());
+            }, delay: 50, minLength: 2,
+            focus: function(event, ui) {$(this).val(ui.item.label);return false;},
+            select: function(event, ui) {$(this).val(ui.item.label);location.href=ui.item.value;return false;}
         });
       });
     });

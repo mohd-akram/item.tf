@@ -236,7 +236,7 @@
 
     ItemBox.prototype._wishlistHTML = function() {
       if (user.loggedIn) {
-        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"button-icon rounded icon-star icon-large\"\n style=\"background-color: transparent\"\n title=\"Add to wishlist\"></i>\n</div>";
+        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"button-icon rounded icon-star icon-large\"\n style=\"background-color: transparent\"\n title=\"Add to Wishlist\"></i>\n</div>";
       } else {
         return '';
       }
@@ -307,7 +307,7 @@
         button = document.getElementById('wishlistbutton');
         if (user.isOwnPage()) {
           action = '/wishlist/remove';
-          button.title = 'Remove from wishlist';
+          button.title = 'Remove from Wishlist';
         }
         return button.onclick = function() {
           var data;

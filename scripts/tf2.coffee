@@ -237,7 +237,7 @@ class ItemBox
        style="display: none; margin: 0 0 4px -18px">Added</div>
       <i id="wishlistbutton" class="button-icon rounded icon-star icon-large"
        style="background-color: transparent"
-       title="Add to wishlist"></i>
+       title="Add to Wishlist"></i>
       </div>
       """
     else ''
@@ -319,7 +319,7 @@ class ItemBox
 
       if user.isOwnPage()
         action = '/wishlist/remove'
-        button.title = 'Remove from wishlist'
+        button.title = 'Remove from Wishlist'
 
       # Add to wishlist or remove from wishlist
       button.onclick = =>
