@@ -356,23 +356,28 @@ def _getpriceasitems(amount, denom, itemsdict):
 
     denomtoidx = tf2api.getalldenoms()
     denoms = denomtoidx.keys()
+    denomidx = denoms.index(denom)
 
-    # Convert denomination to Earbuds
-    for i in denoms[:denoms.index(denom)]:
-        amount /= _getdenomvalue(i, itemsdict)
+    # Convert denomination to higher value if possible
+    for i in range(denomidx - 1, -1, -1):
+        val = amount / _getdenomvalue(denoms[i], itemsdict)
 
-    denom = 'Earbuds'
+        if val >= 1:
+            amount = val
+            denomidx = i
+        else:
+            break
 
-    if amount <= 2000:
+    if amount <= len(itemsdict):
         # Get count of each denomination and add items to results
-        for i in denoms:
-            idx = denomtoidx[i]
-            count = int(amount)
-            value = _getdenomvalue(i, itemsdict)
+        for d in denoms[denomidx:]:
+            idx = denomtoidx[d]
+            count = int(round(amount, 10))
+            value = _getdenomvalue(d, itemsdict)
 
             if count:
                 items.extend([itemsdict[idx]] * count)
-                counts[i] = count
+                counts[d] = count
 
             amount = ((amount - count) * value)
 
@@ -388,8 +393,7 @@ def _getdenomvalue(denom, itemsdict):
 
     if denom in ('Earbuds', 'Key'):
         value = float(
-            itemsdict[idx]['marketprice']['backpack.tf']['Unique']
-            .split()[0])
+            itemsdict[idx]['marketprice']['backpack.tf']['Unique'].split()[0])
     else:
         value = {'Refined': 3, 'Reclaimed': 3, 'Scrap': 2, 'Weapon': 1}[denom]
 

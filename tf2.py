@@ -351,20 +351,23 @@ class ItemsDict:
     def __contains__(self, key):
         return any(key in dict_ for dict_ in self.dicts)
 
-    def __getitem__(self, idx):
+    def __len__(self):
+        return sum(len(dict_) for dict_ in self.dicts)
+
+    def __getitem__(self, key):
         for dict_ in self.dicts:
-            if idx in dict_:
-                return dict_[idx]
+            if key in dict_:
+                return dict_[key]
 
     def __iter__(self):
         for dict_ in self.dicts:
-            for idx in dict_:
-                yield idx
+            for key in dict_:
+                yield key
 
     def itervalues(self):
         for dict_ in self.dicts:
-            for idx in dict_:
-                yield dict_[idx]
+            for key in dict_:
+                yield dict_[key]
 
     def values(self):
         return list(self.itervalues())
