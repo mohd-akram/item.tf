@@ -131,8 +131,9 @@ class ItemBox
 
     if @item.prices[@source]
       if @source is 'backpack.tf'
-        classifiedsURL = "http://backpack.tf/classifieds/search/#{
-          encodeURIComponent @item.name}"
+        classifiedsURL =
+          "http://backpack.tf/ajax/search_generate.php?defindex=#{
+           @item.id}&appid=440&redir=classifieds"
 
         html +=
           """

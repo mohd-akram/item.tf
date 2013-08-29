@@ -166,7 +166,7 @@
       }
       if (this.item.prices[this.source]) {
         if (this.source === 'backpack.tf') {
-          classifiedsURL = "http://backpack.tf/classifieds/search/" + (encodeURIComponent(this.item.name));
+          classifiedsURL = "http://backpack.tf/ajax/search_generate.php?defindex=" + this.item.id + "&appid=440&redir=classifieds";
           html += "<a href=\"" + classifiedsURL + "\" class=\"rounded-tight glow\"\n target=\"_blank\" style=\"color: rgb(129, 170, 197)\">\nClassifieds</a><br>";
         }
         _ref = this.item.prices[this.source];
