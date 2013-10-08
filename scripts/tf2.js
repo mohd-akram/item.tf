@@ -152,23 +152,19 @@
 
     ItemBox.prototype._bundleHTML = function() {
       if (__indexOf.call(this.item.tags, 'bundle') >= 0 && this.item.description.indexOf('---') !== -1) {
-        return "<a href=\"/search?q=" + (encodeURIComponent(this.item.name)) + "%20Set\"\n target=\"_blank\">\n<div class=\"rounded glow\" style=\"display: inline-block; padding: 7px\">\nView items\n</div>\n</a>";
+        return "<a href=\"/search?q=" + (encodeURIComponent(this.item.name)) + "%20Set\"\n target=\"_blank\">\n<div class=\"rounded glow\" style=\"display: inline-block; padding: 7px\">\nView Items\n</div>\n</a>";
       } else {
         return '';
       }
     };
 
     ItemBox.prototype._priceSourceHTML = function() {
-      var classifiedsURL, denom, denomMatch, html, price, quality, _ref;
+      var denom, denomMatch, html, price, quality, _ref;
       html = '';
       if (!this.item.prices[this.source]) {
         this._nextPriceSource();
       }
       if (this.item.prices[this.source]) {
-        if (this.source === 'backpack.tf') {
-          classifiedsURL = "http://backpack.tf/ajax/search_generate.php?defindex=" + this.item.id + "&appid=440&redir=classifieds";
-          html += "<a href=\"" + classifiedsURL + "\" class=\"rounded-tight glow\"\n target=\"_blank\" style=\"color: rgb(129, 170, 197)\">\nClassifieds</a><br>";
-        }
         _ref = this.item.prices[this.source];
         for (quality in _ref) {
           price = _ref[quality];
@@ -245,12 +241,12 @@
     ItemBox.prototype._buttonsHTML = function() {
       var wikiLink;
       wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(this.item.name));
-      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
+      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n<a class=\"icon-list icon-large button-icon\" target=\"_blank\"\n title=\"Backpack.tf Classifieds\"\n href=\"http://backpack.tf/ajax/search_generate.php?defindex=" + this.item.id + "&appid=440&redir=classifieds\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
     };
 
     ItemBox.prototype._buyHTML = function() {
       if (this.item.storePrice) {
-        return "<div id=\"buy\">\n<form style=\"display: inline-block\">$" + this.item.storePrice + "<br>\n<input type=\"text\" value=\"1\" size=\"1\" id=\"quantity\"\n class=\"textbox\" style=\"text-align: right\">\n</form><a href=\"#\" id=\"buybutton\"></a></div>";
+        return "<div id=\"buy\">\n<form style=\"display: inline-block\">$" + this.item.storePrice + "<br>\n<input type=\"text\" value=\"1\" size=\"1\" id=\"quantity\"\n class=\"textbox\" style=\"text-align: right\">\n</form><a href=\"#\" target=\"_blank\" id=\"buybutton\"></a></div>";
       } else {
         return '';
       }
@@ -340,15 +336,14 @@
     };
 
     ItemBox.prototype._buyLink = function() {
-      var button,
+      var button, quantity,
         _this = this;
       button = document.getElementById('buybutton');
       if (button) {
-        return button.onclick = function() {
-          var quantity;
-          quantity = document.getElementById('quantity').value;
-          return window.open("http://store.steampowered.com/buyitem/440/" + _this.item.id + "/" + quantity);
-        };
+        quantity = document.getElementById('quantity');
+        return (quantity.onchange = function() {
+          return button.href = "http://store.steampowered.com/buyitem/440/" + _this.item.id + "/" + quantity.value;
+        })();
       }
     };
 

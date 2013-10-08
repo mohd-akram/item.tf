@@ -117,7 +117,7 @@ class ItemBox
       <a href="/search?q=#{encodeURIComponent @item.name}%20Set"
        target="_blank">
       <div class="rounded glow" style="display: inline-block; padding: 7px">
-      View items
+      View Items
       </div>
       </a>
       """
@@ -130,18 +130,6 @@ class ItemBox
       @_nextPriceSource()
 
     if @item.prices[@source]
-      if @source is 'backpack.tf'
-        classifiedsURL =
-          "http://backpack.tf/ajax/search_generate.php?defindex=#{
-           @item.id}&appid=440&redir=classifieds"
-
-        html +=
-          """
-          <a href="#{classifiedsURL}" class="rounded-tight glow"
-           target="_blank" style="color: rgb(129, 170, 197)">
-          Classifieds</a><br>
-          """
-
       for quality, price of @item.prices[@source]
         denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
 
@@ -258,6 +246,11 @@ class ItemBox
      href="http://steamcommunity.com/market/search?q=appid%3A440%20#{
      encodeURIComponent @item.name}"></a>
 
+    <a class="icon-list icon-large button-icon" target="_blank"
+     title="Backpack.tf Classifieds"
+     href="http://backpack.tf/ajax/search_generate.php?defindex=#{
+     @item.id}&appid=440&redir=classifieds"></a>
+
     #{@_outpostHTML()}
     #{@_wishlistHTML()}
     </div>
@@ -271,7 +264,7 @@ class ItemBox
       <form style="display: inline-block">$#{@item.storePrice}<br>
       <input type="text" value="1" size="1" id="quantity"
        class="textbox" style="text-align: right">
-      </form><a href="#" id="buybutton"></a></div>
+      </form><a href="#" target="_blank" id="buybutton"></a></div>
       """
     else ''
 
@@ -345,10 +338,10 @@ class ItemBox
   _buyLink: ->
     button = document.getElementById 'buybutton'
     if button
-      button.onclick = =>
-        quantity = document.getElementById('quantity').value
-        window.open "http://store.steampowered.com/buyitem/440/#{
-          @item.id}/#{quantity}"
+      quantity = document.getElementById('quantity')
+      (quantity.onchange = =>
+        button.href = "http://store.steampowered.com/buyitem/440/#{
+          @item.id}/#{quantity.value}")()
 
   _generate: ->
     # Itembox HTML
