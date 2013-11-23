@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<webessentials version="1.9">
+  <settings>
+    <CoffeeScriptGenerateJsFile>True</CoffeeScriptGenerateJsFile>
+    <CoffeeScriptMinify>True</CoffeeScriptMinify>
+    <CoffeeScriptShowPreviewWindow>True</CoffeeScriptShowPreviewWindow>
+    <CoffeeScriptWrapClosure>True</CoffeeScriptWrapClosure>
+    <CssEnableMinification>True</CssEnableMinification>
+    <CssErrorLocation>1</CssErrorLocation>
+    <CssShowBrowserTooltip>True</CssShowBrowserTooltip>
+    <CssShowUnsupported>True</CssShowUnsupported>
+    <CssSyncVendorValues>True</CssSyncVendorValues>
+    <EnableBrowserLinkMenu>True</EnableBrowserLinkMenu>
+    <EnableEnterFormat>True</EnableEnterFormat>
+    <JavaScriptEnableMinification>True</JavaScriptEnableMinification>
+    <JavaScriptGenerateSourceMaps>True</JavaScriptGenerateSourceMaps>
+    <JsHint_bitwise>True</JsHint_bitwise>
+    <JsHint_browser>True</JsHint_browser>
+    <JsHint_debug>True</JsHint_debug>
+    <JsHint_devel>True</JsHint_devel>
+    <JsHint_eqeqeq>True</JsHint_eqeqeq>
+    <JsHint_expr>True</JsHint_expr>
+    <JsHint_ignoreFiles>kendo.*; globalize.*</JsHint_ignoreFiles>
+    <JsHint_jquery>True</JsHint_jquery>
+    <JsHint_laxbreak>True</JsHint_laxbreak>
+    <JsHint_laxcomma>True</JsHint_laxcomma>
+    <JsHint_maxerr>50</JsHint_maxerr>
+    <JsHint_regexdash>True</JsHint_regexdash>
+    <JsHint_smarttabs>True</JsHint_smarttabs>
+    <JsHint_undef>True</JsHint_undef>
+    <JsHint_unused>True</JsHint_unused>
+    <JsHintEnable>True</JsHintEnable>
+    <JsHintErrorLocation>2</JsHintErrorLocation>
+    <LessGenerateCssFile>True</LessGenerateCssFile>
+    <LessMinify>True</LessMinify>
+    <LessShowPreviewWindow>True</LessShowPreviewWindow>
+    <PixelPushing_OnByDefault>True</PixelPushing_OnByDefault>
+    <UnusedCss_IgnorePatterns>bootstrap*; reset.css; normalize.css; jquery*; toastr*; foundation*; animate*; inuit*; elements*; ratchet*; hint*; flat-ui*; 960*; skeleton*</UnusedCss_IgnorePatterns>
+  </settings>
+</webessentials>

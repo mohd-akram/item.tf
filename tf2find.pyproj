@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{c1228c2d-744f-4b43-b06d-02dbc6a3adce}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>C:\Program Files (x86)\Google\google_appengine\dev_appserver.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>..</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>tf2find</CommandLineArguments>
+    <InterpreterPath />
+    <InterpreterArguments />
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Compile Include="config.py" />
+    <Compile Include="handler.py" />
+    <Compile Include="main.py" />
+    <Compile Include="tf2.py" />
+    <Compile Include="tf2api.py" />
+    <Compile Include="tf2search.py" />
+    <Content Include="css\animate-custom.css" />
+    <Content Include="css\message.css" />
+    <Content Include="css\tf2.css" />
+    <Content Include="images\classes.png" />
+    <Content Include="images\tags.png" />
+    <Content Include="scripts\tf2.coffee" />
+    <Content Include="static\apple-touch-icon-114x114-precomposed.png" />
+    <Content Include="static\apple-touch-icon-144x144-precomposed.png" />
+    <Content Include="static\apple-touch-icon-57x57-precomposed.png" />
+    <Content Include="static\apple-touch-icon-72x72-precomposed.png" />
+    <Content Include="templates\analytics.html" />
+    <Content Include="templates\error.html" />
+    <Content Include="templates\footer.html" />
+    <Content Include="templates\macros.html" />
+    <Content Include="templates\message.html" />
+    <Content Include="templates\tf2item.html" />
+    <Content Include="templates\tf2results.html" />
+    <Content Include="templates\tf2user.html" />
+    <Content Include="templates\tf2.html" />
+    <Content Include="images\items\class_token.png" />
+    <Content Include="images\items\melee.png" />
+    <Content Include="images\items\pda2.png" />
+    <Content Include="images\items\primary.png" />
+    <Content Include="images\items\secondary.png" />
+    <Content Include="images\items\slot_token.png" />
+    <Content Include="images\items\token.png" />
+    <Content Include="images\items\whatsthis.png" />
+    <Content Include="images\paints\Paint_Can_10843461.png" />
+    <Content Include="images\paints\Paint_Can_11049612.png" />
+    <Content Include="images\paints\Paint_Can_12073019.png" />
+    <Content Include="images\paints\Paint_Can_12377523.png" />
+    <Content Include="images\paints\Paint_Can_12807213.png" />
+    <Content Include="images\paints\Paint_Can_12955537.png" />
+    <Content Include="images\paints\Paint_Can_1315860.png" />
+    <Content Include="images\paints\Paint_Can_13595446.png" />
+    <Content Include="images\paints\Paint_Can_14204632.png" />
+    <Content Include="images\paints\Paint_Can_15132390.png" />
+    <Content Include="images\paints\Paint_Can_15185211.png" />
+    <Content Include="images\paints\Paint_Can_15308410.png" />
+    <Content Include="images\paints\Paint_Can_15787660.png" />
+    <Content Include="images\paints\Paint_Can_16738740.png" />
+    <Content Include="images\paints\Paint_Can_2960676.png" />
+    <Content Include="images\paints\Paint_Can_3100495.png" />
+    <Content Include="images\paints\Paint_Can_3329330.png" />
+    <Content Include="images\paints\Paint_Can_3874595.png" />
+    <Content Include="images\paints\Paint_Can_4345659.png" />
+    <Content Include="images\paints\Paint_Can_4732984.png" />
+    <Content Include="images\paints\Paint_Can_5322826.png" />
+    <Content Include="images\paints\Paint_Can_6637376.png" />
+    <Content Include="images\paints\Paint_Can_6901050.png" />
+    <Content Include="images\paints\Paint_Can_7511618.png" />
+    <Content Include="images\paints\Paint_Can_8154199.png" />
+    <Content Include="images\paints\Paint_Can_8208497.png" />
+    <Content Include="images\paints\Paint_Can_8289918.png" />
+    <Content Include="images\paints\Paint_Can_8400928.png" />
+    <Content Include="images\paints\Paint_Can_8421376.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="css" />
+    <Folder Include="images" />
+    <Folder Include="images\items" />
+    <Folder Include="images\paints" />
+    <Folder Include="scripts" />
+    <Folder Include="static" />
+    <Folder Include="templates" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\2.7" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>
