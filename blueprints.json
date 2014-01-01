@@ -1770,7 +1770,22 @@
       "Wilson Weave",
       "Buck Turner All-Stars",
       "Tomb Wrapper",
-      "Bacteria Blocker"
+      "Bacteria Blocker",
+      "Beastly Bonnet",
+      "Cheet Sheet",
+      "Breakneck Baggies",
+      "Bigg Mann on Campus",
+      "Cool Cat Cardigan",
+      "Greased Lightning",
+      "Caffeine Cooler",
+      "Half-Pipe Hurdler",
+      "Macho Mann",
+      "Delinquent's Down Vest",
+      "Flapjack",
+      "Chucklenuts",
+      "Little Drummer Mann",
+      "Scout Shako",
+      "Runner's Warm-Up"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1813,7 +1828,21 @@
       "Cold Killer",
       "Mutton Mann",
       "Sydney Straw Boat",
-      "Steel Songbird"
+      "Steel Songbird",
+      "Well-Rounded Rifleman",
+      "Macho Mann",
+      "Birdman of Australiacatraz",
+      "Cobber Chameleon",
+      "Falconer",
+      "Wet Works",
+      "Chronomancer",
+      "Brim-Full Of Bullets",
+      "Li'l Snaggletooth",
+      "Snow Scoper",
+      "Toy Soldier",
+      "Five-Month Shadow",
+      "Golden Garment",
+      "Extra Layer"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1869,7 +1898,25 @@
       "Chief Constable",
       "Deadliest Duckling",
       "Soldier's Slope Scopers",
-      "Doe-Boy"
+      "Doe-Boy",
+      "Cloud Crasher",
+      "Macho Mann",
+      "Valley Forge",
+      "Compatriot",
+      "Caribbean Conqueror",
+      "Colonial Clogs",
+      "Whirly Warrior",
+      "Federal Casemaker",
+      "Rebel Rouser",
+      "Shogun's Shoulder Guard",
+      "Hornblower",
+      "Lieutenant Bites",
+      "Brawling Buccaneer",
+      "Founding Father",
+      "Viking Braider",
+      "Slo-Poke",
+      "Antarctic Parka",
+      "Marshall's Mutton Chops"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1919,7 +1966,22 @@
       "Mutton Mann",
       "Wilson Weave",
       "Buck Turner All-Stars",
-      "Blind Justice"
+      "Blind Justice",
+      "Tartantaloons",
+      "Tartan Shade",
+      "Dark Age Defender",
+      "Glasgow Great Helm",
+      "Macho Mann",
+      "Black Watch",
+      "Tartan Spartan",
+      "Gaelic Golf Bag",
+      "Whiskey Bib",
+      "Stormin' Norman",
+      "Gaelic Garb",
+      "Hurt Locher",
+      "Pirate Bandana",
+      "Highland High Heels",
+      "Tartan Tyrolean"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -1965,6 +2027,7 @@
       "Champ Stamp",
       "Soviet Gentleman",
       "Crafty Hair",
+      "Heavy Artillery Officer's Cap",
       "K-9 Mane",
       "Siberian Sophisticate",
       "Brock's Locks",
@@ -1973,7 +2036,23 @@
       "Aqua Flops",
       "Hunger Force",
       "Wilson Weave",
-      "Pounding Father"
+      "Pounding Father",
+      "Tyurtlenek",
+      "Red Army Robin",
+      "Heavy-Weight Champ",
+      "Tsarboosh",
+      "Macho Mann",
+      "Katyusha",
+      "Borscht Belt",
+      "Bear Necessities",
+      "Bolshevik Biker",
+      "Gabe Glasses",
+      "Viking Braider",
+      "Cuban Bristle Crisis",
+      "Weight Room Warmer",
+      "Dictator",
+      "Minnesota Slick",
+      "Mann Of House"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -2012,12 +2091,32 @@
       "Medi-Mask",
       "Archimedes",
       "Crafty Hair",
+      "Combat Medic's Crusher Cap",
       "Foppish Physician",
       "Der Wintermantel",
       "Doc's Holiday",
       "Mutton Mann",
       "Wilson Weave",
-      "Weather Master"
+      "Weather Master",
+      "Powdered Practitioner",
+      "Macho Mann",
+      "Das Hazmattenhatten",
+      "Das Feelinbeterbager",
+      "Das Ubersternmann",
+      "Das Metalmeatencasen",
+      "Das Naggenvatcher",
+      "Das Maddendoktor",
+      "Das Gutenkutteharen",
+      "Baron von Havenaplane",
+      "Das Fantzipantzen",
+      "Medical Mystery",
+      "A Brush with Death",
+      "Slick Cut",
+      "Ward",
+      "Nunhood",
+      "Angel of Death",
+      "Mann of Reason",
+      "Ruffled Ruprecht"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -2075,7 +2174,26 @@
       "Rail Spikes",
       "Winter Wonderland Wrap",
       "Person in the Iron Mask",
-      "Breather Bag"
+      "Breather Bag",
+      "Steel Sixpack",
+      "Centurion",
+      "Mair Mask",
+      "El Muchacho",
+      "Backpack Broiler",
+      "Burning Bandana",
+      "Soot Suit",
+      "Hive Minder",
+      "Pampered Pyro",
+      "Bone Dome",
+      "Air Raider",
+      "Trickster's Turnout Gear",
+      "Cotton Head",
+      "Pop-eyes",
+      "Blizzard Breather",
+      "Sub Zero Suit",
+      "Trail-Blazer",
+      "Tiny Timber",
+      "Toy Tailor"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -2116,7 +2234,18 @@
       "Distinguished Rogue",
       "Scarecrow",
       "Exorcizor",
-      "Cut Throat Concierge"
+      "Cut Throat Concierge",
+      "Pom-Pommed Provocateur",
+      "Macho Mann",
+      "Harmburg",
+      "Rogue's Brogues",
+      "Belgian Detective",
+      "Blood Banker",
+      "After Dark",
+      "L'homme Burglerre",
+      "Escapist",
+      "Frenchman's Formals",
+      "Dead of Night"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
@@ -2166,7 +2295,19 @@
       "Grizzled Growth",
       "Last Straw",
       "Wilson Weave",
-      "Vox Diabolus"
+      "Vox Diabolus",
+      "Pocket Pyro",
+      "Macho Mann",
+      "Trash Toter",
+      "Dry Gulch Gulp",
+      "Pardner's Pompadour",
+      "Flared Frontiersman",
+      "Viking Braider",
+      "Beep Boy",
+      "Special Eyes",
+      "Gold Digger",
+      "Face Full of Festive",
+      "Dogfighter"
     ]
   ],
   "Rebuild Headgear": [

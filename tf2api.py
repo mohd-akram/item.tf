@@ -277,7 +277,7 @@ def getstoreprice(item, storeprices):
     """Get store price of item"""
     index = item['defindex']
 
-    return (str(round(storeprices[index]['prices']['USD'] / 100.00, 2))
+    return ('{:.2f}'.format(storeprices[index]['prices']['USD'] / 100.00)
             if index in storeprices else '')
 
 
@@ -348,12 +348,13 @@ def getitemtags(item):
     if 'item_slot' in item:
         slot = item['item_slot']
 
-        if slot == 'head':
+        if slot in getweapontags() and itemclass != 'slot_token':
+            tags.append('weapon')
+
+        if itemtypename in ('#TF_Wearable_Hat', 'Hat', 'Mask',
+                            'Holiday Hat', 'Headset', 'Hair'):
             tags.append('hat')
         else:
-            if slot in getweapontags() and itemclass != 'slot_token':
-                tags.append('weapon')
-
             tags.append(slot)
 
     if itemtypename == 'Special Taunt':
