@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
     <script src="/scripts/tf2.min.js"></script>
+    <script src="/scripts/spin.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <style>
@@ -88,7 +89,9 @@
       </h4>
       <div id="searchitems" style="margin-top: 20px"></div>
       <form id="searchform" action="/search">
-        <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
+        <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin: 30px 0 0 32px; font-size:1.4em;">
+        <div id="loading" style="display:inline-block; padding: 0 0 16px 24px;"></div>
+        <br><br>
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
@@ -154,6 +157,7 @@
             focus: function(event, ui) {$(this).val(ui.item.label);return false;},
             select: function(event, ui) {
               $(this).val(ui.item.label);
+              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'}).spin(document.getElementById('loading'));
               $.get(ui.item.value, function(data) {
                 var searchItems = $('#searchitems')
                 if (searchItems.children().size() == 5)
@@ -163,6 +167,7 @@
                 searchItems.append(item);
                 new HoverBox(item[0], itemBox);
                 item.click();
+                spinner.stop();
               });
               return false;
             }
