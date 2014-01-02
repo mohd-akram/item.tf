@@ -423,11 +423,23 @@ def _convertmarketname(name):
             'Superfan': 'The Superfan',
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
+            'Mann of House': 'Mann Of House',
             'Koto': 'Noise Maker - Koto',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
             'Halloween Kills': 'Strange Part: Halloween Kills',
             'Die Job (halloween spell)': 'Halloween Spell: Die Job',
+            'Refreshing Summer Cooler (series 22)': 'Refreshing Summer Cooler',
+            'Naughty Winter Crate (series 35)': 'Naughty Winter Crate',
+            'Nice Winter Crate (series 36)': 'Nice Winter Crate',
+            'Scorched Crate (series 46)': 'Scorched Crate',
+            'Fall Crate (series 48)': 'Fall Crate',
+            'Eerie Crate (series 51)': 'Eerie Crate',
+            'Nice Winter Crate 2012 (series 53)': 'Nice Winter Crate 2012',
+            'Fall 2013 Acorns Crate (series 72)': 'Fall 2013 Acorns Crate',
+            'Fall 2013 Gourd Crate (series 73)': 'Fall 2013 Gourd Crate',
+            'Spooky Crate (series 74)': 'Spooky Crate',
+            'Nice Winter Crate 2013 (series 79)': 'Nice Winter Crate 2013',
 
             'Chromatic Corruption (halloween spell)':
             'Halloween Spell: Chromatic Corruption',
@@ -441,8 +453,14 @@ def _convertmarketname(name):
             'Salvaged Mann Co. Supply Crate (series 50)':
             'Salvaged Mann Co. Supply Crate',
 
+            'Naughty Winter Crate 2012 (series 52)':
+            'Naughty Winter Crate 2012',
+
             'Summer Appetizer Crate (series 61)':
             'Summer Appetizer Crate',
+
+            'Naughty Winter Crate 2013 (series 78)':
+            'Naughty Winter Crate 2013',
 
             'Strange Part: Kills While Ubercharged':
             'Strange Part: Kills While Übercharged',
