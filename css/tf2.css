@@ -110,6 +110,10 @@ h1 {
   width: 1080px;
 }
 
+.itemlist .item {
+  float: left;
+}
+
 ul {
   padding: 0;
   list-style: none;
@@ -122,7 +126,6 @@ ul {
   border-radius: 11px;
   box-shadow: 1px 1px 0px rgba(0, 0, 0, .15);
   cursor: pointer;
-  float: left;
   height: 77px;
   margin: 3px;
   position: relative;

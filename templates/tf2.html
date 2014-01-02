@@ -52,8 +52,8 @@
           <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
         {% endif %}
         <br><br>
-        <i id="settings" class="icon-cog icon-2x button-icon rounded"></i>
-        <i id="help" class="icon-question-sign icon-2x button-icon rounded"></i>
+        <i id="settings" class="icon-cog icon-2x button-icon rounded" title="Settings"></i>
+        <i id="help" class="icon-question-sign icon-2x button-icon rounded" title="Help"></i>
 
         <div id="settings-list" class="rounded">
           <form id="settingsform">
@@ -86,6 +86,7 @@
       <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
         <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
       </h4>
+      <div id="searchitems" style="margin-top: 20px"></div>
       <form id="searchform" action="/search">
         <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin-top: 30px; font-size:1.4em;"><br><br>
         <input type="submit" value="Search" class="button">
@@ -151,7 +152,20 @@
               }());
             }, delay: 50, minLength: 2,
             focus: function(event, ui) {$(this).val(ui.item.label);return false;},
-            select: function(event, ui) {$(this).val(ui.item.label);location.href=ui.item.value;return false;}
+            select: function(event, ui) {
+              $(this).val(ui.item.label);
+              $.get(ui.item.value, function(data) {
+                var searchItems = $('#searchitems')
+                if (searchItems.children().size() == 5)
+                  searchItems.children().first().remove()
+
+                var item = $(data).find('.item').css('display', 'inline-block');
+                searchItems.append(item);
+                new HoverBox(item[0], itemBox);
+                item.click();
+              });
+              return false;
+            }
         });
       });
     });

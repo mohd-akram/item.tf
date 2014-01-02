@@ -386,10 +386,12 @@ class ItemBox
           break
 
 class HoverBox
-  constructor: (arg) ->
-    @itemBox = arg if arg instanceof ItemBox
-    # Hover area
-    area = arg if not @itemBox?
+  constructor: (area, @itemBox) ->
+    # Allow providing only itemBox
+    # Area then becomes all 'item' elements
+    if area instanceof ItemBox
+      @itemBox = area
+      area = null
 
     @elem = document.getElementById 'hoverbox'
 
@@ -407,10 +409,10 @@ class HoverBox
       item.addEventListener "mouseout", @_hide, false
       item.addEventListener "mousemove", @_moveMouse, false
       item.addEventListener "mouseover", @_show, false
-      if @itemBox?
+      if @itemBox
         item.addEventListener "click", @_clickItem, false
 
-    if @itemBox?
+    if @itemBox
       document.getElementsByTagName('body')[0].addEventListener "click",
                                                                 @_hideItemBox,
                                                                 false

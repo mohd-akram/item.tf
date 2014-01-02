@@ -450,9 +450,6 @@ def _convertmarketname(name):
             'Strange Parts: Medics Killed That Have Full UberCharge':
             'Strange Part: Medics Killed That Have Full ÜberCharge',
 
-            "Lord Cockswain's Novelty Pipe and Mutton Chops":
-            "Lord Cockswain's Novelty Mutton Chops and Pipe",
-
             "Color of a Gentlemann's Business Pants":
             "The Color of a Gentlemann's Business Pants"}
 
