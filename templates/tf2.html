@@ -168,6 +168,8 @@
                 new HoverBox(item[0], itemBox);
                 item.click();
                 spinner.stop();
+
+                _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
               });
               return false;
             }
