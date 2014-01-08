@@ -146,12 +146,16 @@ class TF2Handler(Handler):
         else:
             self.response.delete_cookie('steam_id')
 
+        newitems = getfromcache('newitems')
+        if len(newitems) > 5:
+            newitems = random.sample(newitems, 5)
+
         self.render('tf2.html',
                     homepage=config.homepage,
                     user=user,
                     loginurl=users.create_login_url('/', None, openidurl),
                     tags=tf2api.getalltags(),
-                    newitems=random.sample(getfromcache('newitems'), 5),
+                    newitems=newitems,
                     lastupdated=lastupdated)
 
 

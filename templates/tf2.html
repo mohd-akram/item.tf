@@ -33,8 +33,7 @@
         border: none;
       }
       .itemlist {
-        width: 540px;
-        margin-top: 50px;
+        margin-top: 30px;
       }
     </style>
     {% include 'analytics.html' %}
@@ -95,7 +94,7 @@
         <input type="submit" value="Search" class="button">
         <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
       </form>
-      {{ showitems(newitems, False) }}
+      {{ showitems(newitems, newitems | length) }}
       {% include 'message.html' %}
       </div>
       <footer>Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% include 'footer.html' %}</footer>
