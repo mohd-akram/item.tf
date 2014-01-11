@@ -23,8 +23,8 @@ class Item
     @description = elem.getAttribute('data-description') or ''
     @level = elem.getAttribute 'data-level'
     @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
-    @classes = (elem.getAttribute('data-classes') or '').split ','
-    @tags = (elem.getAttribute('data-tags') or '').split ','
+    @classes = elem.getAttribute('data-classes')?.split(',') or []
+    @tags = elem.getAttribute('data-tags')?.split(',') or []
     @storePrice = elem.getAttribute 'data-storeprice'
     @blueprints = elem.getElementsByTagName 'ul'
 
@@ -42,7 +42,7 @@ class ItemBox
   constructor: (@showLink=true) ->
     @elem = document.createElement 'div'
     @elem.id = 'itembox'
-    document.getElementsByTagName('body')[0].appendChild @elem
+    document.body.appendChild @elem
 
   show: (elem) ->
     @item = new Item(elem)
@@ -398,7 +398,7 @@ class HoverBox
     if not @elem
       @elem = document.createElement 'div'
       @elem.id = 'hoverbox'
-      document.getElementsByTagName('body')[0].appendChild @elem
+      document.body.appendChild @elem
 
     @_add(area)
 
@@ -406,17 +406,14 @@ class HoverBox
     list = if area then [area] else document.getElementsByClassName 'item'
 
     for item in list
-      item.addEventListener "mouseout", @_hide, false
-      item.addEventListener "mousemove", @_moveMouse, false
-      item.addEventListener "mouseover", @_show, false
+      item.addEventListener 'mouseout', @_hide, false
+      item.addEventListener 'mousemove', @_moveMouse, false
+      item.addEventListener 'mouseover', @_show, false
       if @itemBox
-        item.addEventListener "click", @_clickItem, false
+        item.addEventListener 'click', @_clickItem, false
 
     if @itemBox
-      document.getElementsByTagName('body')[0].addEventListener "click",
-                                                                @_hideItemBox,
-                                                                false
-
+      document.addEventListener 'click', @_hideItemBox, false
       document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>

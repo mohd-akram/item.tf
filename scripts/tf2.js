@@ -35,7 +35,7 @@
 
   Item = (function() {
     function Item(elem) {
-      var price, source, _i, _len, _ref, _ref1, _ref2;
+      var price, source, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4;
       this.elem = elem;
       this.name = elem.title;
       this.id = elem.getAttribute('data-index');
@@ -43,8 +43,8 @@
       this.description = elem.getAttribute('data-description') || '';
       this.level = elem.getAttribute('data-level');
       this.attributes = ((_ref = elem.getElementsByTagName('div')) != null ? (_ref1 = _ref[0]) != null ? _ref1.innerHTML : void 0 : void 0) || '';
-      this.classes = (elem.getAttribute('data-classes') || '').split(',');
-      this.tags = (elem.getAttribute('data-tags') || '').split(',');
+      this.classes = ((_ref2 = elem.getAttribute('data-classes')) != null ? _ref2.split(',') : void 0) || [];
+      this.tags = ((_ref3 = elem.getAttribute('data-tags')) != null ? _ref3.split(',') : void 0) || [];
       this.storePrice = elem.getAttribute('data-storeprice');
       this.blueprints = elem.getElementsByTagName('ul');
       this.prices = {};
@@ -56,7 +56,7 @@
         }
       }
       this.wishIndex = elem.getAttribute('data-i');
-      this.qualityNo = (_ref2 = elem.className.match(/quality-(\d+)/)) != null ? _ref2[1] : void 0;
+      this.qualityNo = (_ref4 = elem.className.match(/quality-(\d+)/)) != null ? _ref4[1] : void 0;
     }
 
     Item.prototype.remove = function() {
@@ -72,7 +72,7 @@
       this.showLink = showLink != null ? showLink : true;
       this.elem = document.createElement('div');
       this.elem.id = 'itembox';
-      document.getElementsByTagName('body')[0].appendChild(this.elem);
+      document.body.appendChild(this.elem);
     }
 
     ItemBox.prototype.show = function(elem) {
@@ -399,7 +399,7 @@
       if (!this.elem) {
         this.elem = document.createElement('div');
         this.elem.id = 'hoverbox';
-        document.getElementsByTagName('body')[0].appendChild(this.elem);
+        document.body.appendChild(this.elem);
       }
       this._add(area);
     }
@@ -410,15 +410,15 @@
       list = area ? [area] : document.getElementsByClassName('item');
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         item = list[_i];
-        item.addEventListener("mouseout", this._hide, false);
-        item.addEventListener("mousemove", this._moveMouse, false);
-        item.addEventListener("mouseover", this._show, false);
+        item.addEventListener('mouseout', this._hide, false);
+        item.addEventListener('mousemove', this._moveMouse, false);
+        item.addEventListener('mouseover', this._show, false);
         if (this.itemBox) {
-          item.addEventListener("click", this._clickItem, false);
+          item.addEventListener('click', this._clickItem, false);
         }
       }
       if (this.itemBox) {
-        document.getElementsByTagName('body')[0].addEventListener("click", this._hideItemBox, false);
+        document.addEventListener('click', this._hideItemBox, false);
         return document.onkeydown = function(e) {
           if (e.keyCode === 27) {
             return _this.itemBox.hide();
