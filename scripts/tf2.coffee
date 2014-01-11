@@ -130,7 +130,9 @@ class ItemBox
       @_nextPriceSource()
 
     if @item.prices[@source]
-      for quality, price of @item.prices[@source]
+      qualities = Object.keys(@item.prices[@source]).sort()
+      for quality in qualities
+        price = @item.prices[@source][quality]
         denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/)
 
         if denomMatch

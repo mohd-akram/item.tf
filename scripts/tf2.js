@@ -159,15 +159,16 @@
     };
 
     ItemBox.prototype._priceSourceHTML = function() {
-      var denom, denomMatch, html, price, quality, _ref;
+      var denom, denomMatch, html, price, qualities, quality, _i, _len;
       html = '';
       if (!this.item.prices[this.source]) {
         this._nextPriceSource();
       }
       if (this.item.prices[this.source]) {
-        _ref = this.item.prices[this.source];
-        for (quality in _ref) {
-          price = _ref[quality];
+        qualities = Object.keys(this.item.prices[this.source]).sort();
+        for (_i = 0, _len = qualities.length; _i < _len; _i++) {
+          quality = qualities[_i];
+          price = this.item.prices[this.source][quality];
           denomMatch = price.match(/(Refined|Key(s)?|Bud(s)?)/);
           if (denomMatch) {
             denom = denomMatch[0];
