@@ -156,6 +156,7 @@ class TF2Handler(Handler):
                     loginurl=users.create_login_url('/', None, openidurl),
                     tags=tf2api.getalltags(),
                     newitems=newitems,
+                    message=random.choice(config.messages),
                     lastupdated=lastupdated)
 
 
