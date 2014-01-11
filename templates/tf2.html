@@ -163,7 +163,7 @@
                   searchItems.children().first().remove()
 
                 var item = $(data).find('.item').css('display', 'inline-block');
-                searchItems.append(item);
+                searchItems.append(item.parent());
                 new HoverBox(item[0], itemBox);
                 item.click();
                 spinner.stop();

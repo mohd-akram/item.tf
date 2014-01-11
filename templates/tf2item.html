@@ -22,7 +22,7 @@
           <span class="{{quality|lower}}">{{quality}}</span>: {{value}}<br>
         {% endfor %}</h3>
         {% endif %}
-        <img src="{{item['image_large']}}">
+        <img src="{{item['image_large']}}" alt="{{item['name']}}">
       </div>
       {% from 'macros.html' import showitem %}
       {{ showitem(item, False) }}

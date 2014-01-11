@@ -436,10 +436,12 @@ def _convertmarketname(name):
             'Fall Crate (series 48)': 'Fall Crate',
             'Eerie Crate (series 51)': 'Eerie Crate',
             'Nice Winter Crate 2012 (series 53)': 'Nice Winter Crate 2012',
+            'Summer Appetizer Crate (series 61)': 'Summer Appetizer Crate',
             'Fall 2013 Acorns Crate (series 72)': 'Fall 2013 Acorns Crate',
             'Fall 2013 Gourd Crate (series 73)': 'Fall 2013 Gourd Crate',
             'Spooky Crate (series 74)': 'Spooky Crate',
             'Nice Winter Crate 2013 (series 79)': 'Nice Winter Crate 2013',
+            'Mann Co. Strongbox (series 81)': 'Mann Co. Strongbox',
 
             'Chromatic Corruption (halloween spell)':
             'Halloween Spell: Chromatic Corruption',
@@ -455,9 +457,6 @@ def _convertmarketname(name):
 
             'Naughty Winter Crate 2012 (series 52)':
             'Naughty Winter Crate 2012',
-
-            'Summer Appetizer Crate (series 61)':
-            'Summer Appetizer Crate',
 
             'Naughty Winter Crate 2013 (series 78)':
             'Naughty Winter Crate 2013',
