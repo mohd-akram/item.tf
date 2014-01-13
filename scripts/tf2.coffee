@@ -378,10 +378,10 @@ class ItemBox
     # Enable hover box
     new HoverBox(hoverArea)
 
-    # Auto quality selection
     # Wishlist item quality
     if @item.qualityNo
       @form.quality.value = @item.qualityNo
+    # Auto quality selection
     else if @item.prices[@source]
       for option, i in @form.quality.options
         if option.innerHTML of @item.prices[@source]

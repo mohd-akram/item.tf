@@ -275,7 +275,7 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
                 continue
 
             value = price['low']
-            valuehigh = (' - {:g}'.format(round(price['hi']), 2)
+            valuehigh = (' - {:g}'.format(round(price['hi'], 2))
                          if value != price['hi'] else '')
 
             denom = denoms[price['unit']]
