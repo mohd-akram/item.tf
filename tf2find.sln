@@ -7,7 +7,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "tf2find", "tf2find.pyproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBC8E1D9-11A0-4DAA-BA99-A6F38EEF0DC6}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\AppData\Local\Microsoft\VisualStudio\12.0\Extensions\fce1uqga.mgj\schemas\WE-Palette.css = ..\..\..\..\..\AppData\Local\Microsoft\VisualStudio\12.0\Extensions\fce1uqga.mgj\schemas\WE-Palette.css
+		..\..\..\..\..\AppData\Local\Microsoft\VisualStudio\12.0\Extensions\y4irdfhk.hfd\schemas\WE-Palette.css = ..\..\..\..\..\AppData\Local\Microsoft\VisualStudio\12.0\Extensions\y4irdfhk.hfd\schemas\WE-Palette.css
 		WE2013-settings.xml = WE2013-settings.xml
 	EndProjectSection
 EndProject

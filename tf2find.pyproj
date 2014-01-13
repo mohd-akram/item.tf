@@ -30,7 +30,6 @@
     <Compile Include="tf2.py" />
     <Compile Include="tf2api.py" />
     <Compile Include="tf2search.py" />
-    <Content Include="css\animate-custom.css" />
     <Content Include="css\message.css" />
     <Content Include="css\tf2.css" />
     <Content Include="images\classes.png" />
@@ -44,7 +43,6 @@
     <Content Include="templates\error.html" />
     <Content Include="templates\footer.html" />
     <Content Include="templates\macros.html" />
-    <Content Include="templates\message.html" />
     <Content Include="templates\tf2item.html" />
     <Content Include="templates\tf2results.html" />
     <Content Include="templates\tf2user.html" />
