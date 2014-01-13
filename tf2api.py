@@ -451,9 +451,8 @@ def getplayersummary(apikey, steamid):
 def getplayersummaries(apikey, steamids):
     """Return the player summaries of a list of steamids"""
     url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
-           '?key={}&steamids='.format(apikey))
+           '?key={}&steamids={}'.format(apikey, ','.join(steamids)))
 
-    url += ','.join(steamids)
     return json.loads(urlopen(url).read())['response']['players']
 
 
