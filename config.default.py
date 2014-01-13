@@ -2,6 +2,8 @@
 apikey = ''
 # Backpack.tf API key
 backpackkey = ''
+# Trade.tf API key
+tradekey = ''
 # Blueprints file path
 blueprintsfile = 'blueprints.json'
 # Site homepage

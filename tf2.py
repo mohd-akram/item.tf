@@ -24,8 +24,10 @@ from handler import Handler
 def updatecache():
     t0 = time.time()
 
-    tf2info = tf2search.gettf2info(config.apikey, config.backpackkey,
+    tf2info = tf2search.gettf2info(config.apikey,
+                                   config.backpackkey, config.tradekey,
                                    config.blueprintsfile)
+
     itemsdict = ItemsDict(tf2search.getitemsdict(tf2info, 2))
 
     newitems = [itemsdict[index] for index in tf2info.newstoreprices]

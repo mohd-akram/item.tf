@@ -226,6 +226,68 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     return pricesdict
 
 
+def gettradeprices(apikey, items, itemsbyname, timeout=30):
+    """Get market prices from trade.tf.
+    Return a dictionary where the key is defindex and value is a dictionary of
+    prices for the item"""
+    url = 'http://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
+
+    pricesdata = json.loads(urlopen(url, timeout=timeout).read())['items']
+
+    pricesdict = defaultdict(dict)
+    itemnames = set()
+    crates = defaultdict(int)
+
+    qualities = getallqualities()
+    qualities[-1] = 'Uncraftable'
+
+    denoms = {'r': 'Refined', 'k': 'Key', 'b': 'Bud'}
+
+    for index, prices in pricesdata.iteritems():
+        index = int(index)
+        if index not in items:
+            # For crates, index = 10000*crate_defindex + crate_number
+            crateno = index % 10000
+            index /= 10000
+
+            # Store the price of the highest crate number only
+            if crateno < crates[index]:
+                continue
+            else:
+                crates[index] = crateno
+
+        name = items[index]['item_name']
+
+        # Trade.tf uses different indexes.
+        idx = itemsbyname[name]['defindex']
+        if index != idx and name in itemnames:
+            continue
+
+        for quality, price in prices.iteritems():
+            quality = int(quality)
+            price = price['regular']
+
+            if price['unsure']:
+                continue
+
+            value = price['low']
+            valuehigh = (' - {:g}'.format(round(price['hi']), 2)
+                         if value != price['hi'] else '')
+
+            denom = denoms[price['unit']]
+            qualityname = qualities[quality]
+
+            if (value != 1 or valuehigh) and denom != 'Refined':
+                denom += 's'
+
+            itemnames.add(name)
+            pricesdict[idx][qualityname] = '{:g}{} {}'.format(round(value, 2),
+                                                              valuehigh,
+                                                              denom)
+
+    return pricesdict
+
+
 def getweapontags():
     """Return all weapon tags"""
     return ['primary', 'secondary', 'melee', 'pda', 'pda2', 'building']

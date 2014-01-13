@@ -1,6 +1,6 @@
 root = exports ? this
 
-priceSources = ['backpack.tf', 'spreadsheet']
+priceSources = ['backpack.tf', 'spreadsheet', 'trade.tf']
 
 class User
   constructor: ->
@@ -46,6 +46,7 @@ class ItemBox
 
   show: (elem) ->
     @item = new Item(elem)
+    @sources = (source for source in priceSources when source of @item.prices)
     @source = user.priceSource
 
     @_generate()
@@ -53,8 +54,8 @@ class ItemBox
 
   hide: -> @elem.style.display = 'none'
 
-  _nextPriceSource: -> @source =
-    priceSources[(priceSources.indexOf(@source) + 1) % priceSources.length]
+  _nextPriceSource: ->
+    @source = @sources[(@sources.indexOf(@source) + 1) % @sources.length]
 
   _tagsHTML: ->
     if @item.tags.length
@@ -274,7 +275,7 @@ class ItemBox
     button = document.getElementById 'pricesource'
     prices = document.getElementById 'prices'
 
-    if button and Object.keys(@item.prices).length > 1
+    if @sources.length > 1
       button.style.cursor = 'pointer'
 
       button.onclick = =>

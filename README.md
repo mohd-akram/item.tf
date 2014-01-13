@@ -52,6 +52,8 @@ This project was inspired by and depends on the great TF2 community to function,
 
 [Backpack.tf](http://backpack.tf)
 
+[Trade.tf](http://trade.tf)
+
 [TF2 Outpost](http://tf2outpost.com)
 
 [TF2 Crafting Advisor](http://tf2crafting.info)

@@ -6,7 +6,7 @@
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
-  priceSources = ['backpack.tf', 'spreadsheet'];
+  priceSources = ['backpack.tf', 'spreadsheet', 'trade.tf'];
 
   User = (function() {
     function User() {
@@ -76,7 +76,19 @@
     }
 
     ItemBox.prototype.show = function(elem) {
+      var source;
       this.item = new Item(elem);
+      this.sources = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = priceSources.length; _i < _len; _i++) {
+          source = priceSources[_i];
+          if (source in this.item.prices) {
+            _results.push(source);
+          }
+        }
+        return _results;
+      }).call(this);
       this.source = user.priceSource;
       this._generate();
       return this.elem.style.display = 'block';
@@ -87,7 +99,7 @@
     };
 
     ItemBox.prototype._nextPriceSource = function() {
-      return this.source = priceSources[(priceSources.indexOf(this.source) + 1) % priceSources.length];
+      return this.source = this.sources[(this.sources.indexOf(this.source) + 1) % this.sources.length];
     };
 
     ItemBox.prototype._tagsHTML = function() {
@@ -258,7 +270,7 @@
         _this = this;
       button = document.getElementById('pricesource');
       prices = document.getElementById('prices');
-      if (button && Object.keys(this.item.prices).length > 1) {
+      if (this.sources.length > 1) {
         button.style.cursor = 'pointer';
         button.onclick = function() {
           _this._nextPriceSource();
