@@ -168,8 +168,8 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     pricesdict = defaultdict(dict)
     itemnames = set()
 
-    qualities = {'1': 'Genuine', '3': 'Vintage', '5': 'Unusual', '6': 'Unique',
-                 '11': 'Strange', '13': 'Haunted', '600': 'Uncraftable'}
+    qualities = getallqualities()
+    qualities[600] = 'Uncraftable'
 
     denoms = {'metal': 'Refined', 'keys': 'Key',
               'earbuds': 'Bud', 'usd': 'USD'}
@@ -177,51 +177,55 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     for index, prices in pricesdata.iteritems():
         index = int(index)
         name = items[index]['item_name']
+
         # Backpack.tf uses different indexes. This gets the name of the
         # item from their API and finds its proper index.
         idx = itemsbyname[name]['defindex']
 
         # Make sure that the proper index is used by not overwriting prices
-        # with the correct index
+        # with the correct index as Backpack.tf has duplicate items.
         if index != idx and name in itemnames:
             continue
 
         for quality, price in prices.iteritems():
-            if quality in qualities:
-                item = items[index]
+            try:
+                qualityname = qualities[int(quality)]
+            except (ValueError, KeyError):
+                continue
 
-                iscrate = False
+            item = items[index]
 
-                if 'attributes' in item and item['attributes']:
-                    attribute = item['attributes'][0]
-                    if attribute['name'] == 'set supply crate series':
-                        iscrate = True
-                        crateno = str(int(attribute['value']))
+            iscrate = False
 
-                if '0' in price and (not iscrate or crateno not in price):
-                    price = price['0']
-                elif iscrate:
-                    price = price[crateno]
-                else:
-                    continue
+            if 'attributes' in item and item['attributes']:
+                attribute = item['attributes'][0]
+                if attribute['name'] == 'set supply crate series':
+                    iscrate = True
+                    crateno = str(attribute['value'])
 
-                price = price['current']
+            if iscrate and crateno in price:
+                price = price[crateno]
+            elif '0' in price:
+                price = price['0']
+            else:
+                continue
 
-                value = price['value']
-                valuehigh = (' - {:g}'.format(price['value_high'])
-                             if 'value_high' in price else '')
+            price = price['current']
 
-                denom = denoms[price['currency']]
-                qualityname = qualities[quality]
+            value = price['value']
+            valuehigh = (' - {:g}'.format(price['value_high'])
+                         if 'value_high' in price else '')
 
-                if (value != 1 or valuehigh) and denom not in ('Refined',
-                                                               'USD'):
-                    denom += 's'
+            denom = denoms[price['currency']]
 
-                itemnames.add(name)
-                pricesdict[idx][qualityname] = '{:g}{} {}'.format(value,
-                                                                  valuehigh,
-                                                                  denom)
+            if (value != 1 or valuehigh) and denom not in ('Refined', 'USD'):
+                denom += 's'
+
+            itemnames.add(name)
+
+            pricesdict[idx][qualityname] = '{:g}{} {}'.format(value,
+                                                              valuehigh,
+                                                              denom)
 
     return pricesdict
 
