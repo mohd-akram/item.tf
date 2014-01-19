@@ -1,8 +1,10 @@
 """This module contains a request Handler class with template support."""
+import os
+import json
+import logging
+
 import webapp2
 import jinja2
-import os
-import logging
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -14,6 +16,12 @@ class Handler(webapp2.RequestHandler):
     def write(self, *args, **kwargs):
         """Write text to HTTP response body"""
         self.response.out.write(*args, **kwargs)
+
+    def write_json(self, *args, **kwargs):
+        """Write JSON serialized object to HTTP response body"""
+        self.response.headers['Content-Type'] = ('application/json;'
+                                                 'charset=UTF-8')
+        self.write(json.dumps(*args, **kwargs))
 
     def _render_str(self, template, **params):
         """Render HTML template"""

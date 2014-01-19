@@ -163,30 +163,37 @@ class TF2Handler(Handler):
 
 
 class TF2SearchHandler(Handler):
-    def get(self):
+    def get(self, is_json):
         query = self.request.get('q')
 
-        if query:
-            if query == 'random':
-                itemindexes = getfromcache('itemindexes')
-                return self.redirect(
-                    # random.choice does not support sets
-                    '/item/{}'.format(random.choice(tuple(itemindexes))))
+        if not query:
+            self.redirect('/')
 
-            nametoindexmap = getfromcache('nametoindexmap')
+        elif query == 'random':
+            itemindexes = getfromcache('itemindexes')
+            return self.redirect(
+                # random.choice does not support sets
+                '/item/{}'.format(random.choice(tuple(itemindexes))))
 
-            if query in nametoindexmap:
-                return self.redirect('/item/{}'.format(nametoindexmap[query]))
+        nametoindexmap = getfromcache('nametoindexmap')
 
-            itemsdict = getfromcache('itemsdict')
-            itemsets = getfromcache('itemsets')
-            bundles = getfromcache('bundles')
+        if query in nametoindexmap:
+            return self.redirect('/item/{}'.format(nametoindexmap[query]))
 
-            t0 = time.time()
-            results = tf2search.search(query, itemsdict, nametoindexmap,
-                                       itemsets, bundles)
-            t1 = time.time()
+        itemsdict = getfromcache('itemsdict')
+        itemsets = getfromcache('itemsets')
+        bundles = getfromcache('bundles')
 
+        t0 = time.time()
+        results = tf2search.search(query, itemsdict, nametoindexmap,
+                                   itemsets, bundles)
+        t1 = time.time()
+
+        if is_json:
+            output = {'results': results['mainitems']}
+            output.update(results['otheritems'])
+            self.write_json(output)
+        else:
             self.render('tf2results.html',
                         query=query,
                         mainitems=results['mainitems'],
@@ -196,8 +203,6 @@ class TF2SearchHandler(Handler):
                         itemsets=itemsets,
                         resultslength=results['length'],
                         time=round(t1 - t0, 3))
-        else:
-            self.redirect('/')
 
 
 class TF2SuggestHandler(Handler):
@@ -219,9 +224,7 @@ class TF2SuggestHandler(Handler):
         else:
             suggestions[1:] = allsuggestions
 
-        self.response.headers['Content-Type'] = ('application/json;'
-                                                 'charset=UTF-8')
-        self.write(json.dumps(suggestions))
+        self.write_json(suggestions)
 
 
 class TF2UserHandler(Handler):
@@ -305,9 +308,7 @@ class TF2ItemHandler(Handler):
             return self.redirect('/')
 
         if is_json:
-            self.response.headers['Content-Type'] = ('application/json;'
-                                                     'charset=UTF-8')
-            self.write(json.dumps(itemdict, indent=2))
+            self.write_json(itemdict, indent=2)
         else:
             desc_list = []
 
