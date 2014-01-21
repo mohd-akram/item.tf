@@ -7,6 +7,7 @@ It also supports alias based search, eg: 'engi hats'
 Regular search, eg: 'Meet the Medic'
 Slot search, eg: 'primary weps'
 Set search, eg: 'the saharan spy set'
+Price visualization, eg: '2.66 ref'
 Requires TF2 API module to get items and prices.
 
 Note: You must provide your own image URLs for paint cans and blueprints.
@@ -74,21 +75,13 @@ def getitemsdict(tf2info, chunks=1):
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles):
-    """This method parses the result obtained from _parseinput and gets all the
-    items that match this result. It returns a dict with two keys - mainitems,
-    and otheritems. The mainitems value is a list for regular results while the
-    otheritems value is a dict of lists for several different results"""
-    mainitems = []
-    otheritems = defaultdict(list)
-    names = set()
-
-    result = _parseinput(query)
-    query = result['query']
-    querylist = result['querylist']
-    classes = result['classes']
-    tags = result['tags']
-
-    querylength = len(query)
+    """This method parses the query using _parseinput and gets all the
+    items that match it. It returns a list of dicts obtained from
+    _getsearchresult"""
+    input_ = _parseinput(query)
+    querylist = input_['querylist']
+    classes = input_['classes']
+    tags = input_['tags']
 
     # Check if searching for an item set
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
@@ -103,68 +96,26 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
     # Check if searching for specific indexes
     indexmatch = re.match(r'\d+( \d+)*$', query)
     indexes = query.split() if indexmatch else []
-    # Check if the weapon tag is specified (eg. primary, melee)
-    hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
-    # Check if the user is searching for tournament medals
-    hidemedals = 'tournament' not in tags
 
     if classes or tags:
-        # Search using classes and tags
-        for itemdict in itemsdict.itervalues():
-            itemclasses = itemdict['classes']
-            itemtags = itemdict['tags']
-            # Gives a match if there's an intersection between the item's
-            # classes and the parsed classes in the query. Also gives a match
-            # if the item doesn't have any classes specified (all-class item)
-            isclassmatch = (not set(itemclasses).isdisjoint(classes) or
-                            not itemclasses)
-            if hasweapontag:
-                # This avoids showing slot tokens when searching for
-                # 'primary weapon', 'melee weapon', etc.
-                istagmatch = set(tags).issubset(itemtags)
-            else:
-                istagmatch = not set(tags).isdisjoint(itemtags)
-
-            if (isclassmatch or not classes) and (istagmatch or not tags):
-                name = itemdict['name']
-                # Don't show tournament medals unless explicitly searched
-                if isvalidresult(itemdict, hidemedals) and name not in names:
-                    if len(itemclasses) == 1:
-                        mainitems.append(itemdict)
-                    elif len(itemclasses) > 1:
-                        otheritems['Multi-Class Items'].append(itemdict)
-                    else:
-                        otheritems['All-Class Items'].append(itemdict)
-                    names.add(name)
+        results = _classtagsearch(classes, tags, itemsdict)
 
     elif query == 'all':
         # Get all the items in the schema as is
-        mainitems = itemsdict.values()
+        results = [_getsearchresult(items=itemsdict.values())]
 
     elif query == 'sets':
         # Get all the item sets and their items
-        for setname, itemset in itemsets.iteritems():
-            otheritems[setname].extend(_getsetitems(itemset, nametoindexmap,
-                                                    itemsdict))
+        results = _itemsetsearch(None, itemsets, nametoindexmap, itemsdict)
 
     elif itemsetmatch:
         # Search for a particular item set or bundle and list its items
-        itemsetquery = itemsetmatch.group(1).lower()
+        query = itemsetmatch.group(1).lower()
+        result = _bundlesearch(query, bundles, nametoindexmap, itemsdict)
+        if not result:
+            result = _itemsetsearch(query, itemsets, nametoindexmap, itemsdict)
 
-        for bundle in bundles.itervalues():
-            if bundle['name'].lower() == itemsetquery:
-                bundleitems = _getbundleitems(bundle, nametoindexmap,
-                                              itemsdict)
-                otheritems[bundle['name']].extend(bundleitems)
-                break
-        # Check item sets if nothing found in bundles
-        if not otheritems:
-            for setname, itemset in itemsets.iteritems():
-                if setname.lower() == itemsetquery:
-                    otheritems[setname].extend(_getsetitems(itemset,
-                                                            nametoindexmap,
-                                                            itemsdict))
-                    break
+        results = [result] if result else []
 
     elif pricematch:
         amount = float(pricematch.group(1))
@@ -177,47 +128,28 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
         title = ' + '.join(titlelist)
 
-        if items:
-            otheritems[title].extend(items)
+        results = [_getsearchresult(title, 'price', items)] if items else []
 
     elif len(indexes) > 1:
         # Searching for specific indexes
+        items = []
         for index in indexes:
             index = int(index)
             if index in itemsdict:
-                mainitems.append(itemsdict[index])
+                items.append(itemsdict[index])
+
+        results = [_getsearchresult(items=items)] if items else []
 
     else:
         # Regular word search
-        for itemdict in itemsdict.itervalues():
-            name = foldaccents(itemdict['name'])
-            namelist = _splitspecial(name)
-
-            wordmatch = not set(namelist).isdisjoint(querylist +
-                                                     _pluralize(querylist))
-
-            stringmatch = (querylength > 2 and
-                           (query in name or query in name.lower()))
-
-            match = wordmatch or stringmatch
-
-            if match and isvalidresult(itemdict, False):
-                if name not in names:
-                    mainitems.append(itemdict)
-                    names.add(name)
+        result = _wordsearch(query, querylist, itemsdict)
+        results = [result] if result else []
 
         # Check if there's a match between an item set name and query
-        for setname, itemset in itemsets.iteritems():
-            if not set(_splitspecial(setname)).isdisjoint(querylist):
-                otheritems[setname].extend(_getsetitems(itemset,
-                                                        nametoindexmap,
-                                                        itemsdict))
+        results.extend(_itemsetsearch(querylist, itemsets,
+                                      nametoindexmap, itemsdict))
 
-        mainitems = _getsorteditemlist(mainitems, querylist, query)
-
-    length = len(mainitems) + sum(len(i) for i in otheritems.itervalues())
-
-    return {'mainitems': mainitems, 'otheritems': otheritems, 'length': length}
+    return results
 
 
 def createitemdict(index, tf2info):
@@ -309,6 +241,118 @@ def foldaccents(string):
                   .replace(u'ò', 'o')
                   .replace(u'ü', 'u')
                   .replace(u'Ü', 'U'))
+
+
+def _classtagsearch(classes, tags, itemsdict):
+    """Search for items that match classes and tags"""
+    results = defaultdict(list)
+    names = set()
+
+    titles = ['', 'Multi-Class Items', 'All-Class Items']
+
+    # Check if the user is searching for tournament medals
+    hidemedals = 'tournament' not in tags
+    # Check if the weapon tag is specified (eg. primary, melee)
+    hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
+
+    for itemdict in itemsdict.itervalues():
+        itemclasses = itemdict['classes']
+        itemtags = itemdict['tags']
+        # Gives a match if there's an intersection between the item's
+        # classes and the parsed classes in the query. Also gives a match
+        # if the item doesn't have any classes specified (all-class item)
+        isclassmatch = (not set(itemclasses).isdisjoint(classes) or
+                        not itemclasses)
+        if hasweapontag:
+            # This avoids showing slot tokens when searching for
+            # 'primary weapon', 'melee weapon', etc.
+            istagmatch = set(tags).issubset(itemtags)
+        else:
+            istagmatch = not set(tags).isdisjoint(itemtags)
+
+        if (isclassmatch or not classes) and (istagmatch or not tags):
+            name = itemdict['name']
+            # Don't show tournament medals unless explicitly searched
+            if isvalidresult(itemdict, hidemedals) and name not in names:
+                if len(itemclasses) == 1:
+                    results[titles[0]].append(itemdict)
+                elif len(itemclasses) > 1:
+                    results[titles[1]].append(itemdict)
+                else:
+                    results[titles[2]].append(itemdict)
+                names.add(name)
+
+    results = [_getsearchresult(title, items=items)
+               for title, items in results.iteritems()]
+
+    results.sort(key=lambda k: titles.index(k['title']))
+
+    return results
+
+
+def _wordsearch(query, querylist, itemsdict):
+    """Search for items whose names match query"""
+    items = []
+    names = set()
+
+    for itemdict in itemsdict.itervalues():
+        name = foldaccents(itemdict['name'])
+        namelist = _splitspecial(name)
+
+        wordmatch = not set(namelist).isdisjoint(querylist +
+                                                 _pluralize(querylist))
+
+        stringmatch = (len(query) > 2 and
+                       (query in name or query in name.lower()))
+
+        match = wordmatch or stringmatch
+
+        if match and isvalidresult(itemdict, False):
+            if name not in names:
+                items.append(itemdict)
+                names.add(name)
+
+    if items:
+        return _getsearchresult(
+            items=_getsorteditemlist(items, querylist, query))
+
+
+def _bundlesearch(query, bundles, nametoindexmap, itemsdict):
+    """Search for bundles which match query"""
+    for bundle in bundles.itervalues():
+        if bundle['name'].lower() == query:
+            items = _getbundleitems(bundle, nametoindexmap, itemsdict)
+            return _getsearchresult(bundle['name'], 'bundle', items)
+
+
+def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
+    """Search for item sets whose names match query"""
+    results = []
+    getall = True
+
+    if query is None:
+        isresult = lambda name: True
+    elif type(query) == list:
+        isresult = lambda name: not set(_splitspecial(name)).isdisjoint(query)
+    else:
+        isresult = lambda name: name.lower() == query
+        getall = False
+
+    for setname, itemset in itemsets.iteritems():
+        if isresult(setname):
+            items = _getsetitems(itemset, nametoindexmap, itemsdict)
+            result = _getsearchresult(setname, 'set', items)
+            if getall:
+                results.append(result)
+            else:
+                return result
+
+    if getall:
+        return results
+
+
+def _getsearchresult(title='', type='', items=None):
+    return {'title': title, 'type': type, 'items': items or []}
 
 
 def _getsetitems(itemset, nametoindexmap, itemsdict):
@@ -464,8 +508,7 @@ def _parseinput(query):
     if (len(tags) + len(classes)) != len(querylist):
         classes = tags = []
 
-    return {'query': query, 'querylist': querylist,
-            'classes': classes, 'tags': tags}
+    return {'querylist': querylist, 'classes': classes, 'tags': tags}
 
 
 def _parseblueprints(blueprints, itemsbyname):

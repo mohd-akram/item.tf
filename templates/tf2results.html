@@ -26,24 +26,22 @@
     <div id="body">
     {% from 'macros.html' import showitems, getcount %}
 
-    {%- if mainitems %}
-    {{ showitems(mainitems) }}
-    {%- endif %}
-
     {% set issetpage = query.lower().endswith(' set') %}
-    {% for name, items in otheritems %}
-    {%- if name in itemsets and not issetpage %}<h2><a href="/search?q={{name|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{name}}</a></h2>
+
+    {% for result in results %}
+    {%- if result.type == 'set' and not issetpage %}
+    <h2><a href="/search?q={{result.title|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{result.title}}</a></h2>
     {% else %}
-    <h2>{{name}}</h2>
+    <h2>{{result.title}}</h2>
     {% endif -%}
-    {{ showitems(items) }}
+    {{ showitems(result['items']) }}
     {%- endfor %}
 
-    {%- if not (mainitems or otheritems) %}
+    {%- if not count %}
     <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
     {%- endif -%}
     </div>
-    <footer>{{getcount(resultslength,'result')}} ({{time}} seconds)<br>{% include 'footer.html' %}</footer>
+    <footer>{{getcount(count,'result')}} ({{time}} seconds)<br>{% include 'footer.html' %}</footer>
     </div>
     <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
   </body>

@@ -2,7 +2,6 @@
 # coding: utf-8
 
 """This module contains all the page handlers and caching mechanisms."""
-import json
 import logging
 import time
 import random
@@ -190,18 +189,12 @@ class TF2SearchHandler(Handler):
         t1 = time.time()
 
         if is_json:
-            output = {'results': results['mainitems']}
-            output.update(results['otheritems'])
-            self.write_json(output)
+            self.write_json(results)
         else:
             self.render('tf2results.html',
                         query=query,
-                        mainitems=results['mainitems'],
-                        otheritems=sorted(results['otheritems'].iteritems(),
-                                          key=lambda k: len(k[0]),
-                                          reverse=True),
-                        itemsets=itemsets,
-                        resultslength=results['length'],
+                        results=results,
+                        count=sum(len(result['items']) for result in results),
                         time=round(t1 - t0, 3))
 
 

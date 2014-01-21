@@ -23,7 +23,7 @@ from tf2 import (TF2Handler, TF2SearchHandler, TF2SuggestHandler,
 app = webapp2.WSGIApplication([('/', TF2Handler),
                                ('/search(\.json)?', TF2SearchHandler),
                                ('/suggest', TF2SuggestHandler),
-                               ('/id/(.+)', TF2UserHandler),
+                               ('/id/([A-Za-z0-9_-]+)', TF2UserHandler),
                                ('/wishlist/(add|remove)', TF2WishlistHandler),
                                ('/item/([0-9]+)(\.json)?', TF2ItemHandler),
                                ('/sitemap\.xml', TF2SitemapHandler)])
