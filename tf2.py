@@ -239,6 +239,9 @@ class TF2UserHandler(Handler):
             user = getuser(steamid, urltype)
 
         if user:
+            if urltype == 'profiles' and user.key.id() != user.url:
+                return self.redirect('/id/{}'.format(user.url))
+
             itemsdict = getfromcache('itemsdict')
             items = []
 
