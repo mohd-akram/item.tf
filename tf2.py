@@ -92,7 +92,10 @@ def getsteamid(openiduser):
     return openiduser.nickname().split('/')[-1] if openiduser else None
 
 
-def getuser(steamid, create=False):
+def getuser(steamid, urltype='profiles', create=False):
+    if urltype == 'id':
+        steamid = tf2api.resolvevanityurl(config.apikey, steamid)
+
     user = User.get_by_id(steamid)
 
     if user:
@@ -141,7 +144,7 @@ class TF2Handler(Handler):
 
         if openiduser:
             steamid = getsteamid(openiduser)
-            user = getuser(steamid, True)
+            user = getuser(steamid, create=True)
 
             self.response.set_cookie('steam_id', steamid)
         else:
@@ -221,19 +224,19 @@ class TF2SuggestHandler(Handler):
 
 
 class TF2UserHandler(Handler):
-    def get(self, steamid):
+    def get(self, urltype, steamid):
         usersteamid = getsteamid(users.get_current_user())
         # Avoid a Steam API call if the user is visiting his own page
         if usersteamid:
             user = getuser(usersteamid)
-            # User is visiting his own page
-            if steamid in (usersteamid, user.url):
-                steamid = usersteamid
+            if urltype == 'id':
+                if steamid == usersteamid:
+                    user = None
+                if user and steamid == user.url:
+                    steamid = usersteamid
 
         if steamid != usersteamid:
-            steamid = (tf2api.resolvevanityurl(config.apikey, steamid) or
-                       steamid)
-            user = getuser(steamid)
+            user = getuser(steamid, urltype)
 
         if user:
             itemsdict = getfromcache('itemsdict')
