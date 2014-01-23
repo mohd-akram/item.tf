@@ -195,7 +195,7 @@ class ItemBox
   _outpostHTML: ->
     """
     <a href="#" id="find-trades-btn"
-     class="icon-exchange icon-large button-icon" title="Find Trades"></a>
+     class="fa fa-exchange fa-lg button-icon" title="Find Trades"></a>
 
     <form name="tf2outpostform" method="POST" style="display: inline-block"
      action="http://www.tf2outpost.com/search">
@@ -227,7 +227,7 @@ class ItemBox
       <div style="display: inline-block; width: 40px">
       <div id="wishlistmessage"
        style="display: none; margin: 0 0 4px -18px">Added</div>
-      <i id="wishlistbutton" class="button-icon rounded icon-star icon-large"
+      <i id="wishlistbutton" class="fa fa-star fa-lg button-icon rounded"
        style="background-color: transparent"
        title="Add to Wishlist"></i>
       </div>
@@ -241,15 +241,15 @@ class ItemBox
     """
     <div id="buttons">
 
-    <a class="icon-info icon-large button-icon" target="_blank"
+    <a class="fa fa-info fa-lg button-icon" target="_blank"
      title="Open in Wiki" href="#{wikiLink}"></a>
 
-    <a class="icon-shopping-cart icon-large button-icon"
+    <a class="fa fa-shopping-cart fa-lg button-icon"
      target="_blank" title="Community Market"
      href="http://steamcommunity.com/market/search?q=appid%3A440%20#{
      encodeURIComponent @item.name}"></a>
 
-    <a class="icon-list icon-large button-icon" target="_blank"
+    <a class="fa fa-list fa-lg button-icon" target="_blank"
      title="Backpack.tf Classifieds"
      href="http://backpack.tf/ajax/search_generate.php?defindex=#{
      @item.id}&appid=440&redir=classifieds"></a>

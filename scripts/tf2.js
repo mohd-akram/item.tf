@@ -240,12 +240,12 @@
     };
 
     ItemBox.prototype._outpostHTML = function() {
-      return "<a href=\"#\" id=\"find-trades-btn\"\n class=\"icon-exchange icon-large button-icon\" title=\"Find Trades\"></a>\n\n<form name=\"tf2outpostform\" method=\"POST\" style=\"display: inline-block\"\n action=\"http://www.tf2outpost.com/search\">\n\n<input type=\"hidden\" name=\"json\">\n<input type=\"hidden\" name=\"type\" value=\"any\">\n<input type=\"submit\" name=\"submit\" value=\"Search\" style=\"display: none\">\n\n<select id=\"tradetype\" class=\"textbox\">\n  <option value=\"has1\">Want</option>\n  <option value=\"wants1\">Have</option>\n</select>\n\n<select id=\"quality\" class=\"textbox\">\n  <option value=\"6\">Unique</option>\n  <option value=\"3\">Vintage</option>\n  <option value=\"11\">Strange</option>\n  <option value=\"1\">Genuine</option>\n  <option value=\"13\">Haunted</option>\n  <option value=\"5\">Unusual</option>\n</select>\n\n</form>";
+      return "<a href=\"#\" id=\"find-trades-btn\"\n class=\"fa fa-exchange fa-lg button-icon\" title=\"Find Trades\"></a>\n\n<form name=\"tf2outpostform\" method=\"POST\" style=\"display: inline-block\"\n action=\"http://www.tf2outpost.com/search\">\n\n<input type=\"hidden\" name=\"json\">\n<input type=\"hidden\" name=\"type\" value=\"any\">\n<input type=\"submit\" name=\"submit\" value=\"Search\" style=\"display: none\">\n\n<select id=\"tradetype\" class=\"textbox\">\n  <option value=\"has1\">Want</option>\n  <option value=\"wants1\">Have</option>\n</select>\n\n<select id=\"quality\" class=\"textbox\">\n  <option value=\"6\">Unique</option>\n  <option value=\"3\">Vintage</option>\n  <option value=\"11\">Strange</option>\n  <option value=\"1\">Genuine</option>\n  <option value=\"13\">Haunted</option>\n  <option value=\"5\">Unusual</option>\n</select>\n\n</form>";
     };
 
     ItemBox.prototype._wishlistHTML = function() {
       if (user.loggedIn) {
-        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"button-icon rounded icon-star icon-large\"\n style=\"background-color: transparent\"\n title=\"Add to Wishlist\"></i>\n</div>";
+        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"fa fa-star fa-lg button-icon rounded\"\n style=\"background-color: transparent\"\n title=\"Add to Wishlist\"></i>\n</div>";
       } else {
         return '';
       }
@@ -254,7 +254,7 @@
     ItemBox.prototype._buttonsHTML = function() {
       var wikiLink;
       wikiLink = "http://wiki.teamfortress.com/wiki/" + (encodeURIComponent(this.item.name));
-      return "<div id=\"buttons\">\n\n<a class=\"icon-info icon-large button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"icon-shopping-cart icon-large button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n<a class=\"icon-list icon-large button-icon\" target=\"_blank\"\n title=\"Backpack.tf Classifieds\"\n href=\"http://backpack.tf/ajax/search_generate.php?defindex=" + this.item.id + "&appid=440&redir=classifieds\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
+      return "<div id=\"buttons\">\n\n<a class=\"fa fa-info fa-lg button-icon\" target=\"_blank\"\n title=\"Open in Wiki\" href=\"" + wikiLink + "\"></a>\n\n<a class=\"fa fa-shopping-cart fa-lg button-icon\"\n target=\"_blank\" title=\"Community Market\"\n href=\"http://steamcommunity.com/market/search?q=appid%3A440%20" + (encodeURIComponent(this.item.name)) + "\"></a>\n\n<a class=\"fa fa-list fa-lg button-icon\" target=\"_blank\"\n title=\"Backpack.tf Classifieds\"\n href=\"http://backpack.tf/ajax/search_generate.php?defindex=" + this.item.id + "&appid=440&redir=classifieds\"></a>\n\n" + (this._outpostHTML()) + "\n" + (this._wishlistHTML()) + "\n</div>";
     };
 
     ItemBox.prototype._buyHTML = function() {

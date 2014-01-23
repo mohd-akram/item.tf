@@ -352,6 +352,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 
 
 def _getsearchresult(title='', type='', items=None):
+    """Return a dict containing a group of items used for search results"""
     return {'title': title, 'type': type, 'items': items or []}
 
 
