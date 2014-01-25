@@ -71,7 +71,7 @@
         <div id="help-list" class="rounded">
           <h4>Examples</h4>
           <p>
-          {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set', '1.66 refs', '5.5 buds', '1000 keys']) }}
+          {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set', '1.66 refs', '5.5 buds']) }}
           </p>
           <h4>Keywords</h4>
           <p>
@@ -100,6 +100,7 @@
       </div>
       <footer>Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% include 'footer.html' %}</footer>
     </div>
+
   <script>
     $('#searchbox').focus();
     $('#pricesetting').val(user.priceSource);
@@ -157,7 +158,8 @@
             focus: function(event, ui) {$(this).val(ui.item.label);return false;},
             select: function(event, ui) {
               $(this).val(ui.item.label);
-              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'}).spin(document.getElementById('loading'));
+              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
+                                       .spin(document.getElementById('loading'));
               $.get(ui.item.value, function(data) {
                 var searchItems = $('#searchitems')
                 if (searchItems.children().size() == 5)
@@ -166,7 +168,8 @@
                 var item = $(data).find('.item').css('display', 'inline-block');
                 searchItems.append(item.parent());
                 new HoverBox(item[0], itemBox);
-                item.click();
+                // item.click() doesn't work in Steam browser
+                itemBox.show(item[0]);
                 spinner.stop();
 
                 _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
@@ -179,5 +182,6 @@
 
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
   </script>
+
   </body>
 </html>

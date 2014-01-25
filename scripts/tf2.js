@@ -245,7 +245,7 @@
 
     ItemBox.prototype._wishlistHTML = function() {
       if (user.loggedIn) {
-        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"fa fa-star fa-lg button-icon rounded\"\n style=\"background-color: transparent\"\n title=\"Add to Wishlist\"></i>\n</div>";
+        return "<div style=\"display: inline-block; width: 40px\">\n<div id=\"wishlistmessage\"\n style=\"display: none; margin: 0 0 4px -18px\">Added</div>\n<i id=\"wishlistbutton\" class=\"fa fa-star fa-lg button-icon\"\n title=\"Add to Wishlist\"></i>\n</div>";
       } else {
         return '';
       }
@@ -418,7 +418,7 @@
     }
 
     HoverBox.prototype._add = function(area) {
-      var item, list, _i, _len,
+      var event, item, list, _i, _j, _len, _len1, _ref,
         _this = this;
       list = area ? [area] : document.getElementsByClassName('item');
       for (_i = 0, _len = list.length; _i < _len; _i++) {
@@ -431,7 +431,11 @@
         }
       }
       if (this.itemBox) {
-        document.addEventListener('click', this._hideItemBox, false);
+        _ref = ['click', 'touchend'];
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          event = _ref[_j];
+          document.addEventListener(event, this._hideItemBox, false);
+        }
         return document.onkeydown = function(e) {
           if (e.keyCode === 27) {
             return _this.itemBox.hide();

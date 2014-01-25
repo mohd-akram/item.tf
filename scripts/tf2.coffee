@@ -227,8 +227,7 @@ class ItemBox
       <div style="display: inline-block; width: 40px">
       <div id="wishlistmessage"
        style="display: none; margin: 0 0 4px -18px">Added</div>
-      <i id="wishlistbutton" class="fa fa-star fa-lg button-icon rounded"
-       style="background-color: transparent"
+      <i id="wishlistbutton" class="fa fa-star fa-lg button-icon"
        title="Add to Wishlist"></i>
       </div>
       """
@@ -416,7 +415,9 @@ class HoverBox
         item.addEventListener 'click', @_clickItem, false
 
     if @itemBox
-      document.addEventListener 'click', @_hideItemBox, false
+      # iOS doesn't support 'click' on document
+      for event in ['click', 'touchend']
+        document.addEventListener event, @_hideItemBox, false
       document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>
