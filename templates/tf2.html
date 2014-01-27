@@ -8,7 +8,7 @@
     {% set searchurl = homepage+'/searchdescription.xml' -%}
     <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{searchurl}}">
     <link rel="stylesheet" href="/css/tf2.css">
-    <link rel="stylesheet" href="/css/animate-custom.css">
+    <link rel="stylesheet" href="/css/animate.min.css">
     <link rel="stylesheet" href="/css/message.css">
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
@@ -101,87 +101,87 @@
       <footer>Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% include 'footer.html' %}</footer>
     </div>
 
-  <script>
-    $('#searchbox').focus();
-    $('#pricesetting').val(user.priceSource);
+    <script>
+      $('#searchbox').focus();
+      $('#pricesetting').val(user.priceSource);
 
-    $('#help').click(function(){
-      $('#settings-list').hide();
-      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
-    });
+      $('#help').click(function(){
+        $('#settings-list').hide();
+        $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
+      });
 
-    $('#settings').click(function() {
-      $('#help-list').hide();
-      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
-    });
+      $('#settings').click(function() {
+        $('#help-list').hide();
+        $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
+      });
 
-    $('#settingsform').submit(function() {
-      user.priceSource = $('#pricesetting').val();
-      $('#settings-list').hide('fast');
-      return false;
-    });
+      $('#settingsform').submit(function() {
+        user.priceSource = $('#pricesetting').val();
+        $('#settings-list').hide('fast');
+        return false;
+      });
 
-    var itemBox = new ItemBox(); new HoverBox(itemBox);
+      var itemBox = new ItemBox(); new HoverBox(itemBox);
 
-    $(function() {
-      var accentMap = {
-          'ä': 'a',
-          'é': 'e',
-          'ò': 'o',
-          'ü': 'u',
-          'Ü': 'U'
-      };
+      $(function() {
+        var accentMap = {
+            'ä': 'a',
+            'é': 'e',
+            'ò': 'o',
+            'ü': 'u',
+            'Ü': 'U'
+        };
 
-      var normalize = function( term ) {
-          var ret = "";
-          for ( var i = 0; i < term.length; i++ ) {
-              ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-          }
-          return ret;
-      };
-
-      $.getJSON('/suggest', function (data) {
-
-        $('#searchbox').autocomplete({
-          source: function(request, response) {
-              var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-              response(function() {
-                var result = [];
-                for (var i = 0; i < data[1].length; i++) {
-                  var name = data[1][i];
-                  if (matcher.test(name) || matcher.test(normalize(name)))
-                    result.push({label: name, value: data[3][i]});
-                }
-                return result;
-              }());
-            }, delay: 50, minLength: 2,
-            focus: function(event, ui) {$(this).val(ui.item.label);return false;},
-            select: function(event, ui) {
-              $(this).val(ui.item.label);
-              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
-                                       .spin(document.getElementById('loading'));
-              $.get(ui.item.value, function(data) {
-                var searchItems = $('#searchitems')
-                if (searchItems.children().size() == 5)
-                  searchItems.children().first().remove()
-
-                var item = $(data).find('.item').css('display', 'inline-block');
-                searchItems.append(item.parent());
-                new HoverBox(item[0], itemBox);
-                // item.click() doesn't work in Steam browser
-                itemBox.show(item[0]);
-                spinner.stop();
-
-                _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
-              });
-              return false;
+        var normalize = function( term ) {
+            var ret = "";
+            for ( var i = 0; i < term.length; i++ ) {
+                ret += accentMap[ term.charAt(i) ] || term.charAt(i);
             }
+            return ret;
+        };
+
+        $.getJSON('/suggest', function (data) {
+
+          $('#searchbox').autocomplete({
+            source: function(request, response) {
+                var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                response(function() {
+                  var result = [];
+                  for (var i = 0; i < data[1].length; i++) {
+                    var name = data[1][i];
+                    if (matcher.test(name) || matcher.test(normalize(name)))
+                      result.push({label: name, value: data[3][i]});
+                  }
+                  return result;
+                }());
+              }, delay: 50, minLength: 2,
+              focus: function(event, ui) {$(this).val(ui.item.label);return false;},
+              select: function(event, ui) {
+                $(this).val(ui.item.label);
+                var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
+                                         .spin(document.getElementById('loading'));
+                $.get(ui.item.value, function(data) {
+                  var searchItems = $('#searchitems')
+                  if (searchItems.children().size() == 5)
+                    searchItems.children().first().remove()
+
+                  var item = $(data).find('.item').css('display', 'inline-block');
+                  searchItems.append(item.parent());
+                  new HoverBox(item[0], itemBox);
+                  // item.click() doesn't work in Steam browser
+                  itemBox.show(item[0]);
+                  spinner.stop();
+
+                  _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
+                });
+                return false;
+              }
+          });
         });
       });
-    });
 
-    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
-  </script>
+      if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
+    </script>
 
   </body>
 </html>

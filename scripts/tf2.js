@@ -144,7 +144,7 @@
       if (this.showLink) {
         html = "<a href=\"/item/" + this.item.id + "\"\n target=\"_blank\" class=\"glow\" title=\"Go to Item Page\">" + html + "</a>";
       }
-      return html = "<h2 id='itemname'>" + html + "</h2>";
+      return html = "<h2 id=\"itemname\">" + html + "</h2>\n<i id=\"shortlinkbutton\" class=\"fa fa-caret-square-o-down\"\n title=\"Short URL\"></i><br>\n<div id=\"shortlink\" style=\"display:none\">\n<input type=\"text\" value=\"http://item.tf/" + this.item.id + "\" readonly><br></div>";
     };
 
     ItemBox.prototype._classesHTML = function() {
@@ -265,6 +265,22 @@
       }
     };
 
+    ItemBox.prototype._nameLink = function() {
+      var link, linkButton;
+      linkButton = document.getElementById('shortlinkbutton');
+      link = document.getElementById('shortlink');
+      return linkButton.onclick = function() {
+        if (link.style.display === 'none') {
+          link.style.display = 'inline';
+          linkButton.className = linkButton.className.replace('down', 'up');
+          return link.getElementsByTagName('input')[0].select();
+        } else {
+          link.style.display = 'none';
+          return linkButton.className = linkButton.className.replace('up', 'down');
+        }
+      };
+    };
+
     ItemBox.prototype._pricesLink = function() {
       var button, prices,
         _this = this;
@@ -364,6 +380,7 @@
       var hoverArea, i, option, _i, _len, _ref, _results;
       this.elem.innerHTML = "" + (this._tagsHTML()) + (this._nameHTML()) + (this._classesHTML()) + "\n" + (this._bundleHTML()) + "\n" + (this._pricesHTML()) + "\n" + (this._blueprintsHTML()) + "\n" + (this._buttonsHTML()) + (this._buyHTML());
       this.form = document.tf2outpostform;
+      this._nameLink();
       this._pricesLink();
       this._outpostLink();
       this._wishlistLink();

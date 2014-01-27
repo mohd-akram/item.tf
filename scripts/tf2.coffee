@@ -97,7 +97,14 @@ class ItemBox
         <a href="/item/#{@item.id}"
          target="_blank" class="glow" title="Go to Item Page">#{html}</a>
         """
-    html = "<h2 id='itemname'>#{html}</h2>"
+    html =
+      """
+      <h2 id="itemname">#{html}</h2>
+      <i id="shortlinkbutton" class="fa fa-caret-square-o-down"
+       title="Short URL"></i><br>
+      <div id="shortlink" style="display:none">
+      <input type="text" value="http://item.tf/#{@item.id}" readonly><br></div>
+      """
 
   _classesHTML: ->
     if @item.classes.length
@@ -270,6 +277,19 @@ class ItemBox
       """
     else ''
 
+  _nameLink: ->
+    linkButton = document.getElementById 'shortlinkbutton'
+    link = document.getElementById 'shortlink'
+
+    linkButton.onclick = ->
+      if link.style.display is 'none'
+        link.style.display = 'inline'
+        linkButton.className = linkButton.className.replace 'down', 'up'
+        link.getElementsByTagName('input')[0].select()
+      else
+        link.style.display = 'none'
+        linkButton.className = linkButton.className.replace 'up', 'down'
+
   _pricesLink: ->
     button = document.getElementById 'pricesource'
     prices = document.getElementById 'prices'
@@ -358,6 +378,7 @@ class ItemBox
 
     @form = document.tf2outpostform
 
+    @_nameLink()
     @_pricesLink()
     @_outpostLink()
     @_wishlistLink()
