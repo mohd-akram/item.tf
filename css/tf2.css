@@ -211,10 +211,13 @@ ul {
 }
 
 #itemname, .itemname {
-  display: inline-block;
-  margin-left: 23px;
   margin-bottom: 5px;
   color: #D1D0D0;
+}
+
+#itemname {
+  display: inline-block;
+  margin-left: 23px;
 }
 
 #shortlinkbutton {
