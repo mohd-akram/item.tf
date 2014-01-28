@@ -3,13 +3,17 @@ fs            = require 'fs'
 
 files = ['tf2']
 
+done = (error, stdout, stderr) ->
+  time = (new Date).toLocaleTimeString()
+  if error
+    console.error "#{time} - #{stderr}"
+  else console.log "#{time} - #{stdout}"
+
 task 'watch', 'compile and minify files on change', ->
   fs.watchFile("#{file}.coffee", (curr, prev) ->
     if curr.mtime > prev.mtime
+      message = "compiled #{file}.coffee"
       exec "coffee -cm #{file}.coffee &&
             uglifyjs --source-map #{file}.map --in-source-map #{file}.map
-            -o #{file}.js #{file}.js"
-
-      console.log "#{curr.mtime.toLocaleTimeString()
-                    } - compiled #{file}.coffee"
+            -o #{file}.js #{file}.js", (e, _, err) -> done e, message, err
   ) for file in files
