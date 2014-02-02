@@ -188,7 +188,8 @@ class TF2SearchHandler(Handler):
 
         t0 = time.time()
         results = tf2search.search(query, itemsdict, nametoindexmap,
-                                   itemsets, bundles)
+                                   itemsets, bundles,
+                                   self.request.cookies.get('price_source'))
         t1 = time.time()
 
         if is_json:

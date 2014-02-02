@@ -74,10 +74,13 @@ def getitemsdict(tf2info, chunks=1):
     return dicts[0] if len(dicts) == 1 else dicts
 
 
-def search(query, itemsdict, nametoindexmap, itemsets, bundles):
+def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     """This method parses the query using _parseinput and gets all the
     items that match it. It returns a list of dicts obtained from
     _getsearchresult"""
+    if not pricesource:
+        pricesource = 'backpack.tf'
+
     input_ = _parseinput(query)
     querylist = input_['querylist']
     classes = input_['classes']
@@ -85,14 +88,27 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
     # Check if searching for an item set
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
-    # Check if using price visualization
-    pricematch = re.match(r'(\d+(\.\d+)?) '
-                          '(([eE]arb|[bB])ud(s)?|'
-                          '[kK]ey(s)?|'
-                          '[rR]ef(ined|s)?|'
-                          '[rR]ec(laimed|s)?|'
-                          '[sS]crap|'
-                          '[wW]e(a)?p(on)?(s)?)$', query)
+    # Check if searching by price or using price visualization
+    priceregex = (r'(\d+(\.\d+)?) ?'
+                  '(([eE]arb|[bB])ud(s)?|'
+                  '[kK]ey(s)?|'
+                  '[rR]ef(ined|s)?|'
+                  '[rR]ec(laimed|s)?|'
+                  '[sS]crap|'
+                  '[wW]e(a)?p(on)?(s)?)')
+
+    pricevizmatch = re.match(r'{}$'.format(priceregex), query)
+
+    # Matches this - {quality}{criteria}{price} {tag}
+    # quality is optional and defaults to Unique
+    # criteria is one of (<, >, =) and defaults to =
+    # tag is optional
+    pricematch = re.match(
+        r'({}|dirty|uncraft(able)?)? ?(<|>|=|) ?{}( ({}))?$'.format(
+        '|'.join(i.lower() for i in tf2api.getallqualities().values()),
+        priceregex, '|'.join(tf2api.getalltags())),
+        query.lower())
+
     # Check if searching for specific indexes
     indexmatch = re.match(r'\d+( \d+)*$', query)
     indexes = query.split() if indexmatch else []
@@ -117,18 +133,23 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles):
 
         results = [result] if result else []
 
-    elif pricematch:
-        amount = float(pricematch.group(1))
-        denom = _getdenom(pricematch.group(3).lower())
+    elif pricevizmatch:
+        amount = float(pricevizmatch.group(1))
+        denom = _getdenom(pricevizmatch.group(3).lower())
 
         items, counts = _getpriceasitems(amount, denom, itemsdict)
 
-        titlelist = ['{} {}'.format(v, k + 's' if k == 'Key' and v != 1 else k)
+        titlelist = [_getpricestring(v, k)
                      for k, v in counts.iteritems()]
 
         title = ' + '.join(titlelist)
 
         results = [_getsearchresult(title, 'price', items)] if items else []
+
+    elif pricematch:
+        result = _pricesearch(pricematch, itemsdict, pricesource)
+
+        results = [result] if result else []
 
     elif len(indexes) > 1:
         # Searching for specific indexes
@@ -351,6 +372,53 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
         return results
 
 
+def _pricesearch(pricematch, itemsdict, pricesource):
+    """Search for items by price based on criteria in pricematch"""
+    quality = (pricematch.group(1) or 'unique').capitalize()
+    criteria = pricematch.group(3)
+    amount = float(pricematch.group(4))
+    denom = _getdenom(pricematch.group(6).lower())
+    tag = pricematch.groups()[-1] or ''
+
+    if quality in ('Uncraft', 'Dirty'):
+        quality = 'Uncraftable'
+
+    items = []
+
+    for itemdict in itemsdict.itervalues():
+        if tag and tag not in itemdict['tags']:
+            continue
+
+        price = itemdict['marketprice'][pricesource]
+        if quality not in price:
+            continue
+        price = price[quality]
+
+        p = price.split()
+        valuelow = float(p[0].rstrip('X'))
+        valuehigh = float(p[2].rstrip('X')) if len(p) == 4 else valuelow
+        pricedenom = p[-1].rstrip('s').replace('Bud', 'Earbuds')
+
+        if denom != pricedenom:
+            continue
+
+        if criteria == '<':
+            match = valuelow < amount or valuehigh < amount
+        elif criteria == '>':
+            match = valuelow > amount or valuehigh > amount
+        else:
+            match = valuelow == amount or valuehigh == amount
+
+        if match:
+            items.append(itemdict)
+
+    if items:
+        return _getsearchresult(
+            '{}: {} {} {}'.format(
+                quality, criteria, _getpricestring(amount, denom),
+                tag.capitalize()), items=items)
+
+
 def _getsearchresult(title='', type='', items=None):
     """Return a dict containing a group of items used for search results"""
     return {'title': title, 'type': type, 'items': items or []}
@@ -431,6 +499,12 @@ def _getpriceasitems(amount, denom, itemsdict):
             amount = ((amount - count) * value)
 
     return items, counts
+
+
+def _getpricestring(amount, denom):
+    """Return a human-readable price string"""
+    return '{:g} {}'.format(
+        amount, denom + 's' if denom == 'Key' and amount != 1 else denom)
 
 
 def _getdenomvalue(denom, itemsdict):

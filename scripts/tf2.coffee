@@ -12,8 +12,8 @@ class User
         get: -> getCookie('price_source') or priceSources[0]
         set: (source) -> setCookie 'price_source', source, 365
 
-  isOwnPage: -> @loggedIn and @id is document.getElementById('steamid')
-                                            ?.getAttribute('data-id')
+  isOwnPage: -> @loggedIn and @id is
+    document.getElementById('steamid')?.getAttribute('data-id')
 
 class Item
   constructor: (@elem) ->
