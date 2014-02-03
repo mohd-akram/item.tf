@@ -439,7 +439,7 @@ def _pricefilter(quality, criteria, amount, denom, results, pricesource):
         else:
             results[idx] = None
 
-    return [result for result in results if result]
+    results[:] = [result for result in results if result]
 
 
 def _getsearchresult(title='', type='', items=None):
