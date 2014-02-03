@@ -88,14 +88,20 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     # Check if searching for an item set
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
+
     # Check if searching by price or using price visualization
-    priceregex = (r'(\d+(\.\d+)?) ?'
-                  '(([eE]arb|[bB])ud(s)?|'
-                  '[kK]ey(s)?|'
-                  '[rR]ef(ined|s)?|'
-                  '[rR]ec(laimed|s)?|'
+    priceregex = (r'(?:(\d+(?:\.\d+)?) ?'
+                  '((?:[eE]arb|[bB])uds?|'
+                  '[kK]eys?|'
+                  '[rR]ef(?:ined|s)?|'
+                  '[rR]ec(?:laimed|s)?|'
                   '[sS]crap|'
-                  '[wW]e(a)?p(on)?(s)?)')
+                  '[wW]ea?p(?:on)?s?))')
+
+    qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
+        '|'.join(i.lower() for i in tf2api.getallqualities().values()))
+
+    tagregex = r'({})'.format('|'.join(tf2api.getalltags()))
 
     pricevizmatch = re.match(r'{}$'.format(priceregex), query)
 
@@ -103,11 +109,8 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     # quality is optional and defaults to Unique
     # criteria is one of (<, >, =) and defaults to =
     # tag is optional
-    pricematch = re.match(
-        r'({}|dirty|uncraft(able)?)? ?(<|>|=|) ?{}( ({}))?$'.format(
-        '|'.join(i.lower() for i in tf2api.getallqualities().values()),
-        priceregex, '|'.join(tf2api.getalltags())),
-        query.lower())
+    pricematch = re.match(r'{}? ?(<|>|=|) ?{}(?: {})?$'.format(
+        qualityregex, priceregex, tagregex), query.lower())
 
     # Check if searching for specific indexes
     indexmatch = re.match(r'\d+( \d+)*$', query)
@@ -135,7 +138,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     elif pricevizmatch:
         amount = float(pricevizmatch.group(1))
-        denom = _getdenom(pricevizmatch.group(3).lower())
+        denom = _getdenom(pricevizmatch.group(2).lower())
 
         items, counts = _getpriceasitems(amount, denom, itemsdict)
 
@@ -375,10 +378,10 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 def _pricesearch(pricematch, itemsdict, pricesource):
     """Search for items by price based on criteria in pricematch"""
     quality = (pricematch.group(1) or 'unique').capitalize()
-    criteria = pricematch.group(3)
-    amount = float(pricematch.group(4))
-    denom = _getdenom(pricematch.group(6).lower())
-    tag = pricematch.groups()[-1] or ''
+    criteria = pricematch.group(2)
+    amount = float(pricematch.group(3))
+    denom = _getdenom(pricematch.group(4).lower())
+    tag = pricematch.group(5) or ''
 
     if quality in ('Uncraft', 'Dirty'):
         quality = 'Uncraftable'
