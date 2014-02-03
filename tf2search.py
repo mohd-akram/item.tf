@@ -86,30 +86,33 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     classes = input_['classes']
     tags = input_['tags']
 
+    if not querylist:
+        return []
+
     # Check if searching for an item set
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
 
     # Check if searching by price or using price visualization
     priceregex = (r'(?:(\d+(?:\.\d+)?) ?'
-                  '((?:[eE]arb|[bB])uds?|'
-                  '[kK]eys?|'
-                  '[rR]ef(?:ined|s)?|'
-                  '[rR]ec(?:laimed|s)?|'
-                  '[sS]crap|'
-                  '[wW]ea?p(?:on)?s?))')
+                  '((?:earb|b)uds?|'
+                  'keys?|'
+                  'ref(?:ined|s)?|'
+                  'rec(?:laimed|s)?|'
+                  'scraps?|'
+                  'wea?p(?:on)?s?))')
 
     qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
         '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
     tagregex = r'({})'.format('|'.join(tf2api.getalltags()))
 
-    pricevizmatch = re.match(r'{}$'.format(priceregex), query)
+    pricevizmatch = re.match(r'{}$'.format(priceregex), query.lower())
 
     # Matches this - {quality}{criteria}{price} {tag}
     # quality is optional and defaults to Unique
     # criteria is one of (<, >, =) and defaults to =
     # tag is optional
-    pricematch = re.match(r'{}? ?(<|>|=|) ?{}(?: {})?$'.format(
+    pricematch = re.match(r'{}? ?(?:(<|>|=)? ?{})?(?: {})?$'.format(
         qualityregex, priceregex, tagregex), query.lower())
 
     # Check if searching for specific indexes
@@ -138,7 +141,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     elif pricevizmatch:
         amount = float(pricevizmatch.group(1))
-        denom = _getdenom(pricevizmatch.group(2).lower())
+        denom = _getdenom(pricevizmatch.group(2))
 
         items, counts = _getpriceasitems(amount, denom, itemsdict)
 
@@ -150,7 +153,16 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
         results = [_getsearchresult(title, 'price', items)] if items else []
 
     elif pricematch:
-        result = _pricesearch(pricematch, itemsdict, pricesource)
+        quality = (pricematch.group(1) or 'unique').capitalize()
+        criteria = pricematch.group(2)
+        amount = pricematch.group(3)
+        if amount:
+            amount = float(amount)
+        denom = _getdenom(pricematch.group(4) or '')
+        tag = pricematch.group(5)
+
+        result = _pricesearch(quality, criteria, amount, denom, tag,
+                              itemsdict, pricesource)
 
         results = [result] if result else []
 
@@ -375,13 +387,10 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
         return results
 
 
-def _pricesearch(pricematch, itemsdict, pricesource):
-    """Search for items by price based on criteria in pricematch"""
-    quality = (pricematch.group(1) or 'unique').capitalize()
-    criteria = pricematch.group(2)
-    amount = float(pricematch.group(3))
-    denom = _getdenom(pricematch.group(4).lower())
-    tag = pricematch.group(5) or ''
+def _pricesearch(quality, criteria, amount, denom, tag,
+                 itemsdict, pricesource):
+    """Search for items by price based on criteria"""
+    getall = amount is None
 
     if quality in ('Uncraft', 'Dirty'):
         quality = 'Uncraftable'
@@ -393,8 +402,13 @@ def _pricesearch(pricematch, itemsdict, pricesource):
             continue
 
         price = itemdict['marketprice'][pricesource]
+
         if quality not in price:
             continue
+        elif getall:
+            items.append(itemdict)
+            continue
+
         price = price[quality]
 
         p = price.split()
@@ -418,8 +432,9 @@ def _pricesearch(pricematch, itemsdict, pricesource):
     if items:
         return _getsearchresult(
             '{}: {} {} {}'.format(
-                quality, criteria, _getpricestring(amount, denom),
-                tag.capitalize()), items=items)
+                quality, criteria or '',
+                _getpricestring(amount, denom) if not getall else 'Any',
+                (tag or '').capitalize()), items=items)
 
 
 def _getsearchresult(title='', type='', items=None):
@@ -532,7 +547,7 @@ def _pluralize(wordlist):
 
 
 def _splitspecial(string):
-    """Split a string at special characters and convert it to lowercase"""
+    """Convert a string to lowercase and split it at special characters"""
     return [i for i in re.split(r'\W+', string.lower()) if i]
 
 
@@ -560,7 +575,7 @@ def _getdenom(word):
     denomslist = ['bud', 'key', 'ref', 'rec', 'scrap', 'we']
     denoms = dict(zip(denomslist, tf2api.getalldenoms().keys()))
 
-    hasdenom = re.search('|'.join(denomslist), word)
+    hasdenom = re.search('|'.join(denomslist), word.lower())
     if hasdenom:
         return denoms[hasdenom.group(0)]
 
