@@ -7,6 +7,7 @@ It also supports alias based search, eg: 'engi hats'
 Regular search, eg: 'Meet the Medic'
 Slot search, eg: 'primary weps'
 Set search, eg: 'the saharan spy set'
+Price search, eg: 'unique > 1 ref hat'
 Price visualization, eg: '2.66 ref'
 Requires TF2 API module to get items and prices.
 
@@ -108,10 +109,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     pricevizmatch = re.match(r'{}$'.format(priceregex), query.lower())
 
-    # Matches this - {quality}{criteria}{price} {tag}
-    # quality is optional and defaults to Unique
-    # criteria is one of (<, >, =) and defaults to =
-    # tag is optional
+    # Matches this - {quality}{{criteria}{amount}{denom}} {tag}
     pricematch = re.match(r'{}? ?(?:(<|>|=)? ?{})?(?: {})?$'.format(
         qualityregex, priceregex, tagregex), query.lower())
 
