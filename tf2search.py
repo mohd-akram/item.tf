@@ -94,18 +94,20 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
 
     # Check if searching by price or using price visualization
-    priceregex = (r'(?:(\d+(?:\.\d+)?) ?'
-                  '((?:earb|b)uds?|'
+    denomregex = (r'((?:earb|b)uds?|'
                   'keys?|'
                   'ref(?:ined|s)?|'
                   'rec(?:laimed|s)?|'
                   'scraps?|'
-                  'wea?p(?:on)?s?))')
+                  'wea?p(?:on)?s?)')
+
+    priceregex = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(denomregex))
 
     qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
         '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
-    pricevizmatch = re.match(r'{}$'.format(priceregex), query.lower())
+    pricevizmatch = re.match(r'{}(?: to {})?$'.format(priceregex, denomregex),
+                             query.lower())
 
     # Matches this - {quality}{{criteria}{amount}{denom}} {classes|tags}
     pricematch = re.match(r'{}?(?: ?(<|>|=)? ?{})?((?: [a-z]+)*)$'.format(
@@ -148,8 +150,9 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     elif pricevizmatch:
         amount = float(pricevizmatch.group(1))
         denom = _getdenom(pricevizmatch.group(2))
+        todenom = _getdenom(pricevizmatch.group(3) or '')
 
-        items, counts = _getpriceasitems(amount, denom, itemsdict)
+        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict)
 
         titlelist = [_getpricestring(v, k)
                      for k, v in counts.iteritems()]
@@ -484,7 +487,7 @@ def _getsorteditemlist(itemslist, querylist, query):
                   reverse=True)
 
 
-def _getpriceasitems(amount, denom, itemsdict):
+def _getpriceasitems(amount, denom, todenom, itemsdict):
     """Return a list of itemdicts that visualize a given price and a dict
     with the count of each item."""
     items = []
@@ -498,15 +501,30 @@ def _getpriceasitems(amount, denom, itemsdict):
     denoms = denomtoidx.keys()
     denomidx = denoms.index(denom)
 
-    # Convert denomination to higher value if possible
-    for i in range(denomidx - 1, -1, -1):
-        val = amount / _getdenomvalue(denoms[i], itemsdict)
+    if todenom:
+        todenomidx = denoms.index(todenom)
+        if todenomidx < denomidx:
+            return items, counts
 
-        if val >= 1:
+    range_ = (range(denomidx, todenomidx) if todenom else
+              range(denomidx - 1, -1, -1))
+
+    # Convert denomination to higher value if possible
+    for i in range_:
+        denomval = _getdenomvalue(denoms[i], itemsdict)
+        if todenom:
+            val = amount * denomval
+        else:
+            val = amount / denomval
+
+        if val >= 1 or todenom:
             amount = val
             denomidx = i
         else:
             break
+
+    if todenom:
+        denomidx = todenomidx
 
     if amount <= len(itemsdict):
         # Get count of each denomination and add items to results
