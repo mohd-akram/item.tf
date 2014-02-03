@@ -9,6 +9,7 @@ Slot search, eg: 'primary weps'
 Set search, eg: 'the saharan spy set'
 Price search, eg: 'unique > 1 ref hat'
 Price visualization, eg: '2.66 ref'
+Price conversion, eg: '1.5 keys to ref'
 Requires TF2 API module to get items and prices.
 
 Note: You must provide your own image URLs for paint cans and blueprints.
