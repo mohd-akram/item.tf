@@ -108,7 +108,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     pricevizmatch = re.match(r'{}$'.format(priceregex), query.lower())
 
     # Matches this - {quality}{{criteria}{amount}{denom}} {classes|tags}
-    pricematch = re.match(r'{}? ?(?:(<|>|=)? ?{})?(?: ([a-z]+))*$'.format(
+    pricematch = re.match(r'{}?(?: ?(<|>|=)? ?{})?((?: [a-z]+)*)$'.format(
         qualityregex, priceregex), query.lower())
 
     # Get classes and tags in price search, if any
