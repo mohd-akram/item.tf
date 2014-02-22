@@ -488,7 +488,6 @@ def _convertmarketname(name):
             'Superfan': 'The Superfan',
             'Athletic Supporter': 'The Athletic Supporter',
             'Essential Accessories': 'The Essential Accessories',
-            'Mann of House': 'Mann of the House',
             'Koto': 'Noise Maker - Koto',
             'Winter Holiday': 'Noise Maker - Winter Holiday',
             'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
