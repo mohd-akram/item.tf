@@ -416,8 +416,8 @@ def _pricefilter(quality, criteria, amount, denom, results, pricesource):
             price = price[quality]
 
             p = price.split()
-            valuelow = float(p[0].rstrip('X'))
-            valuehigh = float(p[2].rstrip('X')) if len(p) == 4 else valuelow
+            valuelow = float(p[0])
+            valuehigh = float(p[2]) if len(p) == 4 else valuelow
             pricedenom = p[-1].rstrip('s').replace('Bud', 'Earbuds')
 
             if denom != pricedenom:
