@@ -79,9 +79,6 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     """This method parses the query using _parseinput and gets all the
     items that match it. It returns a list of dicts obtained from
     _getsearchresult"""
-    if not pricesource:
-        pricesource = 'backpack.tf'
-
     input_ = _parseinput(query)
     querylist = input_['querylist']
     classes = input_['classes']
@@ -152,7 +149,8 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
         denom = _getdenom(pricevizmatch.group(2))
         todenom = _getdenom(pricevizmatch.group(3) or '')
 
-        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict)
+        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict,
+                                         pricesource)
 
         titlelist = [_getpricestring(v, k)
                      for k, v in counts.iteritems()]
@@ -485,7 +483,7 @@ def _getsorteditemlist(itemslist, querylist, query):
                   reverse=True)
 
 
-def _getpriceasitems(amount, denom, todenom, itemsdict):
+def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
     """Return a list of itemdicts that visualize a given price and a dict
     with the count of each item."""
     items = []
@@ -509,7 +507,7 @@ def _getpriceasitems(amount, denom, todenom, itemsdict):
 
     # Convert denomination to higher value if possible
     for i in range_:
-        denomval = _getdenomvalue(denoms[i], itemsdict)
+        denomval = _getdenomvalue(denoms[i], itemsdict, pricesource)
         if todenom:
             val = amount * denomval
         else:
@@ -529,7 +527,7 @@ def _getpriceasitems(amount, denom, todenom, itemsdict):
         for d in denoms[denomidx:]:
             idx = denomtoidx[d]
             count = int(round(amount, 10))
-            value = _getdenomvalue(d, itemsdict)
+            value = _getdenomvalue(d, itemsdict, pricesource)
 
             if count:
                 items.extend([itemsdict[idx]] * count)
@@ -546,7 +544,7 @@ def _getpricestring(amount, denom):
         amount, denom + 's' if denom == 'Key' and amount != 1 else denom)
 
 
-def _getdenomvalue(denom, itemsdict):
+def _getdenomvalue(denom, itemsdict, pricesource):
     """Return the value of a given denomination in terms of its lower
     denomination"""
     denomtoidx = tf2api.getalldenoms()
@@ -555,7 +553,7 @@ def _getdenomvalue(denom, itemsdict):
 
     if denom in ('Earbuds', 'Key'):
         value = float(
-            itemsdict[idx]['marketprice']['backpack.tf']['Unique'].split()[0])
+            itemsdict[idx]['marketprice'][pricesource]['Unique'].split()[0])
     else:
         value = {'Refined': 3, 'Reclaimed': 3, 'Scrap': 2, 'Weapon': 1}[denom]
 

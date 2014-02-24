@@ -186,10 +186,15 @@ class TF2SearchHandler(Handler):
         itemsets = getfromcache('itemsets')
         bundles = getfromcache('bundles')
 
+        pricesource = self.request.cookies.get('price_source')
+
+        sources = ('backpack.tf', 'trade.tf')
+        if pricesource not in sources:
+            pricesource = sources[0]
+
         t0 = time.time()
         results = tf2search.search(query, itemsdict, nametoindexmap,
-                                   itemsets, bundles,
-                                   self.request.cookies.get('price_source'))
+                                   itemsets, bundles, pricesource)
         t1 = time.time()
 
         if is_json:
