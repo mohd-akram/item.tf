@@ -39,7 +39,6 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     newstoreprices = tf2api.getnewstoreprices(storeprices)
     bundles = tf2api.getbundles(apikey, storeprices)
 
-    spreadsheetprices = tf2api.getspreadsheetprices(itemsbyname)
     backpackprices = tf2api.getbackpackprices(backpackkey, items, itemsbyname)
     tradeprices = tf2api.gettradeprices(tradekey, items, itemsbyname)
 
@@ -49,13 +48,13 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
 
     fields = ('items itemsbyname itemsets attributes effects '
               'blueprints storeprices newstoreprices bundles '
-              'spreadsheetprices backpackprices tradeprices')
+              'backpackprices tradeprices')
 
     TF2Info = namedtuple('TF2Info', fields)
 
     return TF2Info(items, itemsbyname, itemsets, attributes, effects,
                    blueprints, storeprices, newstoreprices, bundles,
-                   spreadsheetprices, backpackprices, tradeprices)
+                   backpackprices, tradeprices)
 
 
 def getitemsdict(tf2info, chunks=1):
@@ -207,7 +206,6 @@ def createitemdict(index, tf2info):
                                           tf2info.attributes, tf2info.effects)
 
     storeprice = tf2api.getstoreprice(item, tf2info.storeprices)
-    spreadsheetprice = tf2api.getmarketprice(item, tf2info.spreadsheetprices)
     backpackprice = tf2api.getmarketprice(item, tf2info.backpackprices)
     tradeprice = tf2api.getmarketprice(item, tf2info.tradeprices)
 
@@ -250,8 +248,7 @@ def createitemdict(index, tf2info):
                 'classes': classes,
                 'tags': tags,
                 'storeprice': storeprice,
-                'marketprice': {'spreadsheet': spreadsheetprice,
-                                'backpack.tf': backpackprice,
+                'marketprice': {'backpack.tf': backpackprice,
                                 'trade.tf': tradeprice},
                 'blueprints': blueprint}
 

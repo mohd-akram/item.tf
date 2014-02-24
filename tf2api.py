@@ -4,15 +4,13 @@
 """This module is based on the Steam WebAPI and can be used to get information
 about items in TF2. Using this module, you can obtain the item schema,
 store prices, bundles, item sets and attributes for TF2.
-You can also obtain market prices from the community spreadsheet.
+You can also obtain market prices from backpack.tf and trade.tf.
 
 There are also functions for parsing the information of each item.
 
 """
 import json
-import re
-from urllib2 import urlopen, build_opener
-from HTMLParser import HTMLParser
+from urllib2 import urlopen
 from collections import defaultdict, OrderedDict
 
 
@@ -107,52 +105,6 @@ def getnewstoreprices(storeprices):
     """Return a dictionary of store prices of new items with defindex as key"""
     return {index: price for index, price in storeprices.iteritems()
             if 'New' in price['tags']}
-
-
-def getspreadsheetprices(itemsbyname, timeout=30):
-    """Get market prices from TF2 Spreadsheet.
-    Return a dictionary where the key is defindex and value is a dictionary of
-    prices for the item"""
-    url = 'http://tf2spreadsheet.traderempire.com/spreadsheet/text/'
-
-    opener = build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-    data = opener.open(url, timeout=timeout).read()
-
-    parser = _SpreadsheetParser()
-    parser.feed(data)
-    pricesdata = parser.prices.items()
-
-    botkillers = ['Gold', 'Silver', 'Blood', 'Rust', 'Diamond', 'Carbonado']
-
-    pricesdict = {}
-
-    for name, prices in pricesdata:
-        name = _convertmarketname(name)
-
-        if name in itemsbyname:
-            index = itemsbyname[name]['defindex']
-            pricesdict[index] = prices
-
-        elif name == 'Slot Token':
-            for type_ in ['Primary', 'Secondary', 'Melee', 'PDA2']:
-                pricesdata.append(('Slot Token - ' + type_, prices))
-
-        elif name == 'Class Token':
-            for class_ in getallclasses():
-                pricesdata.append(('Class Token - ' + class_, prices))
-
-        elif name == 'Halloween Masks':
-            for class_ in getallclasses():
-                pricesdata.append((class_ + ' Mask', prices))
-
-        elif 'Mk.I' in name and 'Botkiller' not in name:
-            for quality, price in prices.iteritems():
-                robothead = re.search('|'.join(botkillers), quality).group(0)
-                propername = '{} Botkiller {}'.format(robothead, name)
-                pricesdata.append((propername, {'Strange': price}))
-
-    return pricesdict
 
 
 def getbackpackprices(apikey, items, itemsbyname, timeout=30):
@@ -465,116 +417,3 @@ def resolvevanityurl(apikey, vanityurl):
 
     if response['success'] == 1:
         return response['steamid']
-
-
-def _convertmarketname(name):
-    """Changes the market name to match the proper TF2 name"""
-    repl = {'Meet the Medic': 'Taunt: The Meet the Medic',
-            'Taunt: The High-Five!': 'Taunt: The High Five!',
-            'Schadenfreude': 'Taunt: The Schadenfreude',
-            'Unusual Haunted Metal': 'Haunted Metal Scrap',
-            'Hazmat Headcase': 'HazMat Headcase',
-            "Zephaniah's Greed": "Zepheniah's Greed",
-            'Full Head of Steam': 'Full Head Of Steam',
-            'Claidheamh Mr': 'Claidheamh Mòr',
-            'Detective Noir': 'Détective Noir',
-            'QuÃ¤ckenbirdt': 'Quäckenbirdt',
-            'Brutal Bouffant': 'Brütal Bouffant',
-            'Helmet Without A Home': 'Helmet Without a Home',
-            'Dueling mini game': 'Dueling Mini-Game',
-            'Monoculus': 'MONOCULUS!',
-            'The Milkman': 'Milkman',
-            'The Triple A Badge': 'Triple A Badge',
-            'Superfan': 'The Superfan',
-            'Athletic Supporter': 'The Athletic Supporter',
-            'Essential Accessories': 'The Essential Accessories',
-            'Koto': 'Noise Maker - Koto',
-            'Winter Holiday': 'Noise Maker - Winter Holiday',
-            'Voodoo Juju (Slight Return)': 'Voodoo JuJu (Slight Return)',
-            'Halloween Kills': 'Strange Part: Halloween Kills',
-            'Die Job (halloween spell)': 'Halloween Spell: Die Job',
-            'Refreshing Summer Cooler (series 22)': 'Refreshing Summer Cooler',
-            'Naughty Winter Crate (series 35)': 'Naughty Winter Crate',
-            'Nice Winter Crate (series 36)': 'Nice Winter Crate',
-            'Scorched Crate (series 46)': 'Scorched Crate',
-            'Fall Crate (series 48)': 'Fall Crate',
-            'Eerie Crate (series 51)': 'Eerie Crate',
-            'Nice Winter Crate 2012 (series 53)': 'Nice Winter Crate 2012',
-            'Summer Appetizer Crate (series 61)': 'Summer Appetizer Crate',
-            'Fall 2013 Acorns Crate (series 72)': 'Fall 2013 Acorns Crate',
-            'Fall 2013 Gourd Crate (series 73)': 'Fall 2013 Gourd Crate',
-            'Spooky Crate (series 74)': 'Spooky Crate',
-            'Nice Winter Crate 2013 (series 79)': 'Nice Winter Crate 2013',
-            'Mann Co. Strongbox (series 81)': 'Mann Co. Strongbox',
-
-            'Chromatic Corruption (halloween spell)':
-            'Halloween Spell: Chromatic Corruption',
-
-            'Putrescent Pigmentation (halloween spell)':
-            'Halloween Spell: Putrescent Pigmentation',
-
-            'Sinister Staining (halloween spell)':
-            'Halloween Spell: Sinister Staining',
-
-            'Salvaged Mann Co. Supply Crate (series 50)':
-            'Salvaged Mann Co. Supply Crate',
-
-            'Naughty Winter Crate 2012 (series 52)':
-            'Naughty Winter Crate 2012',
-
-            'Naughty Winter Crate 2013 (series 78)':
-            'Naughty Winter Crate 2013',
-
-            'Strange Part: Kills While Ubercharged':
-            'Strange Part: Kills While Übercharged',
-
-            'Strange Parts: Medics Killed That Have Full UberCharge':
-            'Strange Part: Medics Killed That Have Full ÜberCharge',
-
-            "Color of a Gentlemann's Business Pants":
-            "The Color of a Gentlemann's Business Pants"}
-
-    if name in repl:
-        name = repl[name]
-    elif 'Summer 2013 Cooler' in name and 'Key' not in name:
-        name = name[:-11]
-
-    return name.decode('utf-8')
-
-
-class _SpreadsheetParser(HTMLParser):
-    """A class to parse the TF2 Spreadsheet website"""
-    def __init__(self):
-        HTMLParser.__init__(self)
-        self.name = None
-        self.isname = False
-        self.prices = defaultdict(dict)
-
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-
-        if 'class' in attrs:
-            class_ = attrs['class']
-
-            if tag == 'td' and class_ == 'tf2-ss-c10':
-                self.isname = True
-
-            elif tag == 'div' and class_.startswith('tf2-ss-quality'):
-                title = str(attrs['title'].replace(u'\u2013', '-').title())
-                quality, price = title.replace('Keya', 'Keys').split('\r')
-
-                quality = quality.replace('(Dirty)', 'Uncraftable')
-                # Remove everything in parentheses
-                price = re.sub(r' ?\([^)]*\)?', '', price)
-
-                isrefined = not any(i in price for i in ['Bud', 'Key'])
-
-                if price[0].isdigit() and isrefined:
-                    price += ' Refined'
-
-                self.prices[self.name][quality] = price
-
-    def handle_data(self, data):
-        if self.isname:
-            self.name = data
-            self.isname = False
