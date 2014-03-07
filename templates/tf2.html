@@ -48,7 +48,7 @@
         <a href="/{% if user.url == user.key.id() %}profiles{% else %}id{% endif %}/{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
           <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
         {% else %}
-        <a href="{{loginurl}}" style="position:relative; left:3px">
+        <a href="{{loginurl}}" style="position: relative; left: 3px">
           <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
         {% endif %}
         <br><br>
