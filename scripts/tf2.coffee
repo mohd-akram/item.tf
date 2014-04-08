@@ -257,8 +257,8 @@ class ItemBox
 
     <a class="fa fa-list fa-lg button-icon" target="_blank"
      title="Backpack.tf Classifieds"
-     href="http://backpack.tf/ajax/search_generate.php?defindex=#{
-     @item.id}&appid=440&redir=classifieds"></a>
+     href="http://backpack.tf/classifieds/search_redirect?defindex=#{
+     @item.id}&appid=440"></a>
 
     #{@_outpostHTML()}
     #{@_wishlistHTML()}
