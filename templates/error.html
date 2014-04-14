@@ -1,25 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Error - TF2 Find</title>
-    <link rel="stylesheet" href="/css/tf2.css">
-    {% include 'analytics.html' %}
-  </head>
-  <body>
-    <div id="container">
-      <header>
-        <h1 id="back"><a href="/">&lt;</a></h1>
-        <h1>Error</h1>
-        <form action="/search" style="position: absolute; top:20px; right: 20px;">
-          <input type="search" placeholder="Search" name="q" value="" style="font-size: 1.4em;">
-          <input type="submit" value="Search" class="button">
-        </form>
-      </header>
-      <div id="body">
-        <h2 style="margin-top: 100px">Try reloading the page.</h2>
-      </div>
-      <footer>{% include 'footer.html' %}</footer>
-    </div>
-  </body>
-</html>
+{% extends 'list.html' %}
+
+{% block title %}Error{% endblock %}
+{% block heading %}Error{% endblock %}
+
+{% block body %}
+  <h2 style="margin-top: 100px">Try reloading the page.</h2>
+{% endblock %}

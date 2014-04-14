@@ -1,7 +1,7 @@
 {% macro showitem(item, visible=True) %}
 {% set style = 'background-image: url("{}");'.format(item['image']) %}
 {% if not visible %}{% set style = style + 'display: none' %}{% endif %}
-<a href="/item/{{item['index']}}">
+<a href="/{{item['index']}}">
 <div class="item{% if 'quality' in item %} quality-{{item['quality']}}{% endif %}" title="{{item['name']}}" style="{{style}}" data-index="{{item['index']}}" data-image="{{item['image_large']}}" data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
 {%- for b in item['blueprints'] %}
 <ul data-chance="{{b['chance']}}" style="display:none">

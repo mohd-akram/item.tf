@@ -94,7 +94,7 @@ class ItemBox
     if @showLink
       html =
         """
-        <a href="/item/#{@item.id}"
+        <a href="/#{@item.id}"
          target="_blank" class="glow" title="Go to Item Page">#{html}</a>
         """
     html =
@@ -178,7 +178,7 @@ class ItemBox
               style}'></div>"
 
             if index
-              url = "/item/#{index}"
+              url = "/#{index}"
             else
               name = name.replace('Any ', '')
                          .replace('Spy Watch', 'PDA2 Weapon')

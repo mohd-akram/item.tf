@@ -46,7 +46,7 @@ def updatecache():
             nametoindexmap[name] = index
             itemindexes.add(index)
 
-            path = '{0}/item/{1}'.format(config.homepage, index)
+            path = '{0}/{1}'.format(config.homepage, index)
 
             suggestions[0].append(name)
             suggestions[1].append('{} - {}'.format(

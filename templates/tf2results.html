@@ -1,50 +1,34 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>{{query}} - TF2 Find</title>
-    <meta name="description" content='Search results for "{{query}}"' />
-    <meta name="viewport" content="width=1100" />
-    <link rel="stylesheet" href="/css/tf2.css">
-    <link rel="stylesheet" href="/css/animate.min.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-    <script src="/scripts/tf2.js"></script>
-    {% include 'analytics.html' %}
-  </head>
+{% extends 'list.html' %}
+{% from 'macros.html' import showitems, getcount %}
 
-  <body>
-    <div id="container">
-    <header>
-    <h1 id="back"><a href="/">&lt;</a></h1>
-    <h1 id="results">Results</h1>
-    <form action="/search" style="position: absolute; top:20px; right: 20px;">
-      <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.4em;">
-      <input type="submit" value="Search" class="button">
-    </form>
-    </header>
+{% block title %}{{query}}{% endblock %}
+{% block description %}Search results for "{{query}}"{% endblock %}
 
-    <div id="body">
-    {% from 'macros.html' import showitems, getcount %}
+{% block meta %}
+  <meta name="viewport" content="width=1100" />
+{% endblock %}
 
-    {% set issetpage = query.lower().endswith(' set') %}
+{% block heading %}Results{% endblock %}
 
-    {% for result in results %}
-    {%- if result.type == 'set' and not issetpage %}
-    <h2><a href="/search?q={{result.title|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{result.title}}</a></h2>
-    {% else %}
-    <h2>{% set list = result.title.split(':') %}{% if list|length > 1 %}
-    <span class="{{list[0]|lower}}">{{list[0]}}</span>:{{''.join(list[1:])}}
-    {% else %}{{result.title}}{% endif %}</h2>
-    {% endif -%}
-    {{ showitems(result['items']) }}
-    {%- endfor %}
+{% block body %}
+  {% set issetpage = query.lower().endswith(' set') %}
 
-    {%- if not count %}
-    <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
-    {%- endif -%}
-    </div>
-    <footer>{{getcount(count,'result')}} ({{time}} seconds)<br>{% include 'footer.html' %}</footer>
-    </div>
-    <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
-  </body>
-</html>
+  {% for result in results %}
+  {%- if result.type == 'set' and not issetpage %}
+  <h2><a href="/search?q={{result.title|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{result.title}}</a></h2>
+  {% else %}
+  <h2>{% set list = result.title.split(':') %}{% if list|length > 1 %}
+  <span class="{{list[0]|lower}}">{{list[0]}}</span>:{{''.join(list[1:])}}
+  {% else %}{{result.title}}{% endif %}</h2>
+  {% endif -%}
+  {{ showitems(result['items']) }}
+  {%- endfor %}
+
+  {%- if not count %}
+  <h3 style="margin-top:100px; margin-bottom:100px;">No items found</h3>
+  {%- endif -%}
+{% endblock %}
+
+{% block script %}
+  <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
+{% endblock %}

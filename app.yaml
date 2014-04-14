@@ -1,5 +1,5 @@
 application: tf2find
-version: 3-5
+version: 3-9
 runtime: python27
 api_version: 1
 threadsafe: yes

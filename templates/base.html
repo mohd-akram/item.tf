@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="{% block description %}{% endblock %}" />
+    {% block meta %}{% endblock %}
+    <title>{% block title %}{% endblock %} - item.tf</title>
+    <link rel="stylesheet" href="/css/tf2.css">
+    <link rel="stylesheet" href="/css/animate.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    {% block link %}{% endblock %}
+    <script src="/scripts/tf2.js"></script>
+    {% block js %}{% endblock %}
+    {% include 'analytics.html' %}
+    {% block style %}{% endblock %}
+  </head>
+  <body>
+    <div id="container">
+      <header>{% block header %}{% endblock %}</header>
+      {% block container %}{% endblock %}
+      <div id="body">
+        {% block body %}{% endblock %}
+      </div>
+      <footer>
+        {% block footer %}{% endblock %}{% include 'footer.html' %}
+      </footer>
+    </div>
+    {% block script %}{% endblock %}
+  </body>
+</html>

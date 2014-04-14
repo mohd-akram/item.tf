@@ -1,186 +1,193 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>TF2 Find</title>
-    <meta name="description" content="Find TF2 items and quickly get information about crafting blueprints, market prices and more." />
-    <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
-    {% set searchurl = homepage+'/searchdescription.xml' -%}
-    <link rel="search" type="application/opensearchdescription+xml" title="TF2 Find" href="{{searchurl}}">
-    <link rel="stylesheet" href="/css/tf2.css">
-    <link rel="stylesheet" href="/css/animate.min.css">
-    <link rel="stylesheet" href="/css/message.css">
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <script src="/scripts/tf2.js"></script>
-    <script src="/scripts/spin.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <style>
-      .ui-autocomplete {
-        max-height: 100px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        background: #292927;
-        border: none;
-      }
-      .ui-menu-item a {
-        color: rgb(150,150,150);
-      }
-      .ui-menu-item .ui-state-focus {
-        color: white;
-        background: #1E1D1C;
-        border: none;
-      }
-      .itemlist {
-        margin-top: 30px;
-      }
-    </style>
-    {% include 'analytics.html' %}
-  </head>
+{% extends 'base.html' %}
 {% from 'macros.html' import showitems, showsearchlinks, getcount %}
-  <body>
-    <div id="container">
-      <header style="height: 10px"></header>
 
-      <div id="sidebar">
-        {% if user %}
-        <a href="/{% if user.url == user.key.id() %}profiles{% else %}id{% endif %}/{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
-          <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
-        {% else %}
-        <a href="{{loginurl}}" style="position: relative; left: 3px">
-          <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
-        {% endif %}
+{% set searchurl = homepage+'/searchdescription.xml' -%}
+
+{% block title %}Home{% endblock %}
+{% block description %}Find TF2 items and quickly get information about crafting blueprints, market prices and more.{% endblock %}
+
+{% block link %}
+<link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
+<link rel="stylesheet" href="/css/message.css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+{% endblock %}
+
+{% block meta %}
+  <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
+{% endblock %}
+
+{% block style %}
+  <style>
+    .ui-autocomplete {
+      max-height: 100px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #292927;
+      border: none;
+    }
+    .ui-menu-item a {
+      color: rgb(150,150,150);
+    }
+    .ui-menu-item .ui-state-focus {
+      color: white;
+      background: #1E1D1C;
+      border: none;
+    }
+    header {
+      height: 10px;
+    }
+    .itemlist {
+      margin-top: 30px;
+    }
+  </style>
+{% endblock %}
+
+{% block js %}
+  <script src="/scripts/spin.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+{% endblock %}
+
+{% block body %}
+  <h1 style="margin-top:120px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">item.tf</h1>
+  <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
+    <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
+  </h4>
+  <div id="searchitems" style="margin-top: 20px"></div>
+  <form id="searchform" action="/search">
+    <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin: 30px 0 0 32px; font-size:1.4em;">
+    <div id="loading" style="display:inline-block; padding: 0 0 16px 24px;"></div>
+    <br><br>
+    <input type="submit" value="Search" class="button">
+    <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
+  </form>
+  {{ showitems(newitems, newitems | length) }}
+  <div id="message">{{message|safe}}</div>
+{% endblock %}
+
+{% block container %}
+  <div id="sidebar">
+    {% if user %}
+    <a href="/{% if user.url == user.key.id() %}profiles{% else %}id{% endif %}/{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
+      <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
+    {% else %}
+    <a href="{{loginurl}}" style="position: relative; left: 3px">
+      <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
+    {% endif %}
+    <br><br>
+    <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
+    <i id="help" class="fa fa-question-circle fa-2x button-icon rounded" title="Help"></i>
+
+    <div id="settings-list" class="rounded">
+      <form id="settingsform">
+        <label for="pricesetting">Price Source:</label>
+        <select id="pricesetting" class="textbox">
+          <option value="backpack.tf">Backpack.tf</option>
+          <option value="trade.tf">Trade.tf</option>
+        </select>
         <br><br>
-        <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
-        <i id="help" class="fa fa-question-circle fa-2x button-icon rounded" title="Help"></i>
-
-        <div id="settings-list" class="rounded">
-          <form id="settingsform">
-            <label for="pricesetting">Price Source:</label>
-            <select id="pricesetting" class="textbox">
-              <option value="backpack.tf">Backpack.tf</option>
-              <option value="trade.tf">Trade.tf</option>
-            </select>
-            <br><br>
-            <input type="submit" value="Save" class="button-small">
-          </form>
-        </div>
-
-        <div id="help-list" class="rounded">
-          <h4>Examples</h4>
-          <p>
-          {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set', '1.66 refs', '5.5 buds']) }}
-          </p>
-          <h4>Keywords</h4>
-          <p>
-          {{ showsearchlinks(['all','sets','random']) }}
-          <br>
-          {{ showsearchlinks(tags) }}
-          </p>
-        </div>
-      </div>
-
-      <div id="body">
-        <h1 style="margin-top:120px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">TF2 Find</h1>
-        <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
-          <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
-        </h4>
-        <div id="searchitems" style="margin-top: 20px"></div>
-        <form id="searchform" action="/search">
-          <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin: 30px 0 0 32px; font-size:1.4em;">
-          <div id="loading" style="display:inline-block; padding: 0 0 16px 24px;"></div>
-          <br><br>
-          <input type="submit" value="Search" class="button">
-          <input type="button" value="Lucky?" class="button" onclick="window.parent.location.href='/search?q=random'">
-        </form>
-        {{ showitems(newitems, newitems | length) }}
-        <div id="message">{{message|safe}}</div>
-      </div>
-      <footer>Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% include 'footer.html' %}</footer>
+        <input type="submit" value="Save" class="button-small">
+      </form>
     </div>
 
-    <script>
-      $('#searchbox').focus();
-      $('#pricesetting').val(user.priceSource);
+    <div id="help-list" class="rounded">
+      <h4>Examples</h4>
+      <p>
+      {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set', '1.66 refs', '5.5 buds']) }}
+      </p>
+      <h4>Keywords</h4>
+      <p>
+      {{ showsearchlinks(['all','sets','random']) }}
+      <br>
+      {{ showsearchlinks(tags) }}
+      </p>
+    </div>
+  </div>
+{% endblock %}
 
-      $('#help').click(function(){
-        $('#settings-list').hide();
-        $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
-      });
+{% block footer %}Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% endblock %}
 
-      $('#settings').click(function() {
-        $('#help-list').hide();
-        $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
-      });
+{% block script %}
+  <script>
+    $('#searchbox').focus();
+    $('#pricesetting').val(user.priceSource);
 
-      $('#settingsform').submit(function() {
-        user.priceSource = $('#pricesetting').val();
-        $('#settings-list').hide('fast');
-        return false;
-      });
+    $('#help').click(function(){
+      $('#settings-list').hide();
+      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
+    });
 
-      var itemBox = new ItemBox(); new HoverBox(itemBox);
+    $('#settings').click(function() {
+      $('#help-list').hide();
+      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
+    });
 
-      $(function() {
-        var accentMap = {
-            'ä': 'a',
-            'é': 'e',
-            'ò': 'o',
-            'ü': 'u',
-            'Ü': 'U'
-        };
+    $('#settingsform').submit(function() {
+      user.priceSource = $('#pricesetting').val();
+      $('#settings-list').hide('fast');
+      return false;
+    });
 
-        var normalize = function( term ) {
-            var ret = "";
-            for ( var i = 0; i < term.length; i++ ) {
-                ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+    var itemBox = new ItemBox(); new HoverBox(itemBox);
+
+    $(function() {
+      var accentMap = {
+          'ä': 'a',
+          'é': 'e',
+          'ò': 'o',
+          'ü': 'u',
+          'Ü': 'U'
+      };
+
+      var normalize = function( term ) {
+          var ret = "";
+          for ( var i = 0; i < term.length; i++ ) {
+              ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+          }
+          return ret;
+      };
+
+      $.getJSON('/suggest', function (data) {
+
+        $('#searchbox').autocomplete({
+          source: function(request, response) {
+              var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+              response(function() {
+                var result = [];
+                for (var i = 0; i < data[1].length; i++) {
+                  var name = data[1][i];
+                  if (matcher.test(name) || matcher.test(normalize(name)))
+                    result.push({label: name, value: data[3][i]});
+                }
+                return result;
+              }());
+            }, delay: 50, minLength: 2,
+            focus: function(event, ui) {$(this).val(ui.item.label);return false;},
+            select: function(event, ui) {
+              $(this).val(ui.item.label);
+              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
+                                       .spin(document.getElementById('loading'));
+              $.get(ui.item.value, function(data) {
+                var searchItems = $('#searchitems')
+                if (searchItems.children().size() == 5)
+                  searchItems.children().first().remove()
+
+                var item = $(data).find('.item').css('display', 'inline-block');
+                searchItems.append(item.parent());
+                new HoverBox(item[0], itemBox);
+                // item.click() doesn't work in Steam browser
+                itemBox.show(item[0]);
+                spinner.stop();
+
+                _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
+              });
+              return false;
             }
-            return ret;
-        };
-
-        $.getJSON('/suggest', function (data) {
-
-          $('#searchbox').autocomplete({
-            source: function(request, response) {
-                var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-                response(function() {
-                  var result = [];
-                  for (var i = 0; i < data[1].length; i++) {
-                    var name = data[1][i];
-                    if (matcher.test(name) || matcher.test(normalize(name)))
-                      result.push({label: name, value: data[3][i]});
-                  }
-                  return result;
-                }());
-              }, delay: 50, minLength: 2,
-              focus: function(event, ui) {$(this).val(ui.item.label);return false;},
-              select: function(event, ui) {
-                $(this).val(ui.item.label);
-                var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
-                                         .spin(document.getElementById('loading'));
-                $.get(ui.item.value, function(data) {
-                  var searchItems = $('#searchitems')
-                  if (searchItems.children().size() == 5)
-                    searchItems.children().first().remove()
-
-                  var item = $(data).find('.item').css('display', 'inline-block');
-                  searchItems.append(item.parent());
-                  new HoverBox(item[0], itemBox);
-                  // item.click() doesn't work in Steam browser
-                  itemBox.show(item[0]);
-                  spinner.stop();
-
-                  _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
-                });
-                return false;
-              }
-          });
         });
       });
+    });
 
-      if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
-    </script>
-
-  </body>
-</html>
+    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
+  </script>
+{% endblock %}
