@@ -304,6 +304,10 @@ class TF2WishlistHandler(Handler):
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
+        if self.request.path.startswith('/item/'):
+            return self.redirect('{}/{}'.format(config.homepage, defindex),
+                                 True)
+
         itemsdict = getfromcache('itemsdict')
         index = int(defindex)
 

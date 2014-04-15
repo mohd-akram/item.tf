@@ -7,14 +7,15 @@
 {% block description %}Find TF2 items and quickly get information about crafting blueprints, market prices and more.{% endblock %}
 
 {% block link %}
-<link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
-<link rel="stylesheet" href="/css/message.css">
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
+  <link rel="stylesheet" href="/css/message.css">
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css">
 {% endblock %}
 
-{% block meta %}
-  <meta name="google-site-verification" content="tQE3vSNvF6gI8yGNH4RHNIWKZc8nNGvRdn4adkWf1CQ" />
+{% block js %}
+  <script src="/scripts/spin.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 {% endblock %}
 
 {% block style %}
@@ -41,12 +42,6 @@
       margin-top: 30px;
     }
   </style>
-{% endblock %}
-
-{% block js %}
-  <script src="/scripts/spin.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -180,7 +175,7 @@
                 itemBox.show(item[0]);
                 spinner.stop();
 
-                _gaq.push(['_trackEvent', 'Items', 'Search', ui.item.label]);
+                ga('send', 'event', 'Items', 'Search', ui.item.label);
               });
               return false;
             }
