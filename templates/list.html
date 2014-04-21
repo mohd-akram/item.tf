@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import showitems, getcount %}
-
-{% block title %}{{query}}{% endblock %}
-{% block description %}Search results for "{{query}}"{% endblock %}
+{% from 'macros.html' import showitems %}
 
 {% block meta %}
   <meta name="viewport" content="width=1100" />
@@ -10,7 +7,7 @@
 
 {% block header %}
   <h1 id="back"><a href="/">&lt;</a></h1>
-  <h1 id="results">{% block heading %}{% endblock %}</h1>
+  <h1>{% block heading %}{% endblock %}</h1>
   <form action="/search" style="position: absolute; top:20px; right: 20px;">
     <input type="search" placeholder="Search" name="q" value="{{query}}" style="font-size: 1.4em;">
     <input type="submit" value="Search" class="button">

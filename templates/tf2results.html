@@ -1,12 +1,8 @@
 {% extends 'list.html' %}
-{% from 'macros.html' import showitems, getcount %}
+{% from 'macros.html' import getcount %}
 
 {% block title %}{{query}}{% endblock %}
 {% block description %}Search results for "{{query}}"{% endblock %}
-
-{% block meta %}
-  <meta name="viewport" content="width=1100" />
-{% endblock %}
 
 {% block heading %}Results{% endblock %}
 
@@ -29,6 +25,6 @@
   {%- endif -%}
 {% endblock %}
 
-{% block script %}
-  <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
+{% block footer %}
+{{getcount(count,'result')}} ({{time}} seconds)<br>
 {% endblock %}
