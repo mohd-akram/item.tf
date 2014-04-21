@@ -131,9 +131,6 @@ def getuser(steamid, urltype='profiles', create=False):
 class TF2Handler(Handler):
     """Homepage handler"""
     def get(self):
-        if self.request.host.endswith('appspot.com'):
-            return self.redirect(config.homepage, True)
-
         t0 = getfromcache('lastupdated')
         lastupdated = int(time.time() - t0) / 60
 
@@ -349,6 +346,11 @@ class CacheHandler(Handler):
         elif option == 'flush':
             memcache.flush_all()
             self.write('Cache Flushed')
+
+
+class RedirectHandler(Handler):
+    def get(self, *args):
+        self.redirect(config.homepage + self.request.path_qs, True)
 
 
 class User(ndb.Model):
