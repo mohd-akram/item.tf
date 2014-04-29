@@ -30,7 +30,8 @@ class Item
 
     @prices = {}
     for source in priceSources
-      price = JSON.parse @elem.getAttribute "data-#{source}"
+      price = JSON.parse(@elem.getAttribute("data-#{source}")
+                             ?.replace('Collector"s', "Collector's"))
       @prices[source] = price if price
 
     @wishIndex = elem.getAttribute 'data-i'
@@ -151,7 +152,7 @@ class ItemBox
             <a href="/search?q=\$1%20#{denom}"
              target="_blank" class="glow">\$1</a>
             """)
-        html += "<span class='#{quality.toLowerCase()}'>#{
+        html += "<span class='#{quality.toLowerCase().replace "'", ''}'>#{
           quality}</span>: #{price}<br>"
 
     return html
@@ -208,8 +209,7 @@ class ItemBox
      action="http://www.tf2outpost.com/search">
 
     <input type="hidden" name="json">
-    <input type="hidden" name="type" value="any">
-    <input type="submit" name="submit" value="Search" style="display: none">
+    <input type="submit" name="submit" value="Search!" style="display: none">
 
     <select id="tradetype" class="textbox">
       <option value="has1">Want</option>
@@ -221,6 +221,7 @@ class ItemBox
       <option value="3">Vintage</option>
       <option value="11">Strange</option>
       <option value="1">Genuine</option>
+      <option value="14">Collector's</option>
       <option value="13">Haunted</option>
       <option value="5">Unusual</option>
     </select>
@@ -317,7 +318,7 @@ class ItemBox
     document.getElementById('find-trades-btn').onclick = (event) =>
       tradeType = document.getElementById('tradetype').value
 
-      @form.json.value = "{\"filters\":{},\"#{
+      @form.json.value = "{\"attributes\":{},\"match_all\":false,\"#{
         tradeType}\":\"440,#{@item.id},#{@form.quality.value}\"}"
 
       @form.submit.click()

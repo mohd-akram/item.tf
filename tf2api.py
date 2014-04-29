@@ -276,6 +276,7 @@ def getallqualities():
             3: 'Vintage',
             11: 'Strange',
             1: 'Genuine',
+            14: "Collector's",
             13: 'Haunted',
             5: 'Unusual'}
 

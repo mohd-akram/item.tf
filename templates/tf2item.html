@@ -17,7 +17,7 @@
     {% if item['marketprice']['backpack.tf'] %}
     <span class="pricesource">Backpack.tf</span>
     <h3 class="prices">{% for quality, value in item['marketprice']['backpack.tf'].items() %}
-      <span class="{{quality|lower}}">{{quality}}</span>: {{value}}<br>
+      <span class="{{quality|lower|replace("'", '')}}">{{quality}}</span>: {{value}}<br>
     {% endfor %}</h3>
     {% endif %}
     <img src="{{item['image_large']}}" alt="{{item['name']}}">

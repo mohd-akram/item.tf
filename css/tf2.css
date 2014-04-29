@@ -378,6 +378,11 @@ a > img {
   border-color: #4D7455;
 }
 
+.collectors, .quality-14 {
+  color: #AA0000;
+  border-color: #AA0000;
+}
+
 .haunted, .quality-13 {
   color: #38F3AB;
   border-color: #38F3AB;
