@@ -31,7 +31,7 @@ class Item
     @prices = {}
     for source in priceSources
       price = JSON.parse(@elem.getAttribute("data-#{source}")
-                             ?.replace('Collector"s', "Collector's"))
+                             ?.replace('Collector"s', "Collector's") ? null)
       @prices[source] = price if price
 
     @wishIndex = elem.getAttribute 'data-i'
