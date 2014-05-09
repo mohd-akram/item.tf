@@ -99,21 +99,22 @@ def getuser(steamid, urltype='profiles', create=False):
     user = User.get_by_id(steamid)
 
     if user:
+        create = False
         needsupdate = (datetime.now() - user.lastupdate) > timedelta(minutes=3)
     else:
         if not create:
-            return None
+            return
         user = User(id=steamid)
-        needsupdate = True
 
-    if needsupdate:
+    if create or needsupdate:
         try:
             steamuser = tf2api.getplayersummary(config.apikey, steamid)
 
         except HTTPException:
             # Postpone update if this is not a new user
-            if not create:
-                return user
+            if create:
+                raise
+            return user
 
         user.name = steamuser['personaname']
         user.url = steamuser['profileurl'].split('/')[-2]
