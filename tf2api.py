@@ -246,13 +246,13 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
 
 def getweapontags():
     """Return all weapon tags"""
-    return ['primary', 'secondary', 'melee', 'pda', 'pda2', 'building']
+    return ('primary', 'secondary', 'melee', 'pda', 'pda2', 'building')
 
 
 def getalltags():
     """Return all item tags"""
-    return (['hat', 'weapon', 'misc', 'tool', 'action', 'taunt', 'paint',
-             'token', 'bundle', 'tournament'] + getweapontags())
+    return (('cosmetic', 'hat', 'misc', 'weapon', 'tool', 'action', 'taunt',
+             'paint', 'token', 'bundle', 'tournament') + getweapontags())
 
 
 def getallclasses():
@@ -369,6 +369,9 @@ def getitemtags(item):
 
         if slot in getweapontags() and itemclass != 'slot_token':
             tags.append('weapon')
+
+        if slot == 'misc':
+            tags.append('cosmetic')
 
         if itemtypename in ('#TF_Wearable_Hat', 'Hat', 'Mask',
                             'Holiday Hat', 'Headset', 'Hair'):
