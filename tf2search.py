@@ -225,7 +225,7 @@ def createitemdict(index, tf2info):
             else:
                 text.append(value)
 
-        description = '{0}---{1}'.format('\n'.join(text), '\n'.join(items))
+        description = u'{}---{}'.format('\n'.join(text), '\n'.join(items))
 
     elif 'item_description' in item:
         description = item['item_description']
