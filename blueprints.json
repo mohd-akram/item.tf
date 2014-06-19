@@ -367,7 +367,8 @@
       "Force-A-Nature",
       "Shortstop",
       "Soda Popper",
-      "Baby Face's Blaster"
+      "Baby Face's Blaster",
+      "Back Scatter"
     ]
   ],
   "Fabricate Class Weapons (Scout, Secondary)": [
@@ -421,7 +422,8 @@
       "Machina",
       "Hitman's Heatmaker",
       "AWPer Hand",
-      "Fortified Compound"
+      "Fortified Compound",
+      "Classic"
     ]
   ],
   "Fabricate Class Weapons (Sniper, Secondary)": [
@@ -467,7 +469,8 @@
       "Liberty Launcher",
       "Cow Mangler 5000",
       "Original",
-      "Beggar's Bazooka"
+      "Beggar's Bazooka",
+      "Air Strike"
     ]
   ],
   "Fabricate Class Weapons (Soldier, Secondary)": [
@@ -483,7 +486,8 @@
       "Concheror",
       "Reserve Shooter",
       "Righteous Bison",
-      "Mantreads"
+      "Mantreads",
+      "B.A.S.E. Jumper"
     ]
   ],
   "Fabricate Class Weapons (Soldier, Melee)": [
@@ -528,7 +532,9 @@
       "Scottish Resistance",
       "Chargin' Targe",
       "Sticky Jumper",
-      "Splendid Screen"
+      "Splendid Screen",
+      "Tide Turner",
+      "B.A.S.E. Jumper"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Melee)": [
@@ -1786,7 +1792,13 @@
       "Chucklenuts",
       "Little Drummer Mann",
       "Scout Shako",
-      "Runner's Warm-Up"
+      "Runner's Warm-Up",
+      "Frickin' Sweet Ninja Hood",
+      "Southie Shinobi",
+      "Red Socks",
+      "Paisley Pro",
+      "Argyle Ace",
+      "Pomade Prince"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -1845,7 +1857,9 @@
       "Toy Soldier",
       "Five-Month Shadow",
       "Golden Garment",
-      "Extra Layer"
+      "Extra Layer",
+      "Scoper's Smoke",
+      "Triggerman's Tacticals"
     ]
   ],
   "Fabricate Class Headgear (Soldier)": [
@@ -1920,7 +1934,10 @@
       "Viking Braider",
       "Slo-Poke",
       "Antarctic Parka",
-      "Marshall's Mutton Chops"
+      "Marshall's Mutton Chops",
+      "Classified Coif",
+      "Spook Specs",
+      "Man in Slacks"
     ]
   ],
   "Fabricate Class Headgear (Demoman)": [
@@ -1985,7 +2002,12 @@
       "Hurt Locher",
       "Pirate Bandana",
       "Highland High Heels",
-      "Tartan Tyrolean"
+      "Tartan Tyrolean",
+      "Razor Cut",
+      "Frontier Djustice",
+      "Allbrero",
+      "Seeing Double",
+      "Six Pack Abs"
     ]
   ],
   "Fabricate Class Headgear (Heavy)": [
@@ -2057,7 +2079,9 @@
       "Weight Room Warmer",
       "Dictator",
       "Minnesota Slick",
-      "Mann of the House"
+      "Mann of the House",
+      "Yuri's Revenge",
+      "Merc's Mohawk"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -2121,7 +2145,10 @@
       "Nunhood",
       "Angel of Death",
       "Mann of Reason",
-      "Ruffled Ruprecht"
+      "Ruffled Ruprecht",
+      "Ze Übermensch",
+      "Medicine Manpurse",
+      "Chronoscarf"
     ]
   ],
   "Fabricate Class Headgear (Pyro)": [
@@ -2198,7 +2225,14 @@
       "Sub Zero Suit",
       "Trail-Blazer",
       "Tiny Timber",
-      "Toy Tailor"
+      "Toy Tailor",
+      "Senguko Scorcher",
+      "Gas Guzzler",
+      "Smoking Skid Lid",
+      "Lunatic's Leathers",
+      "Employee of the Mmmph",
+      "Frymaster",
+      "Combustible Kabuto"
     ]
   ],
   "Fabricate Class Headgear (Spy)": [
@@ -2250,7 +2284,11 @@
       "L'homme Burglerre",
       "Escapist",
       "Frenchman's Formals",
-      "Dead of Night"
+      "Dead of Night",
+      "Rogue's Robe",
+      "Aviator Assassin",
+      "Sky Captain",
+      "Au Courant Assassin"
     ]
   ],
   "Fabricate Class Headgear (Engineer)": [
@@ -2312,7 +2350,16 @@
       "Special Eyes",
       "Gold Digger",
       "Face Full of Festive",
-      "Dogfighter"
+      "Dogfighter",
+      "Tools of the Trade",
+      "Joe-on-the-Go",
+      "Peacenik's Ponytail",
+      "Level Three Chin",
+      "Egghead's Overalls",
+      "Lonesome Loafers",
+      "Endothermic Exowear",
+      "Merc's Mohawk",
+      "Danger"
     ]
   ],
   "Rebuild Headgear": [
