@@ -258,8 +258,8 @@ class ItemBox
 
     <a class="fa fa-list fa-lg button-icon" target="_blank"
      title="Backpack.tf Classifieds"
-     href="http://backpack.tf/classifieds/search_redirect?defindex=#{
-     @item.id}&appid=440"></a>
+     href="http://backpack.tf/classifieds?item=#{
+     encodeURIComponent @item.name}"></a>
 
     #{@_outpostHTML()}
     #{@_wishlistHTML()}
