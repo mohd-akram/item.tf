@@ -80,7 +80,7 @@ def getfromcache(key):
     else:
         value = memcache.get(key)
 
-    if not value:
+    if value is None:
         logging.debug("Could not find key '{}'. Updating cache.".format(key))
         updatecache()
         return getfromcache(key)

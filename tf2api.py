@@ -111,73 +111,78 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     """Get market prices from backpack.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = ('http://backpack.tf/api/IGetPrices/v3/'
-           '?format=json&key={}'.format(apikey))
+    url = ('http://backpack.tf/api/IGetPrices/v4/'
+           '?key={}&compress=1'.format(apikey))
 
     pricesdata = json.loads(
-        urlopen(url, timeout=timeout).read())['response']['prices']
+        urlopen(url, timeout=timeout).read())['response']['items']
 
     pricesdict = defaultdict(dict)
     itemnames = set()
 
     qualities = getallqualities()
-    qualities[600] = 'Uncraftable'
 
     denoms = {'metal': 'Refined', 'keys': 'Key',
               'earbuds': 'Bud', 'usd': 'USD'}
 
-    for index, prices in pricesdata.iteritems():
-        index = int(index)
-        name = items[index]['item_name']
-
-        # Backpack.tf uses different indexes. This gets the name of the
-        # item from their API and finds its proper index.
-        idx = itemsbyname[name]['defindex']
-
-        # Make sure that the proper index is used by not overwriting prices
-        # with the correct index as Backpack.tf has duplicate items.
-        if index != idx and name in itemnames:
+    for name, iteminfo in pricesdata.iteritems():
+        if name not in itemsbyname:
             continue
 
-        for quality, price in prices.iteritems():
+        index = itemsbyname[name]['defindex']
+        item = items[index]
+
+        iscrate = False
+
+        if 'attributes' in item and item['attributes']:
+            attribute = item['attributes'][0]
+            if attribute['name'] == 'set supply crate series':
+                iscrate = True
+                crateno = str(attribute['value'])
+
+        for quality, tradeinfo in iteminfo['prices'].iteritems():
             try:
                 qualityname = qualities[int(quality)]
-            except (ValueError, KeyError):
+            except KeyError:
                 continue
 
-            item = items[index]
+            for tradable, craftinfo in tradeinfo.iteritems():
+                # Ignore non-tradable version if there is a tradable one
+                if tradable == 'Non-Tradable' and 'Tradable' in tradeinfo:
+                    continue
 
-            iscrate = False
+                for craftable, price in craftinfo.iteritems():
+                    if type(price) is list:
+                        price = price[0]
+                    else:
+                        if iscrate and crateno in price:
+                            price = price[crateno]
+                        elif '0' in price:
+                            price = price['0']
+                        else:
+                            continue
 
-            if 'attributes' in item and item['attributes']:
-                attribute = item['attributes'][0]
-                if attribute['name'] == 'set supply crate series':
-                    iscrate = True
-                    crateno = str(attribute['value'])
+                    value = price['value']
+                    valuehigh = (' - {:g}'.format(price['value_high'])
+                                 if 'value_high' in price else '')
 
-            if iscrate and crateno in price:
-                price = price[crateno]
-            elif '0' in price:
-                price = price['0']
-            else:
-                continue
+                    if price['currency'] == 'hat':
+                        denom = 'Refined'
+                        value *= 1.33
+                    else:
+                        denom = denoms[price['currency']]
 
-            price = price['current']
+                    if (value != 1 or valuehigh) and denom not in ('Refined',
+                                                                   'USD'):
+                        denom += 's'
 
-            value = price['value']
-            valuehigh = (' - {:g}'.format(price['value_high'])
-                         if 'value_high' in price else '')
+                    itemnames.add(name)
 
-            denom = denoms[price['currency']]
+                    qlty = (qualityname if craftable != 'Non-Craftable'
+                            else 'Uncraftable')
 
-            if (value != 1 or valuehigh) and denom not in ('Refined', 'USD'):
-                denom += 's'
-
-            itemnames.add(name)
-
-            pricesdict[idx][qualityname] = '{:g}{} {}'.format(value,
-                                                              valuehigh,
-                                                              denom)
+                    pricesdict[index][qlty] = '{:g}{} {}'.format(
+                        value, valuehigh, denom)
 
     return pricesdict
 
