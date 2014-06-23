@@ -384,10 +384,7 @@ def getitemtags(item):
         else:
             tags.append(slot)
 
-    if itemtypename == 'Special Taunt':
-        tags.append('taunt')
-
-    elif itemtypename == 'Tournament Medal':
+    if itemtypename == 'Tournament Medal':
         tags.append('tournament')
 
     if 'tool' in item:

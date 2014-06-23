@@ -1718,6 +1718,56 @@
       "Sticky Jumper"
     ]
   ],
+  "Fabricate Air Strike": [
+    [
+      "Beggar's Bazooka",
+      "Gunboats",
+      "Reclaimed Metal"
+    ],
+    [
+      "Air Strike"
+    ]
+  ],
+  "Fabricate Tide Turner": [
+    [
+      "Chargin' Targe",
+      "Ali Baba's Wee Booties",
+      "Reclaimed Metal"
+    ],
+    [
+      "Tide Turner"
+    ]
+  ],
+  "Fabricate B.A.S.E. Jumper": [
+    [
+      "Buff Banner",
+      "Sticky Jumper",
+      "Reclaimed Metal"
+    ],
+    [
+      "B.A.S.E. Jumper"
+    ]
+  ],
+  "Fabricate Classic": [
+    [
+      "Huntsman",
+      "Bazaar Bargain",
+      "Reclaimed Metal"
+    ],
+    [
+      "Classic"
+    ]
+  ],
+  "Fabricate Back Scatter": [
+    [
+      "Shortstop",
+      "Crit-a-Cola",
+      "Reclaimed Metal"
+    ],
+    [
+      "Back Scatter"
+    ]
+  ],
   "Fabricate Headgear": [
     [
       "Refined Metal",
@@ -2667,6 +2717,16 @@
     ],
     [
       "Power Up Canteen"
+    ]
+  ],
+  "Fabricate Bread Box": [
+    [
+      "Any Hat",
+      "Any Hat",
+      "Any Hat"
+    ],
+    [
+      "Bread Box"
     ]
   ]
 }

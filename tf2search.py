@@ -628,17 +628,18 @@ def _parseblueprints(blueprints, itemsbyname):
     url = '/images/items/'
     localrepl = {'Any Class Token': 'class_token.png',
                  'Any Slot Token': 'slot_token.png',
-                 'Any Token': 'token.png',
-                 'Any Primary Weapon': 'primary.png',
-                 'Any Secondary Weapon': 'secondary.png',
-                 'Any Melee Weapon': 'melee.png',
-                 'Any Spy Watch': 'pda2.png'}
+                 'Any Token': 'token.png'}
 
     repl = {"Any Santa's Little Accomplice Weapon":
             "Santa's Little Accomplice Bundle",
 
-            "Any Burned Item": "Burned Banana Peel",
-            "Any Cursed Object": "Voodoo-Cursed Object"}
+            'Any Primary Weapon': 'Rocket Launcher',
+            'Any Secondary Weapon': 'Pistol',
+            'Any Melee Weapon': 'Fire Axe',
+            'Any Spy Watch': 'Invis Watch',
+            'Any Hat': 'Modest Pile of Hat',
+            'Any Burned Item': 'Burned Banana Peel',
+            'Any Cursed Object': 'Voodoo-Cursed Object'}
 
     polyweps = ("The Gas Jockey's Gear", "The Saharan Spy", "The Tank Buster",
                 "The Croc-o-Style Kit", "The Special Delivery")
