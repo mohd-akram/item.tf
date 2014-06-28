@@ -118,7 +118,6 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
         urlopen(url, timeout=timeout).read())['response']['items']
 
     pricesdict = defaultdict(dict)
-    itemnames = set()
 
     qualities = getallqualities()
 
@@ -166,17 +165,11 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
                     valuehigh = (' - {:g}'.format(price['value_high'])
                                  if 'value_high' in price else '')
 
-                    if price['currency'] == 'hat':
-                        denom = 'Refined'
-                        value *= 1.33
-                    else:
-                        denom = denoms[price['currency']]
+                    denom = denoms[price['currency']]
 
                     if (value != 1 or valuehigh) and denom not in ('Refined',
                                                                    'USD'):
                         denom += 's'
-
-                    itemnames.add(name)
 
                     qlty = (qualityname if craftable != 'Non-Craftable'
                             else 'Uncraftable')
