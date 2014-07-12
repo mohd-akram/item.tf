@@ -541,7 +541,8 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
 def _getpricestring(amount, denom):
     """Return a human-readable price string"""
     return '{:g} {}'.format(
-        amount, denom + 's' if denom == 'Key' and amount != 1 else denom)
+        amount,
+        denom + 's' if denom in ('Key', 'Weapon') and amount != 1 else denom)
 
 
 def _getdenomvalue(denom, itemsdict, pricesource):
