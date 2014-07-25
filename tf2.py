@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from httplib import HTTPException
 from xml.dom.minidom import getDOMImplementation
 
-from google.appengine.api import memcache, users
+from google.appengine.api import memcache, users, taskqueue
 from google.appengine.ext import ndb
 
 import tf2api
@@ -82,8 +82,11 @@ def getfromcache(key):
 
     if value is None:
         logging.debug("Could not find key '{}'. Updating cache.".format(key))
-        updatecache()
-        return getfromcache(key)
+        if taskqueue.Queue().fetch_statistics().tasks == 0:
+            taskqueue.add(
+                url='/cache/update', method='GET',
+                retry_options=taskqueue.TaskRetryOptions(max_backoff_seconds=1)
+            )
 
     return value
 
