@@ -173,12 +173,12 @@ class TF2SearchHandler(Handler):
             itemindexes = getfromcache('itemindexes')
             return self.redirect(
                 # random.choice does not support sets
-                '/item/{}'.format(random.choice(tuple(itemindexes))))
+                '/{}'.format(random.choice(tuple(itemindexes))))
 
         nametoindexmap = getfromcache('nametoindexmap')
 
         if query in nametoindexmap:
-            return self.redirect('/item/{}'.format(nametoindexmap[query]))
+            return self.redirect('/{}'.format(nametoindexmap[query]))
 
         itemsdict = getfromcache('itemsdict')
         itemsets = getfromcache('itemsets')
@@ -302,10 +302,6 @@ class TF2WishlistHandler(Handler):
 
 class TF2ItemHandler(Handler):
     def get(self, defindex, is_json):
-        if self.request.path.startswith('/item/'):
-            return self.redirect('{}/{}'.format(config.homepage, defindex),
-                                 True)
-
         itemsdict = getfromcache('itemsdict')
         index = int(defindex)
 
