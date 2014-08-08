@@ -251,9 +251,9 @@ def createitemdict(index, tf2info):
                 'blueprints': blueprint}
 
     if 'paint' in tags:
-        paintvalue = str(int(item['attributes'][1]['value']))
+        paintvalue = item['attributes'][0]['value']
         # Ignore Paint Tool
-        if paintvalue != '1':
+        if paintvalue != 0:
             itemdict['image'] = itemdict['image_large'] = (
                 '/images/paints/Paint_Can_{}.png'.format(paintvalue))
 
