@@ -14,6 +14,6 @@ task 'watch', 'compile and minify files on change', ->
     if curr.mtime > prev.mtime
       message = "compiled #{file}.coffee"
       exec "coffee -cm #{file}.coffee &&
-            uglifyjs --source-map #{file}.map --in-source-map #{file}.map
+            uglifyjs --source-map #{file}.js.map --in-source-map #{file}.js.map
             -o #{file}.js #{file}.js", (e, _, err) -> done e, message, err
   ) for file in files
