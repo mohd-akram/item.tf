@@ -581,12 +581,15 @@ def _getclass(word):
 
 def _gettag(word):
     """Parse a word and return an item tag if it matches one"""
-    weapon = ['wep', 'weap']
-    tags = tf2api.getalltags()
-    for tag in tags:
-        if word in weapon or word in _pluralize(weapon):
-            return 'weapon'
-        elif word == tag or word == tag + 's':
+    weapon = ('wep', 'weap')
+
+    if word in ('watch', 'watches'):
+        return 'pda2'
+    elif word in weapon or word in _pluralize(weapon):
+        return 'weapon'
+
+    for tag in tf2api.getalltags():
+        if word in (tag, tag + 's'):
             return tag
 
 
