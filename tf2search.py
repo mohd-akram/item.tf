@@ -450,8 +450,13 @@ def _getsetitems(itemset, nametoindexmap, itemsdict):
     """Get a list of the items in an item set"""
     setitems = []
     for name in itemset['items']:
-        name = name.replace('The ', '').replace("Capone's Capper",
-                                                "Capo's Capper")
+        name = (name.replace('The ', '')
+                    .replace("Capone's Capper", "Capo's Capper")
+                    .replace('Conspiratorial Cut', 'Cranial Conspiracy')
+                    .replace('Hundekopf', 'Hundkopf')
+                    .replace('Skinless Slashers', 'Scaly Scrapers')
+                    .replace('Transylvanian Toupe', 'Transylvania Top'))
+
         setitems.append(itemsdict[nametoindexmap[name]])
 
     return setitems
