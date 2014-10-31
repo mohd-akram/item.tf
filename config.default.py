@@ -4,6 +4,8 @@ apikey = ''
 backpackkey = ''
 # Trade.tf API key
 tradekey = ''
+# Data file path
+datafile = 'data.pkl'
 # Blueprints file path
 blueprintsfile = 'blueprints.json'
 # Site homepage

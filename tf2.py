@@ -2,15 +2,19 @@
 # coding: utf-8
 
 """This module contains all the page handlers and caching mechanisms."""
-import logging
+import os
 import time
 import random
+import pickle
+import logging
 from itertools import izip
 from datetime import datetime, timedelta
 from httplib import HTTPException
 from xml.dom.minidom import getDOMImplementation
 
-from google.appengine.api import memcache, users, taskqueue
+from lib import cloudstorage as gcs
+
+from google.appengine.api import memcache, users, taskqueue, app_identity
 from google.appengine.ext import ndb
 
 import tf2api
@@ -20,6 +24,27 @@ import config
 from handler import Handler
 
 
+def getfilename(filename):
+    bucket_name = os.environ.get('BUCKET_NAME',
+                                 app_identity.get_default_gcs_bucket_name())
+
+    return '/{}/{}'.format(bucket_name, filename)
+
+
+def populatecache(data=None):
+    if data is None:
+        try:
+            gcs_file = gcs.open(getfilename(config.datafile))
+        except gcs.NotFoundError:
+            taskqueue.add(url='/cache/update', method='GET')
+        else:
+            data = pickle.loads(gcs_file.read())
+            memcache.set_multi(data)
+            gcs_file.close()
+    else:
+        memcache.set_multi(data)
+
+
 def updatecache():
     t0 = time.time()
 
@@ -27,7 +52,7 @@ def updatecache():
                                    config.backpackkey, config.tradekey,
                                    config.blueprintsfile)
 
-    itemsdict = ItemsDict(tf2search.getitemsdict(tf2info, 2))
+    itemsdict = ItemsDict(tf2search.getitemsdict(tf2info, 3))
 
     newitems = [itemsdict[index] for index in tf2info.newstoreprices]
 
@@ -55,38 +80,43 @@ def updatecache():
 
             sitemap.add(path)
 
-    memcache.set_multi({'itemsdict0': itemsdict.dicts[0],
-                        'itemsdict1': itemsdict.dicts[1],
-                        'itemsets': tf2info.itemsets,
-                        'bundles': tf2info.bundles,
-                        'nametoindexmap': nametoindexmap,
-                        'itemindexes': itemindexes,
-                        'newitems': newitems,
-                        'suggestions': suggestions,
-                        'sitemap': sitemap.toxml()})
     t1 = time.time()
 
-    memcache.set('lastupdated', t1)
+    data = {'itemsdict0': itemsdict.dicts[0],
+            'itemsdict1': itemsdict.dicts[1],
+            'itemsdict2': itemsdict.dicts[2],
+            'itemsets': tf2info.itemsets,
+            'bundles': tf2info.bundles,
+            'nametoindexmap': nametoindexmap,
+            'itemindexes': itemindexes,
+            'newitems': newitems,
+            'suggestions': suggestions,
+            'sitemap': sitemap.toxml(),
+            'lastupdated': t1}
+
+    gcs_file = gcs.open(getfilename(config.datafile), 'w')
+    gcs_file.write(pickle.dumps(data))
+    gcs_file.close()
+
+    populatecache(data)
+
     logging.debug('Updated Cache. Time taken: {} seconds'.format(t1 - t0))
 
 
 def getfromcache(key):
     if key == 'itemsdict':
-        dicts = memcache.get_multi(['0', '1'], 'itemsdict')
+        dicts = memcache.get_multi(['0', '1', '2'], 'itemsdict')
         try:
-            value = ItemsDict([dicts['0'], dicts['1']])
+            value = ItemsDict([dicts['0'], dicts['1'], dicts['2']])
         except KeyError:
             value = None
     else:
         value = memcache.get(key)
 
     if value is None:
-        logging.debug("Could not find key '{}'. Updating cache.".format(key))
+        logging.debug("Could not find key '{}'. Populating cache.".format(key))
         if taskqueue.Queue().fetch_statistics().tasks == 0:
-            taskqueue.add(
-                url='/cache/update', method='GET',
-                retry_options=taskqueue.TaskRetryOptions(max_backoff_seconds=1)
-            )
+            taskqueue.add(url='/cache/populate', method='GET')
 
     return value
 
@@ -340,7 +370,10 @@ class TF2SitemapHandler(Handler):
 
 class CacheHandler(Handler):
     def get(self, option):
-        if option == 'update':
+        if option == 'populate':
+            populatecache()
+            self.write('Cache Populated')
+        elif option == 'update':
             updatecache()
             self.write('Cache Updated')
         elif option == 'flush':

@@ -1,12 +1,25 @@
 item.tf
 =======
 
-This is a Google App Engine site that lets you search TF2 items and find the ones you want. There are two main ways to search - you can either use regular keyword search or search by classes and item tags (eg. weapon, misc, hat, etc.). Once you find an item you want, you can get all kinds of information about it such as its store price, market price and crafting recipes to help you obtain it. You can also search for item sets or view a list of them by typing 'sets'.
+This is a Google App Engine site that lets you search TF2 items and find the
+ones you want. There are two main ways to search - you can either use regular
+keyword search or search by classes and item tags
+(eg. weapon, misc, hat, etc.). Once you find an item you want, you can get all
+kinds of information about it such as its store price, market price and
+crafting recipes to help you obtain it.
+You can also search for item sets or view a list of them by typing 'sets'.
 
 Get Started
 -----------
 
-Rename config.default.py to config.py and fill in your API keys in the file. Then, simply add the directory to the Google App Engine Launcher and start the server.
+Rename config.default.py to config.py and fill in your API keys in the file.
+
+Run this command to install dependencies.
+
+    pip install -r requirements.txt -t lib
+
+Then, simply add the directory to the Google App Engine Launcher and
+start the server.
 
 Structure
 ---------
@@ -14,12 +27,15 @@ Structure
 There are three main files:
 
  * tf2.py - Contains the page handlers
- * tf2api.py - Contains the main functions for getting items, store prices, market prices and other information.
+ * tf2api.py - Contains the main functions for getting items, store prices,
+ market prices and other information.
  * tf2search.py - Contains the parsing and search functions.
 
 TF2 API
 -------
-tf2api.py has no dependencies and was designed to be used either for this project or separately. It contains many helpful functions to get information about items in TF2.
+tf2api.py has no dependencies and was designed to be used either for this
+project or separately. It contains many helpful functions to get information
+about items in TF2.
 
 Example:
 ```python
@@ -38,15 +54,10 @@ Example:
 ['weapon', u'melee']
 ```
 
-Dependencies
-------------
-There are no external dependencies, only built-in Python modules.
-
-Tested with Python 2.7.
-
 Thanks
 ------
-This project was inspired by and depends on the great TF2 community to function, so a special thanks to the following:
+This project was inspired by and depends on the great TF2 community to
+function, so a special thanks to the following:
 
 [Backpack.tf](http://backpack.tf)
 

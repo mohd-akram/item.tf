@@ -139,6 +139,9 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
                 iscrate = True
                 crateno = str(attribute['value'])
 
+        if 'prices' not in iteminfo:
+            continue
+
         for quality, tradeinfo in iteminfo['prices'].iteritems():
             try:
                 qualityname = qualities[int(quality)]

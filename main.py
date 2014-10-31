@@ -33,4 +33,5 @@ app = webapp2.WSGIApplication([DomainRoute(r'<:(www\..+|.+\.appspot\.com)>',
                                (r'/([0-9]+)(\.json)?', TF2ItemHandler),
                                (r'/sitemap\.xml', TF2SitemapHandler)])
 
-cache = webapp2.WSGIApplication([(r'/cache/(update|flush)', CacheHandler)])
+cache = webapp2.WSGIApplication([(r'/cache/(populate|update|flush)',
+                                  CacheHandler)])
