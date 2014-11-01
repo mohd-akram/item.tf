@@ -50,9 +50,9 @@ def getbundles(apikey, storeprices):
 
 
 def getitemsets(schema):
-    """Return a dictionary of itemsets with 'name' as key"""
-    return {itemset['name']: itemset for itemset in
-            schema['result']['item_sets']}
+    """Return an ordered dictionary of itemsets with 'name' as key"""
+    return OrderedDict([(itemset['name'], itemset) for itemset in
+                        schema['result']['item_sets']])
 
 
 def getitems(schema):

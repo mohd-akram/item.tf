@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block container %}
-  <h1 id="back"><a href="/">&lt;</a></h1>
+  <h2 id="back"><a href="/">{% include 'logo.html' %}</a></h2>
   <div class="itembox" style="display: block; overflow: hidden">
     <h2 class="itemname">{{item['name']}}</h2>
     {% if item['marketprice']['backpack.tf'] %}
