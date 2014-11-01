@@ -1,8 +1,50 @@
+@font-face {
+  font-family: "Segoe UI";
+  font-weight: 200;
+  src: local("Segoe UI Light");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-weight: 300;
+  src: local("Segoe UI Semilight");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-weight: 400;
+  src: local("Segoe UI");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-weight: 600;
+  src: local("Segoe UI Semibold");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-weight: 700;
+  src: local("Segoe UI Bold");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-style: italic;
+  font-weight: 400;
+  src: local("Segoe UI Italic");
+}
+
+@font-face {
+  font-family: "Segoe UI";
+  font-style: italic;
+  font-weight: 700;
+  src: local("Segoe UI Bold Italic");
+}
+
 html {
   height: 100%;
-  background: #21201F;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPg0KPGxpbmVhckdyYWRpZW50IGlkPSJnODM3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPg0KPHN0b3Agc3RvcC1jb2xvcj0iIzI4MjgyOCIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iIzE2MTYxNiIgb2Zmc2V0PSIxIi8+DQo8L2xpbmVhckdyYWRpZW50Pg0KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNnODM3KSIgLz4NCjwvc3ZnPg==);
-  background-attachment: fixed;
+  background: rgb(29, 28, 27);
 }
 
 body {
@@ -10,7 +52,7 @@ body {
   margin: 0;
   padding: 0;
   color: white;
-  font-family: 'Segoe UI', 'Lucida Grande', sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 #container {
@@ -21,9 +63,7 @@ body {
 
 header {
   height: 100px;
-/* SVG as background image (IE9/Chrome/Safari/Opera) */
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPgo8bGluZWFyR3JhZGllbnQgaWQ9Imc1NTUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CjxzdG9wIHN0b3AtY29sb3I9IiM0RjRENDkiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiMzMzMyMkQiIG9mZnNldD0iMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2c1NTUpIiAvPgo8L3N2Zz4=);
-  background-color: rgb(87, 84, 79);
+  background-color: rgb(32, 31, 29);
   box-shadow: 1px 1px 6px rgba(0,0,0,0.3);
 }
 
@@ -75,26 +115,27 @@ footer {
 
 footer a {
   text-decoration: none;
-  font-weight: bold;
   color: #A09E92;
+}
+
+h2, h3, h4, footer a {
+  font-weight: 600;
 }
 
 h1 {
   margin: 0;
-  padding: 20px;
+  padding: 10px;
   border-radius: 7px;
-  font-family: 'Segoe UI Semilight', 'HelveticaNeue-Light', sans-serif;
+  font-weight: 300;
   font-size: 3em;
 }
 
 #body > h2 {
   margin-bottom: 0;
-  text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
 }
 
 .glow {
   color: #D1D0D0;
-  text-shadow: 0px 3px 10px rgba(0,0,0,0.4);
 }
 
 .glow:hover {
@@ -144,27 +185,18 @@ ul {
 .button, .button-small {
   color: white;
   text-decoration: none;
-  text-shadow: 2px 2px rgba(0,0,0,0.2);
-  font-family: 'Segoe UI', 'Lucida Grande', sans-serif;
+  font-family: inherit;
   font-size: 1.2em;
   padding: 8px;
   display: inline-block;
-  background-color: #444;
-  background-image: linear-gradient(#585857, #333333);
-  background-image: -webkit-linear-gradient(#585857, #333333);
-  background-image: -moz-linear-gradient(#585857, #333333);
-  background-image: -o-linear-gradient(#585857, #333333);
+  background-color: rgb(43, 42, 39);
   border-style: none;
   border-radius: 10px;
   cursor: pointer;
 }
 
 .button:hover, .button-small:hover {
-  background-color: #515151;
-  background-image: linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
-  background-image: -webkit-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
-  background-image: -moz-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
-  background-image: -o-linear-gradient(rgb(95, 95, 95), rgb(60, 60, 60));
+  background-color: rgb(51, 50, 46);
 }
 
 .button-small {
@@ -180,7 +212,7 @@ ul {
 #buybutton {
   display: inline-block;
   position: relative;
-  background-image: url('http://media.steampowered.com/apps/tf2/btn_buynow.png');
+  background-image: url("http://media.steampowered.com/apps/tf2/btn_buynow.png");
   background-position: top;
   top: 7px;
   margin-left: 5px;
@@ -196,9 +228,9 @@ ul {
   display: none;
   z-index: 1;
   color: #EAEBD7;
-  background-color: #31312F;
-  box-shadow: 0 0 8px 8px rgba(0, 0, 0, .2);
-  border-radius: 10px;
+  background-color: rgb(39, 39, 37);
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, .1);
+  border-radius: 5px;
   width: 540px;
   height: 650px;
   margin-top: -325px;
@@ -207,7 +239,6 @@ ul {
   top: 50%;
   left: 50%;
   text-align: center;
-  text-shadow: 0 0 10px black;
 }
 
 #itemname, .itemname {
@@ -297,11 +328,9 @@ ul {
 }
 
 #hoverbox {
-  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPg0KPGxpbmVhckdyYWRpZW50IGlkPSJnODM4IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPg0KPHN0b3Agc3RvcC1jb2xvcj0icmdiYSgzNCwgMzQsIDM0LCAwLjkpIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSJyZ2JhKDE0LCAxNCwgMTQsIDAuOSkiIG9mZnNldD0iMSIvPg0KPC9saW5lYXJHcmFkaWVudD4NCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZzgzOCkiIC8+DQo8L3N2Zz4=);
-  background: -webkit-linear-gradient(top,rgba(34,34,34,.9),rgba(14,14,14,.9));
-  border: 1px solid #0C0C0C;
+  background-color:rgba(20, 20, 20, .9);
   border-radius: 8px;
-  box-shadow: 1px 1px 6px #111;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
   display: none;
   font-size: 12px;
   padding: 5px;
@@ -329,9 +358,9 @@ a > img {
 
 #back {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 10px;
-  padding: 0 5px 2px 5px;
+  padding: 10px;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
@@ -346,7 +375,7 @@ a > img {
 }
 
 .rounded {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.025);
   border-radius: 10px;
   padding: 4px;
 }
@@ -399,7 +428,7 @@ a > img {
   display: block;
   width: 50px;
   height: 50px;
-  background-image: url('/images/tags.png');
+  background-image: url("/images/tags.png");
 }
 
 .secondary {
@@ -442,7 +471,7 @@ a > img {
   display: block;
   width: 40px;
   height: 40px;
-  background-image: url('/images/classes.png');
+  background-image: url("/images/classes.png");
 }
 
 .soldier {

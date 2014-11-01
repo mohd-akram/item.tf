@@ -9,13 +9,13 @@
 {% block link %}
   <link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
   <link rel="stylesheet" href="/css/message.css">
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/ui-lightness/jquery-ui.css">
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/ui-lightness/jquery-ui.css">
 {% endblock %}
 
 {% block js %}
   <script src="/scripts/spin.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 {% endblock %}
 
 {% block style %}
@@ -27,13 +27,16 @@
       background: #292927;
       border: none;
     }
-    .ui-menu-item a {
+    .ui-menu-item {
       color: rgb(150,150,150);
+      line-height: 1.5;
+      cursor: default !important;
     }
-    .ui-menu-item .ui-state-focus {
-      color: white;
-      background: #1E1D1C;
-      border: none;
+    .ui-state-focus {
+      color: white !important;
+      font-weight: normal !important;
+      background: #1E1D1C !important;
+      border: none !important;
     }
     header {
       height: 10px;
@@ -45,7 +48,7 @@
 {% endblock %}
 
 {% block body %}
-  <h1 style="margin-top:120px; background-color: rgba(255, 255, 255, 0.02); display: inline-block;">
+  <h1 style="margin-top:120px; display: inline-block;">
     {% include 'logo.html' %}
   </h1>
   <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
@@ -163,7 +166,7 @@
             focus: function(event, ui) {$(this).val(ui.item.label);return false;},
             select: function(event, ui) {
               $(this).val(ui.item.label);
-              var spinner = new Spinner({radius: 5, length: 4, width: 2, color: 'white'})
+              var spinner = new Spinner({lines: 8, length: 4, width: 2.5, radius: 5, color: 'rgba(255, 255, 255, 0.5)'})
                                        .spin(document.getElementById('loading'));
               $.get(ui.item.value, function(data) {
                 var searchItems = $('#searchitems')
