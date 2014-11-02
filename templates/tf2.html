@@ -201,7 +201,9 @@
       });
     });
 
-    if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
+    if (window.external && window.external.IsSearchProviderInstalled)
+      if (!window.external.IsSearchProviderInstalled("{{homepage}}"))
+        $('#addsearch').show()
   });
   </script>
 {% endblock %}
