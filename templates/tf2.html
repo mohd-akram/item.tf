@@ -92,10 +92,6 @@
     </div>
 
     <div id="help-list" class="rounded">
-      <h4>Examples</h4>
-      <p>
-      {{ showsearchlinks(['engi hats','medic weps','demo melee','sniper spy','the saharan spy set', '1.66 refs', '5.5 buds']) }}
-      </p>
       <h4>Keywords</h4>
       <p>
       {{ showsearchlinks(['all','sets','random']) }}
@@ -110,7 +106,24 @@
 
 {% block script %}
   <script>
-    $('#searchbox').focus();
+  $(function() {
+    var searchBox = $('#searchbox');
+    searchBox.focus();
+
+    var tips = ['engi hats', 'medic weps', 'demo melee', '< 3 ref', 'genuine < 4 ref hats', '5 ref to rec'];
+    var tipNo = 0;
+    var nextTip = function() {
+      searchBox.attr('placeholder', tips[tipNo++]);
+      tipNo %= tips.length;
+    };
+    nextTip();
+    setInterval(nextTip, 4000);
+
+    $('#searchform').submit(function() {
+      if (!searchBox.val())
+        searchBox.val(searchBox.attr('placeholder'));
+    });
+
     $('#pricesetting').val(user.priceSource);
 
     $('#help').click(function(){
@@ -150,7 +163,7 @@
 
       $.getJSON('/suggest', function (data) {
 
-        $('#searchbox').autocomplete({
+        searchBox.autocomplete({
           source: function(request, response) {
               var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
               response(function() {
@@ -189,5 +202,6 @@
     });
 
     if (!window.external.IsSearchProviderInstalled("{{homepage}}")) {$('#addsearch').show()}
+  });
   </script>
 {% endblock %}
