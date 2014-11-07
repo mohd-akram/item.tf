@@ -495,50 +495,37 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
     counts = OrderedDict()
 
     if denom in ('Refined', 'Reclaimed'):
-        # Allow common values such as 1.33 and 0.66
+        # Allow common values such as 0.66 and 1.33
         amount += 0.01
 
     denomtoidx = tf2api.getalldenoms()
     denoms = denomtoidx.keys()
-    denomidx = denoms.index(denom)
+    denomtable = _getdenomvalues(itemsdict, pricesource)
 
     if todenom:
-        todenomidx = denoms.index(todenom)
-        if todenomidx < denomidx:
-            return items, counts
-
-    range_ = (range(denomidx, todenomidx) if todenom else
-              range(denomidx - 1, -1, -1))
-
-    # Convert denomination to higher value if possible
-    for i in range_:
-        denomval = _getdenomvalue(denoms[i], itemsdict, pricesource)
-        if todenom:
-            val = amount * denomval
-        else:
-            val = amount / denomval
-
-        if val >= 1 or todenom:
-            amount = val
-            denomidx = i
-        else:
-            break
-
-    if todenom:
-        denomidx = todenomidx
+        amount *= denomtable[denom][todenom]
+    else:
+        todenom = denom
+        # Move to the highest possible denomination
+        for d in denoms:
+            value = amount * denomtable[denom][d]
+            if value >= 1:
+                amount = value
+                todenom = d
+                break
 
     if amount <= len(itemsdict):
+        denomidx = denoms.index(todenom)
         # Get count of each denomination and add items to results
-        for d in denoms[denomidx:]:
-            idx = denomtoidx[d]
+        for i, d in enumerate(denoms[denomidx:], denomidx):
             count = int(round(amount, 10))
-            value = _getdenomvalue(d, itemsdict, pricesource)
 
             if count:
-                items.extend([itemsdict[idx]] * count)
+                items.extend([itemsdict[denomtoidx[d]]] * count)
                 counts[d] = count
 
-            amount = ((amount - count) * value)
+            if i + 1 < len(denoms):
+                amount = (amount - count) * denomtable[d][denoms[i + 1]]
 
     return items, counts
 
@@ -550,20 +537,38 @@ def _getpricestring(amount, denom):
         denom + 's' if denom in ('Key', 'Weapon') and amount != 1 else denom)
 
 
-def _getdenomvalue(denom, itemsdict, pricesource):
-    """Return the value of a given denomination in terms of its lower
-    denomination"""
+def _getdenomvalues(itemsdict, pricesource):
+    """Return a mapping to convert between denominations"""
     denomtoidx = tf2api.getalldenoms()
 
-    idx = denomtoidx[denom]
+    getprice = lambda denom: float(
+        itemsdict[denomtoidx[denom]]['marketprice'][pricesource]['Unique']
+        .split()[0])
 
-    if denom in ('Earbuds', 'Key'):
-        value = float(
-            itemsdict[idx]['marketprice'][pricesource]['Unique'].split()[0])
-    else:
-        value = {'Refined': 3, 'Reclaimed': 3, 'Scrap': 2, 'Weapon': 1}[denom]
+    table = {'Earbuds': {'Key': getprice('Earbuds')},
+             'Key': {'Refined': getprice('Key') + 0.01},
+             'Refined': {'Reclaimed': 3.0},
+             'Reclaimed': {'Scrap': 3.0},
+             'Scrap': {'Weapon': 2.0},
+             'Weapon': {}}
 
-    return value
+    denoms = denomtoidx.keys()
+
+    def fill(from_, to=None, value=1):
+        if to is None:
+            to = from_
+
+        table[from_][to] = value
+        table[to][from_] = 1 / value
+
+        if denoms.index(to) + 1 < len(denoms):
+            next_ = denoms[denoms.index(to) + 1]
+            fill(from_, next_, value * table[to][next_])
+
+    for denom in denoms:
+        fill(denom)
+
+    return table
 
 
 def _pluralize(wordlist):
