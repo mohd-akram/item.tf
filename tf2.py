@@ -7,6 +7,7 @@ import time
 import random
 import pickle
 import logging
+from collections import Mapping, ValuesView
 from itertools import izip
 from datetime import datetime, timedelta
 from httplib import HTTPException
@@ -396,12 +397,9 @@ class User(ndb.Model):
     lastupdate = ndb.DateTimeProperty('t', auto_now=True)
 
 
-class ItemsDict:
+class ItemsDict(Mapping):
     def __init__(self, dicts):
         self.dicts = dicts
-
-    def __contains__(self, key):
-        return any(key in dict_ for dict_ in self.dicts)
 
     def __len__(self):
         return sum(len(dict_) for dict_ in self.dicts)
@@ -410,19 +408,15 @@ class ItemsDict:
         for dict_ in self.dicts:
             if key in dict_:
                 return dict_[key]
+        raise KeyError
 
     def __iter__(self):
         for dict_ in self.dicts:
             for key in dict_:
                 yield key
 
-    def itervalues(self):
-        for dict_ in self.dicts:
-            for key in dict_:
-                yield dict_[key]
-
-    def values(self):
-        return list(self.itervalues())
+    def viewvalues(self):
+        return ValuesView(self)
 
 
 class Sitemap:

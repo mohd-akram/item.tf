@@ -101,7 +101,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     priceregex = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(denomregex))
 
     qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
-        '|'.join(i.lower() for i in tf2api.getallqualities().values()))
+        '|'.join(i.lower() for i in tf2api.getallqualities().itervalues()))
 
     pricevizmatch = re.match(r'{}(?: to {})?$'.format(priceregex, denomregex),
                              query.lower())
@@ -129,7 +129,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     elif query == 'all':
         # Get all the items in the schema as is
-        results = [_getsearchresult(items=itemsdict.values())]
+        results = [_getsearchresult(items=itemsdict.viewvalues())]
 
     elif query == 'sets':
         # Get all the item sets and their items
