@@ -21,7 +21,16 @@ class Handler(webapp2.RequestHandler):
         """Write JSON serialized object to HTTP response body"""
         self.response.headers['Content-Type'] = ('application/json;'
                                                  'charset=UTF-8')
-        self.write(json.dumps(*args, **kwargs))
+
+        class List(list):
+            """Wrapper for serializing iterables to JSON"""
+            def __init__(self, iter_):
+                self._iter = iter_
+
+            def __iter__(self):
+                return self._iter.__iter__()
+
+        self.write(json.dumps(*args, default=lambda o: List(o), **kwargs))
 
     def _render_str(self, template, **params):
         """Render HTML template"""
