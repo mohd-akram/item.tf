@@ -80,6 +80,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     items that match it. It returns a list of dicts obtained from
     _getsearchresult"""
     input_ = _parseinput(query)
+    query = input_['query']
     querylist = input_['querylist']
     classes = input_['classes']
     tags = input_['tags']
@@ -108,7 +109,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     # Matches this - {quality}{{criteria}{amount}{denom}} {classes|tags}
     pricematch = re.match(r'{}?(?: ?(<|>|=)? ?{})?((?: [a-z]+)*)$'.format(
-        qualityregex, priceregex), query.lower())
+        qualityregex, priceregex), query.lower()) if query else None
 
     # Get classes and tags in price search, if any
     if pricematch:
@@ -335,13 +336,13 @@ def _wordsearch(query, querylist, itemsdict):
     items = []
     names = set()
 
+    querylist = querylist + _pluralize(querylist)
+
     for itemdict in itemsdict.itervalues():
         name = foldaccents(itemdict['name'])
         namelist = _splitspecial(name)
 
-        wordmatch = not set(namelist).isdisjoint(querylist +
-                                                 _pluralize(querylist))
-
+        wordmatch = not set(namelist).isdisjoint(querylist)
         stringmatch = (len(query) > 2 and
                        (query in name or query in name.lower()))
 
@@ -615,26 +616,34 @@ def _getdenom(word):
 
 def _parseinput(query):
     """Parse a search query and return a dict to be used in search function"""
-    querylist = [i for i in _splitspecial(foldaccents(query)) if i not in
-                 ('the', 'a', 'of', 's')]
-
     classes = []
     tags = []
-    for word in querylist:
-        class_ = _getclass(word)
-        tag = _gettag(word)
 
-        if class_:
-            classes.append(class_)
-        elif tag:
-            tags.append(tag)
+    query = query.strip()
 
-    # Simple check to differentiate between word search and class/tag search
-    # Avoids conflicts such as 'meet the medic taunt'
-    if (len(tags) + len(classes)) != len(querylist):
-        classes = tags = []
+    if query.startswith('"') and query.endswith('"'):
+        querylist = [query.strip('"')]
+        query = ''
+    else:
+        querylist = [i for i in _splitspecial(foldaccents(query)) if i not in
+                     ('the', 'a', 'of', 's')]
 
-    return {'querylist': querylist, 'classes': classes, 'tags': tags}
+        for word in querylist:
+            class_ = _getclass(word)
+            tag = _gettag(word)
+
+            if class_:
+                classes.append(class_)
+            elif tag:
+                tags.append(tag)
+
+        # Simple check to differentiate between word and class/tag search
+        # Avoids conflicts such as 'meet the medic taunt'
+        if (len(tags) + len(classes)) != len(querylist):
+            classes = tags = []
+
+    return {'query': query, 'querylist': querylist,
+            'classes': classes, 'tags': tags}
 
 
 def _parseblueprints(blueprints, itemsbyname):
