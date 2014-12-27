@@ -470,7 +470,8 @@
       "Cow Mangler 5000",
       "Original",
       "Beggar's Bazooka",
-      "Air Strike"
+      "Air Strike",
+      "Panic Attack"
     ]
   ],
   "Fabricate Class Weapons (Soldier, Secondary)": [
@@ -519,7 +520,8 @@
       "Loch-n-Load",
       "Ali Baba's Wee Booties",
       "Bootlegger",
-      "Loose Cannon"
+      "Loose Cannon",
+      "Iron Bomber"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Secondary)": [
@@ -534,7 +536,8 @@
       "Sticky Jumper",
       "Splendid Screen",
       "Tide Turner",
-      "B.A.S.E. Jumper"
+      "B.A.S.E. Jumper",
+      "Quickiebomb Launcher"
     ]
   ],
   "Fabricate Class Weapons (Demoman, Melee)": [
@@ -569,7 +572,8 @@
       "Natascha",
       "Brass Beast",
       "Tomislav",
-      "Huo-Long Heater"
+      "Huo-Long Heater",
+      "Panic Attack"
     ]
   ],
   "Fabricate Class Weapons (Heavy, Secondary)": [
@@ -657,6 +661,7 @@
       "Degreaser",
       "Phlogistinator",
       "Rainblower",
+      "Panic Attack",
       "Nostromo Napalmer"
     ]
   ],
@@ -747,7 +752,8 @@
       "Frontier Justice",
       "Widowmaker",
       "Pomson 6000",
-      "Rescue Ranger"
+      "Rescue Ranger",
+      "Panic Attack"
     ]
   ],
   "Fabricate Class Weapons (Engineer, Secondary)": [
@@ -1769,6 +1775,36 @@
       "Back Scatter"
     ]
   ],
+  "Fabricate Panic Attack": [
+    [
+      "Reclaimed Metal",
+      "Reclaimed Metal",
+      "Back Scatter"
+    ],
+    [
+      "Panic Attack"
+    ]
+  ],
+  "Fabricate Iron Bomber": [
+    [
+      "Reclaimed Metal",
+      "Reclaimed Metal",
+      "Air Strike"
+    ],
+    [
+      "Iron Bomber"
+    ]
+  ],
+  "Fabricate Quickiebomb Launcher": [
+    [
+      "Reclaimed Metal",
+      "Reclaimed Metal",
+      "Tide Turner"
+    ],
+    [
+      "Quickiebomb Launcher"
+    ]
+  ],
   "Fabricate Headgear": [
     [
       "Refined Metal",
@@ -2297,6 +2333,7 @@
       "Winter Wonderland Wrap",
       "Person in the Iron Mask",
       "Breather Bag",
+      "Nabler",
       "Steel Sixpack",
       "Centurion",
       "Mair Mask",
@@ -2690,6 +2727,16 @@
     ],
     [
       "Fruit Shoot"
+    ]
+  ],
+  "Fabricate Giftapult": [
+    [
+      "Scrap Metal",
+      "Scrap Metal",
+      "Any Weapon"
+    ],
+    [
+      "Giftapult"
     ]
   ],
   "Fabricate Horseless Headless Horsemann's Headtaker": [
