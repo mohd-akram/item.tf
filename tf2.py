@@ -3,6 +3,7 @@
 
 """This module contains all the page handlers and caching mechanisms."""
 import os
+import gc
 import time
 import random
 import pickle
@@ -376,8 +377,11 @@ class CacheHandler(Handler):
             populatecache()
             self.write('Cache Populated')
         elif option == 'update':
-            updatecache()
-            self.write('Cache Updated')
+            try:
+                updatecache()
+                self.write('Cache Updated')
+            finally:
+                gc.collect()
         elif option == 'flush':
             memcache.flush_all()
             self.write('Cache Flushed')
