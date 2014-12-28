@@ -251,15 +251,11 @@ class ItemBox
     <a class="fa fa-info fa-lg button-icon" target="_blank"
      title="Open in Wiki" href="#{wikiLink}"></a>
 
-    <a class="fa fa-shopping-cart fa-lg button-icon"
-     target="_blank" title="Community Market"
-     href="http://steamcommunity.com/market/search?q=appid%3A440%20#{
-     encodeURIComponent @item.name}"></a>
+    <a id="market-btn" class="fa fa-shopping-cart fa-lg button-icon"
+     target="_blank" title="Community Market"></a>
 
-    <a class="fa fa-list fa-lg button-icon" target="_blank"
-     title="Backpack.tf Classifieds"
-     href="http://backpack.tf/classifieds?item=#{
-     encodeURIComponent @item.name}"></a>
+    <a id="classifieds-btn" class="fa fa-list fa-lg button-icon"
+     target="_blank" title="Backpack.tf Classifieds"></a>
 
     #{@_outpostHTML()}
     #{@_wishlistHTML()}
@@ -309,6 +305,25 @@ class ItemBox
 
       button.onmouseout = ->
         button.style.textShadow = ''
+
+  _buttonsLink: ->
+    (@form.quality.onchange = =>
+      market = document.getElementById 'market-btn'
+      quality = @form.quality.options[@form.quality.selectedIndex]
+                .text.toLowerCase()
+                .replace('unique', 'Unique')
+                .replace('genuine', 'rarity1')
+                .replace('unusual', 'rarity4')
+                .replace("collector's", 'collectors')
+
+      market.href = "http://steamcommunity.com/market/search?\
+        category_440_Type%5B%5D=any&\
+        category_440_Quality%5B%5D=tag_#{quality}&\
+        appid=440&q=#{encodeURIComponent @item.name}"
+
+      classifieds = document.getElementById 'classifieds-btn'
+      classifieds.href = "http://backpack.tf/classifieds?item=#{
+        encodeURIComponent @item.name}&quality=#{@form.quality.value}")()
 
   _outpostLink: ->
     # TF2Outpost link
@@ -381,6 +396,7 @@ class ItemBox
 
     @_nameLink()
     @_pricesLink()
+    @_buttonsLink()
     @_outpostLink()
     @_wishlistLink()
     @_buyLink()
@@ -407,6 +423,7 @@ class ItemBox
       for option, i in @form.quality.options
         if option.innerHTML of @item.prices[@source]
           @form.quality.selectedIndex = i
+          @form.quality.onchange()
           break
 
 class HoverBox
