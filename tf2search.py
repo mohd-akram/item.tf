@@ -294,7 +294,7 @@ def _classtagsearch(classes, tags, itemsdict):
     # Check if the user is searching for tournament medals
     hidemedals = 'tournament' not in tags
     # Check if the weapon tag is specified (eg. primary, melee)
-    hasweapontag = not set(tags).isdisjoint(tf2api.getweapontags())
+    hasweapontag = not tags.isdisjoint(tf2api.getweapontags())
 
     for itemdict in itemsdict.itervalues():
         itemclasses = itemdict['classes']
@@ -302,14 +302,14 @@ def _classtagsearch(classes, tags, itemsdict):
         # Gives a match if there's an intersection between the item's
         # classes and the parsed classes in the query. Also gives a match
         # if the item doesn't have any classes specified (all-class item)
-        isclassmatch = (not set(itemclasses).isdisjoint(classes) or
+        isclassmatch = (not classes.isdisjoint(itemclasses) or
                         not itemclasses)
         if hasweapontag:
             # This avoids showing slot tokens when searching for
             # 'primary weapon', 'melee weapon', etc.
-            istagmatch = set(tags).issubset(itemtags)
+            istagmatch = tags.issubset(itemtags)
         else:
-            istagmatch = not set(tags).isdisjoint(itemtags)
+            istagmatch = not tags.isdisjoint(itemtags)
 
         if (isclassmatch or not classes) and (istagmatch or not tags):
             name = itemdict['name']
@@ -336,13 +336,20 @@ def _wordsearch(query, querylist, itemsdict):
     items = []
     names = set()
 
-    querylist = querylist + _pluralize(querylist)
+    if query:
+        querylist = set(querylist + _pluralize(querylist))
+    else:
+        pattern = r'\b{}\b'.format(querylist[0])
 
     for itemdict in itemsdict.itervalues():
         name = foldaccents(itemdict['name'])
-        namelist = _splitspecial(name)
 
-        wordmatch = not set(namelist).isdisjoint(querylist)
+        if query:
+            wordmatch = not querylist.isdisjoint(_splitspecial(name))
+        else:
+            wordmatch = (re.search(pattern, name) or
+                         re.search(pattern, name.lower()))
+
         stringmatch = (len(query) > 2 and
                        (query in name or query in name.lower()))
 
@@ -616,8 +623,8 @@ def _getdenom(word):
 
 def _parseinput(query):
     """Parse a search query and return a dict to be used in search function"""
-    classes = []
-    tags = []
+    classes = set()
+    tags = set()
 
     query = query.strip()
 
@@ -633,14 +640,14 @@ def _parseinput(query):
             tag = _gettag(word)
 
             if class_:
-                classes.append(class_)
+                classes.add(class_)
             elif tag:
-                tags.append(tag)
+                tags.add(tag)
 
         # Simple check to differentiate between word and class/tag search
         # Avoids conflicts such as 'meet the medic taunt'
         if (len(tags) + len(classes)) != len(querylist):
-            classes = tags = []
+            classes = tags = set()
 
     return {'query': query, 'querylist': querylist,
             'classes': classes, 'tags': tags}
