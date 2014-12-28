@@ -319,11 +319,12 @@ class TF2WishlistHandler(Handler):
             if (index in getfromcache('itemindexes') and
                     quality in tf2api.getallqualities()):
 
-                user.wishlist.append({'index': index,
-                                      'quality': quality})
-                user.put()
+                if len(user.wishlist) < 500:
+                    user.wishlist.append({'index': index,
+                                          'quality': quality})
+                    user.put()
 
-                self.write('Added')
+                    self.write('Added')
 
         elif option == 'remove':
             i = int(self.request.get('i'))
