@@ -60,10 +60,10 @@ Example:
 >>> pan = itemsbyname['Frying Pan']
 
 >>> tf2api.getitemclasses(pan)
-[u'Scout', u'Soldier', u'Pyro', u'Demoman', u'Heavy', u'Medic', u'Sniper']
+['Scout', 'Soldier', 'Pyro', 'Demoman', 'Heavy', 'Medic', 'Sniper']
 
 >>> tf2api.getitemtags(pan)
-['weapon', u'melee']
+['weapon', 'melee']
 ```
 
 Thanks
