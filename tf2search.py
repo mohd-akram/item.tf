@@ -57,22 +57,10 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
                    backpackprices, tradeprices)
 
 
-def getitemsdict(tf2info, chunks=1):
-    """Returns an ordered dictionary with index as key and itemdict as value
-    If chunks > 1, a list of evenly split ordered dictionaries is returned"""
-    size = len(tf2info.items) / chunks
-    dicts = [OrderedDict() for i in range(chunks)]
-
-    i = j = 0
+def getitemsdict(tf2info):
+    """Returns an iterator over all itemdicts"""
     for idx in tf2info.items:
-        dicts[i][idx] = createitemdict(idx, tf2info)
-
-        j += 1
-        if j == size and i < chunks - 1:
-            j = 0
-            i += 1
-
-    return dicts[0] if len(dicts) == 1 else dicts
+        yield createitemdict(idx, tf2info)
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):

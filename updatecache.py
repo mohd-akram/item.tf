@@ -6,6 +6,8 @@ import cache
 import config
 import tf2search
 
+from main import getitemkey
+
 
 class Sitemap:
     """A class that is used to create XML sitemaps"""
@@ -35,12 +37,6 @@ def main():
                                    config.backpackkey, config.tradekey,
                                    config.blueprintsfile)
 
-    itemsdict = tf2search.getitemsdict(tf2info)
-
-    newitems = [itemsdict[index] for index in tf2info.newstoreprices]
-
-    nametoindexmap = {}
-    itemindexes = set()
     suggestions = [[], [], []]
 
     sitemap = Sitemap()
@@ -48,11 +44,10 @@ def main():
 
     for name, item in tf2info.itemsbyname.items():
         index = item['defindex']
-        itemdict = itemsdict[index]
+        itemdict = tf2search.createitemdict(index, tf2info)
 
         if tf2search.isvalidresult(itemdict):
-            nametoindexmap[name] = index
-            itemindexes.add(index)
+            cache.hset('itemnames', {name: index})
 
             path = '{0}/{1}'.format(config.homepage, index)
 
@@ -63,12 +58,15 @@ def main():
 
             sitemap.add(path)
 
-    data = {'itemsdict': itemsdict,
-            'itemsets': tf2info.itemsets,
+    for itemdict in tf2search.getitemsdict(tf2info):
+        cache.hset(getitemkey(itemdict['index']), itemdict)
+        cache.sadd('items', itemdict['index'])
+
+    for index in tf2info.newstoreprices:
+        cache.sadd('newitems', getitemkey(index))
+
+    data = {'itemsets': tf2info.itemsets,
             'bundles': tf2info.bundles,
-            'nametoindexmap': nametoindexmap,
-            'itemindexes': itemindexes,
-            'newitems': newitems,
             'suggestions': suggestions,
             'sitemap': sitemap.toxml(),
             'lastupdated': time.time()}

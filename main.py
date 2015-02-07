@@ -24,10 +24,8 @@ def home():
     t0 = cache.get('lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
-    newitems = []
-    newitems = cache.get('newitems')
-    if len(newitems) > 5:
-        newitems = random.sample(newitems, 5)
+    newitems = tuple(
+        getitem(k) for k in cache.srandmember('newitems', 5))
 
     return render('tf2.html',
                   homepage=config.homepage,
@@ -39,11 +37,9 @@ def home():
 
 @get('/<index:int><is_json:re:(\.json)?>')
 def item(index, is_json):
-    itemsdict = cache.get('itemsdict')
+    itemdict = getitem(index)
 
-    if index in itemsdict:
-        itemdict = itemsdict[index]
-    else:
+    if not itemdict:
         return redirect('/')
 
     if is_json:
@@ -73,17 +69,15 @@ def search(is_json):
             redirect('/')
 
         elif query == 'random':
-            itemindexes = cache.get('itemindexes')
-            return redirect(
-                # random.choice does not support sets
-                '/{}'.format(random.choice(tuple(itemindexes))))
+            itemdict = getitem(cache.srandmember('items'))
+            return redirect('/{}'.format(itemdict['index']))
 
-        nametoindexmap = cache.get('nametoindexmap')
+        itemnames = cache.Hash('itemnames')
 
-        if query in nametoindexmap:
-            return redirect('/{}'.format(nametoindexmap[query]))
+        if query in itemnames:
+            return redirect('/{}'.format(itemnames[query]))
 
-        itemsdict = cache.get('itemsdict')
+        itemsdict = cache.HashSet('items', getitemkey, lambda k: int(k))
         itemsets = cache.get('itemsets')
         bundles = cache.get('bundles')
 
@@ -94,7 +88,7 @@ def search(is_json):
             pricesource = sources[0]
 
         t0 = time.time()
-        results = tf2search.search(query, itemsdict, nametoindexmap,
+        results = tf2search.search(query, itemsdict, itemnames,
                                    itemsets, bundles, pricesource)
         t1 = time.time()
 
@@ -165,6 +159,14 @@ def write_json(*args, **kwargs):
             return self._iter.__iter__()
 
     return json.dumps(*args, default=lambda o: List(o), **kwargs)
+
+
+def getitemkey(index):
+    return 'item:{}'.format(index)
+
+
+def getitem(index):
+    return cache.hgetall(getitemkey(index))
 
 
 if __name__ == '__main__':
