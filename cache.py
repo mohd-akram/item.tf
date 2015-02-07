@@ -77,7 +77,7 @@ class StringSet(Mapping):
         return get(self.tokey(field))
 
     def __contains__(self, field):
-        return r.sismember(self.key, self.tokey(field))
+        return r.sismember(self.key, field)
 
     def __iter__(self):
         if self.sortkey:

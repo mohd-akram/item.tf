@@ -63,44 +63,44 @@ def item(index, is_json):
 
 @get('/search<is_json:re:(\.json)?>')
 def search(is_json):
-        query = request.query.q
+    query = request.query.q
 
-        if not query:
-            redirect('/')
+    if not query:
+        redirect('/')
 
-        elif query == 'random':
-            itemdict = getitem(cache.srandmember('items'))
-            return redirect('/{}'.format(itemdict['index']))
+    elif query == 'random':
+        itemdict = getitem(cache.srandmember('items'))
+        return redirect('/{}'.format(itemdict['index']))
 
-        itemnames = cache.Hash('itemnames')
+    itemnames = cache.Hash('itemnames')
 
-        if query in itemnames:
-            return redirect('/{}'.format(itemnames[query]))
+    if query in itemnames:
+        return redirect('/{}'.format(itemnames[query]))
 
-        itemsdict = cache.StringSet('items', getitemkey, lambda k: int(k))
-        itemsets = cache.get('itemsets')
-        bundles = cache.get('bundles')
+    itemsdict = cache.StringSet('items', getitemkey, lambda k: int(k))
+    itemsets = cache.get('itemsets')
+    bundles = cache.get('bundles')
 
-        pricesource = request.get_cookie('price_source')
+    pricesource = request.get_cookie('price_source')
 
-        sources = ('backpack.tf', 'trade.tf')
-        if pricesource not in sources:
-            pricesource = sources[0]
+    sources = ('backpack.tf', 'trade.tf')
+    if pricesource not in sources:
+        pricesource = sources[0]
 
-        t0 = time.time()
-        results = tf2search.search(query, itemsdict, itemnames,
-                                   itemsets, bundles, pricesource)
-        t1 = time.time()
+    t0 = time.time()
+    results = tf2search.search(query, itemsdict, itemnames,
+                               itemsets, bundles, pricesource)
+    t1 = time.time()
 
-        count = sum(len(result['items']) for result in results)
-        if is_json:
-            return write_json(results)
-        else:
-            return render('tf2results.html',
-                          query=query,
-                          results=results,
-                          count=count,
-                          time=round(t1 - t0, 3))
+    count = sum(len(result['items']) for result in results)
+    if is_json:
+        return write_json(results)
+    else:
+        return render('tf2results.html',
+                      query=query,
+                      results=results,
+                      count=count,
+                      time=round(t1 - t0, 3))
 
 
 @get('/suggest')
