@@ -37,7 +37,7 @@ Structure
 
 There are three main files:
 
- * tf2.py - Contains the page handlers
+ * main.py - Contains the page handlers
  * tf2api.py - Contains the main functions for getting items, store prices,
  market prices and other information.
  * tf2search.py - Contains the parsing and search functions.
