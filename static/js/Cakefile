@@ -1,7 +1,7 @@
 fs     = require 'fs'
 {exec} = require 'child_process'
 
-files = ['tf2']
+files = ['main']
 
 done = (error, stdout, stderr) ->
   time = (new Date).toLocaleTimeString()

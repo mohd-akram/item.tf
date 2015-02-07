@@ -43,7 +43,7 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     tradeprices = tf2api.gettradeprices(tradekey, items, itemsbyname)
 
     with open(blueprintsfilename) as f:
-        data = json.loads(f.read().decode('utf-8'))
+        data = json.loads(f.read())
     blueprints = _parseblueprints(data, itemsbyname)
 
     fields = ('items itemsbyname itemsets attributes effects '
@@ -102,7 +102,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     priceregex = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(denomregex))
 
     qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
-        '|'.join(i.lower() for i in tf2api.getallqualities().itervalues()))
+        '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
     pricevizmatch = re.match(r'{}(?: to {})?$'.format(priceregex, denomregex),
                              query.lower())
@@ -130,7 +130,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     elif query == 'all':
         # Get all the items in the schema as is
-        results = [_getsearchresult(items=itemsdict.viewvalues())]
+        results = [_getsearchresult(items=itemsdict.values())]
 
     elif query == 'sets':
         # Get all the item sets and their items
@@ -154,7 +154,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
                                          pricesource)
 
         titlelist = [_getpricestring(v, k)
-                     for k, v in counts.iteritems()]
+                     for k, v in counts.items()]
 
         title = ' + '.join(titlelist)
 
@@ -169,7 +169,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
         denom = _getdenom(pricematch.group(4) or '')
 
         if not (priceclasses or pricetags):
-            results = [_getsearchresult(items=itemsdict.itervalues())]
+            results = [_getsearchresult(items=itemsdict.values())]
 
         _pricefilter(quality, criteria, amount, denom, results, pricesource)
 
@@ -210,7 +210,8 @@ def createitemdict(index, tf2info):
 
     tags = tf2api.getitemtags(item)
     # Sort blueprints by crafting chance
-    blueprint = sorted(tf2info.blueprints[index], reverse=True)
+    blueprint = sorted(tf2info.blueprints[index],
+        key=lambda k: k['chance'], reverse=True)
 
     description = ''
     if 'bundle' in tags and storeprice:
@@ -226,7 +227,7 @@ def createitemdict(index, tf2info):
             else:
                 text.append(value)
 
-        description = u'{}---{}'.format('\n'.join(text), '\n'.join(items))
+        description = '{}---{}'.format('\n'.join(text), '\n'.join(items))
 
     elif 'item_description' in item:
         description = item['item_description']
@@ -277,11 +278,11 @@ def isvalidresult(itemdict, strict=True):
 
 def foldaccents(string):
     """Fold accents in a string"""
-    return (string.replace(u'ä', 'a')
-                  .replace(u'é', 'e')
-                  .replace(u'ò', 'o')
-                  .replace(u'ü', 'u')
-                  .replace(u'Ü', 'U'))
+    return (string.replace('ä', 'a')
+                  .replace('é', 'e')
+                  .replace('ò', 'o')
+                  .replace('ü', 'u')
+                  .replace('Ü', 'U'))
 
 
 def _classtagsearch(classes, tags, itemsdict):
@@ -296,7 +297,7 @@ def _classtagsearch(classes, tags, itemsdict):
     # Check if the weapon tag is specified (eg. primary, melee)
     hasweapontag = not tags.isdisjoint(tf2api.getweapontags())
 
-    for itemdict in itemsdict.itervalues():
+    for itemdict in itemsdict.values():
         itemclasses = itemdict['classes']
         itemtags = itemdict['tags']
         # Gives a match if there's an intersection between the item's
@@ -324,7 +325,7 @@ def _classtagsearch(classes, tags, itemsdict):
                 names.add(name)
 
     results = [_getsearchresult(title, items=items)
-               for title, items in results.iteritems()]
+               for title, items in results.items()]
 
     results.sort(key=lambda k: titles.index(k['title']))
 
@@ -341,7 +342,7 @@ def _wordsearch(query, querylist, itemsdict):
     else:
         pattern = r'\b{}\b'.format(querylist[0])
 
-    for itemdict in itemsdict.itervalues():
+    for itemdict in itemsdict.values():
         name = foldaccents(itemdict['name'])
 
         if query:
@@ -367,7 +368,7 @@ def _wordsearch(query, querylist, itemsdict):
 
 def _bundlesearch(query, bundles, nametoindexmap, itemsdict):
     """Search for bundles which match query"""
-    for bundle in bundles.itervalues():
+    for bundle in bundles.values():
         if bundle['name'].lower() == query:
             items = _getbundleitems(bundle, nametoindexmap, itemsdict)
             return _getsearchresult(bundle['name'], 'bundle', items)
@@ -386,7 +387,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
         isresult = lambda name: name.lower() == query
         getall = False
 
-    for setname, itemset in itemsets.iteritems():
+    for setname, itemset in itemsets.items():
         if isresult(setname):
             items = _getsetitems(itemset, nametoindexmap, itemsdict)
             result = _getsearchresult(setname, 'set', items)
@@ -507,7 +508,7 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
         amount += 0.01
 
     denomtoidx = tf2api.getalldenoms()
-    denoms = denomtoidx.keys()
+    denoms = tuple(denomtoidx.keys())
     denomtable = _getdenomvalues(itemsdict, pricesource)
 
     if todenom:
@@ -560,7 +561,7 @@ def _getdenomvalues(itemsdict, pricesource):
              'Scrap': {'Weapon': 2.0},
              'Weapon': {}}
 
-    denoms = denomtoidx.keys()
+    denoms = tuple(denomtoidx.keys())
 
     def fill(from_, to=None, value=1):
         if to is None:
@@ -592,7 +593,7 @@ def _splitspecial(string):
 def _getclass(word):
     """Parse a word and return TF2 class or alias if it matches one"""
     word = word.capitalize()
-    for name, aliases in tf2api.getallclasses().iteritems():
+    for name, aliases in tf2api.getallclasses().items():
         if word == name or word in aliases:
             return name
 
@@ -613,7 +614,7 @@ def _gettag(word):
 
 def _getdenom(word):
     """Parse a word and return a price denomination if it matches one"""
-    denomslist = ['bud', 'key', 'ref', 'rec', 'scrap', 'we']
+    denomslist = ('bud', 'key', 'ref', 'rec', 'scrap', 'we')
     denoms = dict(zip(denomslist, tf2api.getalldenoms().keys()))
 
     hasdenom = re.search('|'.join(denomslist), word.lower())

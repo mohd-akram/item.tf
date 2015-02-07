@@ -1,7 +1,7 @@
 item.tf
 =======
 
-This is a Google App Engine site that lets you search TF2 items and find the
+This is a bottle.py site that lets you search TF2 items and find the
 ones you want. There are two main ways to search - you can either use regular
 keyword search or search by classes and item tags
 (eg. weapon, misc, hat, etc.). Once you find an item you want, you can get all
@@ -16,10 +16,21 @@ Rename config.default.py to config.py and fill in your API keys in the file.
 
 Run this command to install dependencies.
 
-    pip install -r requirements.txt -t lib
+    pip3 install -r requirements.txt
 
-Then, simply add the directory to the Google App Engine Launcher and
-start the server.
+You'll also need to install the [Redis server](http://redis.io/download).
+
+Run update-cache.py to update the Redis cache. Then, simply launch main.py.
+
+To host the site in Ubuntu 14.04 using gunicorn and nginx,
+ clone into /var/www/item.tf and run the following in the project directory:
+
+    sudo apt-get install nginx redis-server
+    cp -rsf $PWD/etc /
+    cd /etc/nginx/sites-enabled
+    unlink default
+    cd /etc/init.d
+    update-rc.d gunicorn defaults
 
 Structure
 ---------

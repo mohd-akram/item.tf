@@ -16,7 +16,7 @@
     <h2 class="itemname">{{item['name']}}</h2>
     {% if item['marketprice']['backpack.tf'] %}
     <span class="pricesource">Backpack.tf</span>
-    <h3 class="prices">{% for quality, value in item['marketprice']['backpack.tf'].iteritems() %}
+    <h3 class="prices">{% for quality, value in item['marketprice']['backpack.tf'].items() %}
       <span class="{{quality|lower|replace("'", '')}}">{{quality}}</span>: {{value}}<br>
     {% endfor %}</h3>
     {% endif %}

@@ -5,12 +5,13 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{c1228c2d-744f-4b43-b06d-02dbc6a3adce}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>C:\Program Files\Google\Cloud SDK\google-cloud-sdk\bin\dev_appserver.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath />
-    <WorkingDirectory>..</WorkingDirectory>
+    <WorkingDirectory>
+    </WorkingDirectory>
     <OutputPath>.</OutputPath>
     <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
-    <InterpreterVersion>2.7</InterpreterVersion>
+    <InterpreterVersion>3.4</InterpreterVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <IsWindowsApplication>False</IsWindowsApplication>
@@ -23,60 +24,60 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\2.7" />
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.4" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
-    <Content Include="app.yaml" />
     <Content Include="blueprints.json" />
-    <Content Include="cron.yaml" />
-    <Content Include="css\message.css" />
-    <Content Include="css\tf2.css" />
-    <Content Include="favicon.ico" />
-    <Content Include="images\classes.png" />
-    <Content Include="images\items\class_token.png" />
-    <Content Include="images\items\slot_token.png" />
-    <Content Include="images\items\token.png" />
-    <Content Include="images\items\whatsthis.png" />
-    <Content Include="images\paints\Paint_Can_10843461.png" />
-    <Content Include="images\paints\Paint_Can_11049612.png" />
-    <Content Include="images\paints\Paint_Can_12073019.png" />
-    <Content Include="images\paints\Paint_Can_12377523.png" />
-    <Content Include="images\paints\Paint_Can_12807213.png" />
-    <Content Include="images\paints\Paint_Can_12955537.png" />
-    <Content Include="images\paints\Paint_Can_1315860.png" />
-    <Content Include="images\paints\Paint_Can_13595446.png" />
-    <Content Include="images\paints\Paint_Can_14204632.png" />
-    <Content Include="images\paints\Paint_Can_15132390.png" />
-    <Content Include="images\paints\Paint_Can_15185211.png" />
-    <Content Include="images\paints\Paint_Can_15308410.png" />
-    <Content Include="images\paints\Paint_Can_15787660.png" />
-    <Content Include="images\paints\Paint_Can_16738740.png" />
-    <Content Include="images\paints\Paint_Can_2960676.png" />
-    <Content Include="images\paints\Paint_Can_3100495.png" />
-    <Content Include="images\paints\Paint_Can_3329330.png" />
-    <Content Include="images\paints\Paint_Can_3874595.png" />
-    <Content Include="images\paints\Paint_Can_4345659.png" />
-    <Content Include="images\paints\Paint_Can_4732984.png" />
-    <Content Include="images\paints\Paint_Can_5322826.png" />
-    <Content Include="images\paints\Paint_Can_6637376.png" />
-    <Content Include="images\paints\Paint_Can_6901050.png" />
-    <Content Include="images\paints\Paint_Can_7511618.png" />
-    <Content Include="images\paints\Paint_Can_8154199.png" />
-    <Content Include="images\paints\Paint_Can_8208497.png" />
-    <Content Include="images\paints\Paint_Can_8289918.png" />
-    <Content Include="images\paints\Paint_Can_8400928.png" />
-    <Content Include="images\paints\Paint_Can_8421376.png" />
-    <Content Include="images\tags.png" />
-    <Content Include="index.yaml" />
+    <Content Include="etc\cron.hourly\update-cache" />
+    <Content Include="etc\init.d\gunicorn" />
+    <Content Include="etc\nginx\nginx.conf" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
     <Content Include="requirements.txt" />
-    <Content Include="scripts\Cakefile" />
-    <Content Include="scripts\tf2.coffee" />
-    <Content Include="searchdescription.xml" />
     <Content Include="static\apple-touch-icon.png" />
+    <Content Include="static\css\message.css" />
+    <Content Include="static\css\tf2.css" />
+    <Content Include="static\favicon.ico" />
+    <Content Include="static\images\classes.png" />
+    <Content Include="static\images\items\class_token.png" />
+    <Content Include="static\images\items\slot_token.png" />
+    <Content Include="static\images\items\token.png" />
+    <Content Include="static\images\items\whatsthis.png" />
+    <Content Include="static\images\paints\Paint_Can_10843461.png" />
+    <Content Include="static\images\paints\Paint_Can_11049612.png" />
+    <Content Include="static\images\paints\Paint_Can_12073019.png" />
+    <Content Include="static\images\paints\Paint_Can_12377523.png" />
+    <Content Include="static\images\paints\Paint_Can_12807213.png" />
+    <Content Include="static\images\paints\Paint_Can_12955537.png" />
+    <Content Include="static\images\paints\Paint_Can_1315860.png" />
+    <Content Include="static\images\paints\Paint_Can_13595446.png" />
+    <Content Include="static\images\paints\Paint_Can_14204632.png" />
+    <Content Include="static\images\paints\Paint_Can_15132390.png" />
+    <Content Include="static\images\paints\Paint_Can_15185211.png" />
+    <Content Include="static\images\paints\Paint_Can_15308410.png" />
+    <Content Include="static\images\paints\Paint_Can_15787660.png" />
+    <Content Include="static\images\paints\Paint_Can_16738740.png" />
+    <Content Include="static\images\paints\Paint_Can_2960676.png" />
+    <Content Include="static\images\paints\Paint_Can_3100495.png" />
+    <Content Include="static\images\paints\Paint_Can_3329330.png" />
+    <Content Include="static\images\paints\Paint_Can_3874595.png" />
+    <Content Include="static\images\paints\Paint_Can_4345659.png" />
+    <Content Include="static\images\paints\Paint_Can_4732984.png" />
+    <Content Include="static\images\paints\Paint_Can_5322826.png" />
+    <Content Include="static\images\paints\Paint_Can_6637376.png" />
+    <Content Include="static\images\paints\Paint_Can_6901050.png" />
+    <Content Include="static\images\paints\Paint_Can_7511618.png" />
+    <Content Include="static\images\paints\Paint_Can_8154199.png" />
+    <Content Include="static\images\paints\Paint_Can_8208497.png" />
+    <Content Include="static\images\paints\Paint_Can_8289918.png" />
+    <Content Include="static\images\paints\Paint_Can_8400928.png" />
+    <Content Include="static\images\paints\Paint_Can_8421376.png" />
+    <Content Include="static\images\tags.png" />
+    <Content Include="static\js\Cakefile" />
+    <Content Include="static\js\main.coffee" />
+    <Content Include="static\searchdescription.xml" />
     <Content Include="templates\analytics.html" />
     <Content Include="templates\base.html" />
     <Content Include="templates\error.html" />
@@ -90,20 +91,24 @@
     <Content Include="templates\tf2user.html" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="cache.py" />
     <Compile Include="config.py" />
-    <Compile Include="handler.py" />
     <Compile Include="main.py" />
-    <Compile Include="tf2.py" />
     <Compile Include="tf2api.py" />
     <Compile Include="tf2search.py" />
+    <Compile Include="update-cache.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="css\" />
-    <Folder Include="images\" />
-    <Folder Include="images\items\" />
-    <Folder Include="images\paints\" />
-    <Folder Include="scripts\" />
+    <Folder Include="etc\" />
+    <Folder Include="etc\cron.hourly\" />
+    <Folder Include="etc\init.d\" />
+    <Folder Include="etc\nginx\" />
     <Folder Include="static\" />
+    <Folder Include="static\css\" />
+    <Folder Include="static\images\" />
+    <Folder Include="static\images\items\" />
+    <Folder Include="static\images\paints\" />
+    <Folder Include="static\js\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

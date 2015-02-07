@@ -10,7 +10,7 @@ There are also functions for parsing the information of each item.
 
 """
 import json
-from urllib2 import urlopen
+from urllib.request import Request, urlopen
 from collections import defaultdict, OrderedDict
 
 
@@ -19,7 +19,7 @@ def getschema(apikey, timeout=30):
     url = ('http://api.steampowered.com/IEconItems_440/GetSchema/v0001/'
            '?key={}&language=en'.format(apikey))
 
-    return json.loads(urlopen(url, timeout=timeout).read())
+    return json.loads(urlopen(url, timeout=timeout).read().decode())
 
 
 def getitemsinfo(apikey, storeprices, indexes, timeout=30):
@@ -35,16 +35,17 @@ def getitemsinfo(apikey, storeprices, indexes, timeout=30):
         idtoindex[classid] = index
         url += '&classid{0}={1}'.format(n, classid)
 
-    infobyid = json.loads(urlopen(url, timeout=timeout).read())['result']
+    infobyid = json.loads(
+        urlopen(url, timeout=timeout).read().decode())['result']
     del infobyid['success']
 
     return {idtoindex[classid]: iteminfo for classid, iteminfo in
-            infobyid.iteritems()}
+            infobyid.items()}
 
 
 def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
-    indexes = [index for index, price in storeprices.iteritems()
+    indexes = [index for index, price in storeprices.items()
                if 'Bundles' in price['tags']]
     return getitemsinfo(apikey, storeprices, indexes)
 
@@ -95,15 +96,15 @@ def getstoreprices(apikey, timeout=30):
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
            '?key={}&language=en&appid=440&currency=usd'.format(apikey))
 
-    prices = json.loads(urlopen(url,
-                                timeout=timeout).read())['result']['assets']
+    prices = json.loads(
+        urlopen(url, timeout=timeout).read().decode())['result']['assets']
 
     return {int(price['name']): price for price in prices}
 
 
 def getnewstoreprices(storeprices):
     """Return a dictionary of store prices of new items with defindex as key"""
-    return {index: price for index, price in storeprices.iteritems()
+    return {index: price for index, price in storeprices.items()
             if 'New' in price['tags']}
 
 
@@ -115,7 +116,8 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
            '?key={}&compress=1'.format(apikey))
 
     pricesdata = json.loads(
-        urlopen(url, timeout=timeout).read())['response']['items']
+        urlopen(Request(url, headers={'User-Agent':'tf2api'}), timeout=timeout)
+        .read().decode())['response']['items']
 
     pricesdict = defaultdict(dict)
 
@@ -124,7 +126,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     denoms = {'metal': 'Refined', 'keys': 'Key',
               'earbuds': 'Bud', 'usd': 'USD'}
 
-    for name, iteminfo in pricesdata.iteritems():
+    for name, iteminfo in pricesdata.items():
         if name not in itemsbyname:
             continue
 
@@ -142,18 +144,18 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
         if 'prices' not in iteminfo:
             continue
 
-        for quality, tradeinfo in iteminfo['prices'].iteritems():
+        for quality, tradeinfo in iteminfo['prices'].items():
             try:
                 qualityname = qualities[int(quality)]
             except KeyError:
                 continue
 
-            for tradable, craftinfo in tradeinfo.iteritems():
+            for tradable, craftinfo in tradeinfo.items():
                 # Ignore non-tradable version if there is a tradable one
                 if tradable == 'Non-Tradable' and 'Tradable' in tradeinfo:
                     continue
 
-                for craftable, price in craftinfo.iteritems():
+                for craftable, price in craftinfo.items():
                     if type(price) is list:
                         price = price[0]
                     else:
@@ -189,7 +191,8 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
     prices for the item"""
     url = 'http://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
 
-    pricesdata = json.loads(urlopen(url, timeout=timeout).read())['items']
+    pricesdata = json.loads(
+        urlopen(url, timeout=timeout).read().decode())['items']
 
     pricesdict = defaultdict(dict)
     itemnames = set()
@@ -200,12 +203,12 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
 
     denoms = {'r': 'Refined', 'k': 'Key', 'b': 'Bud'}
 
-    for index, prices in pricesdata.iteritems():
+    for index, prices in pricesdata.items():
         index = int(index)
         if index not in items:
             # For crates, index = 10000*crate_defindex + crate_number
             crateno = index % 10000
-            index /= 10000
+            index //= 10000
 
             # Store the price of the highest crate number only
             if crateno < crates[index]:
@@ -220,7 +223,7 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
         if index != idx and name in itemnames:
             continue
 
-        for quality, price in prices.iteritems():
+        for quality, price in prices.items():
             quality = int(quality)
             price = price['regular']
 
@@ -349,7 +352,7 @@ def getitemattributes(item, allattributes, effects):
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
     return (sorted(item['used_by_classes'],
-            key=getallclasses().keys().index)
+            key=list(getallclasses().keys()).index)
             if 'used_by_classes' in item else [])
 
 
@@ -407,7 +410,7 @@ def getplayersummaries(apikey, steamids):
     url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
            '?key={}&steamids={}'.format(apikey, ','.join(steamids)))
 
-    return json.loads(urlopen(url).read())['response']['players']
+    return json.loads(urlopen(url).read().decode())['response']['players']
 
 
 def resolvevanityurl(apikey, vanityurl):
@@ -415,7 +418,7 @@ def resolvevanityurl(apikey, vanityurl):
     url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
            '?key={}&vanityurl={}'.format(apikey, vanityurl))
 
-    response = json.loads(urlopen(url).read())['response']
+    response = json.loads(urlopen(url).read().decode())['response']
 
     if response['success'] == 1:
         return response['steamid']
