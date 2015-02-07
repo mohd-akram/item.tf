@@ -63,7 +63,7 @@ def main():
         cache.sadd('items', itemdict['index'])
 
     for index in tf2info.newstoreprices:
-        cache.sadd('newitems', getitemkey(index))
+        cache.sadd('newitems', index)
 
     data = {'itemsets': tf2info.itemsets,
             'bundles': tf2info.bundles,

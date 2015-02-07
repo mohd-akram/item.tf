@@ -13,7 +13,7 @@ def get(key):
 def set(key, value=None):
     if type(key) is dict:
         for k, v in key.items():
-            return r.set(k, pickle.dumps(v))
+            r.set(k, pickle.dumps(v))
     else:
         return r.set(key, pickle.dumps(value))
 
@@ -22,16 +22,16 @@ def hget(key, field):
     return pickle.loads(r.hget(key, field))
 
 
+def hgetall(key):
+    return {k.decode(): pickle.loads(v) for k, v in r.hgetall(key).items()}
+
+
 def hset(key, value):
     if len(value) == 1:
         k, v = tuple(value.items())[0]
         return r.hset(key, k, pickle.dumps(v))
     else:
         return r.hmset(key, {k: pickle.dumps(v) for k, v in value.items()})
-
-
-def hgetall(key):
-    return {k.decode(): pickle.loads(v) for k, v in r.hgetall(key).items()}
 
 
 def sadd(*args, **kwargs):
@@ -43,7 +43,11 @@ def smembers(key):
 
 
 def srandmember(*args, **kwargs):
-    return r.srandmember(*args, **kwargs)
+    members = r.srandmember(*args, **kwargs)
+    if type(members) is list:
+        return [member.decode() for member in members]
+    else:
+        return members.decode()
 
 
 class Hash(Mapping):
