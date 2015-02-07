@@ -1,6 +1,7 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 cd /var/www/item.tf
+mkdir -p logs
 
 case "$1" in
 start)
