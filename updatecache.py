@@ -59,7 +59,7 @@ def main():
             sitemap.add(path)
 
     for itemdict in tf2search.getitemsdict(tf2info):
-        cache.hset(getitemkey(itemdict['index']), itemdict)
+        cache.set(getitemkey(itemdict['index']), itemdict)
         cache.sadd('items', itemdict['index'])
 
     for index in tf2info.newstoreprices:

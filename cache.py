@@ -67,14 +67,14 @@ class Hash(Mapping):
         return r.hlen(self.key)
 
 
-class HashSet(Mapping):
+class StringSet(Mapping):
     def __init__(self, key, tokey, sortkey=None):
         self.key = key
         self.tokey = tokey
         self.sortkey = sortkey
 
     def __getitem__(self, field):
-        return Hash(self.tokey(field))
+        return get(self.tokey(field))
 
     def __contains__(self, field):
         return r.sismember(self.key, self.tokey(field))

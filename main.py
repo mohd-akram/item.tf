@@ -77,7 +77,7 @@ def search(is_json):
         if query in itemnames:
             return redirect('/{}'.format(itemnames[query]))
 
-        itemsdict = cache.HashSet('items', getitemkey, lambda k: int(k))
+        itemsdict = cache.StringSet('items', getitemkey, lambda k: int(k))
         itemsets = cache.get('itemsets')
         bundles = cache.get('bundles')
 
@@ -166,7 +166,7 @@ def getitemkey(index):
 
 
 def getitem(index):
-    return cache.hgetall(getitemkey(index))
+    return cache.get(getitemkey(index))
 
 
 if __name__ == '__main__':
