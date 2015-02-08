@@ -37,27 +37,27 @@ def home():
 
 @get('/<index:int><is_json:re:(\.json)?>')
 def item(index, is_json):
-    itemdict = getitem(index)
+    item = getitem(index)
 
-    if not itemdict:
+    if not item:
         return redirect('/')
 
     if is_json:
-        return write_json(itemdict, indent=2)
+        return write_json(item.todict(), indent=2)
     else:
         desc_list = []
 
-        if itemdict['description']:
-            desc_list.append(itemdict['description'].replace('\n', ' '))
+        if item['description']:
+            desc_list.append(item['description'].replace('\n', ' '))
 
-        desc_list.append(', '.join(itemdict['classes'])
-                         if itemdict['classes'] else 'All Classes')
+        desc_list.append(', '.join(item['classes'])
+                         if item['classes'] else 'All Classes')
 
-        if itemdict['tags']:
-            desc_list.append(', '.join(itemdict['tags']).title())
+        if item['tags']:
+            desc_list.append(', '.join(item['tags']).title())
 
         return render('tf2item.html',
-                      item=itemdict,
+                      item=item,
                       description=' | '.join(desc_list))
 
 
@@ -69,15 +69,17 @@ def search(is_json):
         redirect('/')
 
     elif query == 'random':
-        itemdict = getitem(cache.srandmember('items'))
-        return redirect('/{}'.format(itemdict['index']))
+        item = getitem(cache.srandmember('items'))
+        return redirect('/{}'.format(item['index']))
 
     itemnames = cache.Hash('itemnames')
 
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
 
-    itemsdict = cache.StringSet('items', getitemkey, lambda k: int(k))
+    itemsdict = cache.SearchHashSet(
+        'items', getitemkey,
+        ('index', 'name', 'classes', 'tags', 'marketprice'), lambda k: int(k))
     itemsets = cache.get('itemsets')
     bundles = cache.get('bundles')
 
@@ -166,7 +168,7 @@ def getitemkey(index):
 
 
 def getitem(index):
-    return cache.get(getitemkey(index))
+    return cache.Hash(getitemkey(index))
 
 
 if __name__ == '__main__':

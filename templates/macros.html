@@ -1,4 +1,5 @@
 {% macro showitem(item, visible=True) %}
+{% set item = item.todict() %}
 {% set style = 'background-image: url("{}");'.format(item['image']) %}
 {% if not visible %}{% set style = style + 'display: none' %}{% endif %}
 <a href="/{{item['index']}}">

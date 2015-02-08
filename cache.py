@@ -1,4 +1,5 @@
 import pickle
+from collections import OrderedDict
 from collections.abc import Mapping
 
 import redis
@@ -34,6 +35,10 @@ def hset(key, value):
         return r.hmset(key, {k: pickle.dumps(v) for k, v in value.items()})
 
 
+def hkeys(key):
+    return (f.decode() for f in r.hkeys(key))
+
+
 def sadd(*args, **kwargs):
     return r.sadd(*args, **kwargs)
 
@@ -61,23 +66,26 @@ class Hash(Mapping):
         return r.hexists(self.key, field)
 
     def __iter__(self):
-        yield from hgetall(self.key)
+        yield from hkeys(self.key)
 
     def __len__(self):
         return r.hlen(self.key)
 
+    def todict(self):
+        return hgetall(self.key)
 
-class StringSet(Mapping):
+
+class HashSet(Mapping):
     def __init__(self, key, tokey, sortkey=None):
         self.key = key
         self.tokey = tokey
         self.sortkey = sortkey
 
-    def __getitem__(self, field):
-        return get(self.tokey(field))
+    def __getitem__(self, member):
+        return Hash(self.tokey(member))
 
-    def __contains__(self, field):
-        return r.sismember(self.key, field)
+    def __contains__(self, member):
+        return r.sismember(self.key, member)
 
     def __iter__(self):
         if self.sortkey:
@@ -87,3 +95,44 @@ class StringSet(Mapping):
 
     def __len__(self):
         return r.scard(self.key)
+
+
+class SearchHashSet(HashSet):
+    class SearchHash(Hash):
+        def __init__(self, key, cache):
+            super().__init__(key)
+            self.cache = cache
+
+        def __getitem__(self, field):
+            if field in self.cache:
+                return self.cache[field]
+            else:
+                return super().__getitem__(field)
+
+    def __init__(self, key, tokey, fields, sortkey=None):
+        super().__init__(key, tokey, sortkey)
+        self.fields = fields
+
+        get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
+        self.result = r.sort(key, get=get)
+
+        hashes = []
+        for i in range(0, len(self.result), len(fields)+1):
+            hashes.append((self.result[i].decode(), i + 1))
+
+        if sortkey:
+            hashes.sort(key=lambda k: sortkey(k[0]))
+            self.hashes = OrderedDict(hashes)
+        else:
+            self.hashes = dict(hashes)
+
+    def __getitem__(self, member):
+        cache = {}
+        for i in range(len(self.fields)):
+            cache[self.fields[i]] = pickle.loads(
+                self.result[self.hashes[member] + i])
+
+        return self.SearchHash(self.tokey(member), cache)
+
+    def __iter__(self):
+        yield from self.hashes
