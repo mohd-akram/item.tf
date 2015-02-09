@@ -42,11 +42,15 @@ def main():
     sitemap = Sitemap()
     sitemap.add(config.homepage)
 
-    for name, item in tf2info.itemsbyname.items():
-        index = item['defindex']
-        itemdict = tf2search.createitemdict(index, tf2info)
+    for itemdict in tf2search.getitemsdict(tf2info):
+        name = itemdict['name']
+        index = itemdict['index']
 
-        if tf2search.isvalidresult(itemdict):
+        cache.hset(getitemkey(index), itemdict)
+        cache.sadd('items', index)
+
+        if (index == tf2info.itemsbyname[name]['defindex'] and
+                tf2search.isvalidresult(itemdict)):
             cache.sadd('items:indexes', index)
             cache.hset('items:names', {name: index})
 
@@ -54,14 +58,11 @@ def main():
 
             suggestions[0].append(name)
             suggestions[1].append('{} - {}'.format(
-                ', '.join(itemdict['classes']), ', '.join(itemdict['tags'])))
+                ', '.join(itemdict['classes']),
+                ', '.join(itemdict['tags'])))
             suggestions[2].append(path)
 
             sitemap.add(path)
-
-    for itemdict in tf2search.getitemsdict(tf2info):
-        cache.hset(getitemkey(itemdict['index']), itemdict)
-        cache.sadd('items', itemdict['index'])
 
     for index in tf2info.newstoreprices:
         cache.sadd('newitems', index)
