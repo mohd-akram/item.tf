@@ -2,12 +2,12 @@
 import os
 import time
 import random
-import json
 import logging
 
 from bottle import (get, error, request, response, redirect, static_file,
                     run, default_app)
 import jinja2
+import ujson
 
 import cache
 import config
@@ -27,7 +27,7 @@ def home():
     newitems = tuple(
         getitem(k) for k in cache.srandmember('newitems', 5))
 
-    return render('tf2.html',
+    return render('home.html',
                   homepage=config.homepage,
                   tags=tf2api.getalltags(),
                   newitems=newitems,
@@ -37,7 +37,7 @@ def home():
 
 @get('/<index:int><is_json:re:(\.json)?>')
 def item(index, is_json):
-    item = getitem(index).todict()
+    item = getitem(index)
 
     if not item:
         if is_json:
@@ -45,7 +45,7 @@ def item(index, is_json):
         return redirect('/')
 
     if is_json:
-        return tojson(item, indent=2)
+        return item
     else:
         desc_list = []
 
@@ -58,7 +58,7 @@ def item(index, is_json):
         if item['tags']:
             desc_list.append(', '.join(item['tags']).title())
 
-        return render('tf2item.html',
+        return render('item.html',
                       item=item,
                       description=' | '.join(desc_list))
 
@@ -99,11 +99,14 @@ def search(is_json):
                                itemsets, bundles, pricesource)
     t1 = time.time()
 
+    for result in results:
+        result['items'] = cache.Hashes(result['items'])
+
     count = sum(len(result['items']) for result in results)
     if is_json:
         return tojson(results)
     else:
-        return render('tf2results.html',
+        return render('search.html',
                       query=query,
                       results=results,
                       count=count,
@@ -157,20 +160,7 @@ def render(template, **params):
 def tojson(*args, **kwargs):
     response.set_header('Content-Type', 'application/json;charset=UTF-8')
 
-    class List(list):
-        """Wrapper for serializing iterables to JSON"""
-        def __init__(self, iter_):
-            self._iter = iter_
-
-        def __iter__(self):
-            return self._iter.__iter__()
-
-    def default(obj):
-        if isinstance(obj, cache.Hash):
-            return obj.todict()
-        return List(obj)
-
-    return json.dumps(*args, default=default, **kwargs)
+    return ujson.dumps(*args,  **kwargs)
 
 
 def getitemkey(index):
@@ -178,7 +168,7 @@ def getitemkey(index):
 
 
 def getitem(index):
-    return cache.Hash(getitemkey(index))
+    return cache.Hash(getitemkey(index)).todict()
 
 
 if __name__ == '__main__':

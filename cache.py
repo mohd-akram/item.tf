@@ -1,18 +1,41 @@
-import pickle
+import ujson
 from collections import OrderedDict
-from collections.abc import Mapping
+from collections.abc import Iterable, Sized, Mapping
 
 import redis
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
+_hgetall = r.register_script(
+    """
+    local hgetall = function (key)
+      local data = redis.call('HGETALL', key)
+      local hash = {}
+
+      for idx = 1, #data, 2 do
+        hash[data[idx]] = cjson.decode(data[idx + 1])
+      end
+
+      return hash
+    end
+
+    local hashes = {}
+
+    for i=1, #KEYS do
+      hashes[i] = hgetall(KEYS[i])
+    end
+
+    return cjson.encode(hashes)
+    """
+)
+
 
 def dumps(obj):
-    return pickle.dumps(obj)
+    return ujson.dumps(obj)
 
 
 def loads(s):
-    return pickle.loads(s)
+    return ujson.loads(s)
 
 
 def get(key):
@@ -32,7 +55,10 @@ def hget(key, field):
 
 
 def hgetall(key):
-    return {k.decode(): loads(v) for k, v in r.hgetall(key).items()}
+    if type(key) is str:
+        return {k.decode(): loads(v) for k, v in r.hgetall(key).items()}
+    else:
+        return loads(_hgetall(keys=key))
 
 
 def hset(key, value):
@@ -83,6 +109,22 @@ class Hash(Mapping):
         return hgetall(self.key)
 
 
+class Hashes(Iterable, Sized):
+    def __init__(self, hashes, bufsize=100):
+        self.keys = tuple(h.key for h in hashes)
+        self.bufsize = bufsize
+
+    def __iter__(self):
+        i = 0
+        while i < len(self.keys):
+            results = hgetall(self.keys[i:i + self.bufsize])
+            i += self.bufsize
+            yield from results
+
+    def __len__(self):
+        return len(self.keys)
+
+
 class HashSet(Mapping):
     def __init__(self, key, tokey, sortkey=None):
         self.key = key
@@ -117,16 +159,6 @@ class SearchHashSet(HashSet):
                 return self.cache[field]
             else:
                 return super().__getitem__(field)
-
-        def todict(self):
-            self.accesses += 1
-            if self.accesses <= 2:
-                d = super().todict()
-                if self.accesses == 2:
-                    self.cache = d
-                return d
-            else:
-                return self.cache
 
     def __init__(self, key, tokey, fields, sortkey=None):
         super().__init__(key, tokey, sortkey)

@@ -30,7 +30,7 @@
 <div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
 {% for item in items %}
-{{showitem(item.todict())}}
+{{showitem(item)}}
 {%- endfor %}
 </div>
 {% endmacro %}
