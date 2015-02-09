@@ -25,12 +25,12 @@
 {{length}} {{unit}}{% if length != 1 %}s{% endif %}
 {% endmacro %}
 
-{% macro showitems(itemslist, columns=10) %}
+{% macro showitems(items, columns=10) %}
 <div class="itemlist" style="width:{{columns * 108}}px">
 {% if columns == 10 %}
-<div style="color: gray; padding-bottom: 20px">{{getcount(itemslist | length, 'item')}}</div>
+<div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
-{% for item in itemslist %}
+{% for item in items %}
 {{showitem(item)}}
 {%- endfor %}
 </div>

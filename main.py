@@ -40,10 +40,12 @@ def item(index, is_json):
     item = getitem(index)
 
     if not item:
+        if is_json:
+            return {'error': 'Item does not exist.'}
         return redirect('/')
 
     if is_json:
-        return write_json(item.todict(), indent=2)
+        return tojson(item.todict(), indent=2)
     else:
         desc_list = []
 
@@ -66,7 +68,9 @@ def search(is_json):
     query = request.query.q
 
     if not query:
-        redirect('/')
+        if is_json:
+            return {'error': 'No query provided.'}
+        return redirect('/')
 
     elif query == 'random':
         item = getitem(cache.srandmember('items'))
@@ -79,7 +83,9 @@ def search(is_json):
 
     itemsdict = cache.SearchHashSet(
         'items', getitemkey,
-        ('index', 'name', 'classes', 'tags', 'marketprice'), lambda k: int(k))
+        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
+        lambda k: int(k))
+
     itemsets = cache.get('itemsets')
     bundles = cache.get('bundles')
 
@@ -96,7 +102,7 @@ def search(is_json):
 
     count = sum(len(result['items']) for result in results)
     if is_json:
-        return write_json(results)
+        return tojson(results)
     else:
         return render('tf2results.html',
                       query=query,
@@ -123,7 +129,7 @@ def suggest():
     else:
         suggestions[1:] = allsuggestions
 
-    return write_json(suggestions)
+    return tojson(suggestions)
 
 
 @get('/sitemap.xml')
@@ -149,7 +155,7 @@ def render(template, **params):
     return t.render(params)
 
 
-def write_json(*args, **kwargs):
+def tojson(*args, **kwargs):
     response.set_header('Content-Type', 'application/json;charset=UTF-8')
 
     class List(list):
@@ -160,7 +166,12 @@ def write_json(*args, **kwargs):
         def __iter__(self):
             return self._iter.__iter__()
 
-    return json.dumps(*args, default=lambda o: List(o), **kwargs)
+    def default(obj):
+        if isinstance(obj, cache.Hash):
+            return obj.todict()
+        return List(obj)
+
+    return json.dumps(*args, default=default, **kwargs)
 
 
 def getitemkey(index):

@@ -29,7 +29,7 @@ class Sitemap:
 
     def toxml(self):
         """Return a pretty XML version of the sitemap"""
-        return self.doc.toprettyxml(encoding='UTF-8')
+        return self.doc.toprettyxml()
 
 
 def main():

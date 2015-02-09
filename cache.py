@@ -7,32 +7,40 @@ import redis
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
+def dumps(obj):
+    return pickle.dumps(obj)
+
+
+def loads(s):
+    return pickle.loads(s)
+
+
 def get(key):
-    return pickle.loads(r.get(key))
+    return loads(r.get(key))
 
 
 def set(key, value=None):
     if type(key) is dict:
         for k, v in key.items():
-            r.set(k, pickle.dumps(v))
+            r.set(k, dumps(v))
     else:
-        return r.set(key, pickle.dumps(value))
+        return r.set(key, dumps(value))
 
 
 def hget(key, field):
-    return pickle.loads(r.hget(key, field))
+    return loads(r.hget(key, field))
 
 
 def hgetall(key):
-    return {k.decode(): pickle.loads(v) for k, v in r.hgetall(key).items()}
+    return {k.decode(): loads(v) for k, v in r.hgetall(key).items()}
 
 
 def hset(key, value):
     if len(value) == 1:
         k, v = tuple(value.items())[0]
-        return r.hset(key, k, pickle.dumps(v))
+        return r.hset(key, k, dumps(v))
     else:
-        return r.hmset(key, {k: pickle.dumps(v) for k, v in value.items()})
+        return r.hmset(key, {k: dumps(v) for k, v in value.items()})
 
 
 def hkeys(key):
@@ -129,8 +137,8 @@ class SearchHashSet(HashSet):
     def __getitem__(self, member):
         cache = {}
         for i in range(len(self.fields)):
-            cache[self.fields[i]] = pickle.loads(
-                self.result[self.hashes[member] + i])
+            cache[self.fields[i]] = loads(
+                self.result[self.hashes[str(member)] + i])
 
         return self.SearchHash(self.tokey(member), cache)
 
