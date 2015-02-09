@@ -110,12 +110,23 @@ class SearchHashSet(HashSet):
         def __init__(self, key, cache):
             super().__init__(key)
             self.cache = cache
+            self.accesses = 0
 
         def __getitem__(self, field):
             if field in self.cache:
                 return self.cache[field]
             else:
                 return super().__getitem__(field)
+
+        def todict(self):
+            self.accesses += 1
+            if self.accesses <= 2:
+                d = super().todict()
+                if self.accesses == 2:
+                    self.cache = d
+                return d
+            else:
+                return self.cache
 
     def __init__(self, key, tokey, fields, sortkey=None):
         super().__init__(key, tokey, sortkey)
