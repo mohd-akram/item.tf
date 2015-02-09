@@ -47,7 +47,8 @@ def main():
         itemdict = tf2search.createitemdict(index, tf2info)
 
         if tf2search.isvalidresult(itemdict):
-            cache.hset('itemnames', {name: index})
+            cache.sadd('items:indexes', index)
+            cache.hset('items:names', {name: index})
 
             path = '{0}/{1}'.format(config.homepage, index)
 

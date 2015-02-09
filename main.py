@@ -73,10 +73,10 @@ def search(is_json):
         return redirect('/')
 
     elif query == 'random':
-        item = getitem(cache.srandmember('items'))
-        return redirect('/{}'.format(item['index']))
+        index = cache.srandmember('items:indexes')
+        return redirect('/{}'.format(index))
 
-    itemnames = cache.Hash('itemnames')
+    itemnames = cache.Hash('items:names')
 
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
