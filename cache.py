@@ -153,5 +153,11 @@ class SearchHashSet(HashSet):
 
         return self.SearchHash(self.tokey(member), cache)
 
+    def __contains__(self, member):
+        return member in self.hashes
+
     def __iter__(self):
         yield from self.hashes
+
+    def __len__(self):
+        return len(self.hashes)

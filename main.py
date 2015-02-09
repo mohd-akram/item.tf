@@ -37,7 +37,7 @@ def home():
 
 @get('/<index:int><is_json:re:(\.json)?>')
 def item(index, is_json):
-    item = getitem(index)
+    item = getitem(index).todict()
 
     if not item:
         if is_json:
@@ -45,7 +45,7 @@ def item(index, is_json):
         return redirect('/')
 
     if is_json:
-        return tojson(item.todict(), indent=2)
+        return tojson(item, indent=2)
     else:
         desc_list = []
 
@@ -83,8 +83,7 @@ def search(is_json):
 
     itemsdict = cache.SearchHashSet(
         'items', getitemkey,
-        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
-        lambda k: int(k))
+        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
 
     itemsets = cache.get('itemsets')
     bundles = cache.get('bundles')

@@ -58,9 +58,11 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
 
 
 def getitemsdict(tf2info):
-    """Returns an iterator over all itemdicts"""
+    """Return an ordered dictionary with index as key and itemdict as value"""
+    itemsdict = OrderedDict()
     for idx in tf2info.items:
-        yield createitemdict(idx, tf2info)
+        itemsdict[idx] = createitemdict(idx, tf2info)
+    return itemsdict
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):

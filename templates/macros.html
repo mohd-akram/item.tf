@@ -1,5 +1,4 @@
 {% macro showitem(item, visible=True) %}
-{% set item = item.todict() %}
 {% set style = 'background-image: url("{}");'.format(item['image']) %}
 {% if not visible %}{% set style = style + 'display: none' %}{% endif %}
 <a href="/{{item['index']}}">
@@ -31,7 +30,7 @@
 <div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
 {% for item in items %}
-{{showitem(item)}}
+{{showitem(item.todict())}}
 {%- endfor %}
 </div>
 {% endmacro %}

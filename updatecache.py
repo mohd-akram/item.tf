@@ -42,9 +42,9 @@ def main():
     sitemap = Sitemap()
     sitemap.add(config.homepage)
 
-    for itemdict in tf2search.getitemsdict(tf2info):
+    for index in tf2info.items:
+        itemdict = tf2search.createitemdict(index, tf2info)
         name = itemdict['name']
-        index = itemdict['index']
 
         cache.hset(getitemkey(index), itemdict)
         cache.sadd('items', index)
