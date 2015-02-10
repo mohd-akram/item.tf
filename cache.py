@@ -1,4 +1,5 @@
 import ujson
+from collections import OrderedDict
 from collections.abc import Iterable, Sized, Mapping
 
 import redis
@@ -164,16 +165,22 @@ class SearchHashSet(HashSet):
             else:
                 return super().__getitem__(field)
 
-    def __init__(self, key, tokey, fields):
+    def __init__(self, key, tokey, fields, sortkey=None):
         super().__init__(key, tokey)
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
         self.result = r.sort(key, get=get)
 
-        self.hashes = {}
-        for i in range(0, len(self.result), len(fields) + 1):
-            self.hashes[self.result[i].decode()] = i + 1
+        hashes = []
+        for i in range(0, len(self.result), len(fields)+1):
+            hashes.append((self.result[i].decode(), i + 1))
+
+        if sortkey:
+            hashes.sort(key=lambda k: sortkey(k[0]))
+            self.hashes = OrderedDict(hashes)
+        else:
+            self.hashes = dict(hashes)
 
     def __getitem__(self, member):
         return self.SearchHash(self.tokey(member), member, self)

@@ -83,7 +83,7 @@ def search(is_json):
 
     itemsdict = cache.SearchHashSet(
         'items', getitemkey,
-        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'))
+        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
 
     itemsets = cache.get('itemsets')
     bundles = cache.get('bundles')
@@ -100,7 +100,6 @@ def search(is_json):
     t1 = time.time()
 
     for result in results:
-        result['items'].sort(key=lambda k: k['index'])
         result['items'] = cache.Hashes(result['items'])
 
     count = sum(len(result['items']) for result in results)
@@ -168,7 +167,7 @@ def getitemkey(index):
 
 
 def getitem(index):
-    return cache.Hash(getitemkey(index)).todict()
+    return cache.hgetall(getitemkey(index))
 
 
 if __name__ == '__main__':

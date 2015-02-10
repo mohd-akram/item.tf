@@ -120,7 +120,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
     elif query == 'all':
         # Get all the items in the schema as is
-        results = [_getsearchresult(items=list(itemsdict.values()))]
+        results = [_getsearchresult(items=itemsdict.values())]
 
     elif query == 'sets':
         # Get all the item sets and their items
