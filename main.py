@@ -83,7 +83,7 @@ def search(is_json):
 
     itemsdict = cache.SearchHashSet(
         'items', getitemkey,
-        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
+        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'))
 
     itemsets = cache.get('itemsets')
     bundles = cache.get('bundles')
@@ -100,6 +100,7 @@ def search(is_json):
     t1 = time.time()
 
     for result in results:
+        result['items'].sort(key=lambda k: k['index'])
         result['items'] = cache.Hashes(result['items'])
 
     count = sum(len(result['items']) for result in results)
@@ -159,7 +160,6 @@ def render(template, **params):
 
 def tojson(*args, **kwargs):
     response.set_header('Content-Type', 'application/json;charset=UTF-8')
-
     return ujson.dumps(*args,  **kwargs)
 
 

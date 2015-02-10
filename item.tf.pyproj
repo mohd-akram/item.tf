@@ -20,6 +20,7 @@
     <InterpreterPath />
     <InterpreterArguments />
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <Name>item.tf</Name>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />

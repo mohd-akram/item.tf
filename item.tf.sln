@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "tf2find", "tf2find.pyproj", "{C1228C2D-744F-4B43-B06D-02DBC6A3ADCE}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "item.tf", "item.tf.pyproj", "{C1228C2D-744F-4B43-B06D-02DBC6A3ADCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBC8E1D9-11A0-4DAA-BA99-A6F38EEF0DC6}"
 EndProject

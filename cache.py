@@ -1,5 +1,4 @@
 import ujson
-from collections import OrderedDict
 from collections.abc import Iterable, Sized, Mapping
 
 import redis
@@ -110,6 +109,8 @@ class Hash(Mapping):
 
 
 class Hashes(Iterable, Sized):
+    """This class enables buffered iteration over a list of hashes.
+    The hashes are returned as regular dicts."""
     def __init__(self, hashes, bufsize=100):
         self.keys = tuple(h.key for h in hashes)
         self.bufsize = bufsize
@@ -148,42 +149,34 @@ class HashSet(Mapping):
 
 
 class SearchHashSet(HashSet):
+    """This class optimizes search on a set of hashes by first obtaining
+    and storing all the fields necessary for search, allowing faster access
+    to them. Other fields are accessed as required from the cache."""
     class SearchHash(Hash):
-        def __init__(self, key, cache):
+        def __init__(self, key, member, set_):
             super().__init__(key)
-            self.cache = cache
-            self.accesses = 0
+            self.member = member
+            self.set_ = set_
 
         def __getitem__(self, field):
-            if field in self.cache:
-                return self.cache[field]
+            if field in self.set_.fields:
+                return self.set_._gethashfield(self, field)
             else:
                 return super().__getitem__(field)
 
-    def __init__(self, key, tokey, fields, sortkey=None):
-        super().__init__(key, tokey, sortkey)
+    def __init__(self, key, tokey, fields):
+        super().__init__(key, tokey)
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
         self.result = r.sort(key, get=get)
 
-        hashes = []
-        for i in range(0, len(self.result), len(fields)+1):
-            hashes.append((self.result[i].decode(), i + 1))
-
-        if sortkey:
-            hashes.sort(key=lambda k: sortkey(k[0]))
-            self.hashes = OrderedDict(hashes)
-        else:
-            self.hashes = dict(hashes)
+        self.hashes = {}
+        for i in range(0, len(self.result), len(fields) + 1):
+            self.hashes[self.result[i].decode()] = i + 1
 
     def __getitem__(self, member):
-        cache = {}
-        for i in range(len(self.fields)):
-            cache[self.fields[i]] = loads(
-                self.result[self.hashes[str(member)] + i])
-
-        return self.SearchHash(self.tokey(member), cache)
+        return self.SearchHash(self.tokey(member), member, self)
 
     def __contains__(self, member):
         return member in self.hashes
@@ -193,3 +186,7 @@ class SearchHashSet(HashSet):
 
     def __len__(self):
         return len(self.hashes)
+
+    def _gethashfield(self, hash_, field):
+        i = self.hashes[hash_.member] + self.fields.index(field)
+        return loads(self.result[i])
