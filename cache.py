@@ -1,8 +1,8 @@
-import ujson
 from collections import OrderedDict
 from collections.abc import Iterable, Sized, Mapping
 
 import redis
+import ujson
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
@@ -183,10 +183,10 @@ class SearchHashSet(HashSet):
             self.hashes = dict(hashes)
 
     def __getitem__(self, member):
-        return self.SearchHash(self.tokey(member), member, self)
+        return self.SearchHash(self.tokey(member), str(member), self)
 
     def __contains__(self, member):
-        return member in self.hashes
+        return str(member) in self.hashes
 
     def __iter__(self):
         yield from self.hashes
