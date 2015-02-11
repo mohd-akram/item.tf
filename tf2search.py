@@ -1,4 +1,4 @@
-﻿
+
 # coding: utf-8
 
 """A module for parsing a query and searching for TF2 items
@@ -21,6 +21,19 @@ import json
 from collections import namedtuple, defaultdict, OrderedDict
 
 import tf2api
+
+
+DENOMREGEX = (r'((?:earb|b)uds?|'
+              'keys?|'
+              'ref(?:ined|s)?|'
+              'rec(?:laimed|s)?|'
+              'scraps?|'
+              'wea?p(?:on)?s?)')
+
+PRICEREGEX = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(DENOMREGEX))
+
+QUALITYREGEX = r'({}|dirty|uncraft(?:able)?)'.format(
+    '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
 
 def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
@@ -81,25 +94,10 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     # Check if searching for an item set
     itemsetmatch = re.match(r'(.+) [sS]et$', query)
 
-    # Check if searching by price or using price visualization
-    denomregex = (r'((?:earb|b)uds?|'
-                  'keys?|'
-                  'ref(?:ined|s)?|'
-                  'rec(?:laimed|s)?|'
-                  'scraps?|'
-                  'wea?p(?:on)?s?)')
-
-    priceregex = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(denomregex))
-
-    qualityregex = r'({}|dirty|uncraft(?:able)?)'.format(
-        '|'.join(i.lower() for i in tf2api.getallqualities().values()))
-
-    pricevizmatch = re.match(r'{}(?: to {})?$'.format(priceregex, denomregex),
-                             query.lower())
-
+    # Check if searching by price
     # Matches this - {quality}{{criteria}{amount}{denom}} {classes|tags}
     pricematch = re.match(r'{}?(?: ?(<|>|=)? ?{})?((?: [a-z]+)*)$'.format(
-        qualityregex, priceregex), query.lower()) if query else None
+        QUALITYREGEX, PRICEREGEX), query.lower()) if query else None
 
     # Get classes and tags in price search, if any
     if pricematch:
@@ -130,21 +128,6 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
             result = _itemsetsearch(query, itemsets, nametoindexmap, itemsdict)
 
         results = [result] if result else []
-
-    elif pricevizmatch:
-        amount = float(pricevizmatch.group(1))
-        denom = _getdenom(pricevizmatch.group(2))
-        todenom = _getdenom(pricevizmatch.group(3) or '')
-
-        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict,
-                                         pricesource)
-
-        titlelist = [_getpricestring(v, k)
-                     for k, v in counts.items()]
-
-        title = ' + '.join(titlelist)
-
-        results = [getsearchresult(title, 'price', items)] if items else []
 
     elif pricematch:
         quality = (pricematch.group(1) or 'unique').capitalize()
@@ -181,6 +164,27 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     return results
 
 
+def visualizeprice(query, itemsdict, pricesource):
+    query = _parseinput(query)['query']
+    pricevizmatch = re.match(r'{}(?: to {})?$'.format(PRICEREGEX, DENOMREGEX),
+                             query.lower())
+
+    if pricevizmatch:
+        amount = float(pricevizmatch.group(1))
+        denom = _getdenom(pricevizmatch.group(2))
+        todenom = _getdenom(pricevizmatch.group(3) or '')
+
+        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict,
+                                         pricesource)
+
+        titlelist = [_getpricestring(v, k)
+                     for k, v in counts.items()]
+
+        title = ' + '.join(titlelist)
+
+        return [getsearchresult(title, 'price', items)] if items else []
+
+
 def createitemdict(index, tf2info):
     """Take a TF2 item and return a custom dict with a limited number of
     keys that are used for search"""
@@ -197,7 +201,7 @@ def createitemdict(index, tf2info):
     tags = tf2api.getitemtags(item)
     # Sort blueprints by crafting chance
     blueprint = sorted(tf2info.blueprints[index],
-        key=lambda k: k['chance'], reverse=True)
+                       key=lambda k: k['chance'], reverse=True)
 
     description = ''
     if 'bundle' in tags and storeprice:

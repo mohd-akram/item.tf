@@ -1,4 +1,4 @@
-﻿
+
 # coding: utf-8
 
 """This module is based on the Steam WebAPI and can be used to get information
@@ -115,9 +115,9 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     url = ('http://backpack.tf/api/IGetPrices/v4/'
            '?key={}&compress=1'.format(apikey))
 
+    r = Request(url, headers={'User-Agent': 'tf2api'})
     pricesdata = json.loads(
-        urlopen(Request(url, headers={'User-Agent':'tf2api'}), timeout=timeout)
-        .read().decode())['response']['items']
+        urlopen(r, timeout=timeout).read().decode())['response']['items']
 
     pricesdict = defaultdict(dict)
 

@@ -3,6 +3,7 @@ import os
 import time
 import random
 import logging
+from collections import Counter
 
 from bottle import (get, error, request, response, redirect, static_file,
                     run, default_app)
@@ -83,27 +84,39 @@ def search(is_json):
 
     t0 = time.time()
 
+    items = cache.HashSet('items', getitemkey, int)
+
     if query == 'all':
-        items = cache.Hashes(cache.HashSet('items', getitemkey, int).values())
+        items = cache.Hashes(items.values())
         results = [tf2search.getsearchresult(items=items)]
     else:
-        itemsdict = cache.SearchHashSet(
-            'items', getitemkey,
-            ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
-
-        itemsets = cache.get('itemsets')
-        bundles = cache.get('bundles')
-
         sources = ('backpack.tf', 'trade.tf')
         pricesource = request.get_cookie('price_source')
         if pricesource not in sources:
             pricesource = sources[0]
 
-        results = tf2search.search(query, itemsdict, itemnames,
-                                   itemsets, bundles, pricesource)
+        results = tf2search.visualizeprice(query, items, pricesource)
 
-        for result in results:
-            result['items'] = cache.Hashes(result['items'])
+        if results is not None:
+            items = []
+            for item, count in Counter(results[0]['items']).items():
+                items.extend([item.todict()] * count)
+            results[0]['items'] = items
+
+        else:
+            itemsdict = cache.SearchHashSet(
+                'items', getitemkey,
+                ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
+                int)
+
+            itemsets = cache.get('itemsets')
+            bundles = cache.get('bundles')
+
+            results = tf2search.search(query, itemsdict, itemnames,
+                                       itemsets, bundles, pricesource)
+
+            for result in results:
+                result['items'] = cache.Hashes(result['items'])
 
     t1 = time.time()
 

@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from collections.abc import Iterable, Sized, Mapping
+from collections.abc import Hashable, Iterable, Sized, Mapping
 
 import redis
 import ujson
@@ -89,9 +89,12 @@ def srandmember(*args, **kwargs):
         return members.decode()
 
 
-class Hash(Mapping):
+class Hash(Hashable, Mapping):
     def __init__(self, key):
         self.key = key
+
+    def __hash__(self):
+        return hash(self.key)
 
     def __getitem__(self, field):
         return hget(self.key, field)
