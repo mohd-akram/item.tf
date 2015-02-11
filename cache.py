@@ -12,8 +12,8 @@ _hgetall = r.register_script(
       local data = redis.call('HGETALL', key)
       local hash = {}
 
-      for idx = 1, #data, 2 do
-        hash[data[idx]] = cjson.decode(data[idx + 1])
+      for i = 1, #data, 2 do
+        hash[data[i]] = cjson.decode(data[i + 1])
       end
 
       return hash
@@ -21,7 +21,7 @@ _hgetall = r.register_script(
 
     local hashes = {}
 
-    for i=1, #KEYS do
+    for i = 1, #KEYS do
       hashes[i] = hgetall(KEYS[i])
     end
 
