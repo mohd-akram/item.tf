@@ -68,7 +68,7 @@ def getitemsdict(tf2info):
 def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     """This method parses the query using _parseinput and gets all the
     items that match it. It returns a list of dicts obtained from
-    _getsearchresult"""
+    getsearchresult"""
     input_ = _parseinput(query)
     query = input_['query']
     querylist = input_['querylist']
@@ -118,10 +118,6 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     if classes or tags:
         results = _classtagsearch(classes, tags, itemsdict)
 
-    elif query == 'all':
-        # Get all the items in the schema as is
-        results = [_getsearchresult(items=itemsdict.values())]
-
     elif query == 'sets':
         # Get all the item sets and their items
         results = _itemsetsearch(None, itemsets, nametoindexmap, itemsdict)
@@ -148,7 +144,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
         title = ' + '.join(titlelist)
 
-        results = [_getsearchresult(title, 'price', items)] if items else []
+        results = [getsearchresult(title, 'price', items)] if items else []
 
     elif pricematch:
         quality = (pricematch.group(1) or 'unique').capitalize()
@@ -159,7 +155,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
         denom = _getdenom(pricematch.group(4) or '')
 
         if not (priceclasses or pricetags):
-            results = [_getsearchresult(items=itemsdict.values())]
+            results = [getsearchresult(items=itemsdict.values())]
 
         _pricefilter(quality, criteria, amount, denom, results, pricesource)
 
@@ -171,7 +167,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
             if index in itemsdict:
                 items.append(itemsdict[index])
 
-        results = [_getsearchresult(items=items)] if items else []
+        results = [getsearchresult(items=items)] if items else []
 
     else:
         # Regular word search
@@ -314,7 +310,7 @@ def _classtagsearch(classes, tags, itemsdict):
                     results[titles[2]].append(itemdict)
                 names.add(name)
 
-    results = [_getsearchresult(title, items=items)
+    results = [getsearchresult(title, items=items)
                for title, items in results.items()]
 
     results.sort(key=lambda k: titles.index(k['title']))
@@ -352,7 +348,7 @@ def _wordsearch(query, querylist, itemsdict):
                 names.add(name)
 
     if items:
-        return _getsearchresult(
+        return getsearchresult(
             items=_getsorteditemlist(items, querylist, query))
 
 
@@ -361,7 +357,7 @@ def _bundlesearch(query, bundles, nametoindexmap, itemsdict):
     for bundle in bundles.values():
         if bundle['name'].lower() == query:
             items = _getbundleitems(bundle, nametoindexmap, itemsdict)
-            return _getsearchresult(bundle['name'], 'bundle', items)
+            return getsearchresult(bundle['name'], 'bundle', items)
 
 
 def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
@@ -380,7 +376,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
     for setname, itemset in itemsets.items():
         if isresult(setname):
             items = _getsetitems(itemset, nametoindexmap, itemsdict)
-            result = _getsearchresult(setname, 'set', items)
+            result = getsearchresult(setname, 'set', items)
             if getall:
                 results.append(result)
             else:
@@ -440,7 +436,7 @@ def _pricefilter(quality, criteria, amount, denom, results, pricesource):
     results[:] = [result for result in results if result]
 
 
-def _getsearchresult(title='', type='', items=None):
+def getsearchresult(title='', type='', items=None):
     """Return a dict containing a group of items used for search results"""
     return {'title': title, 'type': type, 'items': items or []}
 

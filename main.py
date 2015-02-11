@@ -81,35 +81,39 @@ def search(is_json):
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
 
-    itemsdict = cache.SearchHashSet(
-        'items', getitemkey,
-        ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
-
-    itemsets = cache.get('itemsets')
-    bundles = cache.get('bundles')
-
-    pricesource = request.get_cookie('price_source')
-
-    sources = ('backpack.tf', 'trade.tf')
-    if pricesource not in sources:
-        pricesource = sources[0]
-
     t0 = time.time()
-    results = tf2search.search(query, itemsdict, itemnames,
-                               itemsets, bundles, pricesource)
+
+    if query == 'all':
+        items = cache.Hashes(cache.HashSet('items', getitemkey, int).values())
+        results = [tf2search.getsearchresult(items=items)]
+    else:
+        itemsdict = cache.SearchHashSet(
+            'items', getitemkey,
+            ('index', 'name', 'image', 'classes', 'tags', 'marketprice'), int)
+
+        itemsets = cache.get('itemsets')
+        bundles = cache.get('bundles')
+
+        sources = ('backpack.tf', 'trade.tf')
+        pricesource = request.get_cookie('price_source')
+        if pricesource not in sources:
+            pricesource = sources[0]
+
+        results = tf2search.search(query, itemsdict, itemnames,
+                                   itemsets, bundles, pricesource)
+
+        for result in results:
+            result['items'] = cache.Hashes(result['items'])
+
     t1 = time.time()
 
-    for result in results:
-        result['items'] = cache.Hashes(result['items'])
-
-    count = sum(len(result['items']) for result in results)
     if is_json:
         return tojson(results)
     else:
         return render('search.html',
                       query=query,
                       results=results,
-                      count=count,
+                      count=sum(len(result['items']) for result in results),
                       time=round(t1 - t0, 3))
 
 
