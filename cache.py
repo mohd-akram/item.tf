@@ -176,7 +176,7 @@ class SearchHashSet(HashSet):
         self.result = r.sort(key, get=get)
 
         hashes = []
-        for i in range(0, len(self.result), len(fields)+1):
+        for i in range(0, len(self.result), len(fields) + 1):
             hashes.append((self.result[i].decode(), i + 1))
 
         if sortkey:

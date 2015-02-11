@@ -79,7 +79,7 @@ def getitemsdict(tf2info):
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
-    """This method parses the query using _parseinput and gets all the
+    """This function parses the query using _parseinput and gets all the
     items that match it. It returns a list of dicts obtained from
     getsearchresult"""
     input_ = _parseinput(query)
@@ -165,6 +165,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
 
 def visualizeprice(query, itemsdict, pricesource):
+    """Return a list of items representing a price if parsed from the query"""
     query = _parseinput(query)['query']
     pricevizmatch = re.match(r'{}(?: to {})?$'.format(PRICEREGEX, DENOMREGEX),
                              query.lower())
@@ -174,11 +175,11 @@ def visualizeprice(query, itemsdict, pricesource):
         denom = _getdenom(pricevizmatch.group(2))
         todenom = _getdenom(pricevizmatch.group(3) or '')
 
-        items, counts = _getpriceasitems(amount, denom, todenom, itemsdict,
-                                         pricesource)
+        items = _getpriceasitems(amount, denom, todenom,
+                                 itemsdict, pricesource)
 
-        titlelist = [_getpricestring(v, k)
-                     for k, v in counts.items()]
+        titlelist = [_getpricestring(item['count'], item['denom'])
+                     for item in items]
 
         title = ' + '.join(titlelist)
 
@@ -250,6 +251,11 @@ def createitemdict(index, tf2info):
                 '/images/paints/Paint_Can_{}.png'.format(paintvalue))
 
     return itemdict
+
+
+def getsearchresult(title='', type='', items=None):
+    """Return a dict containing a group of items used for search results"""
+    return {'title': title, 'type': type, 'items': items or []}
 
 
 def isvalidresult(itemdict, strict=True):
@@ -440,11 +446,6 @@ def _pricefilter(quality, criteria, amount, denom, results, pricesource):
     results[:] = [result for result in results if result]
 
 
-def getsearchresult(title='', type='', items=None):
-    """Return a dict containing a group of items used for search results"""
-    return {'title': title, 'type': type, 'items': items or []}
-
-
 def _getsetitems(itemset, nametoindexmap, itemsdict):
     """Get a list of the items in an item set"""
     setitems = []
@@ -491,7 +492,6 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
     """Return a list of itemdicts that visualize a given price and a dict
     with the count of each item."""
     items = []
-    counts = OrderedDict()
 
     if denom in ('Refined', 'Reclaimed'):
         # Allow common values such as 0.66 and 1.33
@@ -520,13 +520,14 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
             count = int(round(amount, 10))
 
             if count:
-                items.extend([itemsdict[denomtoidx[d]]] * count)
-                counts[d] = count
+                items.append({'item': itemsdict[denomtoidx[d]],
+                              'denom': d,
+                              'count': count})
 
             if i + 1 < len(denoms):
                 amount = (amount - count) * denomtable[d][denoms[i + 1]]
 
-    return items, counts
+    return items
 
 
 def _getpricestring(amount, denom):

@@ -3,7 +3,6 @@ import os
 import time
 import random
 import logging
-from collections import Counter
 
 from bottle import (get, error, request, response, redirect, static_file,
                     run, default_app)
@@ -98,10 +97,14 @@ def search(is_json):
         results = tf2search.visualizeprice(query, items, pricesource)
 
         if results is not None:
-            items = []
-            for item, count in Counter(results[0]['items']).items():
-                items.extend([item.todict()] * count)
-            results[0]['items'] = items
+            for item in results[0]['items']:
+                item['item'] = item['item'].todict()
+
+            if not is_json:
+                items = []
+                for item in results[0]['items']:
+                    items.extend([item['item']] * item['count'])
+                results[0]['items'] = items
 
         else:
             itemsdict = cache.SearchHashSet(
