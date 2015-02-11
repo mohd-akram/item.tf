@@ -97,14 +97,15 @@ def search(is_json):
         results = tf2search.visualizeprice(query, items, pricesource)
 
         if results is not None:
-            for item in results[0]['items']:
-                item['item'] = item['item'].todict()
-
-            if not is_json:
-                items = []
+            if results:
                 for item in results[0]['items']:
-                    items.extend([item['item']] * item['count'])
-                results[0]['items'] = items
+                    item['item'] = item['item'].todict()
+
+                if not is_json:
+                    items = []
+                    for item in results[0]['items']:
+                        items.extend([item['item']] * item['count'])
+                    results[0]['items'] = items
 
         else:
             itemsdict = cache.SearchHashSet(
