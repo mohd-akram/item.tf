@@ -74,7 +74,7 @@ def search(is_json):
 
     elif query == 'random':
         index = cache.srandmember('items:indexes')
-        return redirect('/{}'.format(index))
+        return redirect('/{}{}'.format(index, is_json))
 
     itemnames = cache.Hash('items:names')
 
