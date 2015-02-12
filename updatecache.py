@@ -6,7 +6,7 @@ import cache
 import config
 import tf2search
 
-from main import getitemkey
+from main import getitemkey, getclasskey, gettagkey
 
 
 class Sitemap:
@@ -49,19 +49,34 @@ def main():
         cache.hset(getitemkey(index), itemdict)
         cache.sadd('items', index)
 
-        if (index == tf2info.itemsbyname[name]['defindex'] and
-                tf2search.isvalidresult(itemdict)):
-            cache.hset('items:names', {name: index})
+        classes = itemdict['classes']
+        tags = itemdict['tags']
 
-            path = '{0}/{1}'.format(config.homepage, index)
+        if index == tf2info.itemsbyname[name]['defindex']:
+            if tf2search.isvalidresult(itemdict, False):
+                if not classes:
+                    cache.sadd(getclasskey(), index)
+                if len(classes) > 1:
+                    cache.sadd(getclasskey(multi=True), index)
+                if not tags:
+                    cache.sadd(gettagkey(), index)
+                for class_ in classes:
+                    cache.sadd(getclasskey(class_), index)
+                for tag in tags:
+                    cache.sadd(gettagkey(tag), index)
 
-            suggestions[0].append(name)
-            suggestions[1].append('{} - {}'.format(
-                ', '.join(itemdict['classes']),
-                ', '.join(itemdict['tags'])))
-            suggestions[2].append(path)
+            if tf2search.isvalidresult(itemdict):
+                cache.hset('items:names', {name: index})
 
-            sitemap.add(path)
+                path = '{0}/{1}'.format(config.homepage, index)
+
+                suggestions[0].append(name)
+                suggestions[1].append('{} - {}'.format(
+                    ', '.join(itemdict['classes']),
+                    ', '.join(itemdict['tags'])))
+                suggestions[2].append(path)
+
+                sitemap.add(path)
 
     for index in tf2info.newstoreprices:
         cache.sadd('newitems', index)
