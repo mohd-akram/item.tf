@@ -50,6 +50,10 @@ def set(key, value=None):
         return r.set(key, dumps(value))
 
 
+def exists(*args, **kwargs):
+    return r.exists(*args, **kwargs)
+
+
 def hget(key, field):
     return loads(r.hget(key, field))
 
@@ -89,6 +93,22 @@ def srandmember(*args, **kwargs):
         return members.decode()
 
 
+def lrange(*args, **kwargs):
+    return (e.decode() for e in r.lrange(*args, **kwargs))
+
+
+def sort(*args, **kwargs):
+    result = r.sort(*args, **kwargs)
+    if type(result) is int:
+        return result
+    else:
+        return (x.decode() for x in result)
+
+
+def pipeline(*args, **kwargs):
+    return r.pipeline(*args, **kwargs)
+
+
 class Hash(Hashable, Mapping):
     def __init__(self, key):
         self.key = key
@@ -115,8 +135,8 @@ class Hash(Hashable, Mapping):
 class Hashes(Iterable, Sized):
     """This class enables buffered iteration over a list of hashes.
     The hashes are returned as regular dicts."""
-    def __init__(self, hashes, bufsize=100):
-        self.keys = tuple(h.key for h in hashes)
+    def __init__(self, keys, bufsize=100):
+        self.keys = keys
         self.bufsize = bufsize
 
     def __iter__(self):

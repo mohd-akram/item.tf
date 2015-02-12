@@ -83,10 +83,9 @@ def search(is_json):
 
     t0 = time.time()
 
-    items = cache.HashSet('items', getitemkey, int)
-
     if query == 'all':
-        items = cache.Hashes(items.values())
+        items = cache.Hashes(
+            [getitemkey(k) for k in cache.sort('items')])
         results = [tf2search.getsearchresult(items=items)]
     else:
         sources = ('backpack.tf', 'trade.tf')
@@ -94,10 +93,15 @@ def search(is_json):
         if pricesource not in sources:
             pricesource = sources[0]
 
+        items = cache.HashSet('items', getitemkey)
         results = tf2search.visualizeprice(query, items, pricesource)
 
+        input_ = tf2search._parseinput(query)
+        classes = input_['classes']
+        tags = input_['tags']
+
         if results is not None:
-            if results:
+            if len(results) != 0:
                 for item in results[0]['items']:
                     item['item'] = item['item'].todict()
 
@@ -106,6 +110,9 @@ def search(is_json):
                     for item in results[0]['items']:
                         items.extend([item['item']] * item['count'])
                     results[0]['items'] = items
+
+        elif classes or tags:
+            results = getresults(classes, tags)
 
         else:
             itemsdict = cache.SearchHashSet(
@@ -120,7 +127,8 @@ def search(is_json):
                                        itemsets, bundles, pricesource)
 
             for result in results:
-                result['items'] = cache.Hashes(result['items'])
+                result['items'] = cache.Hashes(
+                    [h.key for h in result['items']])
 
     t1 = time.time()
 
@@ -183,12 +191,79 @@ def tojson(*args, **kwargs):
     return ujson.dumps(*args,  **kwargs)
 
 
-def getitemkey(index):
-    return 'item:{}'.format(index)
+def getresults(classes, tags):
+    key = getsearchkey(classes, tags)
+    multikey = getsearchkey(classes, tags, 'Multi')
+    allkey = getsearchkey(classes, tags, 'All')
+
+    keys = (key, multikey, allkey)
+    titles = ('', 'Multi-Class Items', 'All-Class Items')
+
+    if not cache.exists(key):
+        classkeys = [getclasskey(class_) for class_ in classes] or 'items'
+        tagkeys = [gettagkey(tag) for tag in tags] or 'items'
+
+        classeskey = getsearchkey(classes=classes)
+        tagskey = getsearchkey(tags=tags)
+
+        pipe = cache.pipeline()
+
+        pipe.sunionstore(classeskey, classkeys)
+        pipe.sunionstore(tagskey, tagkeys)
+
+        remove = []
+        # Remove tokens when searching for weapons
+        if 'weapon' in tags and not tags.isdisjoint(tf2api.getweapontags()):
+            remove.append(gettagkey('token'))
+        # Hide medals if not explicitly searching for them
+        if 'tournament' not in tags:
+            remove.append(gettagkey('tournament'))
+        if remove:
+            pipe.sdiffstore(tagskey, [tagskey] + remove)
+
+        pipe.sinterstore(key, [classeskey, tagskey])
+        pipe.sinterstore(multikey, [key, getclasskey(multi=True)])
+        pipe.sinterstore(allkey, [tagskey, getclasskey()])
+        pipe.sdiffstore(key, [key, multikey, allkey])
+
+        for k in keys + (classeskey, tagskey):
+            pipe.sort(k, store=k)
+
+        pipe.execute()
+
+    getkeys = lambda key: [getitemkey(k) for k in cache.lrange(key, 0, -1)]
+
+    results = []
+    for title, key in zip(titles, keys):
+        itemkeys = getkeys(key)
+        if itemkeys:
+            results.append(tf2search.getsearchresult(
+                title=title, items=cache.Hashes(itemkeys)))
+
+    return results
+
+
+def getsearchkey(classes=None, tags=None, type_=''):
+    concat = lambda l: ','.join(sorted(l)) if l else '*'
+    return 'items:search:classes={}:tags={}:{}'.format(concat(classes),
+                                                       concat(tags), type_)
+
+
+def getclasskey(class_=None, multi=False):
+    class_ = 'Multi' if multi else (class_ or 'All')
+    return 'items:class:{}'.format(class_)
+
+
+def gettagkey(tag=None):
+    return 'items:tag:{}'.format(tag or 'none')
 
 
 def getitem(index):
     return cache.hgetall(getitemkey(index))
+
+
+def getitemkey(index):
+    return 'item:{}'.format(index)
 
 
 if __name__ == '__main__':
