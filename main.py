@@ -199,12 +199,12 @@ def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = ('', 'Multi-Class Items', 'All-Class Items')
 
-    if not cache.exists(key):
+    if not cache.exists(key) and not cache.exists(allkey):
         classkeys = [getclasskey(class_) for class_ in classes] or 'items'
         tagkeys = [gettagkey(tag) for tag in tags] or 'items'
 
-        classeskey = getsearchkey(classes=classes)
-        tagskey = getsearchkey(tags=tags)
+        classeskey = 'temp:classes'
+        tagskey = 'temp:tags'
 
         pipe = cache.pipeline()
 
@@ -226,7 +226,10 @@ def getresults(classes, tags):
         pipe.sinterstore(allkey, [tagskey, getclasskey()])
         pipe.sdiffstore(key, [key, multikey, allkey])
 
-        for k in keys + (classeskey, tagskey):
+        pipe.delete(classeskey)
+        pipe.delete(tagskey)
+
+        for k in keys:
             pipe.sort(k, store=k)
 
         pipe.execute()
