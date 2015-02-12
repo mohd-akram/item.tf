@@ -255,8 +255,9 @@ def getweapontags():
 
 def getalltags():
     """Return all item tags"""
-    return (('cosmetic', 'hat', 'misc', 'weapon', 'tool', 'action', 'taunt',
-             'paint', 'token', 'bundle', 'tournament') + getweapontags())
+    return (('weapon', 'cosmetic', 'hat', 'misc', 'tournament',
+             'action', 'taunt', 'tool', 'paint', 'craft', 'token', 'bundle')
+             + getweapontags())
 
 
 def getallclasses():
@@ -365,6 +366,9 @@ def getitemtags(item):
     if itemclass == 'bundle':
         tags.append(itemclass)
 
+    elif itemclass == 'craft_item':
+        tags.append('craft')
+
     elif itemclass.endswith('_token'):
         tags.append('token')
 
@@ -376,6 +380,8 @@ def getitemtags(item):
 
         if slot == 'misc':
             tags.append('cosmetic')
+        elif slot == 'taunt':
+            tags.append('action')
 
         if itemtypename in ('#TF_Wearable_Hat', 'Hat', 'Mask',
                             'Holiday Hat', 'Headset', 'Hair'):
