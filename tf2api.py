@@ -380,8 +380,6 @@ def getitemtags(item):
 
         if slot == 'misc':
             tags.append('cosmetic')
-        elif slot == 'taunt':
-            tags.append('action')
 
         if itemtypename in ('#TF_Wearable_Hat', 'Hat', 'Mask',
                             'Holiday Hat', 'Headset', 'Hair'):
