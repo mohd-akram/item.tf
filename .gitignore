@@ -164,4 +164,5 @@ pip-log.txt
 
 config.py
 logs
+backups
 ~*
