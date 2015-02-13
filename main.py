@@ -231,6 +231,7 @@ def getresults(classes, tags):
 
         for k in keys:
             pipe.sort(k, store=k)
+            pipe.expire(k, 3600)
 
         pipe.execute()
 
