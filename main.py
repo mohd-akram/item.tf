@@ -183,7 +183,7 @@ def error500(error):
 def render(template, **params):
     """Render HTML template"""
     t = jinja_env.get_template(template)
-    return t.render(params)
+    return t.stream(params)
 
 
 def tojson(*args, **kwargs):
