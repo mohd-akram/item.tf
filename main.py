@@ -135,13 +135,11 @@ def search(is_json):
     if is_json:
         return tojson(results)
     else:
-        count = sum(len(result['items']) for result in results)
-        page = stream if count > 100 else render
-        return page('search.html',
-                    query=query,
-                    results=results,
-                    count=count,
-                    time=round(t1 - t0, 3))
+        return render('search.html',
+                      query=query,
+                      results=results,
+                      count=sum(len(result['items']) for result in results),
+                      time=round(t1 - t0, 3))
 
 
 @get('/suggest')
@@ -186,12 +184,6 @@ def render(template, **params):
     """Render HTML template"""
     t = jinja_env.get_template(template)
     return t.render(params)
-
-
-def stream(template, **params):
-    """Stream HTML template"""
-    t = jinja_env.get_template(template)
-    return t.stream(params)
 
 
 def tojson(*args, **kwargs):
