@@ -200,24 +200,27 @@ def getresults(classes, tags):
     titles = ('', 'Multi-Class Items', 'All-Class Items')
 
     if not cache.exists(key) and not cache.exists(allkey):
-        classkeys = [getclasskey(class_) for class_ in classes] or 'items'
-        tagkeys = [gettagkey(tag) for tag in tags] or 'items'
-
         classeskey = 'temp:classes'
         tagskey = 'temp:tags'
+        remove = []
 
         pipe = cache.pipeline()
 
+        classkeys = [getclasskey(class_) for class_ in classes] or 'items'
         pipe.sunionstore(classeskey, classkeys)
+
+        # Get only the specified weapon types
+        if 'weapon' in tags and not tags.isdisjoint(tf2api.getweapontags()):
+            tags.remove('weapon')
+            remove.append(gettagkey('token'))
+
+        tagkeys = [gettagkey(tag) for tag in tags] or 'items'
         pipe.sunionstore(tagskey, tagkeys)
 
-        remove = []
-        # Remove tokens when searching for weapons
-        if 'weapon' in tags and not tags.isdisjoint(tf2api.getweapontags()):
-            remove.append(gettagkey('token'))
         # Hide medals if not explicitly searching for them
         if 'tournament' not in tags:
             remove.append(gettagkey('tournament'))
+
         if remove:
             pipe.sdiffstore(tagskey, [tagskey] + remove)
 
