@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import time
 from xml.dom.minidom import getDOMImplementation
 
@@ -32,10 +33,15 @@ class Sitemap:
         return self.doc.toprettyxml()
 
 
-def main():
+def main(flush):
     tf2info = tf2search.gettf2info(config.apikey,
                                    config.backpackkey, config.tradekey,
                                    config.blueprintsfile)
+
+    if flush:
+        cache.delete('items')
+        cache.delete_all('items:*')
+        cache.delete_all('item:*')
 
     suggestions = [[], [], []]
 
@@ -84,15 +90,16 @@ def main():
         pipe.execute()
 
     for index in tf2info.newstoreprices:
-        cache.sadd('newitems', index)
+        cache.sadd('items:new', index)
 
-    data = {'itemsets': tf2info.itemsets,
-            'bundles': tf2info.bundles,
-            'suggestions': suggestions,
-            'sitemap': sitemap.toxml(),
-            'lastupdated': time.time()}
+    data = {'items:sets': tf2info.itemsets,
+            'items:bundles': tf2info.bundles,
+            'items:suggestions': suggestions,
+            'items:lastupdated': time.time(),
+            'sitemap': sitemap.toxml()}
 
     cache.set(data)
 
 if __name__ == '__main__':
-    main()
+    flush = len(sys.argv) == 2 and sys.argv[1] == '-f'
+    main(flush)

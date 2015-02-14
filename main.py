@@ -20,13 +20,14 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 cache = Redis(host='localhost', port=6379, db=0)
 
+
 @get('/')
 def home():
-    t0 = cache.get('lastupdated')
+    t0 = cache.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
     newitems = tuple(
-        getitem(k) for k in cache.srandmember('newitems', 5))
+        getitem(k) for k in cache.srandmember('items:new', 5))
 
     return render('home.html',
                   homepage=config.homepage,
@@ -121,8 +122,8 @@ def search(is_json):
                 ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
                 int)
 
-            itemsets = cache.get('itemsets')
-            bundles = cache.get('bundles')
+            itemsets = cache.get('items:sets')
+            bundles = cache.get('items:bundles')
 
             results = tf2search.search(query, itemsdict, itemnames,
                                        itemsets, bundles, pricesource)
@@ -147,7 +148,7 @@ def search(is_json):
 def suggest():
     query = request.query.q
 
-    allsuggestions = cache.get('suggestions')
+    allsuggestions = cache.get('items:suggestions')
     suggestions = [query, [], [], []]
 
     if query:
