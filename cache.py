@@ -9,6 +9,10 @@ def dumps(obj):
     return ujson.dumps(obj)
 
 
+def mdumps(d):
+    return {k: dumps(v) for k, v in d.items()}
+
+
 def loads(s):
     return ujson.loads(s)
 
@@ -44,8 +48,7 @@ class Redis(StrictRedis):
 
     def set(self, key, value=None):
         if type(key) is dict:
-            for k, v in key.items():
-                super().set(k, dumps(v))
+            return self.mset(mdumps(key))
         else:
             return super().set(key, dumps(value))
 
@@ -64,7 +67,7 @@ class Redis(StrictRedis):
             k, v = tuple(value.items())[0]
             return super().hset(key, k, dumps(v))
         else:
-            return self.hmset(key, {k: dumps(v) for k, v in value.items()})
+            return self.hmset(key, mdumps(value))
 
     def hkeys(self, *args, **kwargs):
         return (f.decode() for f in super().hkeys(*args, **kwargs))

@@ -5,6 +5,7 @@ from xml.dom.minidom import getDOMImplementation
 import config
 import tf2search
 
+from cache import mdumps
 from main import cache, getitemkey, getclasskey, gettagkey
 
 
@@ -42,11 +43,13 @@ def main():
     sitemap.add(config.homepage)
 
     for index in tf2info.items:
+        pipe = cache.pipeline(False)
+
         itemdict = tf2search.createitemdict(index, tf2info)
         name = itemdict['name']
 
-        cache.hset(getitemkey(index), itemdict)
-        cache.sadd('items', index)
+        pipe.hmset(getitemkey(index), mdumps(itemdict))
+        pipe.sadd('items', index)
 
         classes = itemdict['classes']
         tags = itemdict['tags']
@@ -54,19 +57,19 @@ def main():
         if index == tf2info.itemsbyname[name]['defindex']:
             if tf2search.isvalidresult(itemdict, False):
                 if not classes:
-                    cache.sadd(getclasskey(), index)
+                    pipe.sadd(getclasskey(), index)
                 if len(classes) > 1:
-                    cache.sadd(getclasskey(multi=True), index)
+                    pipe.sadd(getclasskey(multi=True), index)
                 if not tags:
-                    cache.sadd(gettagkey(), index)
+                    pipe.sadd(gettagkey(), index)
                 for class_ in classes:
-                    cache.sadd(getclasskey(class_), index)
+                    pipe.sadd(getclasskey(class_), index)
                 for tag in tags:
-                    cache.sadd(gettagkey(tag), index)
+                    pipe.sadd(gettagkey(tag), index)
 
             if tf2search.isvalidresult(itemdict):
-                cache.sadd('items:indexes', index)
-                cache.hset('items:names', {name: index})
+                pipe.sadd('items:indexes', index)
+                pipe.hmset('items:names', mdumps({name: index}))
 
                 path = '{0}/{1}'.format(config.homepage, index)
 
@@ -77,6 +80,8 @@ def main():
                 suggestions[2].append(path)
 
                 sitemap.add(path)
+
+        pipe.execute()
 
     for index in tf2info.newstoreprices:
         cache.sadd('newitems', index)
