@@ -2,11 +2,10 @@
 import time
 from xml.dom.minidom import getDOMImplementation
 
-import cache
 import config
 import tf2search
 
-from main import getitemkey, getclasskey, gettagkey
+from main import cache, getitemkey, getclasskey, gettagkey
 
 
 class Sitemap:

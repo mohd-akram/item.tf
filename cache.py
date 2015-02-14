@@ -1,33 +1,8 @@
 from collections import OrderedDict
 from collections.abc import Hashable, Iterable, Sized, Mapping
 
-import redis
 import ujson
-
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
-
-_hgetall = r.register_script(
-    """
-    local hgetall = function (key)
-      local data = redis.call('HGETALL', key)
-      local hash = {}
-
-      for i = 1, #data, 2 do
-        hash[data[i]] = cjson.decode(data[i + 1])
-      end
-
-      return hash
-    end
-
-    local hashes = {}
-
-    for i = 1, #KEYS do
-      hashes[i] = hgetall(KEYS[i])
-    end
-
-    return cjson.encode(hashes)
-    """
-)
+from redis import StrictRedis
 
 
 def dumps(obj):
@@ -38,111 +13,140 @@ def loads(s):
     return ujson.loads(s)
 
 
-def get(key):
-    return loads(r.get(key))
+class Redis(StrictRedis):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._hgetall = self.register_script(
+            """
+            local hgetall = function (key)
+              local data = redis.call('HGETALL', key)
+              local hash = {}
 
+              for i = 1, #data, 2 do
+                hash[data[i]] = cjson.decode(data[i + 1])
+              end
 
-def set(key, value=None):
-    if type(key) is dict:
-        for k, v in key.items():
-            r.set(k, dumps(v))
-    else:
-        return r.set(key, dumps(value))
+              return hash
+            end
 
+            local hashes = {}
 
-def exists(*args, **kwargs):
-    return r.exists(*args, **kwargs)
+            for i = 1, #KEYS do
+              hashes[i] = hgetall(KEYS[i])
+            end
 
+            return cjson.encode(hashes)
+            """
+        )
 
-def hget(key, field):
-    return loads(r.hget(key, field))
+    def get(self, *args, **kwargs):
+        return loads(super().get(*args, **kwargs))
 
+    def set(self, key, value=None):
+        if type(key) is dict:
+            for k, v in key.items():
+                super().set(k, dumps(v))
+        else:
+            return super().set(key, dumps(value))
 
-def hgetall(key):
-    if type(key) is str:
-        return {k.decode(): loads(v) for k, v in r.hgetall(key).items()}
-    else:
-        return loads(_hgetall(keys=key))
+    def hget(self, *args, **kwargs):
+        return loads(super().hget(*args, **kwargs))
 
+    def hgetall(self, key):
+        if type(key) is str:
+            return {k.decode(): loads(v)
+                    for k, v in super().hgetall(key).items()}
+        else:
+            return loads(self._hgetall(keys=key))
 
-def hset(key, value):
-    if len(value) == 1:
-        k, v = tuple(value.items())[0]
-        return r.hset(key, k, dumps(v))
-    else:
-        return r.hmset(key, {k: dumps(v) for k, v in value.items()})
+    def hset(self, key, value):
+        if len(value) == 1:
+            k, v = tuple(value.items())[0]
+            return super().hset(key, k, dumps(v))
+        else:
+            return self.hmset(key, {k: dumps(v) for k, v in value.items()})
 
+    def hkeys(self, *args, **kwargs):
+        return (f.decode() for f in super().hkeys(*args, **kwargs))
 
-def hkeys(key):
-    return (f.decode() for f in r.hkeys(key))
+    def smembers(self, *args, **kwargs):
+        return (m.decode() for m in super().smembers(*args, **kwargs))
 
+    def srandmember(self, *args, **kwargs):
+        members = super().srandmember(*args, **kwargs)
+        if type(members) is list:
+            return [member.decode() for member in members]
+        else:
+            return members.decode()
 
-def sadd(*args, **kwargs):
-    return r.sadd(*args, **kwargs)
+    def lrange(self, *args, **kwargs):
+        return (e.decode() for e in super().lrange(*args, **kwargs))
 
+    def sort(self, *args, **kwargs):
+        result = super().sort(*args, **kwargs)
+        if type(result) is int:
+            return result
+        else:
+            return (x.decode() for x in result)
 
-def smembers(key):
-    return (m.decode() for m in r.smembers(key))
+    def delete_all(self, match, count=100):
+        cursor = None
+        while cursor != 0:
+            if cursor is None:
+                cursor = 0
+            cursor, keys = self.scan(cursor, match, count)
+            if keys:
+                self.delete(*keys)
 
+    def Hash(self, *args, **kwargs):
+        return Hash(self, *args, **kwargs)
 
-def srandmember(*args, **kwargs):
-    members = r.srandmember(*args, **kwargs)
-    if type(members) is list:
-        return [member.decode() for member in members]
-    else:
-        return members.decode()
+    def Hashes(self, *args, **kwargs):
+        return Hashes(self, *args, **kwargs)
 
+    def HashSet(self, *args, **kwargs):
+        return HashSet(self, *args, **kwargs)
 
-def lrange(*args, **kwargs):
-    return (e.decode() for e in r.lrange(*args, **kwargs))
-
-
-def sort(*args, **kwargs):
-    result = r.sort(*args, **kwargs)
-    if type(result) is int:
-        return result
-    else:
-        return (x.decode() for x in result)
-
-
-def pipeline(*args, **kwargs):
-    return r.pipeline(*args, **kwargs)
+    def SearchHashSet(self, *args, **kwargs):
+        return SearchHashSet(self, *args, **kwargs)
 
 
 class Hash(Hashable, Mapping):
-    def __init__(self, key):
+    def __init__(self, redis, key):
+        self.r = redis
         self.key = key
 
     def __hash__(self):
         return hash(self.key)
 
     def __getitem__(self, field):
-        return hget(self.key, field)
+        return self.r.hget(self.key, field)
 
     def __contains__(self, field):
-        return r.hexists(self.key, field)
+        return self.r.hexists(self.key, field)
 
     def __iter__(self):
-        yield from hkeys(self.key)
+        yield from self.r.hkeys(self.key)
 
     def __len__(self):
-        return r.hlen(self.key)
+        return self.r.hlen(self.key)
 
     def todict(self):
-        return hgetall(self.key)
+        return self.r.hgetall(self.key)
 
 
 class Hashes(Iterable, Sized):
     """This class enables buffered iteration over a list of hashes.
     The hashes are returned as regular dicts."""
-    def __init__(self, keys, bufsize=100):
+    def __init__(self, redis, keys, bufsize=100):
+        self.r = redis
         self.keys = keys
         self.bufsize = bufsize
 
     def __iter__(self):
         i = 0
         while i < len(self.keys):
-            results = hgetall(self.keys[i:i + self.bufsize])
+            results = self.r.hgetall(self.keys[i:i + self.bufsize])
             i += self.bufsize
             yield from results
 
@@ -151,25 +155,26 @@ class Hashes(Iterable, Sized):
 
 
 class HashSet(Mapping):
-    def __init__(self, key, tokey, sortkey=None):
+    def __init__(self, redis, key, tokey, sortkey=None):
+        self.r = redis
         self.key = key
         self.tokey = tokey
         self.sortkey = sortkey
 
     def __getitem__(self, member):
-        return Hash(self.tokey(member))
+        return Hash(self.r, self.tokey(member))
 
     def __contains__(self, member):
-        return r.sismember(self.key, member)
+        return self.r.sismember(self.key, member)
 
     def __iter__(self):
         if self.sortkey:
-            yield from sorted(smembers(self.key), key=self.sortkey)
+            yield from sorted(self.r.smembers(self.key), key=self.sortkey)
         else:
-            yield from smembers(self.key)
+            yield from self.r.smembers(self.key)
 
     def __len__(self):
-        return r.scard(self.key)
+        return self.r.scard(self.key)
 
 
 class SearchHashSet(HashSet):
@@ -178,7 +183,7 @@ class SearchHashSet(HashSet):
     to them. Other fields are accessed as required from the cache."""
     class SearchHash(Hash):
         def __init__(self, key, member, set_):
-            super().__init__(key)
+            super().__init__(set_.r, key)
             self.member = member
             self.set_ = set_
 
@@ -188,16 +193,16 @@ class SearchHashSet(HashSet):
             else:
                 return super().__getitem__(field)
 
-    def __init__(self, key, tokey, fields, sortkey=None):
-        super().__init__(key, tokey)
+    def __init__(self, redis, key, tokey, fields, sortkey=None):
+        super().__init__(redis, key, tokey)
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = r.sort(key, get=get)
+        self.result = tuple(self.r.sort(key, get=get))
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):
-            hashes.append((self.result[i].decode(), i + 1))
+            hashes.append((self.result[i], i + 1))
 
         if sortkey:
             hashes.sort(key=lambda k: sortkey(k[0]))

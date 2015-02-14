@@ -4,20 +4,21 @@ import time
 import random
 import logging
 
-from bottle import (get, error, request, response, redirect, static_file,
-                    run, default_app)
 import jinja2
 import ujson
+from bottle import (get, error, request, response, redirect, static_file,
+                    run, default_app)
 
-import cache
 import config
 import tf2api
 import tf2search
+from cache import Redis
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True, trim_blocks=True)
 
+cache = Redis(host='localhost', port=6379, db=0)
 
 @get('/')
 def home():
