@@ -25,6 +25,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 cache = Redis(host='localhost', port=6379, db=0)
 
+session_age = int(timedelta(weeks=2).total_seconds())
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
 
@@ -233,7 +234,7 @@ def user(urltype, steamid):
 def login():
     sid = b64encode(os.urandom(16)).decode()
     session = {'sid': sid}
-    response.set_cookie('sid', sid)
+    response.set_cookie('sid', sid, max_age=session_age)
 
     c = consumer.Consumer(session, None)
     a = c.begin('http://steamcommunity.com/openid')
@@ -253,7 +254,7 @@ def login_verify():
     if info.status == consumer.SUCCESS:
         steamid = request.query['openid.claimed_id'].split('/')[-1]
         user = getuser(steamid, create=True)
-        cache.setex(getsessionkey(sid), 1209600, user['id'])
+        cache.setex(getsessionkey(sid), session_age, user['id'])
 
     return redirect('/')
 
@@ -369,7 +370,7 @@ def getcurrentuser():
         userid = cache.get(getsessionkey(sid))
         if userid:
             user = getuser(userid)
-            response.set_cookie('steam_id', user['id'])
+            response.set_cookie('steam_id', user['id'], max_age=session_age)
         else:
             response.delete_cookie('sid')
             response.delete_cookie('steam_id')
