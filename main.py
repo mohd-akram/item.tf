@@ -205,7 +205,7 @@ def suggest():
 @get('/<urltype:re:profiles>/<steamid:re:[0-9]+>')
 def user(urltype, steamid):
     currentuser = getcurrentuser()
-    if currentuser['url'] == request.urlparts.path:
+    if currentuser and currentuser['url'] == request.urlparts.path:
         user = currentuser
     else:
         user = getuser(steamid, urltype)

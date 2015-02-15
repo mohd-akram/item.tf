@@ -14,7 +14,8 @@ def mdumps(d):
 
 
 def loads(s):
-    return ujson.loads(s)
+    if s is not None:
+        return ujson.loads(s)
 
 
 class Redis(StrictRedis):
