@@ -2,3 +2,4 @@ bottle
 jinja2
 redis
 ujson
+python3-openid

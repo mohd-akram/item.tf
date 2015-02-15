@@ -68,6 +68,14 @@
 
 {% block container %}
   <div id="sidebar">
+    {% if user %}
+    <a href="{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
+      <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
+    {% else %}
+    <a href="/login" style="position: relative; left: 3px">
+      <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
+    {% endif %}
+    <br><br>
     <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
     <i id="help" class="fa fa-question-circle fa-2x button-icon rounded" title="Help"></i>
 

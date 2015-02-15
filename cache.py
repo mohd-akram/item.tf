@@ -46,11 +46,14 @@ class Redis(StrictRedis):
     def get(self, *args, **kwargs):
         return loads(super().get(*args, **kwargs))
 
-    def set(self, key, value=None):
-        if type(key) is dict:
-            return self.mset(mdumps(key))
-        else:
-            return super().set(key, dumps(value))
+    def set(self, key, value):
+        return super().set(key, dumps(value))
+
+    def setex(self, key, time, value):
+        return super().setex(key, time, dumps(value))
+
+    def mset(self, map_):
+        return super().mset(mdumps(map_))
 
     def hget(self, *args, **kwargs):
         return loads(super().hget(*args, **kwargs))
@@ -62,12 +65,11 @@ class Redis(StrictRedis):
         else:
             return loads(self._hgetall(keys=key))
 
-    def hset(self, key, value):
-        if len(value) == 1:
-            k, v = tuple(value.items())[0]
-            return super().hset(key, k, dumps(v))
-        else:
-            return self.hmset(key, mdumps(value))
+    def hset(self, key, field, value):
+        return super().hset(key, field, dumps(value))
+
+    def hmset(self, key, map_):
+        return super().hmset(key, mdumps(map_))
 
     def hkeys(self, *args, **kwargs):
         return (f.decode() for f in super().hkeys(*args, **kwargs))

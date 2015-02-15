@@ -3,11 +3,16 @@ import os
 import time
 import random
 import logging
+from base64 import b64encode
+from datetime import datetime, timedelta
+from urllib.parse import urlparse
+from urllib.error import HTTPError
 
 import jinja2
 import ujson
-from bottle import (get, error, request, response, redirect, static_file,
+from bottle import (get, post, error, request, response, redirect, static_file,
                     run, default_app)
+from openid.consumer import consumer
 
 import config
 import tf2api
@@ -20,6 +25,8 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 cache = Redis(host='localhost', port=6379, db=0)
 
+login_verify_url = '{}/login/verify'.format(config.homepage)
+
 
 @get('/')
 def home():
@@ -31,6 +38,7 @@ def home():
 
     return render('home.html',
                   homepage=config.homepage,
+                  user=getcurrentuser(),
                   tags=tf2api.getalltags(),
                   newitems=newitems,
                   message=random.choice(config.messages),
@@ -144,6 +152,34 @@ def search(is_json):
                       time=round(t1 - t0, 3))
 
 
+@post('/wishlist/<option:re:add|remove>')
+def wishlist(option):
+    user = getcurrentuser()
+    userkey = getuserkey(user['id'])
+
+    if option == 'add':
+        index = int(request.forms.get('index'))
+        quality = int(request.forms.get('quality'))
+
+        if (cache.sismember('items:indexes', index) and
+                quality in tf2api.getallqualities()):
+
+            if len(user['wishlist']) < 100:
+                user['wishlist'].append({'index': index,
+                                         'quality': quality})
+                cache.hset(userkey, 'wishlist', user['wishlist'])
+
+                return 'Added'
+
+    elif option == 'remove':
+        i = int(request.forms.get('i'))
+
+        del user['wishlist'][i]
+        cache.hset(userkey, 'wishlist', user['wishlist'])
+
+        return 'Removed'
+
+
 @get('/suggest')
 def suggest():
     query = request.query.q
@@ -163,6 +199,63 @@ def suggest():
         suggestions[1:] = allsuggestions
 
     return tojson(suggestions)
+
+
+@get('/<urltype:re:id>/<steamid:re:[A-Za-z0-9_-]+>')
+@get('/<urltype:re:profiles>/<steamid:re:[0-9]+>')
+def user(urltype, steamid):
+    currentuser = getcurrentuser()
+    if currentuser['url'] == request.urlparts.path:
+        user = currentuser
+    else:
+        user = getuser(steamid, urltype)
+
+    if user:
+        if user['url'] != request.urlparts.path:
+            return redirect(user['url'])
+
+        items = cache.hgetall(
+            [getitemkey(item['index']) for item in user['wishlist']])
+
+        for i, item in enumerate(items):
+            item.update({'i': i})
+            item.update(user['wishlist'][i])
+
+    else:
+        return redirect('/')
+
+    return render('user.html',
+                  user=user,
+                  items=items)
+
+
+@get('/login')
+def login():
+    sid = b64encode(os.urandom(16)).decode()
+    session = {'sid': sid}
+    response.set_cookie('sid', sid)
+
+    c = consumer.Consumer(session, None)
+    a = c.begin('http://steamcommunity.com/openid')
+    url = a.redirectURL(config.homepage, login_verify_url)
+
+    return redirect(url)
+
+
+@get('/login/verify')
+def login_verify():
+    sid = request.get_cookie('sid')
+    session = {'sid': sid}
+
+    c = consumer.Consumer(session, None)
+    info = c.complete(request.query, login_verify_url)
+
+    if info.status == consumer.SUCCESS:
+        steamid = request.query['openid.claimed_id'].split('/')[-1]
+        user = getuser(steamid, create=True)
+        cache.setex(getsessionkey(sid), 1209600, user['id'])
+
+    return redirect('/')
 
 
 @get('/sitemap.xml')
@@ -265,6 +358,78 @@ def getclasskey(class_=None, multi=False):
 
 def gettagkey(tag=None):
     return 'items:tag:{}'.format(tag or 'none')
+
+
+def getcurrentuser():
+    user = None
+
+    sid = request.get_cookie('sid')
+
+    if sid:
+        userid = cache.get(getsessionkey(sid))
+        if userid:
+            user = getuser(userid)
+            response.set_cookie('steam_id', user['id'])
+        else:
+            response.delete_cookie('sid')
+            response.delete_cookie('steam_id')
+
+    return user
+
+
+def getuser(steamid, urltype='profiles', create=False):
+    if urltype == 'id':
+        steamid = tf2api.resolvevanityurl(config.apikey, steamid)
+
+    userkey = getuserkey(steamid)
+    user = cache.hgetall(userkey)
+
+    if user:
+        create = False
+        lastupdate = datetime.fromtimestamp(user['lastupdate'])
+        needsupdate = (datetime.now() - lastupdate) > timedelta(minutes=3)
+    else:
+        if not create:
+            return
+        user = {'id': steamid}
+
+    if create or needsupdate:
+        try:
+            steamuser = tf2api.getplayersummary(config.apikey, steamid)
+
+        except HTTPError:
+            # Postpone update if this is not a new user
+            if create:
+                raise
+            return user
+
+        user['name'] = steamuser['personaname']
+        # Remove trailing slash and parse url
+        user['url'] = urlparse(steamuser['profileurl'][:-1]).path
+        user['avatar'] = steamuser['avatar']
+        user['state'] = ('Online' if steamuser['personastate'] != 0 else
+                         'Offline')
+
+        if 'gameid' in steamuser:
+            user['state'] = 'In-Game'
+
+        if 'wishlist' not in user:
+            user['wishlist'] = []
+
+        user['lastupdate'] = datetime.now().timestamp()
+
+        cache.hmset(userkey, user)
+        cache.sadd('users', user['id'])
+
+    return user
+
+
+def getuserkey(uid):
+    return 'user:{}'.format(uid)
+
+
+def getsessionkey(sid):
+    return 'session:{}'.format(sid)
 
 
 def getitem(index):

@@ -5,7 +5,7 @@
 {% block heading %}{{user.name}}'s Wishlist{% endblock %}
 
 {% block container %}
-<div id="steamid" data-id="{{user.key.id()}}"></div>
+<div id="steamid" data-id="{{user.id}}"></div>
 {% endblock %}
 
 {% block body %}{{ showitems(items) }}{% endblock %}

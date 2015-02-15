@@ -1,6 +1,3 @@
-
-# coding: utf-8
-
 """A module for parsing a query and searching for TF2 items
 It supports class based search, eg: 'engineer hats'
 It also supports alias based search, eg: 'engi hats'

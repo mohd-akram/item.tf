@@ -98,7 +98,7 @@ def main(flush):
             'items:lastupdated': time.time(),
             'sitemap': sitemap.toxml()}
 
-    cache.set(data)
+    cache.mset(data)
 
 if __name__ == '__main__':
     flush = len(sys.argv) == 2 and sys.argv[1] == '-f'

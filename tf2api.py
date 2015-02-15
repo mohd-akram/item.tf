@@ -1,6 +1,3 @@
-
-# coding: utf-8
-
 """This module is based on the Steam WebAPI and can be used to get information
 about items in TF2. Using this module, you can obtain the item schema,
 store prices, bundles, item sets and attributes for TF2.
