@@ -15,6 +15,7 @@ Note: You must provide your own image URLs for paint cans and blueprints.
 """
 import re
 import json
+from fractions import Fraction
 from collections import namedtuple, defaultdict, OrderedDict
 
 import tf2api
@@ -76,10 +77,10 @@ def getitemsdict(tf2info):
 
 
 def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
-    """This function parses the query using _parseinput and gets all the
+    """This function parses the query using parseinput and gets all the
     items that match it. It returns a list of dicts obtained from
     getsearchresult"""
-    input_ = _parseinput(query)
+    input_ = parseinput(query)
     query = input_['query']
     querylist = input_['querylist']
     classes = input_['classes']
@@ -99,7 +100,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
     # Get classes and tags in price search, if any
     if pricematch:
         words = pricematch.group(5)
-        priceinput = _parseinput(words or '')
+        priceinput = parseinput(words or '')
         priceclasses, pricetags = priceinput['classes'], priceinput['tags']
         if priceclasses or pricetags:
             results = _classtagsearch(priceclasses, pricetags, itemsdict)
@@ -163,7 +164,7 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 
 def visualizeprice(query, itemsdict, pricesource):
     """Return a list of items representing a price if parsed from the query"""
-    query = _parseinput(query)['query']
+    query = parseinput(query)['query']
     pricevizmatch = re.match(r'{}(?: to {})?$'.format(PRICEREGEX, DENOMREGEX),
                              query.lower())
 
@@ -267,6 +268,38 @@ def isvalidresult(itemdict, strict=True):
         isvalid = (isvalid and 'tournament' not in itemdict['tags'])
 
     return isvalid
+
+
+def parseinput(query):
+    """Parse a search query and return a dict to be used in search function"""
+    classes = set()
+    tags = set()
+
+    query = query.strip()
+
+    if query.startswith('"') and query.endswith('"'):
+        querylist = [query.strip('"')]
+        query = ''
+    else:
+        querylist = [i for i in _splitspecial(foldaccents(query)) if i not in
+                     ('the', 'a', 'of', 's')]
+
+        for word in querylist:
+            class_ = _getclass(word)
+            tag = _gettag(word)
+
+            if class_:
+                classes.add(class_)
+            elif tag:
+                tags.add(tag)
+
+        # Simple check to differentiate between word and class/tag search
+        # Avoids conflicts such as 'meet the medic taunt'
+        if (len(tags) + len(classes)) != len(querylist):
+            classes = tags = set()
+
+    return {'query': query, 'querylist': querylist,
+            'classes': classes, 'tags': tags}
 
 
 def foldaccents(string):
@@ -490,9 +523,7 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
     with the count of each item."""
     items = []
 
-    if denom in ('Refined', 'Reclaimed'):
-        # Allow common values such as 0.66 and 1.33
-        amount += 0.01
+    amount = _correctprice(amount, denom)
 
     denomtoidx = tf2api.getalldenoms()
     denoms = tuple(denomtoidx.keys())
@@ -537,19 +568,18 @@ def _getpricestring(amount, denom):
 def _getdenomvalues(itemsdict, pricesource):
     """Return a mapping to convert between denominations"""
     denomtoidx = tf2api.getalldenoms()
+    denoms = tuple(denomtoidx.keys())
 
-    getprice = lambda denom: float(
+    getprice = lambda denom: _correctprice(float(
         itemsdict[denomtoidx[denom]]['marketprice'][pricesource]['Unique']
-        .split()[0])
+        .split()[0]), denoms[denoms.index(denom) + 1])
 
     table = {'Earbuds': {'Key': getprice('Earbuds')},
-             'Key': {'Refined': getprice('Key') + 0.01},
+             'Key': {'Refined': getprice('Key')},
              'Refined': {'Reclaimed': 3.0},
              'Reclaimed': {'Scrap': 3.0},
              'Scrap': {'Weapon': 2.0},
              'Weapon': {}}
-
-    denoms = tuple(denomtoidx.keys())
 
     def fill(from_, to=None, value=1):
         if to is None:
@@ -566,6 +596,13 @@ def _getdenomvalues(itemsdict, pricesource):
         fill(denom)
 
     return table
+
+
+def _correctprice(amount, denom):
+    limits = {'Refined': 18, 'Reclaimed': 6, 'Scrap': 2, 'Weapon': 1}
+    if denom in limits:
+        amount = Fraction.from_float(amount).limit_denominator(limits[denom])
+    return amount
 
 
 def _pluralize(wordlist):
@@ -608,38 +645,6 @@ def _getdenom(word):
     hasdenom = re.search('|'.join(denomslist), word.lower())
     if hasdenom:
         return denoms[hasdenom.group(0)]
-
-
-def _parseinput(query):
-    """Parse a search query and return a dict to be used in search function"""
-    classes = set()
-    tags = set()
-
-    query = query.strip()
-
-    if query.startswith('"') and query.endswith('"'):
-        querylist = [query.strip('"')]
-        query = ''
-    else:
-        querylist = [i for i in _splitspecial(foldaccents(query)) if i not in
-                     ('the', 'a', 'of', 's')]
-
-        for word in querylist:
-            class_ = _getclass(word)
-            tag = _gettag(word)
-
-            if class_:
-                classes.add(class_)
-            elif tag:
-                tags.add(tag)
-
-        # Simple check to differentiate between word and class/tag search
-        # Avoids conflicts such as 'meet the medic taunt'
-        if (len(tags) + len(classes)) != len(querylist):
-            classes = tags = set()
-
-    return {'query': query, 'querylist': querylist,
-            'classes': classes, 'tags': tags}
 
 
 def _parseblueprints(blueprints, itemsbyname):

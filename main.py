@@ -34,8 +34,7 @@ def home():
     t0 = cache.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
-    newitems = tuple(
-        getitem(k) for k in cache.srandmember('items:new', 5))
+    newitems = getitems(cache.srandmember('items:new', 5))
 
     return render('home.html',
                   homepage=config.homepage,
@@ -107,7 +106,7 @@ def search(is_json):
         items = cache.HashSet('items', getitemkey)
         results = tf2search.visualizeprice(query, items, pricesource)
 
-        input_ = tf2search._parseinput(query)
+        input_ = tf2search.parseinput(query)
         classes = input_['classes']
         tags = input_['tags']
 
@@ -215,8 +214,7 @@ def user(urltype, steamid):
         if user['url'] != request.urlparts.path:
             return redirect(user['url'])
 
-        items = cache.hgetall(
-            [getitemkey(item['index']) for item in user['wishlist']])
+        items = getitems(item['index'] for item in user['wishlist'])
 
         for i, item in enumerate(items):
             item.update({'i': i})
@@ -434,6 +432,10 @@ def getuserkey(uid):
 
 def getsessionkey(sid):
     return 'session:{}'.format(sid)
+
+
+def getitems(indexes):
+    return cache.hgetall([getitemkey(index) for index in indexes])
 
 
 def getitem(index):

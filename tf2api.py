@@ -253,8 +253,8 @@ def getweapontags():
 def getalltags():
     """Return all item tags"""
     return (('weapon', 'cosmetic', 'hat', 'misc', 'tournament',
-             'action', 'taunt', 'tool', 'paint', 'craft', 'token', 'bundle')
-             + getweapontags())
+             'action', 'taunt', 'tool', 'paint', 'craft', 'token', 'bundle') +
+            getweapontags())
 
 
 def getallclasses():
