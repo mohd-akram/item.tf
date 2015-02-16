@@ -169,7 +169,7 @@ def visualizeprice(query, itemsdict, pricesource):
                              query.lower())
 
     if pricevizmatch:
-        amount = float(pricevizmatch.group(1))
+        amount = pricevizmatch.group(1)
         denom = _getdenom(pricevizmatch.group(2))
         todenom = _getdenom(pricevizmatch.group(3) or '')
 
@@ -570,9 +570,9 @@ def _getdenomvalues(itemsdict, pricesource):
     denomtoidx = tf2api.getalldenoms()
     denoms = tuple(denomtoidx.keys())
 
-    getprice = lambda denom: _correctprice(float(
+    getprice = lambda denom: _correctprice(
         itemsdict[denomtoidx[denom]]['marketprice'][pricesource]['Unique']
-        .split()[0]), denoms[denoms.index(denom) + 1])
+        .split()[0], denoms[denoms.index(denom) + 1])
 
     table = {'Earbuds': {'Key': getprice('Earbuds')},
              'Key': {'Refined': getprice('Key')},
@@ -600,8 +600,18 @@ def _getdenomvalues(itemsdict, pricesource):
 
 def _correctprice(amount, denom):
     limits = {'Refined': 18, 'Reclaimed': 6, 'Scrap': 2, 'Weapon': 1}
+
     if denom in limits:
-        amount = Fraction.from_float(amount).limit_denominator(limits[denom])
+        if '.' in amount:
+            count, fraction = amount.split('.')
+            # Check if it's a repeating decimal
+            if len(fraction) > 1 and len(set(fraction)) == 1:
+                # Increase precision
+                amount = '.'.join([count, fraction[0] * 4])
+        amount = Fraction(amount).limit_denominator(limits[denom])
+    else:
+        amount = float(amount)
+
     return amount
 
 
