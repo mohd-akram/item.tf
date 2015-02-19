@@ -222,6 +222,8 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
 
         for quality, price in prices.items():
             quality = int(quality)
+            if 'regular' not in price:
+                continue
             price = price['regular']
 
             if price['unsure']:
