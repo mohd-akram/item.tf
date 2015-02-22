@@ -31,6 +31,7 @@
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <Content Include="blueprints.json" />
+    <Content Include="etc\cron.daily\backup" />
     <Content Include="etc\cron.hourly\update-cache" />
     <Content Include="etc\init.d\gunicorn" />
     <Content Include="etc\nginx\nginx.conf" />
@@ -38,8 +39,8 @@
     <Content Include="README.md" />
     <Content Include="requirements.txt" />
     <Content Include="static\apple-touch-icon.png" />
+    <Content Include="static\css\main.css" />
     <Content Include="static\css\message.css" />
-    <Content Include="static\css\tf2.css" />
     <Content Include="static\favicon.ico" />
     <Content Include="static\images\classes.png" />
     <Content Include="static\images\items\class_token.png" />
@@ -83,13 +84,13 @@
     <Content Include="templates\base.html" />
     <Content Include="templates\error.html" />
     <Content Include="templates\footer.html" />
+    <Content Include="templates\home.html" />
+    <Content Include="templates\item.html" />
     <Content Include="templates\list.html" />
     <Content Include="templates\logo.html" />
     <Content Include="templates\macros.html" />
-    <Content Include="templates\tf2.html" />
-    <Content Include="templates\tf2item.html" />
-    <Content Include="templates\tf2results.html" />
-    <Content Include="templates\tf2user.html" />
+    <Content Include="templates\search.html" />
+    <Content Include="templates\user.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="cache.py" />
@@ -97,10 +98,11 @@
     <Compile Include="main.py" />
     <Compile Include="tf2api.py" />
     <Compile Include="tf2search.py" />
-    <Compile Include="update-cache.py" />
+    <Compile Include="updatecache.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="etc\" />
+    <Folder Include="etc\cron.daily\" />
     <Folder Include="etc\cron.hourly\" />
     <Folder Include="etc\init.d\" />
     <Folder Include="etc\nginx\" />
