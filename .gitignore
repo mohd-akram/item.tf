@@ -162,6 +162,9 @@ pip-log.txt
 # Mac crap
 .DS_Store
 
+web.config
+web.debug.config
+
 config.py
 logs
 backups
