@@ -188,8 +188,9 @@ def gettradeprices(apikey, items, itemsbyname, timeout=30):
     prices for the item"""
     url = 'http://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
 
+    r = Request(url, headers={'User-Agent': 'tf2api'})
     pricesdata = json.loads(
-        urlopen(url, timeout=timeout).read().decode())['items']
+        urlopen(r, timeout=timeout).read().decode())['items']
 
     pricesdict = defaultdict(dict)
     itemnames = set()
