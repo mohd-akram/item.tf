@@ -284,7 +284,7 @@ def render(template, **params):
 
 def tojson(*args, **kwargs):
     response.set_header('Content-Type', 'application/json;charset=UTF-8')
-    return ujson.dumps(*args,  **kwargs)
+    return ujson.dumps(*args, **kwargs)
 
 
 def getresults(classes, tags):
@@ -348,7 +348,7 @@ def getresults(classes, tags):
 
 def getsearchkey(classes=None, tags=None, type_=''):
     concat = lambda l: ','.join(sorted(l)) if l else '*'
-    return 'items:search:classes={}:tags={}:{}'.format(concat(classes),
+    return 'items:search:classes={}&tags={}:{}'.format(concat(classes),
                                                        concat(tags), type_)
 
 

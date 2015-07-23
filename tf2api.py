@@ -343,9 +343,13 @@ def getitemattributes(item, allattributes, effects):
 
                 attrdict = {'description': description,
                             'type': attribute['effect_type']}
+
+                if attrdict['type'] == 'unusual':
+                    attrdict['type'] = 'neutral'
+
                 attributelist.append(attrdict)
 
-    order = ['neutral', 'positive', 'negative']
+    order = ('neutral', 'positive', 'negative')
 
     return sorted(attributelist, key=lambda k: order.index(k['type']))
 
