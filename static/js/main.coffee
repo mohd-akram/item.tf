@@ -17,16 +17,16 @@ class User
 
 class Item
   constructor: (@elem) ->
-    @name = elem.title
-    @id = elem.getAttribute 'data-index'
-    @imageUrl = elem.getAttribute 'data-image'
-    @description = elem.getAttribute('data-description') or ''
-    @level = elem.getAttribute 'data-level'
-    @attributes = elem.getElementsByTagName('div')?[0]?.innerHTML or ''
-    @classes = elem.getAttribute('data-classes')?.split(',') or []
-    @tags = elem.getAttribute('data-tags')?.split(',') or []
-    @storePrice = elem.getAttribute 'data-storeprice'
-    @blueprints = elem.getElementsByTagName 'ul'
+    @name = @elem.title
+    @id = @elem.getAttribute 'data-index'
+    @imageUrl = @elem.getAttribute 'data-image'
+    @description = @elem.getAttribute('data-description') or ''
+    @level = @elem.getAttribute 'data-level'
+    @attributes = @elem.getElementsByTagName('div')?[0]?.innerHTML or ''
+    @classes = @elem.getAttribute('data-classes')?.split(',') or []
+    @tags = @elem.getAttribute('data-tags')?.split(',') or []
+    @storePrice = @elem.getAttribute 'data-storeprice'
+    @blueprints = @elem.getElementsByTagName 'ul'
 
     @prices = {}
     for source in priceSources
@@ -34,8 +34,8 @@ class Item
                              ?.replace('Collector"s', "Collector's") ? null)
       @prices[source] = price if price
 
-    @wishIndex = elem.getAttribute 'data-i'
-    @qualityNo = elem.className.match(/quality-(\d+)/)?[1]
+    @wishIndex = @elem.getAttribute 'data-i'
+    @qualityNo = @elem.className.match(/quality-(\d+)/)?[1]
 
   remove: -> @elem.parentNode.removeChild @elem
 

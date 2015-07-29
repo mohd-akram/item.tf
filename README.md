@@ -12,7 +12,7 @@ You can also search for item sets or view a list of them by typing 'sets'.
 Get Started
 -----------
 
-Rename config.default.py to config.py and fill in your API keys in the file.
+Copy config.default.py to config.py and fill in your API keys in the file.
 
 Run this command to install dependencies.
 
