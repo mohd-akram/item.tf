@@ -165,8 +165,9 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
 def visualizeprice(query, itemsdict, pricesource):
     """Return a list of items representing a price if parsed from the query"""
     query = parseinput(query)['query']
-    pricevizmatch = re.match(r'{}(?: to {})?$'.format(PRICEREGEX, DENOMREGEX),
-                             query.lower())
+    pricevizmatch = re.match(
+        r'{}(?: (?:in|to) {})?$'.format(PRICEREGEX, DENOMREGEX),
+        query.lower())
 
     if pricevizmatch:
         amount = pricevizmatch.group(1)
@@ -684,7 +685,7 @@ def _parseblueprints(blueprints, itemsbyname):
     for name in polyweps:
         repl['Any {} Weapon'.format(name)] = name
 
-    for i in ['Victory', 'Moonman', 'Brainiac']:
+    for i in ('Victory', 'Moonman', 'Brainiac'):
         pack = "Dr. Grordbort's {} Pack".format(i)
         repl["Any {} Weapon".format(pack)] = pack
 
