@@ -186,7 +186,7 @@ class HashSet(Mapping):
 class SearchHashSet(HashSet):
     """This class optimizes search on a set of hashes by first obtaining
     and storing all the fields necessary for search, allowing faster access
-    to them. Other fields are accessed as required from the cache."""
+    to them. Other fields are accessed as required from the store."""
     class SearchHash(Hash):
         def __init__(self, key, member, set_):
             super().__init__(set_.r, key)

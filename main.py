@@ -17,13 +17,13 @@ from openid.consumer import consumer
 import config
 import tf2api
 import tf2search
-from cache import Redis
+from store import Redis
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True, trim_blocks=True)
 
-cache = Redis(host='localhost', port=6379, db=0)
+store = Redis(host='localhost', port=6379, db=0)
 
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
@@ -31,10 +31,10 @@ login_verify_url = '{}/login/verify'.format(config.homepage)
 
 @get('/')
 def home():
-    t0 = cache.get('items:lastupdated')
+    t0 = store.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
-    newitems = getitems(cache.srandmember('items:new', 5))
+    newitems = getitems(store.srandmember('items:new', 5))
 
     return render('home.html',
                   homepage=config.homepage,
@@ -83,10 +83,10 @@ def search(is_json):
         return redirect('/')
 
     elif query == 'random':
-        index = cache.srandmember('items:indexes')
+        index = store.srandmember('items:indexes')
         return redirect('/{}{}'.format(index, is_json))
 
-    itemnames = cache.Hash('items:names')
+    itemnames = store.Hash('items:names')
 
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
@@ -94,8 +94,8 @@ def search(is_json):
     t0 = time.time()
 
     if query == 'all':
-        items = cache.Hashes(
-            [getitemkey(k) for k in cache.sort('items')])
+        items = store.Hashes(
+            [getitemkey(k) for k in store.sort('items')])
         results = [tf2search.getsearchresult(items=items)]
     else:
         sources = ('backpack.tf', 'trade.tf')
@@ -103,7 +103,7 @@ def search(is_json):
         if pricesource not in sources:
             pricesource = sources[0]
 
-        items = cache.HashSet('items', getitemkey)
+        items = store.HashSet('items', getitemkey)
         results = tf2search.visualizeprice(query, items, pricesource)
 
         input_ = tf2search.parseinput(query)
@@ -125,19 +125,19 @@ def search(is_json):
             results = getresults(classes, tags)
 
         else:
-            itemsdict = cache.SearchHashSet(
+            itemsdict = store.SearchHashSet(
                 'items', getitemkey,
                 ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
                 int)
 
-            itemsets = cache.get('items:sets')
-            bundles = cache.get('items:bundles')
+            itemsets = store.get('items:sets')
+            bundles = store.get('items:bundles')
 
             results = tf2search.search(query, itemsdict, itemnames,
                                        itemsets, bundles, pricesource)
 
             for result in results:
-                result['items'] = cache.Hashes(
+                result['items'] = store.Hashes(
                     [h.key for h in result['items']])
 
     t1 = time.time()
@@ -161,13 +161,13 @@ def wishlist(option):
         index = int(request.forms.get('index'))
         quality = int(request.forms.get('quality'))
 
-        if (cache.sismember('items:indexes', index) and
+        if (store.sismember('items:indexes', index) and
                 quality in tf2api.getallqualities()):
 
             if len(user['wishlist']) < 100:
                 user['wishlist'].append({'index': index,
                                          'quality': quality})
-                cache.hset(userkey, 'wishlist', user['wishlist'])
+                store.hset(userkey, 'wishlist', user['wishlist'])
 
                 return 'Added'
 
@@ -175,7 +175,7 @@ def wishlist(option):
         i = int(request.forms.get('i'))
 
         del user['wishlist'][i]
-        cache.hset(userkey, 'wishlist', user['wishlist'])
+        store.hset(userkey, 'wishlist', user['wishlist'])
 
         return 'Removed'
 
@@ -184,7 +184,7 @@ def wishlist(option):
 def suggest():
     query = request.query.q
 
-    allsuggestions = cache.get('items:suggestions')
+    allsuggestions = store.get('items:suggestions')
     suggestions = [query, [], [], []]
 
     if query:
@@ -253,7 +253,7 @@ def login_verify():
     if info.status == consumer.SUCCESS:
         steamid = request.query['openid.claimed_id'].split('/')[-1]
         user = getuser(steamid, create=True)
-        cache.setex(getsessionkey(sid), int(session_age.total_seconds()),
+        store.setex(getsessionkey(sid), int(session_age.total_seconds()),
                     user['id'])
 
     return redirect('/')
@@ -262,7 +262,7 @@ def login_verify():
 @get('/sitemap.xml')
 def sitemap():
     response.set_header('Content-Type', 'application/xml;charset=UTF-8')
-    return cache.get('sitemap')
+    return store.get('sitemap')
 
 
 @get('/<filepath:path>')
@@ -295,12 +295,12 @@ def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = ('', 'Multi-Class Items', 'All-Class Items')
 
-    if not cache.exists(key) and not cache.exists(allkey):
+    if not store.exists(key) and not store.exists(allkey):
         classeskey = 'temp:classes'
         tagskey = 'temp:tags'
         remove = []
 
-        pipe = cache.pipeline()
+        pipe = store.pipeline()
 
         classkeys = [getclasskey(class_) for class_ in classes] or 'items'
         pipe.sunionstore(classeskey, classkeys)
@@ -334,14 +334,14 @@ def getresults(classes, tags):
 
         pipe.execute()
 
-    getkeys = lambda key: [getitemkey(k) for k in cache.lrange(key, 0, -1)]
+    getkeys = lambda key: [getitemkey(k) for k in store.lrange(key, 0, -1)]
 
     results = []
     for title, key in zip(titles, keys):
         itemkeys = getkeys(key)
         if itemkeys:
             results.append(tf2search.getsearchresult(
-                title=title, items=cache.Hashes(itemkeys)))
+                title=title, items=store.Hashes(itemkeys)))
 
     return results
 
@@ -367,7 +367,7 @@ def getcurrentuser():
     sid = request.get_cookie('sid')
 
     if sid:
-        userid = cache.get(getsessionkey(sid))
+        userid = store.get(getsessionkey(sid))
         if userid:
             user = getuser(userid)
             expires = datetime.now() + session_age
@@ -384,7 +384,7 @@ def getuser(steamid, urltype='profiles', create=False):
         steamid = tf2api.resolvevanityurl(config.apikey, steamid)
 
     userkey = getuserkey(steamid)
-    user = cache.hgetall(userkey)
+    user = store.hgetall(userkey)
 
     if user:
         create = False
@@ -420,8 +420,8 @@ def getuser(steamid, urltype='profiles', create=False):
 
         user['lastupdate'] = datetime.now().timestamp()
 
-        cache.hmset(userkey, user)
-        cache.sadd('users', user['id'])
+        store.hmset(userkey, user)
+        store.sadd('users', user['id'])
 
     return user
 
@@ -435,11 +435,11 @@ def getsessionkey(sid):
 
 
 def getitems(indexes):
-    return cache.hgetall([getitemkey(index) for index in indexes])
+    return store.hgetall([getitemkey(index) for index in indexes])
 
 
 def getitem(index):
-    return cache.hgetall(getitemkey(index))
+    return store.hgetall(getitemkey(index))
 
 
 def getitemkey(index):
