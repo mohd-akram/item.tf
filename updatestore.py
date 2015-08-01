@@ -6,8 +6,8 @@ from xml.dom.minidom import getDOMImplementation
 import config
 import tf2search
 
-from cache import mdumps
-from main import cache, getitemkey, getclasskey, gettagkey
+from store import mdumps
+from main import store, getitemkey, getclasskey, gettagkey
 
 
 class Sitemap:
@@ -39,9 +39,9 @@ def main(flush):
                                    config.blueprintsfile)
 
     if flush:
-        cache.delete('items')
-        cache.delete_all('items:*')
-        cache.delete_all('item:*')
+        store.delete('items')
+        store.delete_all('items:*')
+        store.delete_all('item:*')
 
     suggestions = [[], [], []]
 
@@ -49,7 +49,7 @@ def main(flush):
     sitemap.add(config.homepage)
 
     for index in tf2info.items:
-        pipe = cache.pipeline(False)
+        pipe = store.pipeline(False)
 
         itemdict = tf2search.createitemdict(index, tf2info)
         name = itemdict['name']
@@ -90,7 +90,7 @@ def main(flush):
         pipe.execute()
 
     for index in tf2info.newstoreprices:
-        cache.sadd('items:new', index)
+        store.sadd('items:new', index)
 
     data = {'items:sets': tf2info.itemsets,
             'items:bundles': tf2info.bundles,
@@ -98,7 +98,7 @@ def main(flush):
             'items:lastupdated': time.time(),
             'sitemap': sitemap.toxml()}
 
-    cache.mset(data)
+    store.mset(data)
 
 if __name__ == '__main__':
     flush = len(sys.argv) == 2 and sys.argv[1] == '-f'
