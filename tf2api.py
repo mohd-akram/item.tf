@@ -413,20 +413,22 @@ def getplayersummary(apikey, steamid):
     return getplayersummaries(apikey, [steamid])[0]
 
 
-def getplayersummaries(apikey, steamids):
+def getplayersummaries(apikey, steamids, timeout=5):
     """Return the player summaries of a list of steamids"""
     url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
            '?key={}&steamids={}'.format(apikey, ','.join(steamids)))
 
-    return json.loads(urlopen(url).read().decode())['response']['players']
+    return json.loads(
+        urlopen(url, timeout=timeout).read().decode())['response']['players']
 
 
-def resolvevanityurl(apikey, vanityurl):
+def resolvevanityurl(apikey, vanityurl, timeout=5):
     """Return the steamid of a given vanity url"""
     url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
            '?key={}&vanityurl={}'.format(apikey, vanityurl))
 
-    response = json.loads(urlopen(url).read().decode())['response']
+    response = json.loads(
+        urlopen(url, timeout=timeout).read().decode())['response']
 
     if response['success'] == 1:
         return response['steamid']
