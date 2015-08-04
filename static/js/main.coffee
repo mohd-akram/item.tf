@@ -184,8 +184,9 @@ class ItemBox
             if index
               url = "/#{index}"
             else
-              name = name.replace('Any ', '')
-                         .replace('Spy Watch', 'PDA2 Weapon')
+              name = name
+                .replace 'Any ', ''
+                .replace 'Spy Watch', 'PDA2 Weapon'
 
               if name.split(' ').length > 2
                 name = name.replace 'Weapon', 'Set'
@@ -313,11 +314,11 @@ class ItemBox
     (@form.quality.onchange = =>
       market = document.getElementById 'market-btn'
       quality = @form.quality.options[@form.quality.selectedIndex]
-                .text.toLowerCase()
-                .replace('unique', 'Unique')
-                .replace('genuine', 'rarity1')
-                .replace('unusual', 'rarity4')
-                .replace("collector's", 'collectors')
+        .text.toLowerCase()
+        .replace 'unique', 'Unique'
+        .replace 'genuine', 'rarity1'
+        .replace 'unusual', 'rarity4'
+        .replace "collector's", 'collectors'
 
       market.href = "http://steamcommunity.com/market/search?\
         category_440_Type%5B%5D=any&\
@@ -379,7 +380,7 @@ class ItemBox
   _buyLink: ->
     button = document.getElementById 'buybutton'
     if button
-      quantity = document.getElementById('quantity')
+      quantity = document.getElementById 'quantity'
       (quantity.onchange = =>
         button.href = "http://store.steampowered.com/buyitem/440/#{
           @item.id}/#{quantity.value}")()
@@ -469,10 +470,11 @@ class HoverBox
     if description
       if 'bundle' in item.tags and description.indexOf('---') isnt -1
         descList = description.split '---'
-        description = """
-                      #{descList[0]}
-                      <span style="color: #95af0c">#{descList[1]}</span>
-                      """
+        description =
+          """
+          #{descList[0]}
+          <span style="color: #95af0c">#{descList[1]}</span>
+          """
       description = "<br>#{description}"
 
     @elem.innerHTML =
