@@ -155,7 +155,7 @@ class ItemBox
           """
           <a href="/search?q=#{quality}" target="_blank"
            class="#{quality.toLowerCase().replace "'", ''}">#{
-           quality}: #{price}</a><br>
+           quality}</a>: #{price}<br>
           """
 
     return html
