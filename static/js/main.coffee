@@ -110,11 +110,11 @@ class ItemBox
   _classesHTML: ->
     if @item.classes.length
       html = '<div id="classes">'
-      for i in @item.classes
+      for class_ in @item.classes
         html +=
           """
-          <a href="/search?q=#{i}" target="_blank"
-           title="#{i}" class="#{i.toLowerCase()}"></a>
+          <a href="/search?q=#{class_}" target="_blank"
+           title="#{class_}" class="#{class_.toLowerCase()}"></a>
           """
       html += '</div>'
     else ''
@@ -147,13 +147,16 @@ class ItemBox
         if denomMatch
           denom = denomMatch[0]
 
-          price = price.replace(/(\d+(\.\d+)?)/g,
-            """
-            <a href="/search?q=\$1%20#{denom}"
-             target="_blank" class="glow">\$1</a>
-            """)
-        html += "<span class='#{quality.toLowerCase().replace "'", ''}'>#{
-          quality}</span>: #{price}<br>"
+          price = price.replace /(\d+(\.\d+)?)/g,
+            "<a href='/search?q=\$1%20#{denom}'
+              target='_blank' class='glow'>\$1</a>"
+
+        html +=
+          """
+          <a href="/search?q=#{quality}" target="_blank"
+           class="#{quality.toLowerCase().replace "'", ''}">#{
+           quality}: #{price}</a><br>
+          """
 
     return html
 
@@ -165,17 +168,17 @@ class ItemBox
   _blueprintsHTML: ->
     if @item.blueprints.length
       html = '<div id="blueprints">'
-      for b in @item.blueprints
-        chance = b.getAttribute 'data-chance'
+      for blueprint in @item.blueprints
+        chance = blueprint.getAttribute 'data-chance'
 
         html += '<div class="blueprint">'
-        for i in b.getElementsByTagName 'li'
-          for j in [0...i.getAttribute 'data-count']
-            name = i.title
-            index = i.getAttribute 'data-index'
-            style = "background-image: url(#{i.getAttribute 'data-image'})"
+        for item in blueprint.getElementsByTagName 'li'
+          for i in [0...item.getAttribute 'data-count']
+            name = item.title
+            index = item.getAttribute 'data-index'
+            style = "background-image: url(#{item.getAttribute 'data-image'})"
 
-            listItem =  "<div title=\"#{name}\" class='item-small' style='#{
+            listItem = "<div title=\"#{name}\" class='item-small' style='#{
               style}'></div>"
 
             if index
