@@ -56,7 +56,7 @@
     <Content Include=".gitignore" />
     <Content Include="blueprints.json" />
     <Content Include="etc\cron.daily\backup" />
-    <Content Include="etc\cron.hourly\update-cache" />
+    <Content Include="etc\cron.hourly\update-store" />
     <Content Include="etc\init.d\gunicorn" />
     <Content Include="etc\nginx\nginx.conf" />
     <Content Include="LICENSE" />
@@ -117,12 +117,12 @@
     <Content Include="templates\user.html" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cache.py" />
     <Compile Include="config.py" />
     <Compile Include="main.py" />
+    <Compile Include="store.py" />
     <Compile Include="tf2api.py" />
     <Compile Include="tf2search.py" />
-    <Compile Include="updatecache.py" />
+    <Compile Include="updatestore.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="etc\" />
