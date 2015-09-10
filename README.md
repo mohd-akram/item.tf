@@ -20,7 +20,7 @@ Run this command to install dependencies.
 
 You'll also need to install the [Redis server](http://redis.io/download).
 
-Run updatecache.py to update the Redis cache. Then, simply launch main.py.
+Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
 To host the site in Ubuntu 14.04 using gunicorn and nginx,
  clone into /var/www/item.tf and run the following in the project directory:
