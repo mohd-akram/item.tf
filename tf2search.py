@@ -53,7 +53,7 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     backpackprices = tf2api.getbackpackprices(backpackkey, items, itemsbyname)
     tradeprices = tf2api.gettradeprices(tradekey, items, itemsbyname)
 
-    with open(blueprintsfilename) as f:
+    with open(blueprintsfilename, encoding='utf-8') as f:
         data = json.loads(f.read())
     blueprints = _parseblueprints(data, itemsbyname)
 
