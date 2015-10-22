@@ -6,7 +6,7 @@ import logging
 from base64 import b64encode
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
-from urllib.error import HTTPError
+from urllib.error import URLError
 
 import jinja2
 import ujson
@@ -399,7 +399,7 @@ def getuser(steamid, urltype='profiles', create=False):
         try:
             steamuser = tf2api.getplayersummary(config.apikey, steamid)
 
-        except HTTPError:
+        except URLError:
             # Postpone update if this is not a new user
             if create:
                 raise
