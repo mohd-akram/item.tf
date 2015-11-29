@@ -6,7 +6,7 @@
   color: #8F8980;
 }
 
-#message span, a {
+#message a, #message span {
   color: #C9C6BC;
 }
 
