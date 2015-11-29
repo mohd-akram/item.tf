@@ -89,6 +89,7 @@ def main(flush):
 
         pipe.execute()
 
+    store.delete('items:new')
     for index in tf2info.newstoreprices:
         store.sadd('items:new', index)
 

@@ -405,7 +405,8 @@ def getitemtags(item):
 
 def getobsoleteindexes():
     """Return the indexes of obsolete items that have newer versions"""
-    return {699, 2007, 2015, 2049, 2079, 2093, 2123} | set(range(2018, 2027))
+    return ({699, 2007, 2015, 2049, 2079, 2093, 2123, 2125, 2138, 2139} |
+            set(range(2018, 2027)))
 
 
 def getplayersummary(apikey, steamid):
