@@ -12,6 +12,7 @@
 
 {% block container %}
   <h2 id="back"><a href="/">{% include 'logo.html' %}</a></h2>
+  {% include 'search-form.html' %}
   <div class="itembox" style="display: block; overflow: hidden">
     <h2 class="itemname">{{item['name']}}</h2>
     {% if item['marketprice']['backpack.tf'] %}

@@ -110,65 +110,65 @@
 
 {% block script %}
   <script>
-  $(function() {
-    var searchBox = $('#searchbox');
-    searchBox.focus();
-
-    var tips = ['engi hats', 'medic weps', 'demo melee', '< 3 ref', 'genuine < 4 ref hats', '5 ref to rec'];
-    var tipNo = 0;
-    var nextTip = function() {
-      searchBox.attr('placeholder', tips[tipNo++]);
-      tipNo %= tips.length;
-    };
-    nextTip();
-    setInterval(nextTip, 4000);
-
-    $('#searchform').submit(function() {
-      if (!searchBox.val())
-        searchBox.val(searchBox.attr('placeholder'));
-    });
-
-    $('#pricesetting').val(user.priceSource);
-
-    $('#help').click(function(){
-      $('#settings-list').hide();
-      $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
-    });
-
-    $('#settings').click(function() {
-      $('#help-list').hide();
-      $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
-    });
-
-    $('#settingsform').submit(function() {
-      user.priceSource = $('#pricesetting').val();
-      $('#settings-list').hide('fast');
-      return false;
-    });
-
-    var itemBox = new ItemBox(); new HoverBox(itemBox);
-
     $(function() {
-      var accentMap = {
+      var searchBox = $('#searchbox');
+      searchBox.focus();
+
+      var tips = ['engi hats', 'medic weps', 'demo melee', '< 3 ref', 'genuine < 4 ref hats', '5 ref to rec'];
+      var tipNo = 0;
+      var nextTip = function() {
+        searchBox.attr('placeholder', tips[tipNo++]);
+        tipNo %= tips.length;
+      };
+      nextTip();
+      setInterval(nextTip, 4000);
+
+      $('#searchform').submit(function() {
+        if (!searchBox.val())
+          searchBox.val(searchBox.attr('placeholder'));
+      });
+
+      $('#pricesetting').val(user.priceSource);
+
+      $('#help').click(function(){
+        $('#settings-list').hide();
+        $('#help-list').toggle('slide', {'direction': 'right'}, 'fast');
+      });
+
+      $('#settings').click(function() {
+        $('#help-list').hide();
+        $('#settings-list').toggle('slide', {'direction': 'right'}, 'fast');
+      });
+
+      $('#settingsform').submit(function() {
+        user.priceSource = $('#pricesetting').val();
+        $('#settings-list').hide('fast');
+        return false;
+      });
+
+      var itemBox = new ItemBox(); new HoverBox(itemBox);
+
+      $(function() {
+        var accentMap = {
           'ä': 'a',
           'é': 'e',
           'ò': 'o',
           'ü': 'u',
           'Ü': 'U'
-      };
+        };
 
-      var normalize = function( term ) {
+        var normalize = function(term) {
           var ret = "";
-          for ( var i = 0; i < term.length; i++ ) {
-              ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-          }
+          for (var i = 0; i < term.length; i++)
+            ret += accentMap[term.charAt(i)] || term.charAt(i);
           return ret;
-      };
+        };
 
-      $.getJSON('/suggest', function (data) {
-
-        searchBox.autocomplete({
-          source: function(request, response) {
+        $.getJSON('/suggest', function(data) {
+          searchBox.autocomplete({
+            delay: 50,
+            minLength: 2,
+            source: function(request, response) {
               var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
               response(function() {
                 var result = [];
@@ -179,16 +179,26 @@
                 }
                 return result;
               }());
-            }, delay: 50, minLength: 2,
-            focus: function(event, ui) {$(this).val(ui.item.label);return false;},
+            },
+            focus: function(event, ui) {
+              $(this).val(ui.item.label);
+              return false;
+            },
             select: function(event, ui) {
               $(this).val(ui.item.label);
-              var spinner = new Spinner({lines: 8, length: 4, width: 2.5, radius: 5, color: 'rgba(255, 255, 255, 0.5)'})
-                                       .spin(document.getElementById('loading'));
+
+              var spinner = new Spinner({
+                lines: 8,
+                length: 4,
+                width: 2.5,
+                radius: 5,
+                color: 'rgba(255, 255, 255, 0.5)'
+              }).spin(document.getElementById('loading'));
+
               $.get(ui.item.value, function(data) {
-                var searchItems = $('#searchitems')
+                var searchItems = $('#searchitems');
                 if (searchItems.children().size() == 5)
-                  searchItems.children().first().remove()
+                  searchItems.children().first().remove();
 
                 var item = $(data).find('.item').css('display', 'inline-block');
                 searchItems.append(item.parent());
@@ -201,13 +211,13 @@
               });
               return false;
             }
+          });
         });
       });
-    });
 
-    if (window.external && 'IsSearchProviderInstalled' in window.external)
-      if (!window.external.IsSearchProviderInstalled("{{homepage}}"))
-        $('#addsearch').show()
-  });
+      if (window.external && window.external.IsSearchProviderInstalled)
+        if (!window.external.IsSearchProviderInstalled("{{homepage}}"))
+          $('#addsearch').show();
+    });
   </script>
 {% endblock %}
