@@ -311,7 +311,7 @@ ul {
   bottom: 6px;
 }
 
-#buttons a, input, select {
+#buttons a, #buttons input, #buttons select {
   margin: 0 0 0 5px;
 }
 
