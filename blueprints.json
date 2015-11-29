@@ -1889,7 +1889,9 @@
       "Pomade Prince",
       "Biomech Backpack",
       "Alien Cranium",
-      "Xeno Suit"
+      "Xeno Suit",
+      "Bootenkhamuns",
+      "Orion's Belt"
     ]
   ],
   "Fabricate Class Headgear (Sniper)": [
@@ -2029,7 +2031,9 @@
       "Brawling Buccaneer",
       "Founding Father",
       "Viking Braider",
+      "Cuban Bristle Crisis",
       "Slo-Poke",
+      "Toy Soldier",
       "Antarctic Parka",
       "Marshall's Mutton Chops",
       "Ground Control",
@@ -2198,7 +2202,8 @@
       "Eliminators Safeguard",
       "Combat Slacks",
       "Sammy Cap",
-      "Yuri's Revenge"
+      "Yuri's Revenge",
+      "Jungle Booty"
     ]
   ],
   "Fabricate Class Headgear (Medic)": [
@@ -2479,6 +2484,7 @@
       "Pardner's Pompadour",
       "Flared Frontiersman",
       "Viking Braider",
+      "Cuban Bristle Crisis",
       "Beep Boy",
       "Special Eyes",
       "Gold Digger",
