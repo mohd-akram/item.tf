@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/css/animate.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     {% block link %}{% endblock %}
-    <script src="/js/main.js"></script>
     {% block js %}{% endblock %}
     {% include 'analytics.html' %}
     {% block style %}{% endblock %}
@@ -25,6 +24,7 @@
         {% block footer %}{% endblock %}{% include 'footer.html' %}
       </footer>
     </div>
+    <script src="/js/main.js"></script>
     {% block script %}{% endblock %}
   </body>
 </html>
