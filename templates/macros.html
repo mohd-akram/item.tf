@@ -11,11 +11,13 @@
 </ul>
 {%- endfor %}
 
+{% if item['attributes'] %}
 <div style="display: none">
 {% for a in item['attributes'] %}
 <span class="{{a['type']}}">{{a['description']}}</span>
 {% endfor %}
 </div>
+{% endif %}
 </div>
 </a>
 {% endmacro %}
