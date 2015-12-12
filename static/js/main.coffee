@@ -104,7 +104,8 @@ class ItemBox
       <i id="shortlinkbutton" class="fa fa-caret-square-o-down"
        title="Short URL"></i><br>
       <div id="shortlink" style="display:none">
-      <input type="text" value="http://item.tf/#{@item.id}" readonly><br></div>
+      <input type="text" value="https://item.tf/#{@item.id}" readonly><br>
+      </div>
       """
 
   _classesHTML: ->

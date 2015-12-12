@@ -7,7 +7,7 @@ tradekey = ''
 # Blueprints file path
 blueprintsfile = 'blueprints.json'
 # Site homepage
-homepage = 'http://item.tf'
+homepage = 'https://item.tf'
 # Homepage messages
 messages = (
     'Tip: You can use <span>Esc</span> to close the item information box.',

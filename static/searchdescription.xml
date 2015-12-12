@@ -3,10 +3,10 @@
   <ShortName>item.tf</ShortName>
   <Description>Find TF2 items</Description>
   <Url type="text/html"
-       template="http://item.tf/search?q={searchTerms}"/>
+       template="https://item.tf/search?q={searchTerms}"/>
   <Url type="application/x-suggestions+json"
-       template="http://item.tf/suggest?q={searchTerms}"/>
+       template="https://item.tf/suggest?q={searchTerms}"/>
   <Url type="application/opensearchdescription+xml"
        rel="self"
-       template="http://item.tf/searchdescription.xml" />
+       template="https://item.tf/searchdescription.xml" />
 </OpenSearchDescription>
