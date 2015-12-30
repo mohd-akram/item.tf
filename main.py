@@ -155,6 +155,14 @@ def search(is_json):
 @post('/wishlist/<option:re:add|remove>')
 def wishlist(option):
     user = getcurrentuser()
+
+    if not user:
+        response.status = 401
+        response.headers['WWW-Authenticate'] = (
+            'OpenID identifier="http://steamcommunity.com/openid"'
+        )
+        return
+
     userkey = getuserkey(user['id'])
 
     if option == 'add':
@@ -370,6 +378,7 @@ def getcurrentuser():
         userid = store.get(getsessionkey(sid))
         if userid:
             user = getuser(userid)
+        if user:
             expires = datetime.now() + session_age
             response.set_cookie('steam_id', user['id'], expires=expires)
         else:
@@ -407,7 +416,7 @@ def getuser(steamid, urltype='profiles', create=False):
 
         user['name'] = steamuser['personaname']
         # Remove trailing slash and parse url
-        user['url'] = urlparse(steamuser['profileurl'][:-1]).path
+        user['url'] = urlparse(steamuser['profileurl'].rstrip('/')).path
         user['avatar'] = steamuser['avatar']
         user['state'] = ('Online' if steamuser['personastate'] != 0 else
                          'Offline')
