@@ -182,10 +182,11 @@ def wishlist(option):
     elif option == 'remove':
         i = int(request.forms.get('i'))
 
-        del user['wishlist'][i]
-        store.hset(userkey, 'wishlist', user['wishlist'])
+        if 0 <= i < len(user['wishlist']):
+            del user['wishlist'][i]
+            store.hset(userkey, 'wishlist', user['wishlist'])
 
-        return 'Removed'
+            return 'Removed'
 
 
 @get('/suggest')
