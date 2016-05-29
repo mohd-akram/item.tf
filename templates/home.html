@@ -212,7 +212,7 @@
         });
       });
 
-      if (window.external && window.external.IsSearchProviderInstalled)
+      if (window.external && 'IsSearchProviderInstalled' in window.external)
         if (!window.external.IsSearchProviderInstalled("{{homepage}}"))
           $('#addsearch').show();
     });
