@@ -120,7 +120,7 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
 
     qualities = getallqualities()
 
-    denoms = {'metal': 'Refined', 'keys': 'Key',
+    denoms = {'metal': 'Refined', 'hat': 'Hat', 'keys': 'Key',
               'earbuds': 'Bud', 'usd': 'USD'}
 
     for name, iteminfo in pricesdata.items():
@@ -162,6 +162,9 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
                             price = price['0']
                         else:
                             continue
+
+                    if not price['value']:
+                        continue
 
                     value = price['value']
                     valuehigh = (' - {:g}'.format(price['value_high'])
