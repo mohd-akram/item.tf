@@ -1,4 +1,0 @@
-#!/bin/sh
-cd /var/www/item.tf
-mkdir -p backups
-cp /var/lib/redis/dump.rdb backups/$(date +%Y%m%d%H%M).rdb

@@ -1,12 +1,11 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-cd /var/www/item.tf
-mkdir -p logs/gunicorn
+cd /srv/www/item.tf
 
 case "$1" in
 start)
 logger -p daemon.info "Starting Gunicorn server"
-gunicorn --daemon --workers=3 --access-logfile=logs/gunicorn/access --error-logfile=logs/gunicorn/error main:app
+gunicorn --daemon --workers=3 --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log main:app
 ;;
 
 stop)

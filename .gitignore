@@ -166,6 +166,4 @@ web.config
 web.debug.config
 
 config.py
-logs
-backups
 ~*

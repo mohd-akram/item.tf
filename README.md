@@ -23,7 +23,7 @@ You'll also need to install the [Redis server](http://redis.io/download).
 Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
 To host the site in Ubuntu 14.04 using gunicorn and nginx,
- clone into /var/www/item.tf and run the following in the project directory:
+ clone into /srv/www/item.tf and run the following in the project directory:
 
     pip3 install gunicorn
     sudo apt-get install nginx redis-server
@@ -32,6 +32,7 @@ To host the site in Ubuntu 14.04 using gunicorn and nginx,
     unlink default
     cd /etc/init.d
     update-rc.d gunicorn defaults
+    mkdir -p /var/log/gunicorn
 
 Structure
 ---------
