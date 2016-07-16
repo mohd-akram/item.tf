@@ -43,7 +43,7 @@ def getitemsinfo(apikey, storeprices, indexes, timeout=30):
 def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
     indexes = [index for index, price in storeprices.items()
-               if 'Bundles' in price['tags']]
+               if not {'Bundles', 'Class_Bundles'}.isdisjoint(price['tags'])]
     return getitemsinfo(apikey, storeprices, indexes)
 
 
