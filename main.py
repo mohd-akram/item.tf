@@ -242,7 +242,8 @@ def login():
     sid = b64encode(os.urandom(16)).decode()
     session = {'sid': sid}
     expires = datetime.now() + session_age
-    response.set_cookie('sid', sid, expires=expires)
+    response.set_cookie('sid', sid, expires=expires,
+                        httponly=True, secure=True)
 
     c = consumer.Consumer(session, None)
     a = c.begin('http://steamcommunity.com/openid')
