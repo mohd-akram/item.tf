@@ -14,8 +14,10 @@ from urllib.error import URLError
 import jinja2
 import rapidjson
 import uvloop
-from bottle import (get, post, abort, error, request, response, redirect,
-                    static_file, run, default_app)
+import sanic
+from sanic import Sanic
+from sanic.response import redirect
+from sanic.exceptions import abort, NotFound
 from aioredis import create_redis
 from openid.consumer import consumer
 from slugify import slugify
@@ -24,8 +26,6 @@ import config
 import tf2api
 import tf2search
 from store import Redis
-
-logger = logging.getLogger('gunicorn.error')
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -38,24 +38,17 @@ session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+app = Sanic(log_config=config.logging)
 
 
-def sync(f):
-    def wait(*args, **kwargs):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(f(*args, **kwargs))
-    return wait
-
-
-@sync
-async def init():
+@app.listener('before_server_start')
+async def init(app, loop):
     global store
     store = await create_redis(('localhost', 6379), commands_factory=Redis)
 
 
-@get('/')
-@sync
-async def home():
+@app.get('/')
+async def home(request):
     t0 = await store.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
@@ -63,32 +56,34 @@ async def home():
 
     user = await getcurrentuser(request)
 
+    response = await render('home.html',
+                            homepage=config.homepage,
+                            user=user,
+                            tags=tf2api.getalltags(),
+                            newitems=newitems,
+                            message=random.choice(config.messages),
+                            lastupdated=lastupdated)
+
     if user:
         expires = datetime.now() + session_age
-        response.set_cookie('steam_id', user['id'], expires=expires)
+        response.cookies['steam_id'] = user['id']
+        response.cookies['steam_id']['expires'] = expires
     else:
-        response.delete_cookie('sid')
-        response.delete_cookie('steam_id')
+        del response.cookies['sid']
+        del response.cookies['steam_id']
 
-    return await render('home.html',
-                        homepage=config.homepage,
-                        user=user,
-                        tags=tf2api.getalltags(),
-                        newitems=newitems,
-                        message=random.choice(config.messages),
-                        lastupdated=lastupdated)
+    return response
 
 
-@get('/search/<slug:re:[a-z]+(?:-[0-9a-z]+)*>')
-@get('/search<is_json:re:(\.json)?>')
-@sync
-async def search(**kwargs):
+@app.get('/search/<slug:[a-z]+(?:-[0-9a-z]+)*>')
+@app.get('/search<is_json:(\.json)?>')
+async def search(request, **kwargs):
     user = asyncio.ensure_future(getcurrentuser(request))
 
     slug = kwargs.get('slug')
     is_json = kwargs.get('is_json', '')
 
-    query = slug.replace('-', ' ') if slug else request.query.q
+    query = slug.replace('-', ' ') if slug else request.args.get('q')
 
     if not query:
         if is_json:
@@ -117,7 +112,7 @@ async def search(**kwargs):
         results = [tf2search.getsearchresult(items=items)]
     else:
         sources = ('backpack.tf', 'trade.tf')
-        pricesource = request.get_cookie('price_source')
+        pricesource = request.cookies.get('price_source')
         if pricesource not in sources:
             pricesource = sources[0]
 
@@ -218,11 +213,9 @@ async def search(**kwargs):
                             time=round(t1 - t0, 3))
 
 
-# Must be after search route and in this order
-@get('/<slug:re:[a-z0-9]+(?:-[a-z0-9]+)*>')
-@get('/<index:re:[0-9]+><is_json:re:(\.json)?>')
-@sync
-async def item(**kwargs):
+@app.get('/<slug:[a-z0-9]+(?:-[a-z0-9]+)*>')
+@app.get('/<index:[0-9]+><is_json:(\.json)?>')
+async def item(request, **kwargs):
     slug = kwargs.get('slug')
     index = kwargs.get('index')
     is_json = kwargs.get('is_json')
@@ -231,15 +224,15 @@ async def item(**kwargs):
 
     if item and index is not None and not is_json:
         slug = slugify(item['name'])
-        return redirect(f'/{slug}', code=301)
+        return redirect(f'/{slug}', status=301)
 
     if not item:
         if is_json:
-            return {'error': 'Item does not exist.'}
+            return tojson({'error': 'Item does not exist.'})
         abort(404)
 
     if is_json:
-        return item
+        return tojson(item)
     else:
         name = item['name']
         tags_text = '/'.join(item['tags']) if item['tags'] else 'item'
@@ -271,12 +264,12 @@ def getlistastext(l, default=''):
             if l else default)
 
 
-@post('/wishlist/<option:re:add|remove>')
-@sync
-async def wishlist(option):
+@app.post('/wishlist/<option:add|remove>')
+async def wishlist(request, option):
     user = await getcurrentuser(request)
 
     if not user:
+        response = sanic.response.HTTPReponse()
         response.status = 401
         response.headers['WWW-Authenticate'] = (
             'OpenID identifier="http://steamcommunity.com/openid"'
@@ -286,8 +279,8 @@ async def wishlist(option):
     userkey = getuserkey(user['id'])
 
     if option == 'add':
-        index = int(request.forms.get('index'))
-        quality = int(request.forms.get('quality'))
+        index = int(request.form.get('index'))
+        quality = int(request.form.get('quality'))
 
         if (await store.sismember('items:indexes', index) and
                 quality in tf2api.getallqualities()):
@@ -297,22 +290,21 @@ async def wishlist(option):
                                          'quality': quality})
                 await store.hset(userkey, 'wishlist', user['wishlist'])
 
-                return 'Added'
+                return sanic.response.text('Added')
 
     elif option == 'remove':
-        i = int(request.forms.get('i'))
+        i = int(request.form.get('i'))
 
         if 0 <= i < len(user['wishlist']):
             del user['wishlist'][i]
             await store.hset(userkey, 'wishlist', user['wishlist'])
 
-            return 'Removed'
+            return sanic.response.text('Removed')
 
 
-@get('/suggest')
-@sync
-async def suggest():
-    query = request.query.q
+@app.get('/suggest')
+async def suggest(request):
+    query = request.args.get('q')
 
     allsuggestions = await store.get('items:suggestions')
     suggestions = [query, [], [], []]
@@ -331,10 +323,9 @@ async def suggest():
     return tojson(suggestions)
 
 
-@get('/<urltype:re:id>/<steamid:re:[A-Za-z0-9_-]+>')
-@get('/<urltype:re:profiles>/<steamid:re:[0-9]+>')
-@sync
-async def user(urltype, steamid):
+@app.get('/<urltype:id>/<steamid:[A-Za-z0-9_-]+>')
+@app.get('/<urltype:profiles>/<steamid:[0-9]+>')
+async def user(request, urltype, steamid):
     path = urlparse(request.url).path
 
     currentuser = await getcurrentuser(request)
@@ -361,32 +352,38 @@ async def user(urltype, steamid):
                         items=items)
 
 
-@get('/login')
-def login():
+@app.get('/login')
+def login(request):
     sid = b64encode(os.urandom(16)).decode()
     session = {'sid': sid}
-    expires = datetime.now() + session_age
-    response.set_cookie('sid', sid, expires=expires,
-                        httponly=True, secure=True)
 
     c = consumer.Consumer(session, None)
     a = c.begin('http://steamcommunity.com/openid')
     url = a.redirectURL(config.homepage, login_verify_url)
 
-    return redirect(url)
+    response = redirect(url)
+
+    response.cookies['sid'] = sid
+    response.cookies['sid']['expires'] = datetime.now() + session_age
+    response.cookies['sid']['httponly'] = True
+    response.cookies['sid']['secure'] = True
+
+    return response
 
 
-@get('/login/verify')
-@sync
-async def login_verify():
-    sid = request.get_cookie('sid')
+@app.get('/login/verify')
+async def login_verify(request):
+    sid = request.cookies.get('sid')
     session = {'sid': sid}
 
     c = consumer.Consumer(session, None)
-    info = c.complete(request.query, login_verify_url)
+    info = c.complete(
+        {k: request.args.get(k) for k in request.args},
+        login_verify_url
+    )
 
     if info.status == consumer.SUCCESS:
-        steamid = request.query['openid.claimed_id'].split('/')[-1]
+        steamid = request.args.get('openid.claimed_id').split('/')[-1]
         user = await getuser(steamid, create=True)
         await store.setex(getsessionkey(sid), int(session_age.total_seconds()),
                           user['id'])
@@ -394,40 +391,32 @@ async def login_verify():
     return redirect('/')
 
 
-@get('/sitemap.xml')
-@sync
-async def sitemap():
-    response.set_header('Content-Type', 'application/xml;charset=UTF-8')
-    return await store.get('sitemap')
+@app.get('/sitemap.xml')
+async def sitemap(request):
+    response = sanic.response.text(await store.get('sitemap'))
+    response.headers['Content-Type'] = 'application/xml;charset=UTF-8'
+    return response
 
 
-@get('/<filepath:path>')
-def server_static(filepath):
-    return static_file(filepath, root='./static')
-
-
-@error(404)
-@sync
-async def error404(exception):
+@app.exception(NotFound)
+async def error404(request, exception):
     return await render('error.html', message='Page Not Found')
 
 
-@error(500)
-@sync
-async def error500(exception):
-    logger.exception(exception)
+@app.exception(Exception)
+async def error500(request, exception):
+    logging.exception(exception)
     return await render('error.html', message='Server Error')
 
 
 async def render(template, **params):
     """Render HTML template"""
     template = jinja_env.get_template(template)
-    return await template.render_async(params)
+    return sanic.response.html(await template.render_async(params))
 
 
 def tojson(*args, **kwargs):
-    response.set_header('Content-Type', 'application/json;charset=UTF-8')
-    return rapidjson.dumps(*args, **kwargs)
+    return sanic.response.json(*args, **kwargs, dumps=rapidjson.dumps)
 
 
 async def getresults(classes, tags):
@@ -510,7 +499,7 @@ def gettagkey(tag=None):
 async def getcurrentuser(request):
     user = None
 
-    sid = request.get_cookie('sid')
+    sid = request.cookies.get('sid')
 
     if sid:
         userid = await store.get(getsessionkey(sid))
@@ -598,9 +587,7 @@ def getitemkey(index):
     return 'item:{}'.format(index)
 
 
-init()
+app.static('/', './static')
 
 if __name__ == '__main__':
-    run(host='localhost', port=8000, reloader=True)
-
-app = default_app()
+    app.run(host='0.0.0.0', port=8000, debug=True)

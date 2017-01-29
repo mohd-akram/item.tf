@@ -5,8 +5,7 @@ install:
 	python3 -m venv /usr/local/libexec/item.tf
 	. /usr/local/libexec/item.tf/bin/activate && \
 	pip install --upgrade pip && \
-	pip install -r requirements.txt && \
-	pip install gunicorn
+	pip install -r requirements.txt
 	# 3. Link configs
 	touch /usr/local/etc/nginx/common
 	mkdir -p /usr/local/etc/nginx/sites

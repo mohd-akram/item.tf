@@ -1,7 +1,7 @@
 uvloop
 aiohttp
 aioredis
-bottle
+sanic
 jinja2
 python-rapidjson
 python3-openid

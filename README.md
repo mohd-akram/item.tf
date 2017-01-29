@@ -1,7 +1,7 @@
 item.tf
 =======
 
-This is a bottle.py site that lets you search TF2 items and find the ones you
+This is a Sanic site that lets you search TF2 items and find the ones you
 want. There are two main ways to search - you can either use regular keyword
 search or search by classes and item tags (eg. weapon, misc, hat, etc.). Once
 you find an item you want, you can get all kinds of information about it such

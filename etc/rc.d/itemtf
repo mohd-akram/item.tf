@@ -11,14 +11,9 @@ name=itemtf
 load_rc_config $name
 : ${itemtf_user:=item.tf}
 : ${itemtf_chdir:=/usr/local/www/item.tf}
+: ${itemtf_prepend:="/usr/sbin/daemon -f"}
 
-virtualenv="/usr/local/libexec/item.tf"
-
-command_interpreter="$virtualenv/bin/python3"
-
-command="$virtualenv/bin/gunicorn"
-command_args="--daemon --workers=3 \
-	--log-syslog --log-syslog-to unix:///var/run/log#dgram \
-	--log-syslog-prefix item.tf --log-syslog-facility local0 main:app"
+command="/usr/local/libexec/item.tf/bin/python3"
+command_args="-m sanic main.app"
 
 run_rc_command "$1"
