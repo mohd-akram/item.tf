@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 import os
 import time
 import random
+import asyncio
 import logging
 from base64 import b64encode
 from datetime import datetime, timedelta
@@ -10,8 +12,10 @@ from urllib.error import URLError
 
 import jinja2
 import rapidjson
+import uvloop
 from bottle import (get, post, error, request, response, redirect, static_file,
                     run, default_app)
+from aioredis import create_redis
 from openid.consumer import consumer
 
 import config
@@ -23,33 +27,59 @@ logger = logging.getLogger('gunicorn.error')
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
-                               autoescape=True, trim_blocks=True)
+                               autoescape=True, trim_blocks=True,
+                               enable_async=True)
 
-store = Redis(host='localhost', port=6379, db=0)
 
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+def sync(f):
+    def wait(*args, **kwargs):
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(f(*args, **kwargs))
+    return wait
+
+
+@sync
+async def init():
+    global store
+    store = await create_redis(('localhost', 6379), commands_factory=Redis)
+
 
 @get('/')
-def home():
-    t0 = store.get('items:lastupdated')
+@sync
+async def home():
+    t0 = await store.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
-    newitems = getitems(store.srandmember('items:new', 5))
+    newitems = await getitems(await store.srandmember('items:new', 5))
 
-    return render('home.html',
-                  homepage=config.homepage,
-                  user=getcurrentuser(),
-                  tags=tf2api.getalltags(),
-                  newitems=newitems,
-                  message=random.choice(config.messages),
-                  lastupdated=lastupdated)
+    user = await getcurrentuser(request)
+
+    if user:
+        expires = datetime.now() + session_age
+        response.set_cookie('steam_id', user['id'], expires=expires)
+    else:
+        response.delete_cookie('sid')
+        response.delete_cookie('steam_id')
+
+    return await render('home.html',
+                        homepage=config.homepage,
+                        user=user,
+                        tags=tf2api.getalltags(),
+                        newitems=newitems,
+                        message=random.choice(config.messages),
+                        lastupdated=lastupdated)
 
 
 @get('/<index:int><is_json:re:(\.json)?>')
-def item(index, is_json):
-    item = getitem(index)
+@sync
+async def item(index, is_json):
+    item = await getitem(index)
 
     if not item:
         if is_json:
@@ -70,13 +100,14 @@ def item(index, is_json):
         if item['tags']:
             desc_list.append(', '.join(item['tags']).title())
 
-        return render('item.html',
-                      item=item,
-                      description=' | '.join(desc_list))
+        return await render('item.html',
+                            item=item,
+                            description=' | '.join(desc_list))
 
 
 @get('/search<is_json:re:(\.json)?>')
-def search(is_json):
+@sync
+async def search(is_json):
     query = request.query.q
 
     if not query:
@@ -85,10 +116,10 @@ def search(is_json):
         return redirect('/')
 
     elif query == 'random':
-        index = store.srandmember('items:indexes')
+        index = await store.srandmember('items:indexes')
         return redirect('/{}{}'.format(index, is_json))
 
-    itemnames = store.Hash('items:names')
+    itemnames = await store.Hash('items:names').todict()
 
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
@@ -97,7 +128,7 @@ def search(is_json):
 
     if query == 'all':
         items = store.Hashes(
-            [getitemkey(k) for k in store.sort('items')])
+            [getitemkey(k.decode()) for k in await store.sort('items')])
         results = [tf2search.getsearchresult(items=items)]
     else:
         sources = ('backpack.tf', 'trade.tf')
@@ -105,7 +136,16 @@ def search(is_json):
         if pricesource not in sources:
             pricesource = sources[0]
 
-        items = store.HashSet('items', getitemkey)
+        items = {
+            item['index']: item async for item in store.Hashes([
+                getitemkey(143),  # Earbuds
+                getitemkey(5021),  # Key
+                getitemkey(5002),  # Refined
+                getitemkey(5001),  # Reclaimed
+                getitemkey(5000),  # Scrap
+                getitemkey(0)  # Weapon
+            ])
+        }
         results = tf2search.visualizeprice(query, items, pricesource)
 
         input_ = tf2search.parseinput(query)
@@ -114,9 +154,6 @@ def search(is_json):
 
         if results is not None:
             if len(results) != 0:
-                for item in results[0]['items']:
-                    item['item'] = item['item'].todict()
-
                 if not is_json:
                     items = []
                     for item in results[0]['items']:
@@ -124,16 +161,16 @@ def search(is_json):
                     results[0]['items'] = items
 
         elif classes or tags:
-            results = getresults(classes, tags)
+            results = await getresults(classes, tags)
 
         else:
-            itemsdict = store.SearchHashSet(
+            itemsdict = await store.SearchHashSet(
                 'items', getitemkey,
                 ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
                 int)
 
-            itemsets = store.get('items:sets')
-            bundles = store.get('items:bundles')
+            itemsets = await store.get('items:sets')
+            bundles = await store.get('items:bundles')
 
             results = tf2search.search(query, itemsdict, itemnames,
                                        itemsets, bundles, pricesource)
@@ -147,23 +184,25 @@ def search(is_json):
     if is_json:
         return tojson(results)
     else:
-        return render('search.html',
-                      query=query,
-                      results=results,
-                      count=sum(len(result['items']) for result in results),
-                      time=round(t1 - t0, 3))
+        return await render('search.html',
+                            query=query,
+                            results=results,
+                            count=sum(len(result['items'])
+                                      for result in results),
+                            time=round(t1 - t0, 3))
 
 
 @post('/wishlist/<option:re:add|remove>')
-def wishlist(option):
-    user = getcurrentuser()
+@sync
+async def wishlist(option):
+    user = await getcurrentuser(request)
 
     if not user:
         response.status = 401
         response.headers['WWW-Authenticate'] = (
             'OpenID identifier="http://steamcommunity.com/openid"'
         )
-        return
+        return response
 
     userkey = getuserkey(user['id'])
 
@@ -171,13 +210,13 @@ def wishlist(option):
         index = int(request.forms.get('index'))
         quality = int(request.forms.get('quality'))
 
-        if (store.sismember('items:indexes', index) and
+        if (await store.sismember('items:indexes', index) and
                 quality in tf2api.getallqualities()):
 
             if len(user['wishlist']) < 100:
                 user['wishlist'].append({'index': index,
                                          'quality': quality})
-                store.hset(userkey, 'wishlist', user['wishlist'])
+                await store.hset(userkey, 'wishlist', user['wishlist'])
 
                 return 'Added'
 
@@ -186,16 +225,17 @@ def wishlist(option):
 
         if 0 <= i < len(user['wishlist']):
             del user['wishlist'][i]
-            store.hset(userkey, 'wishlist', user['wishlist'])
+            await store.hset(userkey, 'wishlist', user['wishlist'])
 
             return 'Removed'
 
 
 @get('/suggest')
-def suggest():
+@sync
+async def suggest():
     query = request.query.q
 
-    allsuggestions = store.get('items:suggestions')
+    allsuggestions = await store.get('items:suggestions')
     suggestions = [query, [], [], []]
 
     if query:
@@ -214,18 +254,21 @@ def suggest():
 
 @get('/<urltype:re:id>/<steamid:re:[A-Za-z0-9_-]+>')
 @get('/<urltype:re:profiles>/<steamid:re:[0-9]+>')
-def user(urltype, steamid):
-    currentuser = getcurrentuser()
-    if currentuser and currentuser['url'] == request.urlparts.path:
+@sync
+async def user(urltype, steamid):
+    path = urlparse(request.url).path
+
+    currentuser = await getcurrentuser(request)
+    if currentuser and currentuser['url'] == path:
         user = currentuser
     else:
-        user = getuser(steamid, urltype)
+        user = await getuser(steamid, urltype)
 
     if user:
-        if user['url'] != request.urlparts.path:
+        if user['url'] != path:
             return redirect(user['url'])
 
-        items = getitems(item['index'] for item in user['wishlist'])
+        items = await getitems(item['index'] for item in user['wishlist'])
 
         for i, item in enumerate(items):
             item.update({'i': i})
@@ -234,9 +277,9 @@ def user(urltype, steamid):
     else:
         return redirect('/')
 
-    return render('user.html',
-                  user=user,
-                  items=items)
+    return await render('user.html',
+                        user=user,
+                        items=items)
 
 
 @get('/login')
@@ -255,7 +298,8 @@ def login():
 
 
 @get('/login/verify')
-def login_verify():
+@sync
+async def login_verify():
     sid = request.get_cookie('sid')
     session = {'sid': sid}
 
@@ -264,17 +308,18 @@ def login_verify():
 
     if info.status == consumer.SUCCESS:
         steamid = request.query['openid.claimed_id'].split('/')[-1]
-        user = getuser(steamid, create=True)
-        store.setex(getsessionkey(sid), int(session_age.total_seconds()),
-                    user['id'])
+        user = await getuser(steamid, create=True)
+        await store.setex(getsessionkey(sid), int(session_age.total_seconds()),
+                          user['id'])
 
     return redirect('/')
 
 
 @get('/sitemap.xml')
-def sitemap():
+@sync
+async def sitemap():
     response.set_header('Content-Type', 'application/xml;charset=UTF-8')
-    return store.get('sitemap')
+    return await store.get('sitemap')
 
 
 @get('/<filepath:path>')
@@ -283,23 +328,23 @@ def server_static(filepath):
 
 
 @error(500)
-def error500(error):
-    logger.exception(error)
-    return render('error.html')
+@sync
+async def error500(exception):
+    logger.exception(exception)
+    return await render('error.html')
 
 
-def render(template, **params):
+async def render(template, **params):
     """Render HTML template"""
-    t = jinja_env.get_template(template)
-    return t.render(params)
+    template = jinja_env.get_template(template)
+    return await template.render_async(params)
 
 
 def tojson(*args, **kwargs):
-    response.set_header('Content-Type', 'application/json;charset=UTF-8')
     return rapidjson.dumps(*args, **kwargs)
 
 
-def getresults(classes, tags):
+async def getresults(classes, tags):
     key = getsearchkey(classes, tags)
     multikey = getsearchkey(classes, tags, 'Multi')
     allkey = getsearchkey(classes, tags, 'All')
@@ -307,15 +352,15 @@ def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = ('', 'Multi-Class Items', 'All-Class Items')
 
-    if not store.exists(key) and not store.exists(allkey):
+    if not await store.exists(key) and not await store.exists(allkey):
         classeskey = 'temp:classes'
         tagskey = 'temp:tags'
         remove = []
 
-        pipe = store.pipeline()
+        pipe = store.multi_exec()
 
-        classkeys = [getclasskey(class_) for class_ in classes] or 'items'
-        pipe.sunionstore(classeskey, classkeys)
+        classkeys = [getclasskey(class_) for class_ in classes] or ['items']
+        pipe.sunionstore(classeskey, *classkeys)
 
         # Get only the specified weapon types
         if 'weapon' in tags and not tags.isdisjoint(tf2api.getweapontags()):
@@ -323,19 +368,19 @@ def getresults(classes, tags):
             remove.append(gettagkey('token'))
 
         tagkeys = [gettagkey(tag) for tag in tags] or 'items'
-        pipe.sunionstore(tagskey, tagkeys)
+        pipe.sunionstore(tagskey, *tagkeys)
 
         # Hide medals if not explicitly searching for them
         if 'tournament' not in tags:
             remove.append(gettagkey('tournament'))
 
         if remove:
-            pipe.sdiffstore(tagskey, [tagskey] + remove)
+            pipe.sdiffstore(tagskey, *([tagskey] + remove))
 
-        pipe.sinterstore(key, [classeskey, tagskey])
-        pipe.sinterstore(multikey, [key, getclasskey(multi=True)])
-        pipe.sinterstore(allkey, [tagskey, getclasskey()])
-        pipe.sdiffstore(key, [key, multikey, allkey])
+        pipe.sinterstore(key, classeskey, tagskey)
+        pipe.sinterstore(multikey, key, getclasskey(multi=True))
+        pipe.sinterstore(allkey, tagskey, getclasskey())
+        pipe.sdiffstore(key, key, multikey, allkey)
 
         pipe.delete(classeskey)
         pipe.delete(tagskey)
@@ -344,13 +389,14 @@ def getresults(classes, tags):
             pipe.sort(k, store=k)
             pipe.expire(k, 3600)
 
-        pipe.execute()
+        await pipe.execute()
 
-    getkeys = lambda key: [getitemkey(k) for k in store.lrange(key, 0, -1)]
+    async def getkeys(key):
+        return [getitemkey(k) for k in await store.lrange(key, 0, -1)]
 
     results = []
     for title, key in zip(titles, keys):
-        itemkeys = getkeys(key)
+        itemkeys = await getkeys(key)
         if itemkeys:
             results.append(tf2search.getsearchresult(
                 title=title, items=store.Hashes(itemkeys)))
@@ -373,31 +419,25 @@ def gettagkey(tag=None):
     return 'items:tag:{}'.format(tag or 'none')
 
 
-def getcurrentuser():
+async def getcurrentuser(request):
     user = None
 
     sid = request.get_cookie('sid')
 
     if sid:
-        userid = store.get(getsessionkey(sid))
+        userid = await store.get(getsessionkey(sid))
         if userid:
-            user = getuser(userid)
-        if user:
-            expires = datetime.now() + session_age
-            response.set_cookie('steam_id', user['id'], expires=expires)
-        else:
-            response.delete_cookie('sid')
-            response.delete_cookie('steam_id')
+            user = await getuser(userid)
 
     return user
 
 
-def getuser(steamid, urltype='profiles', create=False):
+async def getuser(steamid, urltype='profiles', create=False):
     if urltype == 'id':
-        steamid = tf2api.resolvevanityurl(config.apikey, steamid)
+        steamid = await tf2api.resolvevanityurl(config.apikey, steamid)
 
     userkey = getuserkey(steamid)
-    user = store.hgetall(userkey)
+    user = await store.hgetall(userkey)
 
     if user:
         create = False
@@ -410,7 +450,7 @@ def getuser(steamid, urltype='profiles', create=False):
 
     if create or needsupdate:
         try:
-            steamuser = tf2api.getplayersummary(config.apikey, steamid)
+            steamuser = await tf2api.getplayersummary(config.apikey, steamid)
 
         except URLError:
             # Postpone update if this is not a new user
@@ -433,8 +473,8 @@ def getuser(steamid, urltype='profiles', create=False):
 
         user['lastupdate'] = datetime.now().timestamp()
 
-        store.hmset(userkey, user)
-        store.sadd('users', user['id'])
+        await store.hmset_dict(userkey, user)
+        await store.sadd('users', user['id'])
 
     return user
 
@@ -447,17 +487,19 @@ def getsessionkey(sid):
     return 'session:{}'.format(sid)
 
 
-def getitems(indexes):
-    return store.hgetall([getitemkey(index) for index in indexes])
+async def getitems(indexes):
+    return await store.hgetall([getitemkey(index) for index in indexes])
 
 
-def getitem(index):
-    return store.hgetall(getitemkey(index))
+async def getitem(index):
+    return await store.hgetall(getitemkey(index))
 
 
 def getitemkey(index):
     return 'item:{}'.format(index)
 
+
+init()
 
 if __name__ == '__main__':
     run(host='localhost', port=8000)

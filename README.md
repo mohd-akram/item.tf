@@ -50,9 +50,9 @@ There are three main files:
 
 TF2 API
 -------
-tf2api.py has no dependencies and was designed to be used either for this
-project or separately. It contains many helpful functions to get information
-about items in TF2.
+tf2api.py (depends on aiohttp) was designed to be used either for this project
+or separately. It contains many helpful functions to get information about
+items in TF2.
 
 Example:
 ```python

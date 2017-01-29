@@ -1,8 +1,9 @@
+import itertools
 from collections import OrderedDict
-from collections.abc import Hashable, Iterable, Sized, Mapping
+from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
 import rapidjson
-from redis import StrictRedis
+from aioredis import Redis as _Redis
 
 
 def dumps(obj):
@@ -18,91 +19,86 @@ def loads(s):
         return rapidjson.loads(s)
 
 
-class Redis(StrictRedis):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._hgetall = self.register_script(
-            """
-            local hgetall = function (key)
-              local data = redis.call('HGETALL', key)
-              local hash = {}
+class Redis(_Redis):
+    async def get(self, *args, **kwargs):
+        return loads(await super().get(*args, **kwargs))
 
-              for i = 1, #data, 2 do
-                hash[data[i]] = cjson.decode(data[i + 1])
-              end
+    async def set(self, key, value):
+        return await super().set(key, dumps(value))
 
-              return hash
-            end
+    async def setex(self, key, time, value):
+        return await super().setex(key, time, dumps(value))
 
-            local hashes = {}
-
-            for i = 1, #KEYS do
-              hashes[i] = hgetall(KEYS[i])
-            end
-
-            return cjson.encode(hashes)
-            """
+    async def mset_dict(self, map_):
+        return await super().mset(
+            *itertools.chain.from_iterable(mdumps(map_).items())
         )
 
-    def get(self, *args, **kwargs):
-        return loads(super().get(*args, **kwargs))
+    async def hget(self, *args, **kwargs):
+        return loads(await super().hget(*args, **kwargs))
 
-    def set(self, key, value):
-        return super().set(key, dumps(value))
+    async def hgetall(self, key):
+        self._hgetall = getattr(
+            self, '_hgetall',
+            await self.script_load(
+                """
+                local hgetall = function (key)
+                  local data = redis.call('HGETALL', key)
+                  local hash = {}
 
-    def setex(self, key, time, value):
-        return super().setex(key, time, dumps(value))
+                  for i = 1, #data, 2 do
+                    hash[data[i]] = cjson.decode(data[i + 1])
+                  end
 
-    def mset(self, map_):
-        return super().mset(mdumps(map_))
+                  return hash
+                end
 
-    def hget(self, *args, **kwargs):
-        return loads(super().hget(*args, **kwargs))
+                local hashes = {}
 
-    def hgetall(self, key):
+                for i = 1, #KEYS do
+                  hashes[i] = hgetall(KEYS[i])
+                end
+
+                return cjson.encode(hashes)
+                """
+            )
+        )
         if type(key) is str:
             return {k.decode(): loads(v)
-                    for k, v in super().hgetall(key).items()}
+                    for k, v in (await super().hgetall(key)).items()}
         else:
-            return loads(self._hgetall(keys=key))
+            return loads(await self.evalsha(self._hgetall, keys=key))
 
-    def hset(self, key, field, value):
-        return super().hset(key, field, dumps(value))
+    async def hset(self, key, field, value):
+        return await super().hset(key, field, dumps(value))
 
-    def hmset(self, key, map_):
-        return super().hmset(key, mdumps(map_))
+    def hmset_dict(self, key, map_):
+        return super().hmset_dict(key, mdumps(map_))
 
-    def hkeys(self, *args, **kwargs):
-        return (f.decode() for f in super().hkeys(*args, **kwargs))
+    async def hkeys(self, *args, **kwargs):
+        return (f.decode() for f in await super().hkeys(*args, **kwargs))
 
-    def smembers(self, *args, **kwargs):
-        return (m.decode() for m in super().smembers(*args, **kwargs))
+    async def smembers(self, *args, **kwargs):
+        return (m.decode() for m in await super().smembers(*args, **kwargs))
 
-    def srandmember(self, *args, **kwargs):
-        members = super().srandmember(*args, **kwargs)
+    async def srandmember(self, *args, **kwargs):
+        members = await super().srandmember(*args, **kwargs)
         if type(members) is list:
             return [member.decode() for member in members]
         else:
             return members.decode()
 
-    def lrange(self, *args, **kwargs):
-        return (e.decode() for e in super().lrange(*args, **kwargs))
+    async def lrange(self, *args, **kwargs):
+        return (e.decode() for e in await super().lrange(*args, **kwargs))
 
-    def sort(self, *args, **kwargs):
-        result = super().sort(*args, **kwargs)
-        if type(result) is int:
-            return result
-        else:
-            return (x.decode() for x in result)
-
-    def delete_all(self, match, count=100):
+    async def delete_all(self, match, count=100):
         cursor = None
         while cursor != 0:
             if cursor is None:
                 cursor = 0
-            cursor, keys = self.scan(cursor, match, count)
+            cursor, keys = await self.scan(cursor, match, count)
             if keys:
-                self.delete(*keys)
+                await self.delete(*keys)
 
     def Hash(self, *args, **kwargs):
         return Hash(self, *args, **kwargs)
@@ -113,8 +109,8 @@ class Redis(StrictRedis):
     def HashSet(self, *args, **kwargs):
         return HashSet(self, *args, **kwargs)
 
-    def SearchHashSet(self, *args, **kwargs):
-        return SearchHashSet(self, *args, **kwargs)
+    async def SearchHashSet(self, *args, **kwargs):
+        return await SearchHashSet.create(self, *args, **kwargs)
 
 
 class Hash(Hashable, Mapping):
@@ -125,36 +121,43 @@ class Hash(Hashable, Mapping):
     def __hash__(self):
         return hash(self.key)
 
-    def __getitem__(self, field):
-        return self.r.hget(self.key, field)
+    async def __getitem__(self, field):
+        return await self.r.hget(self.key, field)
 
-    def __contains__(self, field):
-        return self.r.hexists(self.key, field)
+    async def contains(self, field):
+        return await self.r.hexists(self.key, field)
 
-    def __iter__(self):
-        yield from self.r.hkeys(self.key)
+    async def __iter__(self):
+        return await self.r.hkeys(self.key)
 
-    def __len__(self):
-        return self.r.hlen(self.key)
+    async def __len__(self):
+        return await self.r.hlen(self.key)
 
-    def todict(self):
-        return self.r.hgetall(self.key)
+    async def todict(self):
+        return await self.r.hgetall(self.key)
 
 
-class Hashes(Iterable, Sized):
+class Hashes(AsyncIterator, Sized):
     """This class enables buffered iteration over a list of hashes.
     The hashes are returned as regular dicts."""
     def __init__(self, redis, keys, bufsize=100):
         self.r = redis
         self.keys = keys
         self.bufsize = bufsize
+        self.i = -1
 
-    def __iter__(self):
-        i = 0
-        while i < len(self.keys):
-            results = self.r.hgetall(self.keys[i:i + self.bufsize])
-            i += self.bufsize
-            yield from results
+    async def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        self.i += 1
+        if self.i >= len(self.keys):
+            raise StopAsyncIteration
+        if self.i % self.bufsize == 0:
+            self.results = await self.r.hgetall(
+                self.keys[self.i:self.i + self.bufsize]
+            )
+        return self.results[self.i % self.bufsize]
 
     def __len__(self):
         return len(self.keys)
@@ -170,17 +173,17 @@ class HashSet(Mapping):
     def __getitem__(self, member):
         return Hash(self.r, self.tokey(member))
 
-    def __contains__(self, member):
-        return self.r.sismember(self.key, member)
+    async def __contains__(self, member):
+        return await self.r.sismember(self.key, member)
 
-    def __iter__(self):
+    async def __iter__(self):
         if self.sortkey:
-            yield from sorted(self.r.smembers(self.key), key=self.sortkey)
+            return sorted(await self.r.smembers(self.key), key=self.sortkey)
         else:
-            yield from self.r.smembers(self.key)
+            return await self.r.smembers(self.key)
 
-    def __len__(self):
-        return self.r.scard(self.key)
+    async def __len__(self):
+        return await self.r.scard(self.key)
 
 
 class SearchHashSet(HashSet):
@@ -199,22 +202,25 @@ class SearchHashSet(HashSet):
             else:
                 return super().__getitem__(field)
 
-    def __init__(self, redis, key, tokey, fields, sortkey=None):
-        super().__init__(redis, key, tokey)
+    @classmethod
+    async def create(cls, redis, key, tokey, fields, sortkey=None):
+        self = cls(redis, key, tokey)
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = tuple(self.r.sort(key, get=get))
+        self.result = tuple(await self.r.sort(key, *get))
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):
-            hashes.append((self.result[i], i + 1))
+            hashes.append((self.result[i].decode(), i + 1))
 
         if sortkey:
             hashes.sort(key=lambda k: sortkey(k[0]))
             self.hashes = OrderedDict(hashes)
         else:
             self.hashes = dict(hashes)
+
+        return self
 
     def __getitem__(self, member):
         return self.SearchHash(self.tokey(member), str(member), self)

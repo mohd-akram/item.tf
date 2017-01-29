@@ -1,6 +1,7 @@
+uvloop
+aiohttp
+aioredis
 bottle
 jinja2
-redis
-hiredis
 python-rapidjson
 python3-openid

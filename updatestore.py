@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 import sys
 import time
+import asyncio
 from xml.dom.minidom import getDOMImplementation
+
+from aioredis import create_redis
 
 import config
 import tf2search
-
-from store import mdumps
-from main import store, getitemkey, getclasskey, gettagkey
+from store import Redis
+from main import getitemkey, getclasskey, gettagkey
 
 
 class Sitemap:
@@ -33,15 +35,17 @@ class Sitemap:
         return self.doc.toprettyxml()
 
 
-def main(flush):
+async def main(flush):
+    store = await create_redis(('localhost', 6379), commands_factory=Redis)
+
     tf2info = tf2search.gettf2info(config.apikey,
                                    config.backpackkey, config.tradekey,
                                    config.blueprintsfile)
 
     if flush:
-        store.delete('items')
-        store.delete_all('items:*')
-        store.delete_all('item:*')
+        await store.delete('items')
+        await store.delete_all('items:*')
+        await store.delete_all('item:*')
 
     suggestions = [[], [], []]
 
@@ -49,12 +53,12 @@ def main(flush):
     sitemap.add(config.homepage)
 
     for index in tf2info.items:
-        pipe = store.pipeline(False)
+        pipe = store.pipeline()
 
         itemdict = tf2search.createitemdict(index, tf2info)
         name = itemdict['name']
 
-        pipe.hmset(getitemkey(index), mdumps(itemdict))
+        pipe.hmset_dict(getitemkey(index), itemdict)
         pipe.sadd('items', index)
 
         classes = itemdict['classes']
@@ -75,7 +79,7 @@ def main(flush):
 
             if tf2search.isvalidresult(itemdict):
                 pipe.sadd('items:indexes', index)
-                pipe.hmset('items:names', mdumps({name: index}))
+                pipe.hmset_dict('items:names', {name: index})
 
                 path = '{0}/{1}'.format(config.homepage, index)
 
@@ -87,11 +91,11 @@ def main(flush):
 
                 sitemap.add(path)
 
-        pipe.execute()
+        await pipe.execute()
 
-    store.delete('items:new')
+    await store.delete('items:new')
     for index in tf2info.newstoreprices:
-        store.sadd('items:new', index)
+        await store.sadd('items:new', index)
 
     bundles = {str(k): v for k, v in tf2info.bundles.items()}
 
@@ -101,9 +105,9 @@ def main(flush):
             'items:lastupdated': time.time(),
             'sitemap': sitemap.toxml()}
 
-    store.mset(data)
+    await store.mset_dict(data)
 
 
 if __name__ == '__main__':
     flush = len(sys.argv) == 2 and sys.argv[1] == '-f'
-    main(flush)
+    asyncio.get_event_loop().run_until_complete(main(flush))

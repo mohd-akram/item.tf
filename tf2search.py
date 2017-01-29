@@ -542,7 +542,7 @@ def _getpriceasitems(amount, denom, todenom, itemsdict, pricesource):
                 todenom = d
                 break
 
-    if amount <= len(itemsdict):
+    if amount <= 4000:
         denomidx = denoms.index(todenom)
         # Get count of each denomination and add items to results
         for i, d in enumerate(denoms[denomidx:], denomidx):

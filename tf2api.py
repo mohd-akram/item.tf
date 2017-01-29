@@ -10,6 +10,8 @@ import json
 from urllib.request import Request, urlopen
 from collections import defaultdict, OrderedDict
 
+import aiohttp
+
 
 def getschema(apikey, timeout=30):
     """Return the schema"""
@@ -410,27 +412,30 @@ def getobsoleteindexes():
             set(range(2018, 2027)))
 
 
-def getplayersummary(apikey, steamid):
+async def getplayersummary(apikey, steamid):
     """Return the player summary of the given steamid"""
-    return getplayersummaries(apikey, [steamid])[0]
+    return (await getplayersummaries(apikey, [steamid]))[0]
 
 
-def getplayersummaries(apikey, steamids, timeout=5):
+async def getplayersummaries(apikey, steamids, timeout=5):
     """Return the player summaries of a list of steamids"""
     url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
            '?key={}&steamids={}'.format(apikey, ','.join(steamids)))
 
-    return json.loads(
-        urlopen(url, timeout=timeout).read().decode())['response']['players']
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return json.loads(
+                (await response.read()).decode()
+            )['response']['players']
 
 
-def resolvevanityurl(apikey, vanityurl, timeout=5):
+async def resolvevanityurl(apikey, vanityurl, timeout=5):
     """Return the steamid of a given vanity url"""
     url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
            '?key={}&vanityurl={}'.format(apikey, vanityurl))
 
-    response = json.loads(
-        urlopen(url, timeout=timeout).read().decode())['response']
-
-    if response['success'] == 1:
-        return response['steamid']
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            response = json.loads((await response.read()).decode())['response']
+            if response['success'] == 1:
+                return response['steamid']
