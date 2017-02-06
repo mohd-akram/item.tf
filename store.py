@@ -1,12 +1,12 @@
 from collections import OrderedDict
 from collections.abc import Hashable, Iterable, Sized, Mapping
 
-import ujson
+import rapidjson
 from redis import StrictRedis
 
 
 def dumps(obj):
-    return ujson.dumps(obj)
+    return rapidjson.dumps(obj)
 
 
 def mdumps(d):
@@ -15,7 +15,7 @@ def mdumps(d):
 
 def loads(s):
     if s is not None:
-        return ujson.loads(s)
+        return rapidjson.loads(s)
 
 
 class Redis(StrictRedis):

@@ -1,5 +1,5 @@
 bottle
 jinja2
 redis
-ujson
+python-rapidjson
 python3-openid

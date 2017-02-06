@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from urllib.error import URLError
 
 import jinja2
-import ujson
+import rapidjson
 from bottle import (get, post, error, request, response, redirect, static_file,
                     run, default_app)
 from openid.consumer import consumer
@@ -294,7 +294,7 @@ def render(template, **params):
 
 def tojson(*args, **kwargs):
     response.set_header('Content-Type', 'application/json;charset=UTF-8')
-    return ujson.dumps(*args, **kwargs)
+    return rapidjson.dumps(*args, **kwargs)
 
 
 def getresults(classes, tags):
