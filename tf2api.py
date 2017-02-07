@@ -26,18 +26,16 @@ def getitemsinfo(apikey, storeprices, indexes, timeout=30):
                                                                    len(indexes)
                                                                    ))
 
-    idtoindex = {}
     for n, index in enumerate(indexes):
         classid = storeprices[index]['classid']
-        idtoindex[classid] = index
         url += '&classid{0}={1}'.format(n, classid)
 
     infobyid = json.loads(
         urlopen(url, timeout=timeout).read().decode())['result']
     del infobyid['success']
 
-    return {idtoindex[classid]: iteminfo for classid, iteminfo in
-            infobyid.items()}
+    return {int(iteminfo['app_data']['def_index']): iteminfo
+            for iteminfo in infobyid.values()}
 
 
 def getbundles(apikey, storeprices):

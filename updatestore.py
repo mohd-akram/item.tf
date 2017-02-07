@@ -93,13 +93,16 @@ def main(flush):
     for index in tf2info.newstoreprices:
         store.sadd('items:new', index)
 
+    bundles = {str(k): v for k, v in tf2info.bundles.items()}
+
     data = {'items:sets': tf2info.itemsets,
-            'items:bundles': tf2info.bundles,
+            'items:bundles': bundles,
             'items:suggestions': suggestions,
             'items:lastupdated': time.time(),
             'sitemap': sitemap.toxml()}
 
     store.mset(data)
+
 
 if __name__ == '__main__':
     flush = len(sys.argv) == 2 and sys.argv[1] == '-f'
