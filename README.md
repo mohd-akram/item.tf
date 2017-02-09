@@ -1,12 +1,11 @@
 item.tf
 =======
 
-This is a bottle.py site that lets you search TF2 items and find the
-ones you want. There are two main ways to search - you can either use regular
-keyword search or search by classes and item tags
-(eg. weapon, misc, hat, etc.). Once you find an item you want, you can get all
-kinds of information about it such as its store price, market price and
-crafting recipes to help you obtain it.
+This is a bottle.py site that lets you search TF2 items and find the ones you
+want. There are two main ways to search - you can either use regular keyword
+search or search by classes and item tags (eg. weapon, misc, hat, etc.). Once
+you find an item you want, you can get all kinds of information about it such
+as its store price, market price and crafting recipes to help you obtain it.
 You can also search for item sets or view a list of them by typing 'sets'.
 
 Get Started
@@ -16,23 +15,17 @@ Copy config.default.py to config.py and fill in your API keys in the file.
 
 Run this command to install dependencies.
 
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
 
 You'll also need to install the [Redis server](http://redis.io/download).
 
 Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
-To host the site in Ubuntu 16.04 using gunicorn and nginx,
- clone into /srv/www/item.tf and run the following in the project directory:
-
-    pip3 install gunicorn
-    sudo apt-get install nginx redis-server
-    cp -rsf $PWD/etc /
-    cd /etc/nginx/sites-enabled
-    unlink default
-    cd /etc/init.d
-    update-rc.d gunicorn defaults
-    mkdir -p /var/log/gunicorn
+To host the site in FreeBSD 11 using gunicorn and nginx, clone into
+`/usr/local/www/item.tf` and run `make install` as root in the project
+directory. You will need an SSL certificate at
+`/usr/local/etc/ssl/acme/fullchain.pem` and corresponding key at
+`/usr/local/etc/ssl/acme/private/privkey.pem`.
 
 Structure
 ---------
@@ -41,7 +34,7 @@ There are three main files:
 
  * main.py - Contains the page handlers
  * tf2api.py - Contains the main functions for getting items, store prices,
- market prices and other information.
+   market prices and other information.
  * tf2search.py - Contains the parsing and search functions.
 
 TF2 API

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# PROVIDE: itemtf
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name=itemtf
+
+load_rc_config $name
+: ${itemtf_user:=item.tf}
+: ${itemtf_chdir:=/usr/local/www/item.tf}
+
+virtualenv="/usr/local/libexec/item.tf"
+
+command_interpreter="$virtualenv/bin/python3"
+
+command="$virtualenv/bin/gunicorn"
+command_args="--daemon --workers=3 \
+	--access-logfile=/var/log/item.tf/access.log \
+	--error-logfile=/var/log/item.tf/error.log main:app"
+
+run_rc_command "$1"
