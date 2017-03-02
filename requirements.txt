@@ -1,5 +1,5 @@
 bottle
 jinja2
 redis
-git+https://github.com/python-rapidjson/python-rapidjson.git
+python-rapidjson
 python3-openid
