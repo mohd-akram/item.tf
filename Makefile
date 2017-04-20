@@ -5,7 +5,7 @@ install:
 	echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
 	echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis
 	# 2. Create user
-	pw user add item.tf
+	pw user add item.tf -c item.tf -d /nonexistent -s /usr/sbin/nologin
 	# 3. Create log folder
 	mkdir -p /var/log/item.tf
 	chown item.tf:item.tf /var/log/item.tf
