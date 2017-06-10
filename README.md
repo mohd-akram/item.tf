@@ -23,9 +23,7 @@ Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
 To host the site in FreeBSD 11 using gunicorn and nginx, clone into
 `/usr/local/www/item.tf` and run `make install` as root in the project
-directory. You will need an SSL certificate at
-`/usr/local/etc/ssl/acme/fullchain.pem` and corresponding key at
-`/usr/local/etc/ssl/acme/private/privkey.pem`.
+directory.
 
 Structure
 ---------
