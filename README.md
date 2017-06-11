@@ -21,9 +21,22 @@ You'll also need to install the [Redis server](http://redis.io/download).
 
 Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
-To host the site in FreeBSD 11 using gunicorn and nginx, clone into
-`/usr/local/www/item.tf` and run `make install` as root in the project
-directory.
+Hosting
+-------
+
+To host the site in FreeBSD 11, first clone into `/usr/local/www/item.tf`.
+Then, run the following as root:
+
+    pkg install -y nginx redis
+    mkdir -p /usr/local/etc/rc.conf.d
+    echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
+    echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis
+    cd /usr/local/www/item.tf
+    make install
+
+Make sure you set the `ssl_certificate` and `ssl_certificate_key` directives
+and have `include /usr/local/etc/nginx/conf.d/*.conf;` at the end of the `http`
+block in `/usr/local/etc/nginx/nginx.conf`.
 
 Structure
 ---------

@@ -1,22 +1,17 @@
 install:
-	# 1. Install packages
-	pkg install -y nginx python3 redis
-	mkdir -p /usr/local/etc/rc.conf.d
-	echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
-	echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis
-	# 2. Create user
+	# 1. Create user
 	-pw user add item.tf -c item.tf -d /nonexistent -s /usr/sbin/nologin
-	# 3. Create log folder
+	# 2. Create log folder
 	mkdir -p /var/log/item.tf
 	chown item.tf:item.tf /var/log/item.tf
-	# 4. Setup virtualenv
+	# 3. Setup virtualenv
 	python3 -m venv /usr/local/libexec/item.tf
 	. /usr/local/libexec/item.tf/bin/activate && \
 	cd /usr/local/www/item.tf && \
 	pip install --upgrade pip && \
 	pip install -r requirements.txt && \
 	pip install gunicorn
-	# 5. Link configs
+	# 4. Link configs
 	mkdir -p /usr/local/etc/nginx/conf.d
 	ln -s -f /usr/local/www/item.tf/etc/nginx/conf.d/item.tf.conf \
 		/usr/local/etc/nginx/conf.d/item.tf.conf
@@ -24,10 +19,9 @@ install:
 		/usr/local/etc/rc.d/itemtf
 	ln -s -f /usr/local/www/item.tf/var/cron/tabs/item.tf \
 		/var/cron/tabs/item.tf
-	# 6. Start server
-	service redis restart
+	# 5. Start server
 	service itemtf restart
-	service nginx restart
+	service nginx reload
 
 uninstall:
 	-service itemtf stop
