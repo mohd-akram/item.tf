@@ -27,6 +27,7 @@ uninstall:
 	-service itemtf stop
 	-rm -rf /usr/local/libexec/item.tf
 	-rm -rf /var/log/item.tf
+	-rm /usr/local/etc/nginx/conf.d/item.tf.conf
 	-rm /usr/local/etc/rc.d/itemtf
 	-rm /var/cron/tabs/item.tf
 	-pw user del item.tf
