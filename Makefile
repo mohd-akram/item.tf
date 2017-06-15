@@ -12,9 +12,10 @@ install:
 	pip install -r requirements.txt && \
 	pip install gunicorn
 	# 4. Link configs
-	mkdir -p /usr/local/etc/nginx/conf.d
-	ln -s -f /usr/local/www/item.tf/etc/nginx/conf.d/item.tf.conf \
-		/usr/local/etc/nginx/conf.d/item.tf.conf
+	touch /usr/local/etc/nginx/common
+	mkdir -p /usr/local/etc/nginx/sites
+	ln -s -f /usr/local/www/item.tf/etc/nginx/sites/item.tf \
+		/usr/local/etc/nginx/sites/item.tf
 	ln -s -f /usr/local/www/item.tf/etc/rc.d/itemtf \
 		/usr/local/etc/rc.d/itemtf
 	ln -s -f /usr/local/www/item.tf/var/cron/tabs/item.tf \
@@ -27,7 +28,7 @@ uninstall:
 	-service itemtf stop
 	-rm -rf /usr/local/libexec/item.tf
 	-rm -rf /var/log/item.tf
-	-rm /usr/local/etc/nginx/conf.d/item.tf.conf
+	-rm /usr/local/etc/nginx/sites/item.tf
 	-rm /usr/local/etc/rc.d/itemtf
 	-rm /var/cron/tabs/item.tf
 	-pw user del item.tf

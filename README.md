@@ -35,8 +35,8 @@ Then, run the following as root:
     make install
 
 Make sure you set the `ssl_certificate` and `ssl_certificate_key` directives
-and have `include /usr/local/etc/nginx/conf.d/*.conf;` at the end of the `http`
-block in `/usr/local/etc/nginx/nginx.conf`.
+and have `include sites/item.tf;` at the end of the `http` block in
+`/usr/local/etc/nginx/nginx.conf`.
 
 Structure
 ---------

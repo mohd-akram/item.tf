@@ -1,6 +1,7 @@
 server {
   listen [::]:80;
   server_name item.tf www.item.tf;
+  include common;
   location / {
     return 301 https://item.tf$request_uri;
   }
@@ -9,6 +10,7 @@ server {
 server {
   listen [::]:443 ssl;
   server_name www.item.tf;
+  include common;
   return 301 https://item.tf$request_uri;
 }
 
@@ -16,6 +18,8 @@ server {
   listen [::]:443 ssl http2;
 
   server_name item.tf;
+
+  include common;
 
   root /usr/local/www/item.tf/static;
 
