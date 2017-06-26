@@ -19,6 +19,8 @@ import tf2api
 import tf2search
 from store import Redis
 
+logger = logging.getLogger('gunicorn.error')
+
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True, trim_blocks=True)
@@ -282,7 +284,7 @@ def server_static(filepath):
 
 @error(500)
 def error500(error):
-    logging.exception(error)
+    logger.exception(error)
     return render('error.html')
 
 
