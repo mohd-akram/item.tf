@@ -11,7 +11,9 @@ server {
   listen [::]:443 ssl;
   server_name www.item.tf;
   include common;
-  return 301 https://item.tf$request_uri;
+  location / {
+    return 301 https://item.tf$request_uri;
+  }
 }
 
 server {
