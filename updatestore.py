@@ -5,6 +5,7 @@ import asyncio
 from xml.dom.minidom import getDOMImplementation
 
 from aioredis import create_redis
+from slugify import slugify
 
 import config
 import tf2search
@@ -52,6 +53,16 @@ async def main(flush):
     sitemap = Sitemap()
     sitemap.add(config.homepage)
 
+    categories = {
+        'cosmetics': ('hats', 'miscs'),
+        'weapons': ('primary', 'secondary', 'melee')
+    }
+
+    for category, subcategories in categories.items():
+        sitemap.add(f'{config.homepage}/{category}')
+        for subcategory in subcategories:
+            sitemap.add(f'{config.homepage}/{category}/{subcategory}')
+
     for index in tf2info.items:
         pipe = store.pipeline()
 
@@ -78,10 +89,13 @@ async def main(flush):
                     pipe.sadd(gettagkey(tag), index)
 
             if tf2search.isvalidresult(itemdict):
+                slug = slugify(name)
+
                 pipe.sadd('items:indexes', index)
+                pipe.hmset_dict('items:slugs', {slug: index})
                 pipe.hmset_dict('items:names', {name: index})
 
-                path = '{0}/{1}'.format(config.homepage, index)
+                path = f'{config.homepage}/{slug}'
 
                 suggestions[0].append(name)
                 suggestions[1].append('{} - {}'.format(

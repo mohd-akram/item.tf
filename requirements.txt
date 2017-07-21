@@ -5,3 +5,4 @@ bottle
 jinja2
 python-rapidjson
 python3-openid
+python-slugify

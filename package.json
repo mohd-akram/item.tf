@@ -1,0 +1,28 @@
+{
+  "name": "item.tf",
+  "version": "1.0.0",
+  "description": "A website for finding TF2 items.",
+  "scripts": {
+    "build": "cd static/js && coffee -cMp main.coffee | uglifyjs --source-map content=inline,url=main.js.map --output=main.js",
+    "watch": "chokidar static/js/main.coffee -c 'npm run build'",
+    "start": "npm run watch & python3 main.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohd-akram/item.tf.git"
+  },
+  "keywords": [
+    "tf2"
+  ],
+  "author": "Mohamed Akram",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mohd-akram/item.tf/issues"
+  },
+  "homepage": "https://github.com/mohd-akram/item.tf#readme",
+  "devDependencies": {
+    "chokidar-cli": "^1.2.0",
+    "coffee-script": "^1.12.7",
+    "uglify-js": "^3.0.25"
+  }
+}

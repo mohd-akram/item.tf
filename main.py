@@ -13,10 +13,11 @@ from urllib.error import URLError
 import jinja2
 import rapidjson
 import uvloop
-from bottle import (get, post, error, request, response, redirect, static_file,
-                    run, default_app)
+from bottle import (get, post, abort, error, request, response, redirect,
+                    static_file, run, default_app)
 from aioredis import create_redis
 from openid.consumer import consumer
+from slugify import slugify
 
 import config
 import tf2api
@@ -30,6 +31,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True, trim_blocks=True,
                                enable_async=True)
 
+jinja_env.filters['slugify'] = slugify
 
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
@@ -76,39 +78,23 @@ async def home():
                         lastupdated=lastupdated)
 
 
-@get('/<index:int><is_json:re:(\.json)?>')
-@sync
-async def item(index, is_json):
-    item = await getitem(index)
-
-    if not item:
-        if is_json:
-            return {'error': 'Item does not exist.'}
-        return redirect('/')
-
-    if is_json:
-        return item
-    else:
-        desc_list = []
-
-        if item['description']:
-            desc_list.append(item['description'].replace('\n', ' '))
-
-        desc_list.append(', '.join(item['classes'])
-                         if item['classes'] else 'All Classes')
-
-        if item['tags']:
-            desc_list.append(', '.join(item['tags']).title())
-
-        return await render('item.html',
-                            item=item,
-                            description=' | '.join(desc_list))
-
-
+@get('/<category:re:cosmetics|weapons>')
+@get('/<category:re:cosmetics>/<subcategory:re:hats|miscs>')
+@get('/<category:re:weapons>/<subcategory:re:primary|secondary|melee>')
 @get('/search<is_json:re:(\.json)?>')
 @sync
-async def search(is_json):
-    query = request.query.q
+async def search(**kwargs):
+    category = kwargs.get('category')
+    subcategory = kwargs.get('subcategory')
+    is_json = kwargs.get('is_json')
+
+    if subcategory:
+        query = (f'{subcategory} {category}' if category == 'weapons' else
+                 f'{subcategory}').title()
+    elif category:
+        query = category.title()
+    else:
+        query = request.query.q
 
     if not query:
         if is_json:
@@ -119,7 +105,7 @@ async def search(is_json):
         index = await store.srandmember('items:indexes')
         return redirect('/{}{}'.format(index, is_json))
 
-    itemnames = await store.Hash('items:names').todict()
+    itemnames = await store.hgetall('items:names')
 
     if query in itemnames:
         return redirect('/{}'.format(itemnames[query]))
@@ -190,6 +176,45 @@ async def search(is_json):
                             count=sum(len(result['items'])
                                       for result in results),
                             time=round(t1 - t0, 3))
+
+
+# Must be after search route and in this order
+@get('/<slug:re:[a-z0-9]+(?:-[a-z0-9]+)*>')
+@get('/<index:re:[0-9]+><is_json:re:(\.json)?>')
+@sync
+async def item(**kwargs):
+    slug = kwargs.get('slug')
+    index = kwargs.get('index')
+    is_json = kwargs.get('is_json')
+
+    item = await (getitembyslug(slug) if slug else getitem(index))
+
+    if item and index is not None:
+        slug = slugify(item['name'])
+        return redirect(f'/{slug}', code=301)
+
+    if not item:
+        if is_json:
+            return {'error': 'Item does not exist.'}
+        abort(404)
+
+    if is_json:
+        return item
+    else:
+        desc_list = []
+
+        if item['description']:
+            desc_list.append(item['description'].replace('\n', ' '))
+
+        desc_list.append(', '.join(item['classes'])
+                         if item['classes'] else 'All Classes')
+
+        if item['tags']:
+            desc_list.append(', '.join(item['tags']).title())
+
+        return await render('item.html',
+                            item=item,
+                            description=' | '.join(desc_list))
 
 
 @post('/wishlist/<option:re:add|remove>')
@@ -275,7 +300,7 @@ async def user(urltype, steamid):
             item.update(user['wishlist'][i])
 
     else:
-        return redirect('/')
+        abort(404)
 
     return await render('user.html',
                         user=user,
@@ -327,11 +352,17 @@ def server_static(filepath):
     return static_file(filepath, root='./static')
 
 
+@error(404)
+@sync
+async def error404(exception):
+    return await render('error.html', message='Page Not Found')
+
+
 @error(500)
 @sync
 async def error500(exception):
     logger.exception(exception)
-    return await render('error.html')
+    return await render('error.html', message='Server Error')
 
 
 async def render(template, **params):
@@ -495,6 +526,11 @@ async def getitem(index):
     return await store.hgetall(getitemkey(index))
 
 
+async def getitembyslug(slug):
+    index = await store.hget('items:slugs', slug)
+    return await getitem(index) if index is not None else None
+
+
 def getitemkey(index):
     return 'item:{}'.format(index)
 
@@ -502,6 +538,6 @@ def getitemkey(index):
 init()
 
 if __name__ == '__main__':
-    run(host='localhost', port=8000)
+    run(host='localhost', port=8000, reloader=True)
 
 app = default_app()

@@ -19,6 +19,7 @@ class Item
   constructor: (@elem) ->
     @name = @elem.title
     @id = @elem.getAttribute 'data-index'
+    @url = @elem.getAttribute 'data-url'
     @imageUrl = @elem.getAttribute 'data-image'
     @description = @elem.getAttribute('data-description') or ''
     @level = @elem.getAttribute 'data-level'
@@ -95,7 +96,7 @@ class ItemBox
     if @showLink
       html =
         """
-        <a href="/#{@item.id}"
+        <a href="#{@item.url}"
          target="_blank" class="glow" title="Go to Item Page">#{html}</a>
         """
     html =
@@ -136,7 +137,7 @@ class ItemBox
   _priceSourceHTML: ->
     html = ''
 
-    if not @item.prices[@source]
+    unless @item.prices[@source]
       @_nextPriceSource()
 
     if @item.prices[@source]
@@ -182,9 +183,9 @@ class ItemBox
             listItem = "<div title=\"#{name}\" class='item-small' style='#{
               style}'></div>"
 
-            if index
-              url = "/#{index}"
-            else
+            url = item.getAttribute 'data-url'
+
+            unless url
               name = name
                 .replace 'Any ', ''
                 .replace 'Spy Watch', 'PDA2 Weapon'
@@ -441,7 +442,7 @@ class HoverBox
 
     @elem = document.getElementById 'hoverbox'
 
-    if not @elem
+    unless @elem
       @elem = document.createElement 'div'
       @elem.id = 'hoverbox'
       document.body.appendChild @elem
