@@ -189,7 +189,7 @@ async def item(**kwargs):
 
     item = await (getitembyslug(slug) if slug else getitem(index))
 
-    if item and index is not None:
+    if item and index is not None and not is_json:
         slug = slugify(item['name'])
         return redirect(f'/{slug}', code=301)
 
