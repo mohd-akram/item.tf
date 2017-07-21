@@ -76,6 +76,10 @@ async def main(flush):
         tags = itemdict['tags']
 
         if index == tf2info.itemsbyname[name]['defindex']:
+            slug = slugify(name)
+
+            pipe.hmset_dict('items:slugs', {slug: index})
+
             if tf2search.isvalidresult(itemdict, False):
                 if not classes:
                     pipe.sadd(getclasskey(), index)
@@ -89,10 +93,7 @@ async def main(flush):
                     pipe.sadd(gettagkey(tag), index)
 
             if tf2search.isvalidresult(itemdict):
-                slug = slugify(name)
-
                 pipe.sadd('items:indexes', index)
-                pipe.hmset_dict('items:slugs', {slug: index})
                 pipe.hmset_dict('items:names', {name: index})
 
                 path = f'{config.homepage}/{slug}'
