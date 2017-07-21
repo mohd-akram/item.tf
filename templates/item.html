@@ -23,7 +23,7 @@
     {% endif %}
     <img src="{{item['image_large']}}" alt="{{item['name']}}">
   </div>
-  {{ showitem(item, False) }}
+  <div style="display: none">{{ showitem(item) }}</div>
   {{ super() }}
 {% endblock %}
 
