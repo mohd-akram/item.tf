@@ -97,7 +97,7 @@ class ItemBox
       html =
         """
         <a href="#{@item.url}"
-         target="_blank" class="glow" title="Go to Item Page">#{html}</a>
+         class="glow" title="Go to Item Page">#{html}</a>
         """
     html =
       """
