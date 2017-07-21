@@ -103,6 +103,19 @@
 {% block footer %}Last Updated - {{getcount(lastupdated,'minute')}} ago<br>{% endblock %}
 
 {% block script %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": "item.tf",
+      "url": "{{homepage}}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{homepage}}/search?q={query}",
+        "query-input": "name=query required"
+      }
+    }
+  </script>
   <script src="/js/spin.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
