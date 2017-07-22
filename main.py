@@ -398,7 +398,7 @@ async def getresults(classes, tags):
             tags.remove('weapon')
             remove.append(gettagkey('token'))
 
-        tagkeys = [gettagkey(tag) for tag in tags] or 'items'
+        tagkeys = [gettagkey(tag) for tag in tags] or ['items']
         pipe.sunionstore(tagskey, *tagkeys)
 
         # Hide medals if not explicitly searching for them
