@@ -238,7 +238,7 @@ class ItemBox
   _wishlistHTML: ->
     if user.loggedIn
       """
-      <div style="display: inline-block; width: 40px">
+      <div style="display: inline-block;">
       <div id="wishlistmessage"
        style="display: none; margin: 0 0 4px -18px">Added</div>
       <i id="wishlistbutton" class="fa fa-star fa-lg button-icon"
@@ -481,7 +481,7 @@ class HoverBox
 
     @elem.innerHTML =
       """
-      <div style="font-size: 1.2em; color: rgb(230, 230, 230)">#{
+      <div style="color: rgb(230, 230, 230)">#{
       item.name}</div><span style="color: gray">#{item.level}</span>#{
       item.attributes}#{description}
       """

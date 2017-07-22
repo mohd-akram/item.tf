@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import showitems %}
 
-{% block meta %}
-  <meta name="viewport" content="width=1100" />
-{% endblock %}
-
 {% block header %}
+  <h1 class="heading">{% block heading %}{% endblock %}</h1>
   <h2 id="back"><a href="/">{% include 'logo.html' %}</a></h2>
-  <h1>{% block heading %}{% endblock %}</h1>
   {% include 'search-form.html' %}
 {% endblock %}
 

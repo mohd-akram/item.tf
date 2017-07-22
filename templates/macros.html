@@ -24,9 +24,9 @@
 {{length}} {{unit}}{% if length != 1 %}s{% endif %}
 {% endmacro %}
 
-{% macro showitems(items, columns=10) %}
-<div class="itemlist" style="width:{{columns * 108}}px">
-{% if columns == 10 %}
+{% macro showitems(items, inline=False) %}
+<div class="itemlist{% if inline %} inline{% endif %}">
+{% if not inline %}
 <div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
 {% for item in items %}

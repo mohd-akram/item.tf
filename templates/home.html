@@ -9,7 +9,7 @@
 {% block link %}
   <link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
   <link rel="stylesheet" href="/css/message.css">
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css">
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css">
 {% endblock %}
 
 {% block style %}
@@ -19,14 +19,13 @@
       overflow-y: auto;
       overflow-x: hidden;
       background: #292927;
-      border: none;
+      border: none !important;
     }
     .ui-menu-item {
       color: rgb(150,150,150);
-      line-height: 1.5;
       cursor: default !important;
     }
-    .ui-state-focus {
+    .ui-state-active {
       color: white !important;
       font-weight: normal !important;
       background: #1E1D1C !important;
@@ -48,15 +47,15 @@
   <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
     <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
   </h4>
-  <div id="searchitems" style="margin-top: 20px"></div>
+  <div id="searchitems" style="margin: 20px 0"></div>
   <form id="searchform" action="/search">
-    <input name="q" id="searchbox" type="search" placeholder="Search" size="41" style="margin: 30px 0 0 32px; font-size:1.4em;">
-    <div id="loading" style="display:inline-block; padding: 0 0 16px 24px;"></div>
+    <div id="loading" style="display:none; padding: 20px;"></div>
+    <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 300px; font-size: 2rem;">
     <br><br>
     <input type="submit" value="Search" class="button">
     <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search?q=random'">
   </form>
-  {{ showitems(newitems, newitems | length) }}
+  {{ showitems(newitems, True) }}
   <div id="message">{{message|safe}}</div>
 {% endblock %}
 
@@ -116,9 +115,8 @@
       }
     }
   </script>
-  <script src="/js/spin.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script>
     $(function() {
       var searchBox = $('#searchbox');
@@ -197,17 +195,9 @@
             select: function(event, ui) {
               $(this).val(ui.item.label);
 
-              var spinner = new Spinner({
-                lines: 8,
-                length: 4,
-                width: 2.5,
-                radius: 5,
-                color: 'rgba(255, 255, 255, 0.5)'
-              }).spin(document.getElementById('loading'));
-
               $.get(ui.item.value, function(data) {
                 var searchItems = $('#searchitems');
-                if (searchItems.children().size() == 5)
+                if (searchItems.children().length == 5)
                   searchItems.children().first().remove();
 
                 var item = $(data).find('.item').css('display', 'inline-block');
@@ -215,7 +205,6 @@
                 new HoverBox(item[0], itemBox);
                 // item.click() doesn't work in Steam browser
                 itemBox.show(item[0]);
-                spinner.stop();
 
                 ga('send', 'event', 'Items', 'Search', ui.item.label);
               });

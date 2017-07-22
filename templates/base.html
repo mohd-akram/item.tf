@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="{% block description %}{% endblock %}" />
+    <meta name='viewport' content='initial-scale=1'>
     {% block meta %}{% endblock %}
     <title>{% block title %}{% endblock %} - item.tf</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/animate.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     {% block link %}{% endblock %}
     {% block js %}{% endblock %}
     {% include 'analytics.html' %}
@@ -17,9 +18,9 @@
     <div id="container">
       <header>{% block header %}{% endblock %}</header>
       {% block container %}{% endblock %}
-      <div id="body">
+      <main>
         {% block body %}{% endblock %}
-      </div>
+      </main>
       <footer>
         {% block footer %}{% endblock %}{% include 'footer.html' %}
       </footer>

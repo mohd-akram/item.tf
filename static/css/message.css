@@ -1,9 +1,10 @@
 #message {
   display: inline-block;
-  padding: 15px;
-  border-radius: 15px;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
   background: rgba(0,0,0,0.3);
   color: #8F8980;
+  margin-bottom: 3rem;
 }
 
 #message a, #message span {
