@@ -135,10 +135,16 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
             amount = float(amount)
         denom = _getdenom(pricematch.group(4) or '')
 
-        if not (priceclasses or pricetags):
+        if priceclasses or pricetags:
+            title = results[0]['title'] if results else None
+        else:
+            title = None
             results = [getsearchresult(items=itemsdict.values())]
 
         _pricefilter(quality, criteria, amount, denom, results, pricesource)
+
+        if results and title:
+            results[0]['title'] = '{} — {}'.format(results[0]['title'], title)
 
     elif len(indexes) > 1:
         # Searching for specific indexes
@@ -257,6 +263,24 @@ def getsearchresult(title='', type='', items=None):
     return {'title': title, 'type': type, 'items': items or []}
 
 
+def getclasstagtitle(classes, tags):
+    """Return a title desciribing a class/tag search"""
+    all_classes = list(tf2api.getallclasses().keys())
+    classes_text = ', '.join(sorted(classes, key=all_classes.index))
+    tags_text = ', '.join(sorted(tags)).title()
+
+    if len(classes) == 1 and len(tags) == 1:
+        title = f'{classes_text} {tags_text}'
+    elif classes and tags:
+        title = f'{classes_text} × {tags_text}'
+    elif classes:
+        title = classes_text
+    elif tags:
+        title = tags_text
+
+    return title
+
+
 def isvalidresult(itemdict, strict=True):
     """Check if item has an image, is not a duplicate and is not bundle junk.
     If strict is True, competition medals also return False"""
@@ -317,7 +341,9 @@ def _classtagsearch(classes, tags, itemsdict):
     results = defaultdict(list)
     names = set()
 
-    titles = ['', 'Multi-Class Items', 'All-Class Items']
+    title = getclasstagtitle(classes, tags)
+
+    titles = [title, 'Multi-Class Items', 'All-Class Items']
 
     # Check if the user is searching for tournament medals
     hidemedals = 'tournament' not in tags

@@ -193,6 +193,10 @@ h2 {
   font-size: 2rem;
 }
 
+h2 .symbol {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 main > h2 {
   margin-bottom: 0;
 }

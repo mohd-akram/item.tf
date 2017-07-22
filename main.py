@@ -380,8 +380,10 @@ async def getresults(classes, tags):
     multikey = getsearchkey(classes, tags, 'Multi')
     allkey = getsearchkey(classes, tags, 'All')
 
+    title = tf2search.getclasstagtitle(classes, tags)
+
     keys = (key, multikey, allkey)
-    titles = ('', 'Multi-Class Items', 'All-Class Items')
+    titles = (title, 'Multi-Class Items', 'All-Class Items')
 
     if not await store.exists(key) and not await store.exists(allkey):
         classeskey = 'temp:classes'

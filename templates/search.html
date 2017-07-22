@@ -2,7 +2,7 @@
 {% from 'macros.html' import getcount %}
 
 {% block title %}{{query}}{% endblock %}
-{% block description %}Search results for &quot;{{query}}&quot;{% endblock %}
+{% block description %}Search results for TF2 &quot;{{query}}&quot; items.{% endblock %}
 
 {% block heading %}Results{% endblock %}
 
@@ -14,9 +14,11 @@
   {%- if result.type == 'set' and not issetpage %}
   <h2><a href="/search?q={{result.title|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{result.title}}</a></h2>
   {% else %}
-  <h2>{% set list = result.title.split(':') %}{% if list|length > 1 %}
-  <span class="{{list[0]|lower|replace('\'', '')}}">{{list[0]}}</span>:{{''.join(list[1:])}}
-  {% else %}{{result.title}}{% endif %}</h2>
+  {% set list = result.title.split(':') %}
+  {% set quality = list[0] if list|length > 1 %}
+  {% set text = list[1] if quality else list[0] %}
+  <h2>{% if quality %}<span class="{{quality|lower|replace('\'', '')}}">{{quality}}</span>:{% endif %}
+  {% for c in text %}{% if c == '×' %}<span class="symbol">{{c}}</span>{% else %}{{c}}{% endif %}{% endfor %}</h2>
   {% endif -%}
   {% endif %}
   {{ showitems(result['items']) }}
