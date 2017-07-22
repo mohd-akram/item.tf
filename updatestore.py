@@ -8,6 +8,7 @@ from aioredis import create_redis
 from slugify import slugify
 
 import config
+import tf2api
 import tf2search
 from store import Redis
 from main import getitemkey, getclasskey, gettagkey
@@ -53,15 +54,26 @@ async def main(flush):
     sitemap = Sitemap()
     sitemap.add(config.homepage)
 
-    categories = {
-        'cosmetics': ('hats', 'miscs'),
-        'weapons': ('primary', 'secondary', 'melee')
-    }
+    all_classes = [class_.lower() for class_ in tf2api.getallclasses()]
+    all_tags = list(tf2api.getalltags())
+    all_qualities = [quality.replace("'", '').lower() for quality in
+                     tf2api.getallqualities().values()]
 
-    for category, subcategories in categories.items():
-        sitemap.add(f'{config.homepage}/{category}')
-        for subcategory in subcategories:
-            sitemap.add(f'{config.homepage}/{category}/{subcategory}')
+    keywords = all_classes + all_tags + all_qualities
+    for keyword in keywords:
+        sitemap.add(f'{config.homepage}/search/{keyword}')
+
+    for class_tag in all_classes + all_tags:
+        for quality in all_qualities:
+            sitemap.add(f'{config.homepage}/search/{quality}-{class_tag}')
+
+    for class_ in all_classes:
+        for tag in all_tags:
+            sitemap.add(f'{config.homepage}/search/{class_}-{tag}')
+            for quality in all_qualities:
+                sitemap.add(
+                    f'{config.homepage}/search/{quality}-{class_}-{tag}'
+                )
 
     for index in tf2info.items:
         pipe = store.pipeline()

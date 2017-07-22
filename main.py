@@ -78,23 +78,14 @@ async def home():
                         lastupdated=lastupdated)
 
 
-@get('/<category:re:cosmetics|weapons>')
-@get('/<category:re:cosmetics>/<subcategory:re:hats|miscs>')
-@get('/<category:re:weapons>/<subcategory:re:primary|secondary|melee>')
+@get('/search/<slug:re:[a-z]+(?:-[a-z]+)*>')
 @get('/search<is_json:re:(\.json)?>')
 @sync
 async def search(**kwargs):
-    category = kwargs.get('category')
-    subcategory = kwargs.get('subcategory')
+    slug = kwargs.get('slug')
     is_json = kwargs.get('is_json')
 
-    if subcategory:
-        query = (f'{subcategory} {category}' if category == 'weapons' else
-                 f'{subcategory}').title()
-    elif category:
-        query = category.title()
-    else:
-        query = request.query.q
+    query = slug.replace('-', ' ') if slug else request.query.q
 
     if not query:
         if is_json:

@@ -30,7 +30,7 @@ DENOMREGEX = (r'((?:earb|b)uds?|'
 
 PRICEREGEX = (r'(?:(\d+(?:\.\d+)?) ?{})'.format(DENOMREGEX))
 
-QUALITYREGEX = r'({}|dirty|uncraft(?:able)?)'.format(
+QUALITYREGEX = r'({}|collector|collectors|dirty|uncraft(?:able)?)'.format(
     '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
 
@@ -456,6 +456,9 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 def _pricefilter(quality, criteria, amount, denom, results, pricesource):
     """Search for items by price based on criteria"""
     getall = amount is None
+
+    if quality in ('Collector', 'Collectors'):
+        quality = "Collector's"
 
     if quality in ('Uncraft', 'Dirty'):
         quality = 'Uncraftable'
