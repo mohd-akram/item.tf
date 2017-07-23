@@ -194,20 +194,34 @@ async def item(**kwargs):
     if is_json:
         return item
     else:
-        desc_list = []
+        name = item['name']
+        tags_text = '/'.join(item['tags']) if item['tags'] else 'item'
+        classes_text = getlistastext(item['classes'], 'all classes')
+
+        description = f'{name} is a TF2 {tags_text} for {classes_text}.'
 
         if item['description']:
-            desc_list.append(item['description'].replace('\n', ' '))
+            desc_parts = item['description'].partition('---')
 
-        desc_list.append(', '.join(item['classes'])
-                         if item['classes'] else 'All Classes')
+            desc = desc_parts[0].replace('\n', ' ')
+            bundle_items = getlistastext(desc_parts[2].split('\n'))
 
-        if item['tags']:
-            desc_list.append(', '.join(item['tags']).title())
+            description = (
+                f"{description} {desc} {bundle_items}" if bundle_items else
+                f"{description} {desc}"
+            ).rstrip(':')
+
+            if description[-1] not in ('.', '?', '!'):
+                description += '.'
 
         return await render('item.html',
                             item=item,
-                            description=' | '.join(desc_list))
+                            description=description)
+
+
+def getlistastext(l, default=''):
+    return (' and '.join(l).replace(' and ', ', ', max(0, len(l) - 2))
+            if l else default)
 
 
 @post('/wishlist/<option:re:add|remove>')
