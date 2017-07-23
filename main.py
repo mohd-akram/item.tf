@@ -159,6 +159,8 @@ async def search(**kwargs):
     t1 = time.time()
 
     if is_json:
+        for result in results:
+            result['items'] = [item async for item in result['items']]
         return tojson(results)
     else:
         return await render('search.html',
@@ -363,6 +365,7 @@ async def render(template, **params):
 
 
 def tojson(*args, **kwargs):
+    response.set_header('Content-Type', 'application/json;charset=UTF-8')
     return rapidjson.dumps(*args, **kwargs)
 
 
