@@ -21,7 +21,7 @@
 {% endmacro %}
 
 {% macro getcount(length, unit) %}
-{{length}} {{unit}}{% if length != 1 %}s{% endif %}
+{{'{:,}'.format(length)}} {{unit}}{% if length != 1 %}s{% endif %}
 {% endmacro %}
 
 {% macro showitems(items, inline=False) %}

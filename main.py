@@ -103,6 +103,11 @@ async def search(**kwargs):
 
     t0 = time.time()
 
+    classes = set()
+    tags = set()
+
+    priceviz = False
+
     if query == 'all':
         items = store.Hashes(
             [getitemkey(k.decode()) for k in await store.sort('items')])
@@ -131,6 +136,7 @@ async def search(**kwargs):
 
         if results is not None:
             if len(results) != 0:
+                priceviz = True
                 if not is_json:
                     items = []
                     for item in results[0]['items']:
@@ -158,6 +164,36 @@ async def search(**kwargs):
 
     t1 = time.time()
 
+    count = sum(len(result['items']) for result in results)
+
+    all_classes = list(tf2api.getallclasses().keys())
+    classes_text = getlistastext(sorted(classes, key=all_classes.index))
+    tags_text = getlistastext(sorted(tags))
+
+    if query == 'all':
+        description = f'A list of all {count:,} items in TF2.'
+    elif classes and tags:
+        description = (
+            f'A list of the {count:,} {tags_text} items for {classes_text}'
+            ' in TF2.'
+        )
+    elif classes:
+        description = (
+            f'A list of the {count:,} items for {classes_text} in TF2.'
+        )
+    elif tags:
+        description = f'A list of the {count:,} {tags_text} items in TF2.'
+    elif priceviz:
+        from_, equals, to = results[0]['title'].partition(' = ')
+        to = getlistastext(to.split(' + '))
+        description = (f'{from_} is the same as {to} in TF2.' if equals else
+                       f'A list of {from_} items in TF2.')
+    elif results and ':' in results[0]['title']:
+        title = results[0]['title'].replace(':', '')
+        description = f'{count:,} {title} items in TF2.'
+    else:
+        description = f'Search results for "{query}" items in TF2.'
+
     if is_json:
         for result in results:
             result['items'] = [item async for item in result['items']]
@@ -165,9 +201,9 @@ async def search(**kwargs):
     else:
         return await render('search.html',
                             query=query,
+                            description=description,
                             results=results,
-                            count=sum(len(result['items'])
-                                      for result in results),
+                            count=count,
                             time=round(t1 - t0, 3))
 
 
