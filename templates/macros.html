@@ -37,6 +37,6 @@
 
 {% macro showsearchlinks(stringlist) %}
 {% for string in stringlist %}
-<a href="/search?q={{string|replace(' ','%20')}}">{{string}}</a><br>
+<a href="/search/{{string|slugify}}">{{string}}</a><br>
 {% endfor %}
 {% endmacro %}
