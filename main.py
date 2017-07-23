@@ -83,7 +83,7 @@ async def home():
 @sync
 async def search(**kwargs):
     slug = kwargs.get('slug')
-    is_json = kwargs.get('is_json')
+    is_json = kwargs.get('is_json', '')
 
     query = slug.replace('-', ' ') if slug else request.query.q
 

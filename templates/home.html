@@ -53,7 +53,7 @@
     <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 300px; font-size: 2rem;">
     <br><br>
     <input type="submit" value="Search" class="button">
-    <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search?q=random'">
+    <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search/random'">
   </form>
   {{ showitems(newitems, True) }}
   <div id="message">{{message|safe}}</div>
