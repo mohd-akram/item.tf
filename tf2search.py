@@ -459,6 +459,9 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 
 def _pricefilter(quality, criteria, amount, denom, results, pricesource):
     """Search for items by price based on criteria"""
+    if not results:
+        return
+
     getall = amount is None
 
     if quality in ('Collector', 'Collectors'):
