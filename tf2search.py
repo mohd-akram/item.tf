@@ -188,6 +188,10 @@ def visualizeprice(query, itemsdict, pricesource):
 
         title = ' + '.join(titlelist)
 
+        if not (len(items) == 1 and denom == items[0]['denom']):
+            title = '{} = {}'.format(_getpricestring(float(amount), denom),
+                                     title)
+
         return [getsearchresult(title, 'price', items)] if items else []
 
 

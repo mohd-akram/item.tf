@@ -18,7 +18,7 @@
   {% set quality = list[0] if list|length > 1 %}
   {% set text = list[1] if quality else list[0] %}
   <h2>{% if quality %}<span class="{{quality|lower|replace('\'', '')}}">{{quality}}</span>:{% endif %}
-  {% for c in text %}{% if c == '×' %}<span class="symbol">{{c}}</span>{% else %}{{c}}{% endif %}{% endfor %}</h2>
+  {%- for c in text %}{% if c in ('×', '+', '=') %}<span class="symbol">{{c}}</span>{% else %}{{c}}{% endif %}{% endfor %}</h2>
   {% endif -%}
   {% endif %}
   {{ showitems(result['items']) }}
