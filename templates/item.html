@@ -21,7 +21,7 @@
       <span class="{{quality|lower|replace('\'', '')}}">{{quality}}</span>: {{value}}<br>
     {% endfor %}</h3>
     {% endif %}
-    <img src="{{item['image_large']}}" alt="{{item['name']}}">
+    {% if item['image_large'] %}<img src="{{item['image_large']}}" alt="{{item['name']}}">{% endif %}
   </div>
   <div style="display: none">{{ showitem(item) }}</div>
   {{ super() }}

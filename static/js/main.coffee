@@ -411,7 +411,10 @@ class ItemBox
     hoverArea = @item.elem.cloneNode true
     hoverArea.id = 'hoverarea'
     hoverArea.className = ''
-    hoverArea.setAttribute 'style', "background-image: url(#{@item.imageUrl})"
+
+    if @item.imageUrl
+      hoverArea.setAttribute 'style',
+                             "background-image: url(#{@item.imageUrl})"
 
     # Add hover area to itembox
     @elem.insertBefore hoverArea,
