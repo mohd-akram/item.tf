@@ -32,10 +32,7 @@
       border: none !important;
     }
     header {
-      height: 10px;
-    }
-    .itemlist {
-      margin-top: 30px;
+      height: 1rem;
     }
   </style>
 {% endblock %}
@@ -50,7 +47,7 @@
   <div id="searchitems" style="margin: 20px 0"></div>
   <form id="searchform" action="/search">
     <div id="loading" style="display:none; padding: 20px;"></div>
-    <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 300px; font-size: 2rem;">
+    <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 30rem; font-size: 2rem;">
     <br><br>
     <input type="submit" value="Search" class="button">
     <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search/random'">
@@ -62,11 +59,11 @@
 {% block container %}
   <div id="sidebar">
     {% if user %}
-    <a href="{{user.url}}" title="{{user.name}}" style="position:relative; left:3px">
-      <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar"></a>
+    <a href="{{user.url}}" title="{{user.name}}">
+      <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar" style="width: 3.2rem"></a>
     {% else %}
-    <a href="/login" style="position: relative; left: 3px">
-      <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"></a>
+    <a href="/login">
+      <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_landing.png" alt="Sign in through Steam" style="width: 10rem"></a>
     {% endif %}
     <br><br>
     <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
@@ -86,7 +83,7 @@
 
     <div id="help-list" class="rounded">
       <a class="rounded glow"
-        style="display: inline-block; margin-top: 10px; padding: 7px; background-color: rgba(255, 255, 255, 0.07);"
+        style="display: inline-block; margin-top: 1rem; padding: 0.7rem; background-color: rgba(255, 255, 255, 0.07);"
         href="http://steamcommunity.com/groups/itemtf#announcements/detail/177093219758125435"
         target="_blank">Guide</a>
       <h4>Keywords</h4>

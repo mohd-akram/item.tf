@@ -66,7 +66,7 @@ body {
 header {
   height: 10rem;
   background-color: rgb(32, 31, 29);
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.3);
+  box-shadow: 0.1rem 0.1rem 0.6rem rgba(0, 0, 0, 0.3);
 }
 
 #back {
@@ -91,12 +91,17 @@ header .heading {
   position: relative;
 }
 
-header .search {
-  margin-top: 2rem;
+.search input[type=search] {
+  font-size: 2rem;
+  width: 20rem;
 }
 
 @media (max-width: 450px) {
-  #back { margin: 0; }
+  header #back { margin: 0; }
+}
+
+header .search {
+  margin-top: 2rem;
 }
 
 @media (max-width: 750px) {
@@ -188,7 +193,6 @@ h2, h3, h4 {
 
 h1 {
   margin: 0;
-  border-radius: 7px;
   font-weight: 300;
   font-size: 5rem;
 }
@@ -210,8 +214,8 @@ main > h2 {
 }
 
 .glow:hover {
-  color: rgb(230,230,230);
-  text-shadow: 0 0 10px rgba(255,255,255,0.4);
+  color: rgb(230, 230, 230);
+  text-shadow: 0 0 1rem rgba(255, 255, 255, 0.4);
 }
 
 .itemlist {
@@ -331,8 +335,8 @@ ul {
   z-index: 1;
   color: #EAEBD7;
   background-color: rgb(39, 39, 37);
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, .1);
-  border-radius: 5px;
+  box-shadow: 0 0 0.5rem 0.5rem rgba(0, 0, 0, .1);
+  border-radius: 0.5rem;
   width: 50rem;
   height: 60rem;
   transform: translate(-50%, -50%);
@@ -455,7 +459,7 @@ ul {
 #hoverbox {
   background-color:rgba(20, 20, 20, .9);
   border-radius: 0.8rem;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.4);
   display: none;
   font-size: 1.2rem;
   padding: 0.5rem;
@@ -469,7 +473,7 @@ ul {
 
 #hoverbox > div {
   font-size: 1.4rem;
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
 }
 
 a {
@@ -484,7 +488,7 @@ a > img {
 #help-list, #settings-list {
   display: none;
   margin-top: 2rem;
-  background-color: rgba(38, 35, 33, 0.94);
+  background-color: rgba(33, 32, 31, 0.9);
 }
 
 .rounded, .button-icon {
@@ -493,8 +497,8 @@ a > img {
 
 .rounded {
   background-color: rgba(255, 255, 255, 0.025);
-  border-radius: 10px;
-  padding: 4px;
+  border-radius: 1rem;
+  padding: 0.6rem;
 }
 
 .unique, .quality-6 {
@@ -617,8 +621,8 @@ a > img {
 }
 
 .offline, .online, .in-game {
-  border: 3px solid;
-  border-radius: 3px;
+  border: 0.3rem solid;
+  border-radius: 0.3rem;
 }
 
 .offline {
