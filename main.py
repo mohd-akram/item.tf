@@ -256,7 +256,7 @@ async def item(**kwargs):
 
 
 def getlistastext(l, default=''):
-    return (' and '.join(l).replace(' and ', ', ', max(0, len(l) - 2))
+    return (', and '.join(l).replace(', and ', ', ', max(0, len(l) - 2))
             if l else default)
 
 
