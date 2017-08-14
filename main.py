@@ -78,7 +78,7 @@ async def home():
                         lastupdated=lastupdated)
 
 
-@get('/search/<slug:re:[a-z]+(?:-[a-z]+)*>')
+@get('/search/<slug:re:[a-z]+(?:-[0-9a-z]+)*>')
 @get('/search<is_json:re:(\.json)?>')
 @sync
 async def search(**kwargs):
