@@ -118,6 +118,12 @@ main {
   padding-bottom: 4rem;
 }
 
+@media (max-width: 766px) {
+  .ad {
+    display: none;
+  }
+}
+
 #sidebar {
   min-width: 10rem;
   text-align: right;

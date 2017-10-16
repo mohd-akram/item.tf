@@ -41,9 +41,15 @@
   <h1 style="margin-top:120px; display: inline-block;">
     {% include 'logo.html' %}
   </h1>
-  <h4 id="addsearch" style="position:absolute;top:10px;left:10px;display:none">
-    <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
-  </h4>
+  <div style="position: absolute; top: 3rem; left: 1rem; text-align: left">
+    <h4 id="addsearch" style="margin: 0 0 2rem 0; display: none">
+      <a href="#" class="rounded" onclick="window.external.AddSearchProvider('{{searchurl}}')">Add Search Engine</a>
+    </h4>
+    <iframe class="ad"
+      src="https://sensible-ads.com/spaces/a318954c-ea9e-4f8c-8b6c-88de7d4baaf7/embed#homepage-banner"
+      width="142" height="71" frameborder="0" allowfullscreen>
+    </iframe>
+  </div>
   <div id="searchitems" style="margin: 20px 0"></div>
   <form id="searchform" action="/search">
     <div id="loading" style="display:none; padding: 20px;"></div>
