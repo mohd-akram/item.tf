@@ -445,7 +445,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
         getall = False
 
     for setname, itemset in itemsets.items():
-        if isresult(setname):
+        if isresult(setname) and setname != 'The Monster Mash-Up Pack':
             items = _getsetitems(itemset, nametoindexmap, itemsdict)
             result = getsearchresult(setname, 'set', items)
             if getall:
