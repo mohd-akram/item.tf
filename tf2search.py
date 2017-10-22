@@ -44,7 +44,6 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     itemsets = tf2api.getitemsets(schema)
     attributes = tf2api.getattributes(schema)
     effects = tf2api.getparticleeffects(schema)
-    itemsets = tf2api.getitemsets(schema)
 
     storeprices = tf2api.getstoreprices(apikey)
     newstoreprices = tf2api.getnewstoreprices(storeprices)
@@ -122,6 +121,8 @@ def search(query, itemsdict, nametoindexmap, itemsets, bundles, pricesource):
         # Search for a particular item set or bundle and list its items
         query = itemsetmatch.group(1).lower()
         result = _bundlesearch(query, bundles, nametoindexmap, itemsdict)
+        if not result:
+            result = _updatesearch(query, itemsdict)
         if not result:
             result = _itemsetsearch(query, itemsets, nametoindexmap, itemsdict)
 
@@ -455,6 +456,21 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 
     if getall:
         return results
+
+
+def _updatesearch(query, itemsdict):
+    if query == 'jungle inferno':
+        indexes = [
+            30876, 30843, 30844, 30842, 30845, 1182, 1183, 30890, 30888, 30889,
+            30896, 30899, 30898, 30897, 30902, 30901, 30903, 30900, 30905,
+            30904, 1188, 30914, 30912, 30911, 30910, 1189, 1187, 30913, 30908,
+            30909, 30916, 30891, 30893, 30892, 30894, 30895, 30884, 30886,
+            30885, 30887, 30879, 30881, 30877, 30882, 1186, 30915, 30880,
+            30878, 1185, 30883, 5871, 5873, 5868, 5885, 5884, 5883, 5882, 5875,
+            5877, 5869, 1178, 1180, 1181, 1179, 1190
+        ]
+        items = [itemsdict[i] for i in indexes]
+        return getsearchresult('Jungle Inferno', 'update', items)
 
 
 def _pricefilter(quality, criteria, amount, denom, results, pricesource):
