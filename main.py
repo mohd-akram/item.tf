@@ -6,6 +6,7 @@ import random
 import asyncio
 import logging
 from base64 import b64encode
+from collections import defaultdict
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 from urllib.error import URLError
@@ -82,6 +83,8 @@ async def home():
 @get('/search<is_json:re:(\.json)?>')
 @sync
 async def search(**kwargs):
+    user = asyncio.ensure_future(getcurrentuser(request))
+
     slug = kwargs.get('slug')
     is_json = kwargs.get('is_json', '')
 
@@ -194,6 +197,13 @@ async def search(**kwargs):
     else:
         description = f'Search results for "{query}" items in TF2.'
 
+    qualities = defaultdict(set)
+
+    user = await user
+    if user:
+        for item in user.get('backpack', {}).get('items', []):
+            qualities[item['defindex']].add(item['quality'])
+
     if is_json:
         for result in results:
             result['items'] = [item async for item in result['items']]
@@ -203,6 +213,7 @@ async def search(**kwargs):
                             query=query,
                             description=description,
                             results=results,
+                            qualities=qualities,
                             count=count,
                             time=round(t1 - t0, 3))
 
@@ -527,7 +538,10 @@ async def getuser(steamid, urltype='profiles', create=False):
 
     if create or needsupdate:
         try:
-            steamuser = await tf2api.getplayersummary(config.apikey, steamid)
+            steamuser, backpack = await asyncio.gather(
+                tf2api.getplayersummary(config.apikey, steamid),
+                tf2api.getplayerbackpack(config.apikey, steamid)
+            )
 
         except URLError:
             # Postpone update if this is not a new user
@@ -541,6 +555,9 @@ async def getuser(steamid, urltype='profiles', create=False):
         user['avatar'] = steamuser['avatar']
         user['state'] = ('Online' if steamuser['personastate'] != 0 else
                          'Offline')
+
+        if backpack:
+            user['backpack'] = backpack
 
         if 'gameid' in steamuser:
             user['state'] = 'In-Game'

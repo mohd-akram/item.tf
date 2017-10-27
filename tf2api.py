@@ -360,7 +360,7 @@ def getitemattributes(item, allattributes, effects):
 def getitemclasses(item):
     """Get the TF2 classes that can use this item"""
     return (sorted(item['used_by_classes'],
-            key=list(getallclasses().keys()).index)
+                   key=list(getallclasses().keys()).index)
             if 'used_by_classes' in item else [])
 
 
@@ -415,30 +415,37 @@ def getobsoleteindexes():
     return {699, 2093} | map_stamps | starter_packs
 
 
+async def getplayerbackpack(apikey, steamid):
+    """Return the player backpack of the given steamid"""
+    url = ('http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/'
+           f'?key={apikey}&steamid={steamid}')
+    return (await _getjsonresponse(url)).get('result')
+
+
 async def getplayersummary(apikey, steamid):
     """Return the player summary of the given steamid"""
     return (await getplayersummaries(apikey, [steamid]))[0]
 
 
-async def getplayersummaries(apikey, steamids, timeout=5):
+async def getplayersummaries(apikey, steamids):
     """Return the player summaries of a list of steamids"""
     url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
-           '?key={}&steamids={}'.format(apikey, ','.join(steamids)))
+           f"?key={apikey}&steamids={','.join(steamids)}")
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return json.loads(
-                (await response.read()).decode()
-            )['response']['players']
+    return (await _getjsonresponse(url))['response']['players']
 
 
-async def resolvevanityurl(apikey, vanityurl, timeout=5):
+async def resolvevanityurl(apikey, vanityurl):
     """Return the steamid of a given vanity url"""
     url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
-           '?key={}&vanityurl={}'.format(apikey, vanityurl))
+           f'?key={apikey}&vanityurl={vanityurl}')
 
+    response = await _getjsonresponse(url)
+    if response['success'] == 1:
+        return response['steamid']
+
+
+async def _getjsonresponse(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            response = json.loads((await response.read()).decode())['response']
-            if response['success'] == 1:
-                return response['steamid']
+            return json.loads((await response.read()).decode())

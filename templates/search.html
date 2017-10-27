@@ -21,7 +21,7 @@
   {%- for c in text %}{% if c in ('×', '+', '=') %}<span class="symbol">{{c}}</span>{% else %}{{c}}{% endif %}{% endfor %}</h2>
   {% endif -%}
   {% endif %}
-  {{ showitems(result['items']) }}
+  <div class="search">{{ showitems(result['items'], qualities=qualities) }}</div>
   {%- endfor %}
 
   {%- if not count %}

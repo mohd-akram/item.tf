@@ -1,6 +1,6 @@
-{% macro showitem(item) %}
+{% macro showitem(item, qualities) %}
 <a href="/{{item['name']|slugify}}">
-<div class="item{% if 'quality' in item %} quality-{{item['quality']}}{% endif %}" title="{{item['name']}}"{% if item['image'] %} style="background-image: url({{item['image']}});"{% endif %} data-index="{{item['index']}}" data-url="/{{item['name']|slugify}}"{% if item['image_large'] %} data-image="{{item['image_large']}}"{% endif %} data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
+<div class="item{% for quality in qualities %} quality-{{quality}}{% endfor %}" title="{{item['name']}}"{% if item['image'] %} style="background-image: url({{item['image']}});"{% endif %} data-index="{{item['index']}}" data-url="/{{item['name']|slugify}}"{% if item['image_large'] %} data-image="{{item['image_large']}}"{% endif %} data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
 {%- for b in item['blueprints'] %}
 <ul data-chance="{{b['chance']}}" style="display:none">
   {%- for i in b['required'] %}
@@ -24,13 +24,13 @@
 {{'{:,}'.format(length)}} {{unit}}{% if length != 1 %}s{% endif %}
 {% endmacro %}
 
-{% macro showitems(items, inline=False) %}
+{% macro showitems(items, inline=False, qualities={}) %}
 <div class="itemlist{% if inline %} inline{% endif %}">
 {% if not inline %}
 <div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
 {% for item in items %}
-{{showitem(item)}}
+{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}
 {%- endfor %}
 </div>
 {% endmacro %}
