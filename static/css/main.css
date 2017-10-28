@@ -668,997 +668,643 @@ a > img {
   border-color: #8cb359;
 }
 
+.search [class*=quality-]::after {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
 .search .quality-6::after {
   content: "●";
-  color: #FFD700;
+  background-color: #FFD700;
 }
 
 .search .quality-3::after {
   content: "●";
-  color: #476291;
+  background-color: #476291;
 }
 
 .search .quality-11::after {
   content: "●";
-  color: #CF6A32;
+  background-color: #CF6A32;
 }
 
 .search .quality-1::after {
   content: "●";
-  color: #4D7455;
+  background-color: #4D7455;
 }
 
 .search .quality-14::after {
   content: "●";
-  color: #AA0000;
+  background-color: #AA0000;
 }
 
 .search .quality-13::after {
   content: "●";
-  color: #38F3AB;
+  background-color: #38F3AB;
 }
 
 .search .quality-5::after {
   content: "●";
-  color: #8650AC;
+  background-color: #8650AC;
 }
 
 .search .quality-6.quality-3::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #476291 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #476291 50%);
 }
 
 .search .quality-6.quality-11::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #CF6A32 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #CF6A32 50%);
 }
 
 .search .quality-6.quality-1::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #4D7455 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #4D7455 50%);
 }
 
 .search .quality-6.quality-14::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #AA0000 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #AA0000 50%);
 }
 
 .search .quality-6.quality-13::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #38F3AB 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #38F3AB 50%);
 }
 
 .search .quality-6.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #FFD700 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 50%, #8650AC 50%);
 }
 
 .search .quality-3.quality-11::after {
   content: "●●";
-  background: linear-gradient(to right, #476291 50%, #CF6A32 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 50%, #CF6A32 50%);
 }
 
 .search .quality-3.quality-1::after {
   content: "●●";
-  background: linear-gradient(to right, #476291 50%, #4D7455 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 50%, #4D7455 50%);
 }
 
 .search .quality-3.quality-14::after {
   content: "●●";
-  background: linear-gradient(to right, #476291 50%, #AA0000 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 50%, #AA0000 50%);
 }
 
 .search .quality-3.quality-13::after {
   content: "●●";
-  background: linear-gradient(to right, #476291 50%, #38F3AB 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 50%, #38F3AB 50%);
 }
 
 .search .quality-3.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #476291 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 50%, #8650AC 50%);
 }
 
 .search .quality-11.quality-1::after {
   content: "●●";
-  background: linear-gradient(to right, #CF6A32 50%, #4D7455 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 50%, #4D7455 50%);
 }
 
 .search .quality-11.quality-14::after {
   content: "●●";
-  background: linear-gradient(to right, #CF6A32 50%, #AA0000 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 50%, #AA0000 50%);
 }
 
 .search .quality-11.quality-13::after {
   content: "●●";
-  background: linear-gradient(to right, #CF6A32 50%, #38F3AB 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 50%, #38F3AB 50%);
 }
 
 .search .quality-11.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #CF6A32 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 50%, #8650AC 50%);
 }
 
 .search .quality-1.quality-14::after {
   content: "●●";
-  background: linear-gradient(to right, #4D7455 50%, #AA0000 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 50%, #AA0000 50%);
 }
 
 .search .quality-1.quality-13::after {
   content: "●●";
-  background: linear-gradient(to right, #4D7455 50%, #38F3AB 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 50%, #38F3AB 50%);
 }
 
 .search .quality-1.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #4D7455 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 50%, #8650AC 50%);
 }
 
 .search .quality-14.quality-13::after {
   content: "●●";
-  background: linear-gradient(to right, #AA0000 50%, #38F3AB 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #AA0000 50%, #38F3AB 50%);
 }
 
 .search .quality-14.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #AA0000 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #AA0000 50%, #8650AC 50%);
 }
 
 .search .quality-13.quality-5::after {
   content: "●●";
-  background: linear-gradient(to right, #38F3AB 50%, #8650AC 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #38F3AB 50%, #8650AC 50%);
 }
 
 .search .quality-6.quality-3.quality-11::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #CF6A32 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #CF6A32 67%);
 }
 
 .search .quality-6.quality-3.quality-1::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #4D7455 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #4D7455 67%);
 }
 
 .search .quality-6.quality-3.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #AA0000 67%);
 }
 
 .search .quality-6.quality-3.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #38F3AB 67%);
 }
 
 .search .quality-6.quality-3.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #476291 33%, #476291 67%, #8650AC 67%);
 }
 
 .search .quality-6.quality-11.quality-1::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #4D7455 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #4D7455 67%);
 }
 
 .search .quality-6.quality-11.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #AA0000 67%);
 }
 
 .search .quality-6.quality-11.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #38F3AB 67%);
 }
 
 .search .quality-6.quality-11.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #CF6A32 33%, #CF6A32 67%, #8650AC 67%);
 }
 
 .search .quality-6.quality-1.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
 }
 
 .search .quality-6.quality-1.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
 }
 
 .search .quality-6.quality-1.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
 }
 
 .search .quality-6.quality-14.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
 }
 
 .search .quality-6.quality-14.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
 }
 
 .search .quality-6.quality-13.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #FFD700 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
 }
 
 .search .quality-3.quality-11.quality-1::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #4D7455 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #4D7455 67%);
 }
 
 .search .quality-3.quality-11.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #AA0000 67%);
 }
 
 .search .quality-3.quality-11.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #38F3AB 67%);
 }
 
 .search .quality-3.quality-11.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #CF6A32 33%, #CF6A32 67%, #8650AC 67%);
 }
 
 .search .quality-3.quality-1.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
 }
 
 .search .quality-3.quality-1.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
 }
 
 .search .quality-3.quality-1.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
 }
 
 .search .quality-3.quality-14.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
 }
 
 .search .quality-3.quality-14.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
 }
 
 .search .quality-3.quality-13.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #476291 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
 }
 
 .search .quality-11.quality-1.quality-14::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #AA0000 67%);
 }
 
 .search .quality-11.quality-1.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #38F3AB 67%);
 }
 
 .search .quality-11.quality-1.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #4D7455 33%, #4D7455 67%, #8650AC 67%);
 }
 
 .search .quality-11.quality-14.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
 }
 
 .search .quality-11.quality-14.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
 }
 
 .search .quality-11.quality-13.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #CF6A32 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
 }
 
 .search .quality-1.quality-14.quality-13::after {
   content: "●●●";
-  background: linear-gradient(to right, #4D7455 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 33%, #AA0000 33%, #AA0000 67%, #38F3AB 67%);
 }
 
 .search .quality-1.quality-14.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #4D7455 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 33%, #AA0000 33%, #AA0000 67%, #8650AC 67%);
 }
 
 .search .quality-1.quality-13.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #4D7455 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
 }
 
 .search .quality-14.quality-13.quality-5::after {
   content: "●●●";
-  background: linear-gradient(to right, #AA0000 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #AA0000 33%, #38F3AB 33%, #38F3AB 67%, #8650AC 67%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #4D7455 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #4D7455 75%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-14::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #AA0000 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #AA0000 75%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #CF6A32 50%, #CF6A32 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-14::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-3.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-3.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-3.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #476291 25%, #476291 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-14::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-11.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-11.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-11.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #CF6A32 25%, #CF6A32 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-1.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-6.quality-1.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-1.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-14.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #FFD700 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-14::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #AA0000 75%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #38F3AB 75%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #4D7455 50%, #4D7455 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-11.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-3.quality-11.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-11.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #CF6A32 25%, #CF6A32 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-1.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-3.quality-1.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-1.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-3.quality-14.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #476291 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-11.quality-1.quality-14.quality-13::after {
   content: "●●●●";
-  background: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #38F3AB 75%);
 }
 
 .search .quality-11.quality-1.quality-14.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #AA0000 50%, #AA0000 75%, #8650AC 75%);
 }
 
 .search .quality-11.quality-1.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 25%, #4D7455 25%, #4D7455 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-11.quality-14.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #CF6A32 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●";
-  background: linear-gradient(to right, #4D7455 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #4D7455 25%, #AA0000 25%, #AA0000 50%, #38F3AB 50%, #38F3AB 75%, #8650AC 75%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-14::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #AA0000 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #AA0000 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-13::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #38F3AB 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #38F3AB 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #4D7455 60%, #4D7455 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-14.quality-13::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-14.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #CF6A32 40%, #CF6A32 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-14.quality-13::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-14.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #476291 20%, #476291 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-14.quality-13::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-14.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-11.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #CF6A32 20%, #CF6A32 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #FFD700 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-14.quality-13::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #38F3AB 80%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-14.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #AA0000 60%, #AA0000 80%, #8650AC 80%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #4D7455 40%, #4D7455 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-3.quality-11.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 20%, #CF6A32 20%, #CF6A32 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-3.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #476291 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-11.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●";
-  background: linear-gradient(to right, #CF6A32 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #CF6A32 20%, #4D7455 20%, #4D7455 40%, #AA0000 40%, #AA0000 60%, #38F3AB 60%, #38F3AB 80%, #8650AC 80%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-14.quality-13::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #AA0000 67%, #AA0000 83%, #38F3AB 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #AA0000 67%, #AA0000 83%, #38F3AB 83%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-14.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #AA0000 67%, #AA0000 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #AA0000 67%, #AA0000 83%, #8650AC 83%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-13.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #4D7455 50%, #4D7455 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-14.quality-13.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #CF6A32 33%, #CF6A32 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
 }
 
 .search .quality-6.quality-3.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #476291 17%, #476291 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
 }
 
 .search .quality-6.quality-11.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #FFD700 17%, #CF6A32 17%, #CF6A32 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 17%, #CF6A32 17%, #CF6A32 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
 }
 
 .search .quality-3.quality-11.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●●";
-  background: linear-gradient(to right, #476291 17%, #CF6A32 17%, #CF6A32 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #476291 17%, #CF6A32 17%, #CF6A32 33%, #4D7455 33%, #4D7455 50%, #AA0000 50%, #AA0000 67%, #38F3AB 67%, #38F3AB 83%, #8650AC 83%);
 }
 
 .search .quality-6.quality-3.quality-11.quality-1.quality-14.quality-13.quality-5::after {
   content: "●●●●●●●";
-  background: linear-gradient(to right, #FFD700 14%, #476291 14%, #476291 29%, #CF6A32 29%, #CF6A32 43%, #4D7455 43%, #4D7455 57%, #AA0000 57%, #AA0000 71%, #38F3AB 71%, #38F3AB 86%, #8650AC 86%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  background-image: linear-gradient(to right, #FFD700 14%, #476291 14%, #476291 29%, #CF6A32 29%, #CF6A32 43%, #4D7455 43%, #4D7455 57%, #AA0000 57%, #AA0000 71%, #38F3AB 71%, #38F3AB 86%, #8650AC 86%);
 }
