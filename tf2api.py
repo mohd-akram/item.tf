@@ -258,8 +258,8 @@ def getweapontags():
 
 def getalltags():
     """Return all item tags"""
-    return (('weapon', 'cosmetic', 'hat', 'misc', 'tournament',
-             'action', 'taunt', 'tool', 'paint', 'craft', 'token', 'bundle') +
+    return (('weapon', 'cosmetic', 'hat', 'misc', 'taunt', 'tool', 'action',
+             'paint', 'craft', 'token', 'bundle', 'tournament', 'halloween') +
             getweapontags())
 
 
@@ -402,6 +402,9 @@ def getitemtags(item):
 
         if item['tool']['type'] == 'paint_can':
             tags.append('paint')
+
+    if item.get('holiday_restriction') == 'halloween_or_fullmoon':
+        tags.append('halloween')
 
     return tags
 
