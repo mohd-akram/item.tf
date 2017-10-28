@@ -446,7 +446,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
         getall = False
 
     for setname, itemset in itemsets.items():
-        if isresult(setname) and setname != 'The Monster Mash-Up Pack':
+        if isresult(setname):
             items = _getsetitems(itemset, nametoindexmap, itemsdict)
             result = getsearchresult(setname, 'set', items)
             if getall:
@@ -538,7 +538,10 @@ def _getsetitems(itemset, nametoindexmap, itemsdict):
                     .replace('Conspiratorial Cut', 'Cranial Conspiracy')
                     .replace('Hundekopf', 'Hundkopf')
                     .replace('Skinless Slashers', 'Scaly Scrapers')
-                    .replace('Transylvanian Toupe', 'Transylvania Top'))
+                    .replace('Transylvanian Toupe', 'Transylvania Top')
+                    .replace('Yeti_Head', 'Kathman-Hairdo')
+                    .replace('Yeti_Arms', 'Himalayan Hair Shirt')
+                    .replace('Yeti_Legs', 'Abominable Snow Pants'))
 
         setitems.append(itemsdict[nametoindexmap[name]])
 
