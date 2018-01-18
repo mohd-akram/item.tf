@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmohd-akram%2Fitem.tf.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmohd-akram%2Fitem.tf?ref=badge_shield)
+
 item.tf
 =======
 
@@ -85,3 +87,7 @@ function, so a special thanks to the following:
 [TF2 Crafting Advisor](http://tf2crafting.info)
 
 [TF2B](http://tf2b.com)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmohd-akram%2Fitem.tf.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmohd-akram%2Fitem.tf?ref=badge_large)
