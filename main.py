@@ -75,7 +75,7 @@ async def home(request):
     return response
 
 
-@app.get('/search/<slug:[a-z]+(?:-[0-9a-z]+)*>')
+@app.get('/search/<slug:[0-9a-z]+(?:-[0-9a-z]+)*>')
 @app.get('/search<is_json:(\.json)?>')
 async def search(request, **kwargs):
     user = asyncio.ensure_future(getcurrentuser(request))
