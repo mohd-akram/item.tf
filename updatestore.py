@@ -40,9 +40,9 @@ class Sitemap:
 async def main(flush):
     store = await create_redis(('localhost', 6379), commands_factory=Redis)
 
-    tf2info = tf2search.gettf2info(config.apikey,
-                                   config.backpackkey, config.tradekey,
-                                   config.blueprintsfile)
+    tf2info = await tf2search.gettf2info(config.apikey,
+                                         config.backpackkey, config.tradekey,
+                                         config.blueprintsfile)
 
     if flush:
         await store.delete('items')

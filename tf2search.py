@@ -15,6 +15,7 @@ Note: You must provide your own image URLs for paint cans and blueprints.
 """
 import re
 import json
+import asyncio
 from fractions import Fraction
 from collections import namedtuple, defaultdict, OrderedDict
 
@@ -34,10 +35,13 @@ QUALITYREGEX = r'({}|collector|collectors|dirty|uncraft(?:able)?)'.format(
     '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
 
-def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
+async def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     """Return a named tuple which contains information from multiple sources
     about TF2 items"""
-    schema = tf2api.getschema(apikey)
+    schema, storeprices = await asyncio.gather(
+        tf2api.getschema(apikey),
+        tf2api.getstoreprices(apikey)
+    )
 
     items = tf2api.getitems(schema)
     itemsbyname = tf2api.getitemsbyname(schema)
@@ -45,12 +49,13 @@ def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
     attributes = tf2api.getattributes(schema)
     effects = tf2api.getparticleeffects(schema)
 
-    storeprices = tf2api.getstoreprices(apikey)
     newstoreprices = tf2api.getnewstoreprices(storeprices)
-    bundles = tf2api.getbundles(apikey, storeprices)
 
-    backpackprices = tf2api.getbackpackprices(backpackkey, items, itemsbyname)
-    tradeprices = tf2api.gettradeprices(tradekey, items, itemsbyname)
+    bundles, backpackprices, tradeprices = await asyncio.gather(
+        tf2api.getbundles(apikey, storeprices),
+        tf2api.getbackpackprices(backpackkey, items, itemsbyname),
+        tf2api.gettradeprices(tradekey, items, itemsbyname)
+    )
 
     with open(blueprintsfilename, encoding='utf-8') as f:
         data = json.loads(f.read())

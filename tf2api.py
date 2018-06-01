@@ -6,22 +6,44 @@ You can also obtain market prices from backpack.tf and trade.tf.
 There are also functions for parsing the information of each item.
 
 """
+import asyncio
 import json
-from urllib.request import Request, urlopen
 from collections import defaultdict, OrderedDict
 
 import aiohttp
 
 
-def getschema(apikey, timeout=30):
+async def getschema(apikey):
     """Return the schema"""
-    url = ('http://api.steampowered.com/IEconItems_440/GetSchema/v0001/'
-           '?key={}&language=en'.format(apikey))
+    schema_task = asyncio.ensure_future(_getschemaoverview(apikey))
 
-    return json.loads(urlopen(url, timeout=timeout).read().decode())
+    all_items = []
+
+    start = 0
+    while start is not None:
+        items, start = await _getschemaitems(apikey, start)
+        all_items.extend(items)
+
+    schema = await schema_task
+    schema['result']['items'] = all_items
+
+    return schema
 
 
-def getitemsinfo(apikey, storeprices, indexes, timeout=30):
+async def _getschemaoverview(apikey):
+    url = ('https://api.steampowered.com/IEconItems_440/GetSchemaOverview/v1/'
+           f'?key={apikey}&language=en')
+    return await _getjsonresponse(url)
+
+
+async def _getschemaitems(apikey, start):
+    url = ('https://api.steampowered.com/IEconItems_440/GetSchemaItems/v1/'
+           f'?key={apikey}&language=en&start={start}')
+    result = (await _getjsonresponse(url))['result']
+    return result['items'], result.get('next')
+
+
+async def getitemsinfo(apikey, storeprices, indexes):
     """Return a dictionary of AssetClassInfo values with defindex as key"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
            '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
@@ -32,19 +54,18 @@ def getitemsinfo(apikey, storeprices, indexes, timeout=30):
         classid = storeprices[index]['classid']
         url += '&classid{0}={1}'.format(n, classid)
 
-    infobyid = json.loads(
-        urlopen(url, timeout=timeout).read().decode())['result']
+    infobyid = (await _getjsonresponse(url))['result']
     del infobyid['success']
 
     return {int(iteminfo['app_data']['def_index']): iteminfo
             for iteminfo in infobyid.values()}
 
 
-def getbundles(apikey, storeprices):
+async def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
     indexes = [index for index, price in storeprices.items()
                if not {'Bundles', 'Class_Bundles'}.isdisjoint(price['tags'])]
-    return getitemsinfo(apikey, storeprices, indexes)
+    return await getitemsinfo(apikey, storeprices, indexes)
 
 
 def getitemsets(schema):
@@ -87,14 +108,13 @@ def getparticleeffects(schema):
             schema['result']['attribute_controlled_attached_particles']}
 
 
-def getstoreprices(apikey, timeout=30):
+async def getstoreprices(apikey):
     """Return a dictionary of store prices where the key is defindex for
     each item"""
     url = ('http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
            '?key={}&language=en&appid=440&currency=usd'.format(apikey))
 
-    prices = json.loads(
-        urlopen(url, timeout=timeout).read().decode())['result']['assets']
+    prices = (await _getjsonresponse(url))['result']['assets']
 
     return {int(price['name']): price for price in prices}
 
@@ -105,16 +125,14 @@ def getnewstoreprices(storeprices):
             if 'New' in price['tags']}
 
 
-def getbackpackprices(apikey, items, itemsbyname, timeout=30):
+async def getbackpackprices(apikey, items, itemsbyname):
     """Get market prices from backpack.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
     url = ('http://backpack.tf/api/IGetPrices/v4/'
            '?key={}&compress=1'.format(apikey))
 
-    r = Request(url, headers={'User-Agent': 'tf2api'})
-    pricesdata = json.loads(
-        urlopen(r, timeout=timeout).read().decode())['response']['items']
+    pricesdata = (await _getjsonresponse(url))['response']['items']
 
     pricesdict = defaultdict(dict)
 
@@ -185,15 +203,13 @@ def getbackpackprices(apikey, items, itemsbyname, timeout=30):
     return pricesdict
 
 
-def gettradeprices(apikey, items, itemsbyname, timeout=30):
+async def gettradeprices(apikey, items, itemsbyname):
     """Get market prices from trade.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
     url = 'http://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
 
-    r = Request(url, headers={'User-Agent': 'tf2api'})
-    pricesdata = json.loads(
-        urlopen(r, timeout=timeout).read().decode())['items']
+    pricesdata = (await _getjsonresponse(url))['items']
 
     pricesdict = defaultdict(dict)
     itemnames = set()
@@ -449,6 +465,7 @@ async def resolvevanityurl(apikey, vanityurl):
 
 
 async def _getjsonresponse(url):
-    async with aiohttp.ClientSession() as session:
+    headers = {'User-Agent': 'tf2api'}
+    async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(url) as response:
             return json.loads((await response.read()).decode())

@@ -55,20 +55,31 @@ or separately. It contains many helpful functions to get information about
 items in TF2.
 
 Example:
+
 ```python
->>> import tf2api
->>> schema = tf2api.getschema(apikey)
->>> items = tf2api.getitems(schema)
->>> itemsbyname = tf2api.getitemsbyname(schema)
+import sys
+import asyncio
 
->>> pan = items[264] # 264 is the defindex of the item, Or:
->>> pan = itemsbyname['Frying Pan']
+import tf2api
 
->>> tf2api.getitemclasses(pan)
-['Scout', 'Soldier', 'Pyro', 'Demoman', 'Heavy', 'Medic', 'Sniper']
 
->>> tf2api.getitemtags(pan)
-['weapon', 'melee']
+async def main():
+    apikey = sys.argv[1]
+
+    schema = await tf2api.getschema(apikey)
+    items = tf2api.getitems(schema)
+    itemsbyname = tf2api.getitemsbyname(schema)
+
+    pan = items[264]  # 264 is the defindex of the item, Or:
+    pan = itemsbyname['Frying Pan']
+
+    print(tf2api.getitemclasses(pan))
+    # ['Scout', 'Soldier', 'Pyro', 'Demoman', 'Heavy', 'Medic', 'Sniper']
+
+    print(tf2api.getitemtags(pan))
+    # ['weapon', 'melee']
+
+asyncio.get_event_loop().run_until_complete(main())
 ```
 
 Thanks
