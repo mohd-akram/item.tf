@@ -206,31 +206,27 @@ class ItemBox
       html += '</div>'
     else ''
 
-  _outpostHTML: ->
+  _tradeHTML: ->
     """
-    <a href="#" id="find-trades-btn"
-     class="fa fa-exchange fa-lg button-icon" title="Find Trades"></a>
+    <form name="tradeform" method="POST" style="display: inline-block">
 
-    <form name="tf2outpostform" method="POST" style="display: inline-block"
-     action="http://www.tf2outpost.com/search">
+      <input type="hidden" name="json">
+      <input type="submit" name="submit" value="Search!" style="display: none">
 
-    <input type="hidden" name="json">
-    <input type="submit" name="submit" value="Search!" style="display: none">
+      <select id="tradetype" class="textbox">
+        <option value="has1">Want</option>
+        <option value="wants1">Have</option>
+      </select>
 
-    <select id="tradetype" class="textbox">
-      <option value="has1">Want</option>
-      <option value="wants1">Have</option>
-    </select>
-
-    <select id="quality" class="textbox">
-      <option value="6">Unique</option>
-      <option value="3">Vintage</option>
-      <option value="11">Strange</option>
-      <option value="1">Genuine</option>
-      <option value="14">Collector's</option>
-      <option value="13">Haunted</option>
-      <option value="5">Unusual</option>
-    </select>
+      <select id="quality" class="textbox">
+        <option value="6">Unique</option>
+        <option value="3">Vintage</option>
+        <option value="11">Strange</option>
+        <option value="1">Genuine</option>
+        <option value="14">Collector's</option>
+        <option value="13">Haunted</option>
+        <option value="5">Unusual</option>
+      </select>
 
     </form>
     """
@@ -260,10 +256,10 @@ class ItemBox
     <a id="market-btn" class="fa fa-shopping-cart fa-lg button-icon"
      target="_blank" title="Community Market"></a>
 
-    <a id="classifieds-btn" class="fa fa-list fa-lg button-icon"
-     target="_blank" title="Backpack.tf Classifieds"></a>
+    <a id="classifieds-btn" class="fa fa-exchange fa-lg button-icon"
+     target="_blank" title="Find Trades"></a>
 
-    #{@_outpostHTML()}
+    #{@_tradeHTML()}
     #{@_wishlistHTML()}
     </div>
     """
@@ -331,19 +327,6 @@ class ItemBox
       classifieds.href = "http://backpack.tf/classifieds?item=#{
         encodeURIComponent @item.name}&quality=#{@form.quality.value}")()
 
-  _outpostLink: ->
-    # TF2Outpost link
-    if window.navigator.userAgent.indexOf('Valve Steam GameOverlay') is -1
-      @form.target = '_blank'
-
-    document.getElementById('find-trades-btn').onclick = (event) =>
-      tradeType = document.getElementById('tradetype').value
-
-      @form.json.value = "{\"attributes\":{},\"match_all\":false,\"#{
-        tradeType}\":\"440,#{@item.id},#{@form.quality.value}\"}"
-
-      @form.submit.click()
-
   _wishlistLink: ->
     # Update wishlist item index
     if user.isOwnPage()
@@ -398,12 +381,11 @@ class ItemBox
       #{@_buttonsHTML()}#{@_buyHTML()}
       """
 
-    @form = document.tf2outpostform
+    @form = document.tradeform
 
     @_nameLink()
     @_pricesLink()
     @_buttonsLink()
-    @_outpostLink()
     @_wishlistLink()
     @_buyLink()
 
