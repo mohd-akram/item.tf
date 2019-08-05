@@ -28,6 +28,7 @@
 {% endblock %}
 
 {% block script %}
+{% if item['storeprice'] %}
 <script type="application/ld+json">
   {
     "@context": "http://schema.org/",
@@ -39,7 +40,7 @@
     "brand": {
       "@type": "Thing",
       "name": "TF2"
-    }{% if item['storeprice'] %},
+    },
     "offers": {
       "@type": "Offer",
       "priceCurrency": "USD",
@@ -48,9 +49,10 @@
         "@type": "Organization",
         "name": "Valve"
       }
-    }{% endif %}
+    }
   }
 </script>
+{% endif %}
 <script>
   var itemBox = new ItemBox(false);
   itemBox.show(document.getElementsByClassName('item')[0]);
