@@ -459,7 +459,7 @@ async def resolvevanityurl(apikey, vanityurl):
     url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
            f'?key={apikey}&vanityurl={vanityurl}')
 
-    response = await _getjsonresponse(url)
+    response = (await _getjsonresponse(url))['response']
     if response['success'] == 1:
         return response['steamid']
 
