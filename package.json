@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A website for finding TF2 items.",
   "scripts": {
-    "build": "cd static/js && coffee -cMpt main.coffee | uglifyjs --source-map content=inline,url=main.js.map --output=main.js",
-    "watch": "chokidar static/js/main.coffee -c 'npm run build'",
+    "build": "cd static/js && coffee -cmt main.coffee",
+    "watch": "cd static/js && coffee -cmtw main.coffee",
     "start": "npm run watch & python3 main.py"
   },
   "repository": {
@@ -21,15 +21,15 @@
   },
   "homepage": "https://github.com/mohd-akram/item.tf#readme",
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "chokidar-cli": "^1.2.1",
-    "coffeescript": "^2.3.2",
-    "uglify-js": "^3.4.9"
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "babel-preset-minify": "^0.5.1",
+    "coffeescript": "^2.4.1"
   },
   "babel": {
     "presets": [
-      "@babel/env"
+      "@babel/env",
+      "minify"
     ],
     "sourceType": "script"
   }
