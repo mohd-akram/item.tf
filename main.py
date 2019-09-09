@@ -5,6 +5,7 @@ import time
 import random
 import asyncio
 import logging
+import logging.handlers
 from base64 import b64encode
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -37,6 +38,7 @@ jinja_env.filters['slugify'] = slugify
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
+logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 app = Sanic(log_config=config.logging)
 
