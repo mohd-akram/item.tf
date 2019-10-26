@@ -35,7 +35,7 @@ Then, run the following as root:
     make install
 
 Make sure you set the `ssl_certificate` and `ssl_certificate_key` directives
-and have `include sites/item.tf;` at the end of the `http` block in
+and have `include conf.d/item.tf.conf;` at the end of the `http` block in
 `/usr/local/etc/nginx/nginx.conf`.
 
 Structure
