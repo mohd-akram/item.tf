@@ -327,7 +327,7 @@ ul {
 #buybutton {
   display: inline-block;
   position: relative;
-  background-image: url("http://media.steampowered.com/apps/tf2/btn_buynow.png");
+  background-image: url("https://steamcdn-a.akamaihd.net/apps/tf2/btn_buynow.png");
   background-position-y: top;
   background-position-x: left;
   top: 7px;

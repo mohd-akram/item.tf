@@ -244,10 +244,14 @@ def createitemdict(index, tf2info):
         str(item[i]) for i in ('min_ilevel', 'max_ilevel'))
     level = 'Level {} {}'.format('-'.join(levels), item['item_type_name'])
 
+    image, image_large = (url and url.replace(
+        'http://media.steampowered.com', 'https://steamcdn-a.akamaihd.net'
+    ) for url in (item['image_url'], item['image_url_large']))
+
     itemdict = {'index': index,
                 'name': name,
-                'image': item['image_url'],
-                'image_large': item['image_url_large'],
+                'image': image,
+                'image_large': image_large,
                 'description': description,
                 'level': level,
                 'attributes': attributes,
@@ -780,7 +784,10 @@ def _parseblueprints(blueprints, itemsbyname):
                         image = '/images/items/whatsthis.png'
 
                     blueprintdict['name'] = i
-                    blueprintdict['image'] = image
+                    blueprintdict['image'] = image.replace(
+                        'http://media.steampowered.com',
+                        'https://steamcdn-a.akamaihd.net'
+                    )
                     blueprintdict['count'] = required.count(i)
 
                     blueprintlist.append(blueprintdict)
