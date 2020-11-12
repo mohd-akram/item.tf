@@ -17,7 +17,7 @@ Run this command to install dependencies.
 
     pip install -r requirements.txt
 
-You'll also need to install the [Redis server](http://redis.io/download).
+You'll also need to install the [Redis server](https://redis.io/download).
 
 Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 
@@ -88,10 +88,10 @@ Thanks
 This project was inspired by and depends on the great TF2 community to
 function, so a special thanks to the following:
 
-[Backpack.tf](http://backpack.tf)
+[Backpack.tf](https://backpack.tf)
 
-[Trade.tf](http://trade.tf)
+[Trade.tf](https://www.trade.tf)
 
-[TF2 Crafting Advisor](http://tf2crafting.info)
+[TF2 Crafting Advisor](https://www.tf2crafting.info)
 
-[TF2B](http://tf2b.com)
+[TF2B](https://tf2b.com)

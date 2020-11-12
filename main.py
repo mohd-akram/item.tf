@@ -274,7 +274,7 @@ async def wishlist(request, option):
         response = sanic.response.HTTPReponse()
         response.status = 401
         response.headers['WWW-Authenticate'] = (
-            'OpenID identifier="http://steamcommunity.com/openid"'
+            'OpenID identifier="https://steamcommunity.com/openid"'
         )
         return response
 
@@ -360,7 +360,7 @@ def login(request):
     session = {'sid': sid}
 
     c = consumer.Consumer(session, None)
-    a = c.begin('http://steamcommunity.com/openid')
+    a = c.begin('https://steamcommunity.com/openid')
     url = a.redirectURL(config.homepage, login_verify_url)
 
     response = redirect(url)

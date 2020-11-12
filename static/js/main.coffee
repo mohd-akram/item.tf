@@ -244,7 +244,7 @@ class ItemBox
     else ''
 
   _buttonsHTML: ->
-    wikiLink = "http://wiki.teamfortress.com/wiki/#{
+    wikiLink = "https://wiki.teamfortress.com/wiki/#{
       encodeURIComponent @item.name}"
 
     """
@@ -318,13 +318,13 @@ class ItemBox
         .replace 'unusual', 'rarity4'
         .replace "collector's", 'collectors'
 
-      market.href = "http://steamcommunity.com/market/search?\
+      market.href = "https://steamcommunity.com/market/search?\
         category_440_Type%5B%5D=any&\
         category_440_Quality%5B%5D=tag_#{quality}&\
         appid=440&q=#{encodeURIComponent @item.name}"
 
       classifieds = document.getElementById 'classifieds-btn'
-      classifieds.href = "http://backpack.tf/classifieds?item=#{
+      classifieds.href = "https://backpack.tf/classifieds?item=#{
         encodeURIComponent @item.name}&quality=#{@form.quality.value}")()
 
   _wishlistLink: ->
@@ -367,7 +367,7 @@ class ItemBox
     if button
       quantity = document.getElementById 'quantity'
       (quantity.onchange = =>
-        button.href = "http://store.steampowered.com/buyitem/440/#{
+        button.href = "https://store.steampowered.com/buyitem/440/#{
           @item.id}/#{quantity.value}")()
 
   _generate: ->

@@ -45,7 +45,7 @@ async def _getschemaitems(apikey, start):
 
 async def getitemsinfo(apikey, storeprices, indexes):
     """Return a dictionary of AssetClassInfo values with defindex as key"""
-    url = ('http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
+    url = ('https://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
            '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
                                                                    len(indexes)
                                                                    ))
@@ -111,7 +111,7 @@ def getparticleeffects(schema):
 async def getstoreprices(apikey):
     """Return a dictionary of store prices where the key is defindex for
     each item"""
-    url = ('http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
+    url = ('https://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/'
            '?key={}&language=en&appid=440&currency=usd'.format(apikey))
 
     prices = (await _getjsonresponse(url))['result']['assets']
@@ -129,7 +129,7 @@ async def getbackpackprices(apikey, items, itemsbyname):
     """Get market prices from backpack.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = ('http://backpack.tf/api/IGetPrices/v4/'
+    url = ('https://backpack.tf/api/IGetPrices/v4/'
            '?key={}&compress=1'.format(apikey))
 
     pricesdata = (await _getjsonresponse(url))['response']['items']
@@ -207,7 +207,7 @@ async def gettradeprices(apikey, items, itemsbyname):
     """Get market prices from trade.tf.
     Return a dictionary where the key is defindex and value is a dictionary of
     prices for the item"""
-    url = 'http://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
+    url = 'https://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
 
     pricesdata = (await _getjsonresponse(url))['items']
 
@@ -436,7 +436,7 @@ def getobsoleteindexes():
 
 async def getplayerbackpack(apikey, steamid):
     """Return the player backpack of the given steamid"""
-    url = ('http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/'
+    url = ('https://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/'
            f'?key={apikey}&steamid={steamid}')
     return (await _getjsonresponse(url)).get('result')
 
@@ -448,7 +448,7 @@ async def getplayersummary(apikey, steamid):
 
 async def getplayersummaries(apikey, steamids):
     """Return the player summaries of a list of steamids"""
-    url = ('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
+    url = ('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/'
            f"?key={apikey}&steamids={','.join(steamids)}")
 
     return (await _getjsonresponse(url))['response']['players']
@@ -456,7 +456,7 @@ async def getplayersummaries(apikey, steamids):
 
 async def resolvevanityurl(apikey, vanityurl):
     """Return the steamid of a given vanity url"""
-    url = ('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
+    url = ('https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/'
            f'?key={apikey}&vanityurl={vanityurl}')
 
     response = (await _getjsonresponse(url))['response']
