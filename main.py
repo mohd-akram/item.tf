@@ -40,7 +40,7 @@ login_verify_url = '{}/login/verify'.format(config.homepage)
 
 logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-app = Sanic(log_config=config.logging)
+app = Sanic(name='item.tf', log_config=config.logging)
 
 
 @app.listener('before_server_start')
