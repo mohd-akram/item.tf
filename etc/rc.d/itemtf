@@ -12,8 +12,9 @@ load_rc_config $name
 : ${itemtf_user:=item.tf}
 : ${itemtf_chdir:=/usr/local/www/item.tf}
 : ${itemtf_prepend:="/usr/sbin/daemon -f"}
+: ${itemtf_env:="PATH=/usr/local/libexec/item.tf/bin PYTHONOPTIMIZE=2"}
 
-command="/usr/local/libexec/item.tf/bin/python3"
-command_args="-m sanic main.app"
+command=/usr/local/www/item.tf/main.py
+command_interpreter=python3
 
 run_rc_command "$1"
