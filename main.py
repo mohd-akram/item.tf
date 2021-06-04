@@ -402,19 +402,19 @@ async def sitemap(request):
 
 @app.exception(NotFound)
 async def error404(request, exception):
-    return await render('error.html', message='Page Not Found')
+    return await render('error.html', 404, message='Page Not Found')
 
 
 @app.exception(Exception)
 async def error500(request, exception):
     logging.exception(exception)
-    return await render('error.html', message='Server Error')
+    return await render('error.html', 500, message='Server Error')
 
 
-async def render(template, **params):
+async def render(template, *args, **params):
     """Render HTML template"""
     template = jinja_env.get_template(template)
-    return sanic.response.html(await template.render_async(params))
+    return sanic.response.html(await template.render_async(params), *args)
 
 
 def tojson(*args, **kwargs):
