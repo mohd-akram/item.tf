@@ -24,7 +24,7 @@ Run updatestore.py to update the Redis cache. Then, simply launch main.py.
 Hosting
 -------
 
-To host the site in FreeBSD 12, first clone into `/usr/local/www/item.tf`.
+To host the site in FreeBSD 13, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
     pkg install -y nginx python39 redis
