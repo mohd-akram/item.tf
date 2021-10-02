@@ -115,7 +115,6 @@ async def search(request, **kwargs):
 
         items = {
             item['index']: item async for item in store.Hashes([
-                getitemkey(143),  # Earbuds
                 getitemkey(5021),  # Key
                 getitemkey(5002),  # Refined
                 getitemkey(5001),  # Reclaimed

@@ -515,7 +515,7 @@ def _pricefilter(quality, criteria, amount, denom, results, pricesource):
             p = price.split()
             valuelow = float(p[0])
             valuehigh = float(p[2]) if len(p) == 4 else valuelow
-            pricedenom = p[-1].rstrip('s').replace('Bud', 'Earbuds')
+            pricedenom = p[-1].rstrip('s')
 
             if denom != pricedenom:
                 continue
@@ -639,8 +639,7 @@ def _getdenomvalues(itemsdict, pricesource):
         itemsdict[denomtoidx[denom]]['marketprice'][pricesource]['Unique']
         .split()[0], denoms[denoms.index(denom) + 1])
 
-    table = {'Earbuds': {'Key': getprice('Earbuds')},
-             'Key': {'Refined': getprice('Key')},
+    table = {'Key': {'Refined': getprice('Key')},
              'Refined': {'Reclaimed': 3.0},
              'Reclaimed': {'Scrap': 3.0},
              'Scrap': {'Weapon': 2.0},
@@ -714,7 +713,7 @@ def _gettag(word):
 
 def _getdenom(word):
     """Parse a word and return a price denomination if it matches one"""
-    denomslist = ('bud', 'key', 'ref', 'rec', 'scrap', 'we')
+    denomslist = ('key', 'ref', 'rec', 'scrap', 'we')
     denoms = dict(zip(denomslist, tf2api.getalldenoms().keys()))
 
     hasdenom = re.search('|'.join(denomslist), word.lower())

@@ -138,8 +138,7 @@ async def getbackpackprices(apikey, items, itemsbyname):
 
     qualities = getallqualities()
 
-    denoms = {'metal': 'Refined', 'hat': 'Hat', 'keys': 'Key',
-              'earbuds': 'Bud', 'usd': 'USD'}
+    denoms = {'metal': 'Refined', 'hat': 'Hat', 'keys': 'Key', 'usd': 'USD'}
 
     for name, iteminfo in pricesdata.items():
         if name not in itemsbyname:
@@ -308,8 +307,7 @@ def getallqualities():
 def getalldenoms():
     """Return an OrderedDict of price denominations in descending order with
     the defindex of their corresponding items as value"""
-    return OrderedDict([('Earbuds', 143),
-                        ('Key', 5021),
+    return OrderedDict([('Key', 5021),
                         ('Refined', 5002),
                         ('Reclaimed', 5001),
                         ('Scrap', 5000),
