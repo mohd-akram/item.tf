@@ -1,9 +1,9 @@
-import itertools
 from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
 import rapidjson
 from aioredis import Redis as _Redis
+from aioredis.client import Pipeline as _Pipeline
 
 
 def dumps(obj):
@@ -23,16 +23,14 @@ class Redis(_Redis):
     async def get(self, *args, **kwargs):
         return loads(await super().get(*args, **kwargs))
 
-    async def set(self, key, value):
-        return await super().set(key, dumps(value))
+    def set(self, key, value):
+        return super().set(key, dumps(value))
 
-    async def setex(self, key, time, value):
-        return await super().setex(key, time, dumps(value))
+    def setex(self, key, time, value):
+        return super().setex(key, time, dumps(value))
 
-    async def mset_dict(self, map_):
-        return await super().mset(
-            *itertools.chain.from_iterable(mdumps(map_).items())
-        )
+    def mset(self, map_):
+        return super().mset(mdumps(map_))
 
     async def hget(self, *args, **kwargs):
         return loads(await super().hget(*args, **kwargs))
@@ -40,7 +38,7 @@ class Redis(_Redis):
     async def hgetall(self, key):
         self._hgetall = getattr(
             self, '_hgetall',
-            await self.script_load(
+            self.register_script(
                 """
                 local hgetall = function (key)
                   local data = redis.call('HGETALL', key)
@@ -67,13 +65,14 @@ class Redis(_Redis):
             return {k.decode(): loads(v)
                     for k, v in (await super().hgetall(key)).items()}
         else:
-            return loads(await self.evalsha(self._hgetall, keys=key))
+            return loads(await self._hgetall(key))
 
-    async def hset(self, key, field, value):
-        return await super().hset(key, field, dumps(value))
-
-    def hmset_dict(self, key, map_):
-        return super().hmset_dict(key, mdumps(map_))
+    def hset(self, name, key=None, value=None, mapping=None):
+        return super().hset(
+            name, key,
+            dumps(value) if value is not None else None,
+            mdumps(mapping) if mapping is not None else None
+        )
 
     async def hkeys(self, *args, **kwargs):
         return (f.decode() for f in await super().hkeys(*args, **kwargs))
@@ -100,6 +99,12 @@ class Redis(_Redis):
             if keys:
                 await self.delete(*keys)
 
+    def pipeline(self, transaction=True, shard_hint=None):
+        return Pipeline(
+            self.connection_pool, self.response_callbacks, transaction,
+            shard_hint
+        )
+
     def Hash(self, *args, **kwargs):
         return Hash(self, *args, **kwargs)
 
@@ -111,6 +116,10 @@ class Redis(_Redis):
 
     async def SearchHashSet(self, *args, **kwargs):
         return await SearchHashSet.create(self, *args, **kwargs)
+
+
+class Pipeline(_Pipeline, Redis):
+    pass
 
 
 class Hash(Hashable, Mapping):
@@ -208,7 +217,7 @@ class SearchHashSet(HashSet):
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = tuple(await self.r.sort(key, *get))
+        self.result = tuple(await self.r.sort(key, get=get))
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):

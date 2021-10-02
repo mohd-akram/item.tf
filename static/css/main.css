@@ -1308,3 +1308,11 @@ a > img {
   content: "●●●●●●●";
   background-image: linear-gradient(to right, #FFD700 14%, #476291 14%, #476291 29%, #CF6A32 29%, #CF6A32 43%, #4D7455 43%, #4D7455 57%, #AA0000 57%, #AA0000 71%, #38F3AB 71%, #38F3AB 86%, #8650AC 86%);
 }
+
+.fa.fa-2x {
+  font-size: 1.8em;
+}
+
+.fa.fa-lg {
+  font-size: 1.2em;
+}

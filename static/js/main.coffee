@@ -102,7 +102,7 @@ class ItemBox
     html =
       """
       <h2 id="itemname">#{html}</h2>
-      <i id="shortlinkbutton" class="fa fa-caret-square-o-down"
+      <i id="shortlinkbutton" class="fa fa-caret-square-down"
        title="Short URL"></i><br>
       <div id="shortlink" style="display:none">
       <input type="text" value="https://item.tf/#{@item.id}" readonly><br>
@@ -256,7 +256,7 @@ class ItemBox
     <a id="market-btn" class="fa fa-shopping-cart fa-lg button-icon"
      target="_blank" title="Community Market"></a>
 
-    <a id="classifieds-btn" class="fa fa-exchange fa-lg button-icon"
+    <a id="classifieds-btn" class="fa fa-exchange-alt fa-lg button-icon"
      target="_blank" title="Find Trades"></a>
 
     #{@_tradeHTML()}
@@ -354,9 +354,9 @@ class ItemBox
           if response is 'Added'
             message = document.getElementById 'wishlistmessage'
             message.style.display = 'block'
-            message.className = 'animated fadeInLeft'
+            message.className = 'animate__animated animate__fadeInLeft'
             setTimeout (->
-              message.className = 'animated fadeOut'), 1000
+              message.className = 'animate__animated animate__fadeOut'), 1000
 
           else if response is 'Removed'
             @hide()

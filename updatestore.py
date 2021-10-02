@@ -4,7 +4,6 @@ import time
 import asyncio
 from xml.dom.minidom import getDOMImplementation
 
-from aioredis import create_redis
 from slugify import slugify
 
 import config
@@ -38,7 +37,7 @@ class Sitemap:
 
 
 async def main(flush):
-    store = await create_redis(('localhost', 6379), commands_factory=Redis)
+    store = Redis.from_url('redis://localhost')
 
     tf2info = await tf2search.gettf2info(config.apikey,
                                          config.backpackkey, config.tradekey,
@@ -76,49 +75,48 @@ async def main(flush):
                 )
 
     for index in tf2info.items:
-        pipe = store.pipeline()
+        async with store.pipeline() as pipe:
+            itemdict = tf2search.createitemdict(index, tf2info)
+            name = itemdict['name']
 
-        itemdict = tf2search.createitemdict(index, tf2info)
-        name = itemdict['name']
+            pipe.hset(getitemkey(index), mapping=itemdict)
+            pipe.sadd('items', index)
 
-        pipe.hmset_dict(getitemkey(index), itemdict)
-        pipe.sadd('items', index)
+            classes = itemdict['classes']
+            tags = itemdict['tags']
 
-        classes = itemdict['classes']
-        tags = itemdict['tags']
+            if index == tf2info.itemsbyname[name]['defindex']:
+                slug = slugify(name)
 
-        if index == tf2info.itemsbyname[name]['defindex']:
-            slug = slugify(name)
+                pipe.hset('items:slugs', mapping={slug: index})
 
-            pipe.hmset_dict('items:slugs', {slug: index})
+                if tf2search.isvalidresult(itemdict, False):
+                    if not classes:
+                        pipe.sadd(getclasskey(), index)
+                    if len(classes) > 1:
+                        pipe.sadd(getclasskey(multi=True), index)
+                    if not tags:
+                        pipe.sadd(gettagkey(), index)
+                    for class_ in classes:
+                        pipe.sadd(getclasskey(class_), index)
+                    for tag in tags:
+                        pipe.sadd(gettagkey(tag), index)
 
-            if tf2search.isvalidresult(itemdict, False):
-                if not classes:
-                    pipe.sadd(getclasskey(), index)
-                if len(classes) > 1:
-                    pipe.sadd(getclasskey(multi=True), index)
-                if not tags:
-                    pipe.sadd(gettagkey(), index)
-                for class_ in classes:
-                    pipe.sadd(getclasskey(class_), index)
-                for tag in tags:
-                    pipe.sadd(gettagkey(tag), index)
+                if tf2search.isvalidresult(itemdict):
+                    pipe.sadd('items:indexes', index)
+                    pipe.hset('items:names', mapping={name: index})
 
-            if tf2search.isvalidresult(itemdict):
-                pipe.sadd('items:indexes', index)
-                pipe.hmset_dict('items:names', {name: index})
+                    path = f'{config.homepage}/{slug}'
 
-                path = f'{config.homepage}/{slug}'
+                    suggestions[0].append(name)
+                    suggestions[1].append('{} - {}'.format(
+                        ', '.join(itemdict['classes']),
+                        ', '.join(itemdict['tags'])))
+                    suggestions[2].append(path)
 
-                suggestions[0].append(name)
-                suggestions[1].append('{} - {}'.format(
-                    ', '.join(itemdict['classes']),
-                    ', '.join(itemdict['tags'])))
-                suggestions[2].append(path)
+                    sitemap.add(path)
 
-                sitemap.add(path)
-
-        await pipe.execute()
+            await pipe.execute()
 
     await store.delete('items:new')
     for index in tf2info.newstoreprices:
@@ -132,7 +130,7 @@ async def main(flush):
             'items:lastupdated': time.time(),
             'sitemap': sitemap.toxml()}
 
-    await store.mset_dict(data)
+    await store.mset(data)
 
 
 if __name__ == '__main__':

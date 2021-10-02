@@ -19,7 +19,6 @@ import sanic
 from sanic import Sanic
 from sanic.response import redirect
 from sanic.exceptions import abort, NotFound
-from aioredis import create_redis
 from openid.consumer import consumer
 from slugify import slugify
 
@@ -42,11 +41,7 @@ logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 app = Sanic(name='item.tf', log_config=config.logging)
 
-
-@app.listener('before_server_start')
-async def init(app, loop):
-    global store
-    store = await create_redis(('localhost', 6379), commands_factory=Redis)
+store = Redis.from_url('redis://localhost')
 
 
 @app.get('/')
@@ -436,39 +431,41 @@ async def getresults(classes, tags):
         tagskey = 'temp:tags'
         remove = []
 
-        pipe = store.multi_exec()
+        async with store.pipeline() as pipe:
+            classkeys = [getclasskey(c) for c in classes] or ['items']
+            pipe.sunionstore(classeskey, *classkeys)
 
-        classkeys = [getclasskey(class_) for class_ in classes] or ['items']
-        pipe.sunionstore(classeskey, *classkeys)
+            # Get only the specified weapon types
+            if (
+                'weapon' in tags and
+                not tags.isdisjoint(tf2api.getweapontags())
+            ):
+                tags.remove('weapon')
+                remove.append(gettagkey('token'))
 
-        # Get only the specified weapon types
-        if 'weapon' in tags and not tags.isdisjoint(tf2api.getweapontags()):
-            tags.remove('weapon')
-            remove.append(gettagkey('token'))
+            tagkeys = [gettagkey(tag) for tag in tags] or ['items']
+            pipe.sunionstore(tagskey, *tagkeys)
 
-        tagkeys = [gettagkey(tag) for tag in tags] or ['items']
-        pipe.sunionstore(tagskey, *tagkeys)
+            # Hide medals if not explicitly searching for them
+            if 'tournament' not in tags:
+                remove.append(gettagkey('tournament'))
 
-        # Hide medals if not explicitly searching for them
-        if 'tournament' not in tags:
-            remove.append(gettagkey('tournament'))
+            if remove:
+                pipe.sdiffstore(tagskey, *([tagskey] + remove))
 
-        if remove:
-            pipe.sdiffstore(tagskey, *([tagskey] + remove))
+            pipe.sinterstore(key, classeskey, tagskey)
+            pipe.sinterstore(multikey, key, getclasskey(multi=True))
+            pipe.sinterstore(allkey, tagskey, getclasskey())
+            pipe.sdiffstore(key, key, multikey, allkey)
 
-        pipe.sinterstore(key, classeskey, tagskey)
-        pipe.sinterstore(multikey, key, getclasskey(multi=True))
-        pipe.sinterstore(allkey, tagskey, getclasskey())
-        pipe.sdiffstore(key, key, multikey, allkey)
+            pipe.delete(classeskey)
+            pipe.delete(tagskey)
 
-        pipe.delete(classeskey)
-        pipe.delete(tagskey)
+            for k in keys:
+                pipe.sort(k, store=k)
+                pipe.expire(k, 3600)
 
-        for k in keys:
-            pipe.sort(k, store=k)
-            pipe.expire(k, 3600)
-
-        await pipe.execute()
+            await pipe.execute()
 
     async def getkeys(key):
         return [getitemkey(k) for k in await store.lrange(key, 0, -1)]
@@ -558,7 +555,7 @@ async def getuser(steamid, urltype='profiles', create=False):
 
         user['lastupdate'] = datetime.now().timestamp()
 
-        await store.hmset_dict(userkey, user)
+        await store.hset(userkey, mapping=user)
         await store.sadd('users', user['id'])
 
     return user

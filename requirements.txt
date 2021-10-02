@@ -1,7 +1,7 @@
 uvloop
 aiohttp
-aioredis
-sanic
+aioredis[hiredis]
+sanic==20.*
 jinja2
 python-rapidjson
 python3-openid
