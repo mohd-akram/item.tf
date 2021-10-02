@@ -1,7 +1,7 @@
 """This module is based on the Steam WebAPI and can be used to get information
 about items in TF2. Using this module, you can obtain the item schema,
 store prices, bundles, item sets and attributes for TF2.
-You can also obtain market prices from backpack.tf and trade.tf.
+You can also obtain market prices from backpack.tf.
 
 There are also functions for parsing the information of each item.
 
@@ -198,70 +198,6 @@ async def getbackpackprices(apikey, items, itemsbyname):
 
                     pricesdict[index][qlty] = '{:g}{} {}'.format(
                         value, valuehigh, denom)
-
-    return pricesdict
-
-
-async def gettradeprices(apikey, items, itemsbyname):
-    """Get market prices from trade.tf.
-    Return a dictionary where the key is defindex and value is a dictionary of
-    prices for the item"""
-    url = 'https://www.trade.tf/api/spreadsheet.json?key={}'.format(apikey)
-
-    pricesdata = (await _getjsonresponse(url))['items']
-
-    pricesdict = defaultdict(dict)
-    itemnames = set()
-    crates = defaultdict(int)
-
-    qualities = getallqualities()
-    qualities[-1] = 'Uncraftable'
-
-    denoms = {'r': 'Refined', 'k': 'Key', 'b': 'Bud'}
-
-    for index, prices in pricesdata.items():
-        index = int(index)
-        if index not in items:
-            # For crates, index = 10000*crate_defindex + crate_number
-            crateno = index % 10000
-            index //= 10000
-
-            # Store the price of the highest crate number only
-            if crateno < crates[index]:
-                continue
-            else:
-                crates[index] = crateno
-
-        name = items[index]['item_name']
-
-        # Trade.tf uses different indexes.
-        idx = itemsbyname[name]['defindex']
-        if index != idx and name in itemnames:
-            continue
-
-        for quality, price in prices.items():
-            quality = int(quality)
-            if 'regular' not in price:
-                continue
-            price = price['regular']
-
-            if price['unsure']:
-                continue
-
-            value = price['low']
-            valuehigh = (' - {:g}'.format(round(price['hi'], 2))
-                         if value != price['hi'] else '')
-
-            denom = denoms[price['unit']]
-            qualityname = qualities[quality]
-
-            if (value != 1 or valuehigh) and denom != 'Refined':
-                denom += 's'
-
-            itemnames.add(name)
-            pricesdict[idx][qualityname] = '{:g}{} {}'.format(round(value, 2),
-                                                              valuehigh,
-                                                              denom)
 
     return pricesdict
 

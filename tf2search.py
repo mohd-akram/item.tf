@@ -35,7 +35,7 @@ QUALITYREGEX = r'({}|collector|collectors|dirty|uncraft(?:able)?)'.format(
     '|'.join(i.lower() for i in tf2api.getallqualities().values()))
 
 
-async def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
+async def gettf2info(apikey, backpackkey, blueprintsfilename):
     """Return a named tuple which contains information from multiple sources
     about TF2 items"""
     schema, storeprices = await asyncio.gather(
@@ -51,10 +51,9 @@ async def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
 
     newstoreprices = tf2api.getnewstoreprices(storeprices)
 
-    bundles, backpackprices, tradeprices = await asyncio.gather(
+    bundles, backpackprices = await asyncio.gather(
         tf2api.getbundles(apikey, storeprices),
-        tf2api.getbackpackprices(backpackkey, items, itemsbyname),
-        tf2api.gettradeprices(tradekey, items, itemsbyname)
+        tf2api.getbackpackprices(backpackkey, items, itemsbyname)
     )
 
     with open(blueprintsfilename, encoding='utf-8') as f:
@@ -63,13 +62,13 @@ async def gettf2info(apikey, backpackkey, tradekey, blueprintsfilename):
 
     fields = ('items itemsbyname itemsets attributes effects '
               'blueprints storeprices newstoreprices bundles '
-              'backpackprices tradeprices')
+              'backpackprices')
 
     TF2Info = namedtuple('TF2Info', fields)
 
     return TF2Info(items, itemsbyname, itemsets, attributes, effects,
                    blueprints, storeprices, newstoreprices, bundles,
-                   backpackprices, tradeprices)
+                   backpackprices)
 
 
 def getitemsdict(tf2info):
@@ -212,7 +211,6 @@ def createitemdict(index, tf2info):
 
     storeprice = tf2api.getstoreprice(item, tf2info.storeprices)
     backpackprice = tf2api.getmarketprice(item, tf2info.backpackprices)
-    tradeprice = tf2api.getmarketprice(item, tf2info.tradeprices)
 
     tags = tf2api.getitemtags(item)
     # Sort blueprints by crafting chance
@@ -258,8 +256,7 @@ def createitemdict(index, tf2info):
                 'classes': classes,
                 'tags': tags,
                 'storeprice': storeprice,
-                'marketprice': {'backpack.tf': backpackprice,
-                                'trade.tf': tradeprice},
+                'marketprice': {'backpack.tf': backpackprice},
                 'blueprints': blueprint}
 
     if 'paint' in tags:

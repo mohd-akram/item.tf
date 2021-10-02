@@ -40,7 +40,7 @@ async def main(flush):
     store = Redis.from_url('redis://localhost')
 
     tf2info = await tf2search.gettf2info(config.apikey,
-                                         config.backpackkey, config.tradekey,
+                                         config.backpackkey,
                                          config.blueprintsfile)
 
     if flush:

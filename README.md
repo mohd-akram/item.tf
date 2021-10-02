@@ -90,8 +90,6 @@ function, so a special thanks to the following:
 
 [Backpack.tf](https://backpack.tf)
 
-[Trade.tf](https://www.trade.tf)
-
 [TF2 Crafting Advisor](https://www.tf2crafting.info)
 
 [TF2B](https://tf2b.com)

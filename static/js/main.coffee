@@ -1,6 +1,6 @@
 root = exports ? this
 
-priceSources = ['backpack.tf', 'trade.tf']
+priceSources = ['backpack.tf']
 
 class User
   constructor: ->

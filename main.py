@@ -108,7 +108,7 @@ async def search(request, **kwargs):
             [getitemkey(k.decode()) for k in await store.sort('items')])
         results = [tf2search.getsearchresult(items=items)]
     else:
-        sources = ('backpack.tf', 'trade.tf')
+        sources = ('backpack.tf',)
         pricesource = request.cookies.get('price_source')
         if pricesource not in sources:
             pricesource = sources[0]
