@@ -338,7 +338,7 @@ def parseinput(query):
             'classes': classes, 'tags': tags}
 
 
-def foldaccents(string):
+def foldaccents(string: str):
     """Fold accents in a string"""
     return (string.replace('ä', 'a')
                   .replace('é', 'e')

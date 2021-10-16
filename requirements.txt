@@ -1,8 +1,8 @@
-uvloop
+uvicorn
 aiohttp
 aioredis[hiredis]
-sanic==20.*
+blacksheep
 jinja2
-python-rapidjson
+orjson
 python3-openid
 python-slugify

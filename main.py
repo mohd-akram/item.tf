@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-
 import os
 import time
 import random
 import asyncio
 import logging
+import logging.config
 import logging.handlers
 from base64 import b64encode
 from collections import defaultdict
@@ -13,12 +12,13 @@ from urllib.parse import urlparse
 from urllib.error import URLError
 
 import jinja2
-import rapidjson
-import uvloop
-import sanic
-from sanic import Sanic
-from sanic.response import redirect
-from sanic.exceptions import abort, NotFound
+import orjson
+from blacksheep.contents import Content
+from blacksheep.cookies import Cookie
+from blacksheep.exceptions import NotFound
+from blacksheep.messages import Request, Response
+from blacksheep.server import Application
+from blacksheep.server.responses import text, html, redirect, moved_permanently
 from openid.consumer import consumer
 from slugify import slugify
 
@@ -30,22 +30,28 @@ from store import Redis
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True, trim_blocks=True,
-                               enable_async=True)
+                               enable_async=True, auto_reload=__debug__)
 
 jinja_env.filters['slugify'] = slugify
 
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
+logging.config.dictConfig(config.logging)
 logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-app = Sanic(name='item.tf', log_config=config.logging)
+app = Application(debug=__debug__)
 
 store = Redis.from_url('redis://localhost')
 
 
-@app.get('/')
-async def home(request):
+def json(data, status: int = 200) -> Response:
+    return Response(
+        status, None, Content(b'application/json', orjson.dumps(data))
+    )
+
+
+@app.router.get('/')
+async def home(request: Request):
     t0 = await store.get('items:lastupdated')
     lastupdated = int(time.time() - t0) // 60
 
@@ -63,24 +69,25 @@ async def home(request):
 
     if user:
         expires = datetime.now() + session_age
-        response.cookies['steam_id'] = user['id']
-        response.cookies['steam_id']['expires'] = expires
+        response.set_cookie(Cookie('steam_id', user['id'], expires=expires))
     else:
-        del response.cookies['sid']
-        del response.cookies['steam_id']
+        response.unset_cookie('sid')
+        response.unset_cookie('steam_id')
 
     return response
 
 
-@app.get('/search/<slug:[0-9a-z]+(?:-[0-9a-z]+)*>')
-@app.get('/search<is_json:(\.json)?>')
-async def search(request, **kwargs):
-    user = asyncio.ensure_future(getcurrentuser(request))
+@app.router.get('/search/{str:slug}')
+@app.router.get('/search.json')
+@app.router.get('/search')
+async def search(request: Request, slug: str = None):
+    user_future = asyncio.ensure_future(getcurrentuser(request))
 
-    slug = kwargs.get('slug')
-    is_json = kwargs.get('is_json', '')
+    is_json = request.url.path.endswith(b'.json')
 
-    query = slug.replace('-', ' ') if slug else request.args.get('q')
+    query = (
+        slug.replace('-', ' ') if slug else request.query.get('q', [''])[-1]
+    )
 
     if not query:
         if is_json:
@@ -89,7 +96,7 @@ async def search(request, **kwargs):
 
     elif query == 'random':
         index = await store.srandmember('items:indexes')
-        return redirect('/{}{}'.format(index, is_json))
+        return redirect('/{}{}'.format(index, '.json' if is_json else ''))
 
     itemnames = await store.hgetall('items:names')
 
@@ -190,7 +197,7 @@ async def search(request, **kwargs):
 
     qualities = defaultdict(set)
 
-    user = await user
+    user = await user_future
     if user:
         for item in user.get('backpack', {}).get('items', []):
             qualities[item['defindex']].add(item['quality'])
@@ -198,7 +205,7 @@ async def search(request, **kwargs):
     if is_json:
         for result in results:
             result['items'] = [item async for item in result['items']]
-        return tojson(results)
+        return json(results)
     else:
         return await render('search.html',
                             query=query,
@@ -209,26 +216,25 @@ async def search(request, **kwargs):
                             time=round(t1 - t0, 3))
 
 
-@app.get('/<slug:[a-z0-9]+(?:-[a-z0-9]+)*>')
-@app.get('/<index:[0-9]+><is_json:(\.json)?>')
-async def item(request, **kwargs):
-    slug = kwargs.get('slug')
-    index = kwargs.get('index')
-    is_json = kwargs.get('is_json')
+@app.router.get('/{str:slug}')
+@app.router.get('/{int:index}.json')
+@app.router.get('/{int:index}')
+async def item(request: Request, slug: str = None, index: int = None):
+    is_json = request.url.path.endswith(b'.json')
 
     item = await (getitembyslug(slug) if slug else getitem(index))
 
     if item and index is not None and not is_json:
         slug = slugify(item['name'])
-        return redirect(f'/{slug}', status=301)
+        return moved_permanently(f'/{slug}')
 
     if not item:
         if is_json:
-            return tojson({'error': 'Item does not exist.'})
-        abort(404)
+            return json({'error': 'Item does not exist.'})
+        raise NotFound()
 
     if is_json:
-        return tojson(item)
+        return json(item)
     else:
         name = item['name']
         tags_text = '/'.join(item['tags']) if item['tags'] else 'item'
@@ -260,23 +266,25 @@ def getlistastext(l, default=''):
             if l else default)
 
 
-@app.post('/wishlist/<option:add|remove>')
-async def wishlist(request, option):
+@app.router.post('/wishlist/{str:option}')
+async def wishlist(request: Request, option):
     user = await getcurrentuser(request)
 
     if not user:
-        response = sanic.response.HTTPReponse()
-        response.status = 401
-        response.headers['WWW-Authenticate'] = (
-            'OpenID identifier="https://steamcommunity.com/openid"'
+        response = Response(401)
+        response.set_header(
+            b'WWW-Authenticate',
+            b'OpenID identifier="https://steamcommunity.com/openid"'
         )
         return response
 
     userkey = getuserkey(user['id'])
 
+    form = await request.form() or {}
+
     if option == 'add':
-        index = int(request.form.get('index'))
-        quality = int(request.form.get('quality'))
+        index = int(form.get('index'))
+        quality = int(form.get('quality'))
 
         if (await store.sismember('items:indexes', index) and
                 quality in tf2api.getallqualities()):
@@ -286,24 +294,24 @@ async def wishlist(request, option):
                                          'quality': quality})
                 await store.hset(userkey, 'wishlist', user['wishlist'])
 
-                return sanic.response.text('Added')
+                return text('Added')
 
     elif option == 'remove':
-        i = int(request.form.get('i'))
+        i = int(form.get('i'))
 
         if 0 <= i < len(user['wishlist']):
             del user['wishlist'][i]
             await store.hset(userkey, 'wishlist', user['wishlist'])
 
-            return sanic.response.text('Removed')
+            return text('Removed')
 
 
-@app.get('/suggest')
-async def suggest(request):
-    query = request.args.get('q')
+@app.router.get('/suggest')
+async def suggest(request: Request):
+    query = request.query.get('q', [''])[-1]
 
     allsuggestions = await store.get('items:suggestions')
-    suggestions = [query, [], [], []]
+    suggestions = (query, [], [], [])
 
     if query:
         for name, desc, path in zip(*allsuggestions):
@@ -314,15 +322,16 @@ async def suggest(request):
                 suggestions[2].append(desc)
                 suggestions[3].append(path)
     else:
-        suggestions[1:] = allsuggestions
+        suggestions = (query, *allsuggestions)
 
-    return tojson(suggestions)
+    return json(suggestions)
 
 
-@app.get('/<urltype:id>/<steamid:[A-Za-z0-9_-]+>')
-@app.get('/<urltype:profiles>/<steamid:[0-9]+>')
-async def user(request, urltype, steamid):
-    path = urlparse(request.url).path
+@app.router.get('/id/{str:steamid}')
+@app.router.get('/profiles/{int:steamid}')
+async def user(request: Request, steamid):
+    path = request.url.path.decode()
+    urltype = path.split('/')[1]
 
     currentuser = await getcurrentuser(request)
     if currentuser and currentuser['url'] == path:
@@ -341,15 +350,15 @@ async def user(request, urltype, steamid):
             item.update(user['wishlist'][i])
 
     else:
-        abort(404)
+        raise NotFound()
 
     return await render('user.html',
                         user=user,
                         items=items)
 
 
-@app.get('/login')
-def login(request):
+@app.router.get('/login')
+def login(request: Request):
     sid = b64encode(os.urandom(16)).decode()
     session = {'sid': sid}
 
@@ -359,27 +368,27 @@ def login(request):
 
     response = redirect(url)
 
-    response.cookies['sid'] = sid
-    response.cookies['sid']['expires'] = datetime.now() + session_age
-    response.cookies['sid']['httponly'] = True
-    response.cookies['sid']['secure'] = True
+    response.set_cookie(Cookie(
+        'sid', sid, expires=datetime.now() + session_age, http_only=True,
+        secure=True
+    ))
 
     return response
 
 
-@app.get('/login/verify')
-async def login_verify(request):
+@app.router.get('/login/verify')
+async def login_verify(request: Request):
     sid = request.cookies.get('sid')
     session = {'sid': sid}
 
     c = consumer.Consumer(session, None)
     info = c.complete(
-        {k: request.args.get(k) for k in request.args},
+        {k: request.query.get(k)[-1] for k in request.query},
         login_verify_url
     )
 
     if info.status == consumer.SUCCESS:
-        steamid = request.args.get('openid.claimed_id').split('/')[-1]
+        steamid = request.query.get('openid.claimed_id')[-1].split('/')[-1]
         user = await getuser(steamid, create=True)
         await store.setex(getsessionkey(sid), int(session_age.total_seconds()),
                           user['id'])
@@ -387,20 +396,20 @@ async def login_verify(request):
     return redirect('/')
 
 
-@app.get('/sitemap.xml')
-async def sitemap(request):
-    response = sanic.response.text(await store.get('sitemap'))
-    response.headers['Content-Type'] = 'application/xml;charset=UTF-8'
-    return response
+@app.router.get('/sitemap.xml')
+async def sitemap(request: Request):
+    return Response(200, content=Content(
+        b'application/xml;charset=UTF-8',
+        (await store.get('sitemap')).encode()))
 
 
-@app.exception(NotFound)
-async def error404(request, exception):
+@app.exception_handler(404)
+async def error404(self, request: Request, exception):
     return await render('error.html', 404, message='Page Not Found')
 
 
-@app.exception(Exception)
-async def error500(request, exception):
+@app.exception_handler(Exception)
+async def error500(self, request: Request, exception):
     logging.exception(exception)
     return await render('error.html', 500, message='Server Error')
 
@@ -408,11 +417,7 @@ async def error500(request, exception):
 async def render(template, *args, **params):
     """Render HTML template"""
     template = jinja_env.get_template(template)
-    return sanic.response.html(await template.render_async(params), *args)
-
-
-def tojson(*args, **kwargs):
-    return sanic.response.json(*args, **kwargs, dumps=rapidjson.dumps)
+    return html(await template.render_async(params), *args)
 
 
 async def getresults(classes, tags):
@@ -494,7 +499,7 @@ def gettagkey(tag=None):
     return 'items:tag:{}'.format(tag or 'none')
 
 
-async def getcurrentuser(request):
+async def getcurrentuser(request: Request):
     user = None
 
     sid = request.cookies.get('sid')
@@ -585,7 +590,4 @@ def getitemkey(index):
     return 'item:{}'.format(index)
 
 
-app.static('/', './static')
-
-if __name__ == '__main__':
-    app.run(debug=__debug__)
+app.serve_files('static')

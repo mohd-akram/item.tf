@@ -5,7 +5,7 @@
   "scripts": {
     "build": "cd static/js && coffee -cmt main.coffee",
     "watch": "cd static/js && coffee -cmtw main.coffee",
-    "start": "npm run watch & python3 main.py"
+    "start": "npm run watch & uvicorn --reload main:app"
   },
   "repository": {
     "type": "git",

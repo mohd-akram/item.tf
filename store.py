@@ -1,13 +1,13 @@
 from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
-import rapidjson
+import orjson
 from aioredis import Redis as _Redis
 from aioredis.client import Pipeline as _Pipeline
 
 
 def dumps(obj):
-    return rapidjson.dumps(obj)
+    return orjson.dumps(obj)
 
 
 def mdumps(d):
@@ -16,7 +16,7 @@ def mdumps(d):
 
 def loads(s):
     if s is not None:
-        return rapidjson.loads(s)
+        return orjson.loads(s)
 
 
 class Redis(_Redis):

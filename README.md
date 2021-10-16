@@ -1,7 +1,7 @@
 item.tf
 =======
 
-This is a Sanic site that lets you search TF2 items and find the ones you
+This is a BlackSheep site that lets you search TF2 items and find the ones you
 want. There are two main ways to search - you can either use regular keyword
 search or search by classes and item tags (eg. weapon, misc, hat, etc.). Once
 you find an item you want, you can get all kinds of information about it such
@@ -19,7 +19,7 @@ Run this command to install dependencies.
 
 You'll also need to install the [Redis server](https://redis.io/download).
 
-Run updatestore.py to update the Redis cache. Then, simply launch main.py.
+Run updatestore.py to update the Redis cache. Then, run `uvicorn main:app`.
 
 Hosting
 -------
@@ -27,7 +27,7 @@ Hosting
 To host the site in FreeBSD 13, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
-    pkg install -y nginx python39 redis
+    pkg install -y nginx python310 redis
     mkdir -p /usr/local/etc/rc.conf.d
     echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
     echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis

@@ -135,4 +135,4 @@ async def main(flush):
 
 if __name__ == '__main__':
     flush = len(sys.argv) == 2 and sys.argv[1] == '-f'
-    asyncio.get_event_loop().run_until_complete(main(flush))
+    asyncio.run(main(flush))
