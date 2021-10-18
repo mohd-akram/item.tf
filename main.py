@@ -52,12 +52,15 @@ def json(data, status: int = 200) -> Response:
 
 @app.router.get('/')
 async def home(request: Request):
-    t0 = await store.get('items:lastupdated')
+    t0, newitemsindexes, user = await asyncio.gather(
+        store.get('items:lastupdated'),
+        store.srandmember('items:new', 5),
+        getcurrentuser(request)
+    )
+
+    newitems = await getitems(newitemsindexes)
+
     lastupdated = int(time.time() - t0) // 60
-
-    newitems = await getitems(await store.srandmember('items:new', 5))
-
-    user = await getcurrentuser(request)
 
     response = await render('home.html',
                             homepage=config.homepage,
@@ -430,7 +433,11 @@ async def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = (title, 'Multi-Class Items', 'All-Class Items')
 
-    if not await store.exists(key) and not await store.exists(allkey):
+    is_cached = any(
+        await asyncio.gather(store.exists(key), store.exists(allkey))
+    )
+
+    if not is_cached:
         classeskey = 'temp:classes'
         tagskey = 'temp:tags'
         remove = []
@@ -475,8 +482,10 @@ async def getresults(classes, tags):
         return [getitemkey(k) for k in await store.lrange(key, 0, -1)]
 
     results = []
-    for title, key in zip(titles, keys):
-        itemkeys = await getkeys(key)
+
+    allitemkeys = await asyncio.gather(*[getkeys(k) for k in keys])
+
+    for title, itemkeys in zip(titles, allitemkeys):
         if itemkeys:
             results.append(tf2search.getsearchresult(
                 title=title, items=store.Hashes(itemkeys)))
@@ -559,8 +568,10 @@ async def getuser(steamid, urltype='profiles', create=False):
 
         user['lastupdate'] = datetime.now().timestamp()
 
-        await store.hset(userkey, mapping=user)
-        await store.sadd('users', user['id'])
+        async with store.pipeline() as pipe:
+            pipe.hset(userkey, mapping=user)
+            pipe.sadd('users', user['id'])
+            await pipe.execute()
 
     return user
 
