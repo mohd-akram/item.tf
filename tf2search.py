@@ -337,14 +337,15 @@ def parseinput(query):
     return {'query': query, 'querylist': querylist,
             'classes': classes, 'tags': tags}
 
+accents = str.maketrans({
+    'ä': 'a', 'é': 'e',
+    'ò': 'o', 'ö': 'o',
+    'ü': 'u', 'Ü': 'U',
+})
 
 def foldaccents(string: str):
     """Fold accents in a string"""
-    return (string.replace('ä', 'a')
-                  .replace('é', 'e')
-                  .replace('ò', 'o')
-                  .replace('ü', 'u')
-                  .replace('Ü', 'U'))
+    return string.translate(accents)
 
 
 def _classtagsearch(classes, tags, itemsdict):
