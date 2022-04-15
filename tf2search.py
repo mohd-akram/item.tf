@@ -22,8 +22,7 @@ from collections import namedtuple, defaultdict, OrderedDict
 import tf2api
 
 
-DENOMREGEX = (r'((?:earb|b)uds?|'
-              'keys?|'
+DENOMREGEX = (r'(keys?|'
               'ref(?:ined|s)?|'
               'rec(?:laimed|s)?|'
               'scraps?|'
