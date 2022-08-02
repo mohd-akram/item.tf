@@ -27,8 +27,7 @@ import tf2api
 import tf2search
 from store import Redis
 
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+jinja_env = jinja2.Environment(loader=jinja2.PackageLoader(__name__),
                                autoescape=True, trim_blocks=True,
                                enable_async=True, auto_reload=__debug__)
 
