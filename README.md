@@ -27,7 +27,7 @@ Hosting
 To host the site in FreeBSD 13, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
-    pkg install -y nginx python310 redis
+    pkg install -y nginx python311 redis
     mkdir -p /usr/local/etc/rc.conf.d
     echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
     echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis

@@ -2,8 +2,7 @@ from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
 import orjson
-from aioredis import Redis as _Redis
-from aioredis.client import Pipeline as _Pipeline
+from redis.asyncio.client import Pipeline as _Pipeline, Redis as _Redis
 
 
 def dumps(obj):

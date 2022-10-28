@@ -1,6 +1,6 @@
 uvicorn[standard]
 aiohttp[speedups]
-aioredis[hiredis]
+redis[hiredis]
 blacksheep
 jinja2
 orjson

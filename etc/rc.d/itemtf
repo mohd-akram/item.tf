@@ -16,6 +16,6 @@ load_rc_config $name
 
 command=/usr/local/libexec/item.tf/bin/uvicorn
 command_args=main:app
-command_interpreter=/usr/local/libexec/item.tf/bin/python3.10
+command_interpreter=/usr/local/libexec/item.tf/bin/python3.11
 
 run_rc_command "$1"
