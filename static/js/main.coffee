@@ -20,7 +20,7 @@ class Item
     @name = @elem.title
     @id = @elem.getAttribute 'data-index'
     @url = @elem.getAttribute 'data-url'
-    @imageUrl = @elem.getAttribute 'data-image'
+    @imageURL = @elem.getAttribute 'data-image'
     @description = @elem.getAttribute('data-description') or ''
     @level = @elem.getAttribute 'data-level'
     @attributes = @elem.getElementsByClassName('attrs')[0]?.innerHTML or ''
@@ -394,6 +394,9 @@ class ItemBox
     hoverArea = @item.elem.cloneNode true
     hoverArea.id = 'hoverarea'
     hoverArea.className = ''
+
+    if @item.imageURL
+      hoverArea.getElementsByTagName('img')[0].src = @item.imageURL
 
     # Add hover area to itembox
     @elem.insertBefore hoverArea,
