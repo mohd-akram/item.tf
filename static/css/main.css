@@ -270,7 +270,6 @@ main > h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  pointer-events: none;
 }
 
 @media (max-width: 1080px) { .itemlist { width: 972px; } } /* 9 columns */
@@ -409,7 +408,6 @@ ul {
 #hoverarea img {
   height: 100%;
   margin-top: -2rem;
-  pointer-events: none;
 }
 
 .textbox {

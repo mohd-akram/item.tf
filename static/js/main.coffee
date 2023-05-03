@@ -451,7 +451,7 @@ class HoverBox
       document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>
-    item = new Item(e.target)
+    item = new Item e.currentTarget
     description = escapeHTML item.description
 
     if description
@@ -491,7 +491,7 @@ class HoverBox
     @elem.style.left = "#{e.pageX - 154}px"
 
   _clickItem: (e) =>
-    @itemBox.show e.target
+    @itemBox.show e.currentTarget
     e.preventDefault()
     e.stopPropagation()
 
