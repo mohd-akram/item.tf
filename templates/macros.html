@@ -1,24 +1,31 @@
 {% macro showitem(item, qualities) %}
 <a href="/{{item['name']|slugify}}">
-<div class="item{% for quality in qualities %} quality-{{quality}}{% endfor %}" title="{{item['name']}}"{% if item['image'] %} style="background-image: url({{item['image']}});"{% endif %} data-index="{{item['index']}}" data-url="/{{item['name']|slugify}}"{% if item['image_large'] %} data-image="{{item['image_large']}}"{% endif %} data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
+<div class="item{% for quality in qualities %} quality-{{quality}}{% endfor %}" title="{{item['name']}}" data-index="{{item['index']}}" data-url="/{{item['name']|slugify}}"{% if item['image_large'] %} data-image="{{item['image_large']}}"{% endif %} data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
+{% if item['image'] %}<img src="{{item['image']}}" alt="{{item['name']}}" height="98">{% endif %}
+{% if item['blueprints'] %}
+<div class="prints" hidden>
 {%- for b in item['blueprints'] %}
-<ul data-chance="{{b['chance']}}" style="display:none">
+<div data-chance="{{b['chance']}}">
   {%- for i in b['required'] %}
-  <li title="{{i['name']}}"{% if 'index' in i %} data-index="{{i['index']}}" data-url="/{{i['name']|slugify}}"{% endif %} data-image="{{i['image']}}" data-count="{{i['count']}}"></li>
+  <span title="{{i['name']}}"{% if 'index' in i %} data-index="{{i['index']}}" data-url="/{{i['name']|slugify}}"{% endif %} data-image="{{i['image']}}" data-count="{{i['count']}}"></span>
   {%- endfor %}
-</ul>
+</div>
 {%- endfor %}
+</div>
+{% endif %}
 
-{% if item['attributes'] %}
-<div style="display: none">
+{%- if item['attributes'] %}
+<div class="attrs" hidden>
+<ul>
 {% for a in item['attributes'] %}
-<span class="{{a['type']}}">{{a['description']}}</span>
+<li class="{{a['type']}}">{{a['description']}}</li>
 {% endfor %}
+</ul>
 </div>
 {% endif %}
 </div>
 </a>
-{% endmacro %}
+{%- endmacro %}
 
 {% macro getcount(length, unit) %}
 {{'{:,}'.format(length)}} {{unit}}{% if length != 1 %}s{% endif %}
@@ -29,9 +36,12 @@
 {% if not inline %}
 <div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
 {% endif %}
+<ul>
 {% for item in items %}
-{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}
-{%- endfor %}
+<li>{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}</li>
+
+{% endfor %}
+</ul>
 </div>
 {% endmacro %}
 

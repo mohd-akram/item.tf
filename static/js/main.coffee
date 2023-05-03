@@ -23,11 +23,12 @@ class Item
     @imageUrl = @elem.getAttribute 'data-image'
     @description = @elem.getAttribute('data-description') or ''
     @level = @elem.getAttribute 'data-level'
-    @attributes = @elem.getElementsByTagName('div')?[0]?.innerHTML or ''
+    @attributes = @elem.getElementsByClassName('attrs')[0]?.innerHTML or ''
     @classes = @elem.getAttribute('data-classes')?.split(',') or []
     @tags = @elem.getAttribute('data-tags')?.split(',') or []
     @storePrice = @elem.getAttribute 'data-storeprice'
-    @blueprints = @elem.getElementsByTagName 'ul'
+    @blueprints = @elem.getElementsByClassName('prints')[0]
+      ?.getElementsByTagName('div') or []
 
     @prices = {}
     for source in priceSources
@@ -174,7 +175,7 @@ class ItemBox
         chance = blueprint.getAttribute 'data-chance'
 
         html += '<div class="blueprint">'
-        for item in blueprint.getElementsByTagName 'li'
+        for item in blueprint.getElementsByTagName 'span'
           for i in [0...item.getAttribute 'data-count']
             name = item.title
             index = item.getAttribute 'data-index'
@@ -394,10 +395,6 @@ class ItemBox
     hoverArea.id = 'hoverarea'
     hoverArea.className = ''
 
-    if @item.imageUrl
-      hoverArea.setAttribute 'style',
-                             "background-image: url(#{@item.imageUrl})"
-
     # Add hover area to itembox
     @elem.insertBefore hoverArea,
       document.getElementById('blueprints') or
@@ -466,9 +463,9 @@ class HoverBox
 
     @elem.innerHTML =
       """
-      <div style="color: rgb(230, 230, 230)">#{
+      <div class="name">#{
       item.name}</div><span style="color: gray">#{item.level}</span>#{
-      item.attributes}#{description}
+      item.attributes}<span class="desc">#{description}</span>
       """
 
     @elem.style.display = 'block'

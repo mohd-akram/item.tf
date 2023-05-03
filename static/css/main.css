@@ -241,25 +241,36 @@ main > h2 {
   margin-bottom: 2rem;
 }
 
-.itemlist.inline a {
+.itemlist.inline ul {
   display: inline-block;
 }
 
+.itemlist.inline li {
+  display: inline;
+}
+
 .item {
-  background: rgba(50, 50, 47, .8) center no-repeat;
-  background-size: 98px;
+  background-color: rgba(50, 50, 47, .8);
   border: 1px solid #363634;
   border-radius: 11px;
   box-shadow: 1px 1px 0px rgba(0, 0, 0, .15);
-  cursor: pointer;
   height: 77px;
   margin: 3px;
   position: relative;
   width: 100px;
   font-size: 1.6rem;
   text-align: right;
-  padding-right: 5px;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.item > img {
+  height: 98px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
 }
 
 @media (max-width: 1080px) { .itemlist { width: 972px; } } /* 9 columns */
@@ -272,13 +283,19 @@ main > h2 {
 @media (max-width: 432px) {
   .itemlist { width: 352px; }
   .item {
-    width: 80px; height: 62px; background-size: 78px;
+    width: 80px; height: 62px;
+  }
+  .item > img {
+    height: 78px;
   }
 }
 @media (max-width: 324px) {
   .itemlist { width: 304px; }
   .item {
-    width: 70px; height: 54px; background-size: 68px; margin: 2px;
+    width: 70px; height: 54px; margin: 2px;
+  }
+  .item > img {
+    height: 68px;
   }
 }
 
@@ -387,9 +404,12 @@ ul {
 #hoverarea {
   width: 100%;
   height: 15rem;
-  background-size: 15rem;
-  background-repeat: no-repeat;
-  background-position: center -2rem;
+}
+
+#hoverarea img {
+  height: 100%;
+  margin-top: -2rem;
+  pointer-events: none;
 }
 
 .textbox {
@@ -475,15 +495,23 @@ ul {
   padding: 0.5rem;
   position: absolute;
   text-align: center;
-  white-space: pre-wrap;
   width: 30rem;
   word-wrap: break-word;
   z-index: 100;
 }
 
-#hoverbox > div {
+#hoverbox ul {
+  margin: 0;
+}
+
+#hoverbox li, #hoverbox .desc {
+  white-space: pre-wrap;
+}
+
+#hoverbox .name {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
+  color: rgb(230, 230, 230);
 }
 
 a {
