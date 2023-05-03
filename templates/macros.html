@@ -34,7 +34,7 @@
 {% macro showitems(items, inline=False, qualities={}) %}
 <div class="itemlist{% if inline %} inline{% endif %}">
 {% if not inline %}
-<div style="color: gray; padding-bottom: 20px">{{getcount(items | length, 'item')}}</div>
+<div class="count">{{getcount(items | length, 'item')}}</div>
 {% endif %}
 <ul>
 {% for item in items %}

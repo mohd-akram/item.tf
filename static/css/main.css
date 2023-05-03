@@ -227,13 +227,20 @@ main > h2 {
 .itemlist {
   margin: auto;
   margin-top: 1rem;
-  margin-bottom: 3rem;
   overflow: hidden;
   max-width: 1060px;
 }
 
-.itemlist .item {
+.itemlist .count {
+  color: gray;
+}
+
+.itemlist ul, .itemlist li {
   float: left;
+}
+
+.itemlist li {
+  padding: 3px;
 }
 
 .itemlist.inline {
@@ -242,11 +249,8 @@ main > h2 {
 }
 
 .itemlist.inline ul {
+  float: none;
   display: inline-block;
-}
-
-.itemlist.inline li {
-  display: inline;
 }
 
 .item {
@@ -256,7 +260,6 @@ main > h2 {
   box-shadow: 1px 1px 0px rgba(0, 0, 0, .15);
   width: 100px;
   height: 77px;
-  margin: 3px;
   position: relative;
   font-size: 1.6rem;
   text-align: right;
