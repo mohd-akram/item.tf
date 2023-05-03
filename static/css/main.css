@@ -700,6 +700,8 @@ a > img {
   color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
+  position: absolute;
+  right: 0;
 }
 
 .search .quality-6::after {
