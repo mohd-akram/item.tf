@@ -30,7 +30,7 @@
 {% endmacro %}
 
 {% macro showitems(items, inline=False, qualities={}) %}
-<ul class="itemlist{% if inline %} inline{% endif %}">
+<ul class="items{% if inline %} inline{% endif %}">
 {% for item in items %}
 <li>{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}</li>
 

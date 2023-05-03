@@ -234,19 +234,19 @@ h2 .symbol {
   color: gray;
 }
 
-.search .itemlist {
+.search .items, .wishlist .items {
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
   max-width: 1060px;
 }
 
-.itemlist li {
+.items li {
   float: left;
   padding: 3px;
 }
 
-.itemlist.inline {
+.items.inline {
   display: inline-block;
 }
 
@@ -273,15 +273,15 @@ h2 .symbol {
   transform: translate(-50%,-50%);
 }
 
-@media (max-width: 1060px) { .search .itemlist { width: 954px; } } /* 9 columns */
-@media (max-width: 954px) { .search .itemlist { width: 848px; } } /* 8 columns */
-@media (max-width: 848px) { .search .itemlist { width: 742px; } } /* 7 columns */
-@media (max-width: 742px) { .search .itemlist { width: 636px; } } /* 6 columns */
-@media (max-width: 636px) { .search .itemlist { width: 530px; } } /* 5 columns */
+@media (max-width: 1060px) { .search .items, .wishlist .items { width: 954px; } } /* 9 columns */
+@media (max-width: 954px) { .search .items, .wishlist .items { width: 848px; } } /* 8 columns */
+@media (max-width: 848px) { .search .items, .wishlist .items { width: 742px; } } /* 7 columns */
+@media (max-width: 742px) { .search .items, .wishlist .items { width: 636px; } } /* 6 columns */
+@media (max-width: 636px) { .search .items, .wishlist .items { width: 530px; } } /* 5 columns */
 /* 4 columns */
-@media (max-width: 530px) { .search .itemlist { width: 424px; } }
+@media (max-width: 530px) { .search .items, .wishlist .items { width: 424px; } }
 @media (max-width: 424px) {
-  .search .itemlist { width: 344px; }
+  .search .items, .wishlist .items { width: 344px; }
   .item {
     width: 80px; height: 62px;
   }
@@ -290,8 +290,8 @@ h2 .symbol {
   }
 }
 @media (max-width: 344px) {
-  .search .itemlist { width: 296px; }
-  .itemlist li {
+  .search .items, .wishlist .items { width: 296px; }
+  .items li {
     padding: 2px;
   }
   .item {
