@@ -462,13 +462,12 @@ class HoverBox
           #{descList[0]}
           <span style="color: #95af0c">#{descList[1]}</span>
           """
-      description = "<br>#{description}"
 
     @elem.innerHTML =
       """
       <div class="name">#{
       item.name}</div><span style="color: gray">#{item.level}</span>#{
-      item.attributes}<span class="desc">#{description}</span>
+      item.attributes}<div class="desc">#{description}</div>
       """
 
     @elem.style.display = 'block'
