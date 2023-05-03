@@ -410,6 +410,7 @@ ul {
 #hoverarea {
   width: 100%;
   height: 15rem;
+  overflow: hidden;
 }
 
 #hoverarea img {
