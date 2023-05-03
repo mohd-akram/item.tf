@@ -10,6 +10,7 @@
   {% set issetpage = query.lower().endswith(' set') %}
 
   {% for result in results %}
+  <section class="search">
   {% if result.title %}
   {%- if result.type == 'set' and not issetpage %}
   <h2><a href="/search?q={{result.title|replace('#','%23')|replace(' ','%20')}}%20Set" class="glow" target="_blank">{{result.title}}</a></h2>
@@ -21,7 +22,9 @@
   {%- for c in text %}{% if c in ('×', '+', '=') %}<span class="symbol">{{c}}</span>{% else %}{{c}}{% endif %}{% endfor %}</h2>
   {% endif -%}
   {% endif %}
-  <div class="search">{{ showitems(result['items'], qualities=qualities) }}</div>
+  <div class="count">{{getcount(result['items'] | length, 'item')}}</div>
+  {{ showitems(result['items'], qualities=qualities) }}
+  </section>
   {%- endfor %}
 
   {%- if not count %}

@@ -216,10 +216,6 @@ h2 .symbol {
   color: rgba(255, 255, 255, 0.4);
 }
 
-main > h2 {
-  margin-bottom: 0;
-}
-
 .glow {
   color: #D1D0D0;
 }
@@ -229,30 +225,28 @@ main > h2 {
   text-shadow: 0 0 1rem rgba(255, 255, 255, 0.4);
 }
 
-.search .itemlist {
+.search {
   margin-top: 1rem;
+  margin-bottom: 5rem;
 }
 
-.itemlist {
-  margin: auto;
+.search .count {
+  color: gray;
+}
+
+.search .itemlist {
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
   max-width: 1060px;
 }
 
-.itemlist .count {
-  color: gray;
-}
-
-.itemlist ul, .itemlist li {
-  float: left;
-}
-
 .itemlist li {
+  float: left;
   padding: 3px;
 }
 
-.itemlist.inline ul {
-  float: none;
+.itemlist.inline {
   display: inline-block;
 }
 
@@ -279,15 +273,15 @@ main > h2 {
   transform: translate(-50%,-50%);
 }
 
-@media (max-width: 1060px) { .itemlist { width: 954px; } } /* 9 columns */
-@media (max-width: 954px) { .itemlist { width: 848px; } } /* 8 columns */
-@media (max-width: 848px) { .itemlist { width: 742px; } } /* 7 columns */
-@media (max-width: 742px) { .itemlist { width: 636px; } } /* 6 columns */
-@media (max-width: 636px) { .itemlist { width: 530px; } } /* 5 columns */
+@media (max-width: 1060px) { .search .itemlist { width: 954px; } } /* 9 columns */
+@media (max-width: 954px) { .search .itemlist { width: 848px; } } /* 8 columns */
+@media (max-width: 848px) { .search .itemlist { width: 742px; } } /* 7 columns */
+@media (max-width: 742px) { .search .itemlist { width: 636px; } } /* 6 columns */
+@media (max-width: 636px) { .search .itemlist { width: 530px; } } /* 5 columns */
 /* 4 columns */
-@media (max-width: 530px) { .itemlist { width: 424px; } }
+@media (max-width: 530px) { .search .itemlist { width: 424px; } }
 @media (max-width: 424px) {
-  .itemlist { width: 344px; }
+  .search .itemlist { width: 344px; }
   .item {
     width: 80px; height: 62px;
   }
@@ -296,9 +290,12 @@ main > h2 {
   }
 }
 @media (max-width: 344px) {
-  .itemlist { width: 296px; }
+  .search .itemlist { width: 296px; }
+  .itemlist li {
+    padding: 2px;
+  }
   .item {
-    width: 70px; height: 54px; margin: 2px;
+    width: 70px; height: 54px;
   }
   .item > img {
     height: 68px;

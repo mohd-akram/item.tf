@@ -30,17 +30,12 @@
 {% endmacro %}
 
 {% macro showitems(items, inline=False, qualities={}) %}
-<div class="itemlist{% if inline %} inline{% endif %}">
-{% if not inline %}
-<div class="count">{{getcount(items | length, 'item')}}</div>
-{% endif %}
-<ul>
+<ul class="itemlist{% if inline %} inline{% endif %}">
 {% for item in items %}
 <li>{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}</li>
 
 {% endfor %}
 </ul>
-</div>
 {% endmacro %}
 
 {% macro showsearchlinks(stringlist) %}
