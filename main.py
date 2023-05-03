@@ -53,7 +53,7 @@ def json(data, status: int = 200) -> Response:
 async def home(request: Request):
     t0, newitemsindexes, user = await asyncio.gather(
         store.get('items:lastupdated'),
-        store.srandmember('items:new', 5),
+        store.srandmember('items:new', 4),
         getcurrentuser(request)
     )
 
