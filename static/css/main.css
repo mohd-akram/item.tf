@@ -489,13 +489,14 @@ ul {
   border-radius: 0.8rem;
   box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.4);
   display: none;
-  font-size: 1.2rem;
-  padding: 0.5rem;
+  font-size: 1.3rem;
+  padding: 1rem 0.5rem;
   position: absolute;
   text-align: center;
-  width: 30rem;
+  width: 31rem;
   word-wrap: break-word;
   z-index: 100;
+  box-sizing: border-box;
 }
 
 #hoverbox ul {
@@ -507,9 +508,13 @@ ul {
 }
 
 #hoverbox .name {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: rgb(230, 230, 230);
+  color: #eee;
+}
+
+#hoverbox .level {
+  color: gray;
 }
 
 a {

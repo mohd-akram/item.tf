@@ -466,7 +466,7 @@ class HoverBox
     @elem.innerHTML =
       """
       <div class="name">#{
-      item.name}</div><span style="color: gray">#{item.level}</span>#{
+      item.name}</div><span class="level">#{item.level}</span>#{
       item.attributes}<div class="desc">#{description}</div>
       """
 
