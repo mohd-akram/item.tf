@@ -58,6 +58,6 @@
 {% endif %}
 <script>
   var itemBox = new ItemBox(false);
-  itemBox.show(document.getElementsByClassName('item')[0]);
+  itemBox.show(new Item(document.getElementsByClassName('item')[0]));
 </script>
 {% endblock %}

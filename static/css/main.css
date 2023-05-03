@@ -138,6 +138,11 @@ main {
   color: #CCCEBE;
 }
 
+#newitems {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 #blueprints {
   position: absolute;
   bottom: 6rem;
@@ -224,9 +229,12 @@ main > h2 {
   text-shadow: 0 0 1rem rgba(255, 255, 255, 0.4);
 }
 
+.search .itemlist {
+  margin-top: 1rem;
+}
+
 .itemlist {
   margin: auto;
-  margin-top: 1rem;
   overflow: hidden;
   max-width: 1060px;
 }
@@ -243,17 +251,13 @@ main > h2 {
   padding: 3px;
 }
 
-.itemlist.inline {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
 .itemlist.inline ul {
   float: none;
   display: inline-block;
 }
 
 .item {
+  display: block;
   background-color: rgba(50, 50, 47, .8);
   border: 1px solid #363634;
   border-radius: 11px;

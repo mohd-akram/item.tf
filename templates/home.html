@@ -50,7 +50,7 @@
       width="142" height="71" frameborder="0" allowfullscreen>
     </iframe>
   </div>
-  <div id="searchitems" style="margin: 20px 0"></div>
+  <div id="searchitems" class="itemlist inline"><ul></ul></div>
   <form id="searchform" action="/search">
     <div id="loading" style="display:none; padding: 20px;"></div>
     <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 30rem; font-size: 2rem;">
@@ -58,7 +58,7 @@
     <input type="submit" value="Search" class="button">
     <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search/random'">
   </form>
-  {{ showitems(newitems, True) }}
+  <div id="newitems">{{ showitems(newitems, True) }}</div>
   <div id="message">{{message|safe}}</div>
 {% endblock %}
 
@@ -198,15 +198,15 @@
               $(this).val(ui.item.label);
 
               $.get(ui.item.value, function(data) {
-                var searchItems = $('#searchitems');
+                var searchItems = $('#searchitems > ul');
                 if (searchItems.children().length == 5)
                   searchItems.children().first().remove();
 
-                var item = $(data).find('.item').css('display', 'inline-block');
-                searchItems.append(item.parent());
+                var item = $(data).find('.item');
+                searchItems.append($('<li/>').append(item));
                 new HoverBox(item[0], itemBox);
                 // item.click() doesn't work in Steam browser
-                itemBox.show(item[0]);
+                itemBox.show(new Item(item[0]));
 
                 ga('send', 'event', 'Items', 'Search', ui.item.label);
               });

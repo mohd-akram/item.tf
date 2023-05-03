@@ -47,8 +47,7 @@ class ItemBox
     @elem.id = 'itembox'
     document.body.appendChild @elem
 
-  show: (elem) ->
-    @item = new Item(elem)
+  show: (@item) ->
     @sources = (source for source in priceSources when source of @item.prices)
     @source = user.priceSource
 
@@ -391,12 +390,14 @@ class ItemBox
     @_buyLink()
 
     # Hover area
-    hoverArea = @item.elem.cloneNode true
+    hoverArea = document.createElement 'div'
     hoverArea.id = 'hoverarea'
-    hoverArea.className = ''
 
     if @item.imageURL
-      hoverArea.getElementsByTagName('img')[0].src = @item.imageURL
+      img = document.createElement 'img'
+      img.alt = @item.name
+      img.src = @item.imageURL
+      hoverArea.appendChild img
 
     # Add hover area to itembox
     @elem.insertBefore hoverArea,
@@ -404,7 +405,7 @@ class ItemBox
       document.getElementById('buttons')
 
     # Enable hover box
-    new HoverBox(hoverArea)
+    new HoverBox(hoverArea, null, @item)
 
     # Wishlist item quality
     if @item.qualityNo
@@ -418,7 +419,7 @@ class ItemBox
           break
 
 class HoverBox
-  constructor: (area, @itemBox) ->
+  constructor: (area, @itemBox, @item) ->
     # Allow providing only itemBox
     # Area then becomes all 'item' elements
     if area instanceof ItemBox
@@ -451,7 +452,7 @@ class HoverBox
       document.onkeydown = (e) => @itemBox.hide() if e.keyCode is 27
 
   _show: (e) =>
-    item = new Item e.currentTarget
+    item = @item or new Item e.currentTarget
     description = escapeHTML item.description
 
     if description
@@ -490,7 +491,7 @@ class HoverBox
     @elem.style.left = "#{e.pageX - 154}px"
 
   _clickItem: (e) =>
-    @itemBox.show e.currentTarget
+    @itemBox.show new Item e.currentTarget
     e.preventDefault()
     e.stopPropagation()
 
@@ -542,5 +543,6 @@ _getAjaxRequest = (callback) ->
 
 root.user = new User
 
+root.Item = Item
 root.ItemBox = ItemBox
 root.HoverBox = HoverBox
