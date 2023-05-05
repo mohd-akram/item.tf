@@ -70,17 +70,19 @@ header {
 }
 
 #back {
-  position: absolute;
-  top: 0;
-  left: 1rem;
+  float: left;
+  margin-top: 1rem;
+  margin-left: 2rem;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
+  font-size: 2rem;
 }
 
 header .heading {
   position: absolute;
-  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   margin-top: 1rem;
 }
 
@@ -88,7 +90,6 @@ header .heading {
   float: right;
   margin-top: 1rem;
   margin-right: 2rem;
-  position: relative;
 }
 
 .search-form input[type=search] {
@@ -96,17 +97,9 @@ header .heading {
   width: 20rem;
 }
 
-@media (max-width: 450px) {
-  header #back { margin: 0; }
-}
-
-header .search-form {
-  margin-top: 2rem;
-}
-
 @media (max-width: 750px) {
-  header .heading { position: initial; font-size: 3.5rem; }
-  header .search-form { margin: 0; width: 100%; }
+  header .heading { font-size: 3.5rem; }
+  header .search-form { float: none; }
 }
 
 header > a {
@@ -203,7 +196,6 @@ h2, h3, h4 {
 }
 
 h1 {
-  margin: 0;
   font-weight: 300;
   font-size: 5rem;
 }

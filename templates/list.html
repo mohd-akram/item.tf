@@ -2,9 +2,9 @@
 {% from 'macros.html' import showitems %}
 
 {% block header %}
-  <h1 class="heading">{% block heading %}{% endblock %}</h1>
-  <h2 id="back"><a href="/">{% include 'logo.html' %}</a></h2>
+  <a id="back" href="/">{% include 'logo.html' %}</a>
   {% include 'search-form.html' %}
+  <h1 class="heading">{% block heading %}{% endblock %}</h1>
 {% endblock %}
 
 {% block script %}
