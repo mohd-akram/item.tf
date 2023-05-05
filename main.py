@@ -291,7 +291,7 @@ async def wishlist(request: Request, option):
         if (await store.sismember('items:indexes', index) and
                 quality in tf2api.getallqualities()):
 
-            if len(user['wishlist']) < 100:
+            if len(user['wishlist']) < 500:
                 user['wishlist'].append({'index': index,
                                          'quality': quality})
                 await store.hset(userkey, 'wishlist', user['wishlist'])
