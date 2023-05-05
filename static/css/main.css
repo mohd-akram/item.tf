@@ -80,10 +80,9 @@ header {
 }
 
 header .heading {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 1rem;
+  clear: both;
+  position: relative;
+  top: -2rem;
 }
 
 .search-form {
@@ -95,11 +94,6 @@ header .heading {
 .search-form input[type=search] {
   font-size: 2rem;
   width: 20rem;
-}
-
-@media (max-width: 750px) {
-  header .heading { font-size: 3.5rem; }
-  header .search-form { float: none; }
 }
 
 header > a {
