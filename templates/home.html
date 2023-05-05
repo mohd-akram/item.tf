@@ -9,11 +9,14 @@
 {% block link %}
   <link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
   <link rel="stylesheet" href="/css/message.css">
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css">
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.css">
 {% endblock %}
 
 {% block style %}
   <style>
+    #searchbox, .ui-autocomplete {
+      width: 30rem;
+    }
     .ui-autocomplete {
       max-height: 100px;
       overflow-y: auto;
@@ -53,7 +56,7 @@
   <div id="searchitems"><ul class="items inline"></ul></div>
   <form id="searchform" action="/search">
     <div id="loading" style="display:none; padding: 20px;"></div>
-    <input name="q" id="searchbox" type="search" placeholder="Search" style="width: 30rem; font-size: 2rem;">
+    <input name="q" id="searchbox" type="search" placeholder="Search" style="font-size: 2rem;">
     <br><br>
     <input type="submit" value="Search" class="button">
     <input type="button" value="Lucky?" class="button" onclick="window.location.href='/search/random'">
@@ -117,8 +120,8 @@
       }
     }
   </script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
   <script>
     $(function() {
       var searchBox = $('#searchbox');
