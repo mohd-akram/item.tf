@@ -144,11 +144,35 @@ main {
   overflow-y: auto;
   border-radius: 1rem;
   background-color: rgba(0, 0, 0, 0.05);
+  text-align: left;
 }
 
 .blueprint {
   position: relative;
+}
+
+.blueprint li {
+  margin: 0.4rem;
+  display: inline-block;
+}
+
+.item-small {
+  display: inline-block;
+  height: 7rem;
+  width: 8rem;
   overflow: hidden;
+}
+
+.item-small img {
+  width: 100%;
+}
+
+.blueprint .chance {
+  position: absolute;
+  font-size: 1.8rem;
+  font-weight: 500;
+  top: 2rem;
+  right: 1rem;
 }
 
 footer {
@@ -299,16 +323,6 @@ ul {
   list-style: none;
 }
 
-.item-small {
-  background-size: 8rem;
-  background-repeat: no-repeat;
-  float: left;
-  height: 7rem;
-  margin: 0.4rem;
-  position: relative;
-  width: 8rem;
-}
-
 .button, .button-small {
   color: white;
   text-decoration: none;
@@ -328,28 +342,6 @@ ul {
 
 .button-small {
   font-size: 1.2rem;
-}
-
-#buy {
-  position: absolute;
-  bottom: 0.8rem;
-  right: 0.7rem;
-}
-
-#buybutton {
-  display: inline-block;
-  position: relative;
-  background-image: url("https://steamcdn-a.akamaihd.net/apps/tf2/btn_buynow.png");
-  background-position-y: top;
-  background-position-x: left;
-  top: 7px;
-  margin-left: 5px;
-  width: 97px;
-  height: 24px;
-}
-
-#buybutton:hover {
-  background-position-y: bottom;
 }
 
 #itembox, .itembox {
@@ -433,13 +425,34 @@ ul {
 
 #prices, .prices {
   font-size: 1.5rem;
+  font-weight: 500;
   margin: 0.5rem 0 0.5rem 0;
 }
 
-#buttons {
+#buttons, #buy {
   position: absolute;
+  bottom: 0.7rem;
+}
+
+#buttons {
   left: 0.3rem;
-  bottom: 0.6rem;
+}
+
+#buy {
+  right: 0.7rem;
+}
+
+#buybutton {
+  display: inline-block;
+  margin-bottom: -7px;
+  margin-left: 5px;
+  width: 97px;
+  height: 24px;
+  overflow: hidden;
+}
+
+#buybutton img:hover {
+  margin-top: -24px;
 }
 
 #buttons a, #buttons input, #buttons select {
@@ -463,9 +476,14 @@ ul {
     margin: 0;
   }
   #buybutton {
-    background-size: 60px;
     width: 15px;
     height: 15px;
+  }
+  #buybutton img {
+    height: 30px;
+  }
+  #buybutton img:hover {
+    margin-top: -15px;
   }
 }
 

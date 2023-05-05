@@ -105,7 +105,8 @@ class ItemBox
       <i id="shortlinkbutton" class="fa fa-caret-square-down"
        title="Short URL"></i><br>
       <div id="shortlink" style="display:none">
-      <input type="text" value="https://item.tf/#{@item.id}" readonly><br>
+      <input type="text" value="https://item.tf/#{@item.id}" title="Shortlink"
+       readonly><br>
       </div>
       """
 
@@ -165,23 +166,22 @@ class ItemBox
   _pricesHTML: ->
     html = @_priceSourceHTML()
     if html then "<div id='marketprice'><span id='pricesource'>#{
-      capitalize @source}</span><h3 id='prices'>#{html}</h3></div>" else ''
+      capitalize @source}</span><div id='prices'>#{html}</div></div>" else ''
 
   _blueprintsHTML: ->
     if @item.blueprints.length
-      html = '<div id="blueprints">'
+      html = '<ul id="blueprints">'
       for blueprint in @item.blueprints
         chance = blueprint.getAttribute 'data-chance'
 
-        html += '<div class="blueprint">'
+        html += '<li class="blueprint"><ul>'
         for item in blueprint.getElementsByTagName 'span'
           for i in [0...item.getAttribute 'data-count']
             name = item.title
             index = item.getAttribute 'data-index'
-            style = "background-image: url(#{item.getAttribute 'data-image'})"
 
-            listItem = "<div title=\"#{name}\" class='item-small' style='#{
-              style}'></div>"
+            listItem = "<img src=\"#{item.getAttribute 'data-image'}\" alt=\"#{
+              name}\">"
 
             url = item.getAttribute 'data-url'
 
@@ -195,15 +195,13 @@ class ItemBox
 
               url = "/search?q=#{encodeURIComponent name}"
 
-            html += "<a href=\"#{url}\" target='_blank'>#{listItem}</a>"
+            html += "<li><a title=\"#{name}\" href=\"#{
+              url}\" class=\"item-small\" target='_blank'>#{listItem}</a></li>"
 
-        html +=
-          """
-          <div title="Crafting Chance" style="position: absolute; right: 10px">
-          <h3>#{chance}%</h3></div></div>
-          """
+        html += "</ul><span title=\"Crafting Chance\" class=\"chance\">#{
+          chance}%</span></li>"
 
-      html += '</div>'
+      html += '</ul>'
     else ''
 
   _tradeHTML: ->
@@ -213,12 +211,12 @@ class ItemBox
       <input type="hidden" name="json">
       <input type="submit" name="submit" value="Search!" style="display: none">
 
-      <select id="tradetype" class="textbox">
+      <select id="tradetype" class="textbox" title="Trade Type">
         <option value="has1">Want</option>
         <option value="wants1">Have</option>
       </select>
 
-      <select id="quality" class="textbox">
+      <select id="quality" class="textbox" title="Quality">
         <option value="6">Unique</option>
         <option value="3">Vintage</option>
         <option value="11">Strange</option>
@@ -270,9 +268,11 @@ class ItemBox
       """
       <div id="buy">
       <form style="display: inline-block">$#{@item.storePrice}<br>
-      <input type="text" value="1" size="1" id="quantity"
+      <input type="text" value="1" size="1" id="quantity" title="Quantity"
        class="textbox" style="text-align: right">
-      </form><a href="#" target="_blank" id="buybutton"></a></div>
+      </form><a href="#" target="_blank" id="buybutton"><img
+       src="https://steamcdn-a.akamaihd.net/apps/tf2/btn_buynow.png"
+       alt="Buy Now"></a></div>
       """
     else ''
 
