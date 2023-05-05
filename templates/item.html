@@ -41,13 +41,14 @@
     "description": "{{item['description']}}",
     "mpn": "{{item['index']}}",
     "brand": {
-      "@type": "Thing",
+      "@type": "Brand",
       "name": "TF2"
     },
     "offers": {
       "@type": "Offer",
       "priceCurrency": "USD",
       "price": "{{item['storeprice']}}",
+      "availability": "https://schema.org/InStock",
       "seller": {
         "@type": "Organization",
         "name": "Valve"
