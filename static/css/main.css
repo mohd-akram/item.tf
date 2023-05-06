@@ -413,6 +413,10 @@ ul {
   right: 0;
 }
 
+#tags img, #classes img {
+  width: 100%;
+}
+
 #pricesource, .pricesource {
   color: rgb(179, 233, 99);
 }
@@ -611,84 +615,82 @@ a > img {
   display: block;
   width: 5rem;
   height: 5rem;
-  background-image: url("/images/tags.png");
-  background-size: 100%;
+  overflow: hidden;
 }
 
-.secondary {
-  background-position: 0 -5rem;
+.secondary img {
+  margin-top: -5rem;
 }
 
-.melee {
-  background-position: 0 -10rem;
+.melee img {
+  margin-top: -10rem;
 }
 
-.pda2 {
-  background-position: 0 -15rem;
+.pda2 img {
+  margin-top: -15rem;
 }
 
-.hat {
-  background-position: 0 -20rem;
+.hat img {
+  margin-top: -20rem;
 }
 
-.misc {
-  background-position: 0 -25rem;
+.misc img {
+  margin-top: -25rem;
 }
 
-.tool {
-  background-position: 0 -30rem;
+.tool img {
+  margin-top: -30rem;
 }
 
-.bundle {
-  background-position: 0 -35rem;
+.bundle img {
+  margin-top: -35rem;
 }
 
-.class-token {
-  background-position: 0 -40rem;
+.class-token img {
+  margin-top: -40rem;
 }
 
-.slot-token {
-  background-position: 0 -45rem;
+.slot-token img {
+  margin-top: -45rem;
 }
 
 .scout, .soldier, .pyro, .demoman, .heavy, .engineer, .medic, .sniper, .spy {
   display: block;
   width: 4rem;
   height: 4rem;
-  background-image: url("/images/classes.png");
-  background-size: 100%;
+  overflow: hidden;
 }
 
-.soldier {
-  background-position: 0 -4rem;
+.soldier img {
+  margin-top: -4rem;
 }
 
-.pyro {
-  background-position: 0 -8rem;
+.pyro img {
+  margin-top: -8rem;
 }
 
-.demoman {
-  background-position: 0 -12rem;
+.demoman img {
+  margin-top: -12rem;
 }
 
-.heavy {
-  background-position: 0 -16rem;
+.heavy img {
+  margin-top: -16rem;
 }
 
-.engineer {
-  background-position: 0 -20rem;
+.engineer img {
+  margin-top: -20rem;
 }
 
-.medic {
-  background-position: 0 -24rem;
+.medic img {
+  margin-top: -24rem;
 }
 
-.sniper {
-  background-position: 0 -28rem;
+.sniper img {
+  margin-top: -28rem;
 }
 
-.spy {
-  background-position: 0 -32rem;
+.spy img {
+  margin-top: -32rem;
 }
 
 .offline, .online, .in-game {

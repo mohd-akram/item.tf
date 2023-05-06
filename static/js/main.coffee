@@ -84,7 +84,8 @@ class ItemBox
         html +=
           """
           <a href="/search?q=#{encodeURIComponent title}"
-           target="_blank" title="#{title}" class="#{image}"></a>
+           target="_blank" title="#{title}" class="#{image}"><img
+           src="/images/tags.png" alt="#{title}"></a>
           """
 
       html += '</div>'
@@ -117,7 +118,8 @@ class ItemBox
         html +=
           """
           <a href="/search?q=#{class_}" target="_blank"
-           title="#{class_}" class="#{class_.toLowerCase()}"></a>
+           title="#{class_}" class="#{class_.toLowerCase()}"><img
+           src="/images/classes.png" alt="#{class_}"></a>
           """
       html += '</div>'
     else ''
