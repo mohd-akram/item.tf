@@ -73,15 +73,16 @@
 {% endif %}
 {% endmacro %}
 
-
 {% macro parseitemdescription(description) %}
 {% set parts = description.split('---') %}
 {% if parts | length > 1 %}
 {{parts[0]}}
 {% set items = parts[1].split('\n') %}
+<ul style="white-space: initial; margin: 0">
 {% for name in items %}
-<a href="/{{name|slugify}}">{{name}}</a>
+<li><a href="/{{name|slugify}}">{{name}}</a></li>
 {% endfor %}
+</ul>
 {% else %}
 {{description}}
 {% endif %}
