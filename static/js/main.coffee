@@ -39,8 +39,6 @@ class Item
     @wishIndex = @elem.getAttribute 'data-i'
     @qualityNo = @elem.className.match(/quality-(\d+)/)?[1]
 
-  remove: -> @elem.parentNode.removeChild @elem
-
 class ItemBox
   constructor: (@showLink=true) ->
     @elem = document.createElement 'div'
@@ -362,7 +360,7 @@ class ItemBox
 
           else if response is 'Removed'
             @hide()
-            @item.remove()
+            @item.elem.parentNode.parentNode.removeChild @item.elem.parentNode
 
   _buyLink: ->
     button = document.getElementById 'buybutton'
