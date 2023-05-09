@@ -43,3 +43,46 @@
 <a href="/search/{{string|slugify}}">{{string}}</a><br>
 {% endfor %}
 {% endmacro %}
+
+{% macro parseprice(price) %}
+{% set tokens = price.split(' ') %}
+{% set denom = tokens.pop() %}
+{% if denom.startswith('Refined') or denom.startswith('Key') %}
+{% for token in tokens %}
+{% if token == '-' %}
+-
+{% else %}
+<a href="/search?q={{token|urlencode}}%20{{denom|urlencode}}">{{token}}</a>
+{% endif %}
+{% endfor %}
+{{denom}}
+{% else %}
+{{price}}
+{% endif %}
+{% endmacro %}
+
+{% macro getblueprintitemurl(item) %}
+{% if 'index' in item %}
+/{{item['name']|slugify}}
+{%- else %}
+{% set name = item['name'].replace('Any ', '').replace('Spy Watch', 'PDA2 Weapon') %}
+{% if name.split(' ') | length > 2 %}
+{% set name = name.replace('Weapon', 'Set') %}
+/search?q={{name|urlencode}}
+{%- endif %}
+{% endif %}
+{% endmacro %}
+
+
+{% macro parseitemdescription(description) %}
+{% set parts = description.split('---') %}
+{% if parts | length > 1 %}
+{{parts[0]}}
+{% set items = parts[1].split('\n') %}
+{% for name in items %}
+<a href="/{{name|slugify}}">{{name}}</a>
+{% endfor %}
+{% else %}
+{{description}}
+{% endif %}
+{% endmacro %}

@@ -260,6 +260,7 @@ async def item(request: Request, slug: str = None, index: int = None):
 
         return await render('item.html',
                             item=item,
+                            homepage=config.homepage,
                             description=description)
 
 

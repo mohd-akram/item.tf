@@ -58,7 +58,6 @@ body {
 }
 
 #container {
-  text-align: center;
   min-height: 100%;
   position: relative;
 }
@@ -83,6 +82,7 @@ header .heading {
   clear: both;
   position: relative;
   top: -2rem;
+  text-align: center;
 }
 
 .search-form {
@@ -215,11 +215,6 @@ h2, h3, h4 {
 
 h1 {
   font-weight: 300;
-  font-size: 5rem;
-}
-
-h2 {
-  font-size: 2rem;
 }
 
 h2 .symbol {
@@ -352,6 +347,46 @@ ul {
   top: 50%;
   left: 50%;
   text-align: center;
+}
+
+.iteminfo {
+  max-width: 70rem;
+  background-color: rgb(39, 39, 37);
+  padding: 2rem;
+  padding-bottom: 1rem;
+  margin: 0 auto;
+  margin-top: 2rem;
+  border-radius: 2rem;
+  overflow: hidden;
+}
+
+.iteminfo h1 {
+  margin: 0;
+}
+
+.iteminfo .description {
+  white-space: pre-wrap;
+}
+
+.iteminfo .blueprints .recipe dd {
+  margin-left: 0
+}
+
+.iteminfo .blueprints .recipe li {
+  display: inline;
+}
+
+.iteminfo .blueprints dt, .iteminfo .blueprints li > span {
+  display: none;
+}
+
+.iteminfo > dl > dd {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.iteminfo .buttons {
+  margin-top: 4rem;
 }
 
 #itemname, .itemname {
@@ -531,7 +566,7 @@ ul {
 }
 
 a {
-  color: white;
+  color: #a09e92;
   text-decoration: none;
 }
 

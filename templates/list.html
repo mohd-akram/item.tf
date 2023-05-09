@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% from 'macros.html' import showitems %}
 
+{% block style %}
+<style>
+main { text-align: center; }
+</style>
+{% endblock %}
+
 {% block header %}
   <a id="back" href="/">{% include 'logo.html' %}</a>
   {% include 'search-form.html' %}

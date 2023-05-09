@@ -1,32 +1,184 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import showitem %}
+{% from 'macros.html' import showitem, parseitemdescription, parseprice, getblueprintitemurl %}
 
 {% block title %}{{item['name']}}{% endblock %}
 {% block description %}{{description}}{% endblock %}
 
 {% block style %}
 <style>
-  header { height: 1rem; }
+  header { height: 6rem }
+  #buy { float: right; position: unset; }
 </style>
 {% endblock %}
 
-{% block container %}
-  <a id="back" href="/">{% include 'logo.html' %}</a>
-  {% include 'search-form.html' %}
-  {{ super() }}
+{% block header %}
+<a id="back" href="/">{% include 'logo.html' %}</a>
+{% include 'search-form.html' %}
 {% endblock %}
 
 {% block body %}
-<div class="itembox" style="display: block; overflow: hidden"{% if item['description'] %} title="{{item['description']}}"{% endif %}>
-  <h2 class="itemname">{{item['name']}}</h2>
-  {% if item['marketprice']['backpack.tf'] %}
-  <span class="pricesource">Backpack.tf</span>
-  <div class="prices">{% for quality, value in item['marketprice']['backpack.tf'].items() %}
-    <span class="{{quality|lower|replace('\'', '')}}">{{quality}}</span>: {{value}}<br>
-  {% endfor %}</div>
+<section class="iteminfo">
+  <h1>{{item['name']}}</h1>
+  {% if item['image_large'] %}
+  <img src="{{item['image_large']}}" width="300" alt="Item">
   {% endif %}
-  {% if item['image_large'] %}<img src="{{item['image_large']}}" alt="{{item['name']}}" style="width: 100%">{% endif %}
-</div>
+  <dl>
+    {% if item['description'] %}
+    <dt>Description</dt>
+    <dd class="description">{{parseitemdescription(item['description'])}}</dd>
+    {% endif %}
+
+    {%- if item['attributes'] %}
+    <dt>Attributes</dt>
+    <dd>
+      <ul>
+        {% for a in item['attributes'] %}
+        <li class="{{a['type']}}">{{a['description']}}</li>
+        {% endfor %}
+      </ul>
+    </dd>
+    {% endif %}
+
+    {% if item['marketprice']['backpack.tf'] %}
+    <dt>Price</dt>
+    <dd>
+      <dl>
+        {% for quality, value in item['marketprice']['backpack.tf'].items() %}
+        <dt><a href="/search?q={{quality|urlencode}}"
+            class="{{quality|lower|replace('\'', '')}}">{{quality}}</a></dt>
+        <dd>{{parseprice(value)}}</dd>
+        {% endfor %}
+      </dl>
+    </dd>
+    {% endif %}
+
+    {%- if item['classes'] %}
+    <dt>Classes</dt>
+    <dd>
+      <ul>
+        {% for c in item['classes'] %}
+        <li><a href="/search?q={{c|urlencode}}">{{c}}</a></li>
+        {% endfor %}
+      </ul>
+    </dd>
+    {% endif %}
+
+    {%- if item['tags'] %}
+    <dt>Tags</dt>
+    <dd>
+      <ul>
+        {% for t in item['tags'] %}
+        <li><a href="/search?q={{t|capitalize|urlencode}}">{{t|capitalize}}</a></li>
+        {% endfor %}
+      </ul>
+    </dd>
+    {% endif %}
+
+    {%- if item['blueprints'] %}
+    <dt>Blueprints</dt>
+    <dd class="blueprints">
+      <ul>
+        {% for b in item['blueprints'] %}
+        <li><span>Recipe #{{loop.index}}</span>
+          <dl class="recipe">
+            <dt>Items</dt>
+            <dd>
+              <ul>
+                {% for item in b['required'] %}
+                {% for i in range(item['count']) %}
+                <li><a href="{{getblueprintitemurl(item)}}"
+                    title="{{item['name']}}"><img
+                      src="{{item['image']}}" alt="{{item['name']}}"
+                      width="100"></a></li>
+                {% endfor %}
+                {% endfor %}
+              </ul>
+            </dd>
+            <dt class="chance">Chance</dt>
+            <dd title="Crafting Chance">{{b['chance']}}%</dd>
+          </dl>
+        </li>
+        {% endfor %}
+      </ul>
+    </dd>
+    {% endif %}
+  </dl>
+
+  <div class="buttons">
+    <a class="fa fa-info fa-lg button-icon" target="_blank"
+      title="Open in Wiki"
+      href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a>
+    <div id="forms" style="display: inline">
+      <form name="marketform" action="https://steamcommunity.com/market/search"
+        style="display:none">
+        <input type="hidden" name="appid" value="440">
+        <input type="hidden" name="q" value="{{item['name']}}">
+        <select name="category_440_Quality[]" class="textbox quality"
+          title="Quality">
+          <option value="tag_Unique">Unique</option>
+          <option value="tag_vintage">Vintage</option>
+          <option value="tag_strange">Strange</option>
+          <option value="tag_rarity1">Genuine</option>
+          <option value="tag_collectors">Collector's</option>
+          <option value="tag_haunted">Haunted</option>
+          <option value="tag_rarity4">Unusual</option>
+        </select>
+        <input type="submit"
+          formaction="https://steamcommunity.com/market/search"
+          value="Search Community Market">
+      </form>
+
+      <form name="tradeform" action="https://backpack.tf/classifieds"
+        style="display:none">
+        <input type="hidden" name="item" value="{{item['name']}}">
+        <select name="quality" class="textbox quality" title="Quality">
+          <option value="6">Unique</option>
+          <option value="3">Vintage</option>
+          <option value="11">Strange</option>
+          <option value="1">Genuine</option>
+          <option value="14">Collector's</option>
+          <option value="13">Haunted</option>
+          <option value="5">Unusual</option>
+        </select>
+        <input type="submit" value="Search Backpack.tf classifieds">
+      </form>
+
+      <form name="wishlistform" style="display: inline-block; margin-right:
+        5rem" method="POST"
+        action="/wishlist/add">
+        <input type="hidden" name="index" value="{{item['index']}}">
+        <select name="quality" class="textbox quality" title="Quality"
+          style="display: none">
+          <option value="6">Unique</option>
+          <option value="3">Vintage</option>
+          <option value="11">Strange</option>
+          <option value="1">Genuine</option>
+          <option value="14">Collector's</option>
+          <option value="13">Haunted</option>
+          <option value="5">Unusual</option>
+        </select>
+        <button type="submit" id="wishlistbutton" title="Add to Wishlist"
+          style="background: none; border: none" value="Add to Wishlist"
+          class="fa fa-star fa-lg button-icon"></button>
+      </form>
+    </div>
+
+    <input type="text" value="{{homepage}}/{{item['index']}}" title="Shortlink"
+      class="textbox" readonly onclick="this.select()" style="width: 10rem;
+      margin-bottom: 1rem">
+
+    {% if item['storeprice'] %}
+    <div id="buy">
+      ${{item['storeprice']}}
+      <a
+        href="https://store.steampowered.com/buyitem/440/{{item['index']}}/1"
+        target="_blank" id="buybutton"><img
+          src="https://steamcdn-a.akamaihd.net/apps/tf2/btn_buynow.png"
+          alt="Buy Now"></a>
+    </div>
+    {% endif %}
+  </div>
+</section>
 <div hidden>{{ showitem(item) }}</div>
 {% endblock %}
 
@@ -58,7 +210,93 @@
 </script>
 {% endif %}
 <script>
-  var itemBox = new ItemBox(false);
-  itemBox.show(new Item(document.getElementsByClassName('item')[0]));
+  function getFormLink(form) {
+    return form.action + '?' +
+      new URLSearchParams(new FormData(form)).toString();
+  }
+
+  function adjustForms(elem) {
+    var qualitySelects = elem.getElementsByClassName('quality');
+    var options = qualitySelects[0].getElementsByTagName('option');
+
+    var wishlistForm = document.forms.wishlistform;
+
+    var select = document.createElement('select');
+    select.title = 'Quality';
+    select.className = "textbox";
+    for (let i = 0; i < options.length; i++) {
+      var option = document.createElement('option');
+      option.textContent = options[i].textContent;
+      select.appendChild(option);
+    }
+
+    var marketLink = document.createElement('a');
+    marketLink.title = 'Community Market';
+    marketLink.className = 'fa fa-shopping-cart fa-lg button-icon';
+    marketLink.target = '_blank';
+    elem.insertBefore(marketLink, wishlistForm);
+
+    var tradeLink = document.createElement('a');
+    tradeLink.title = 'Find Trades';
+    tradeLink.className = 'fa fa-exchange-alt fa-lg button-icon';
+    tradeLink.target = '_blank';
+    elem.insertBefore(tradeLink, wishlistForm);
+
+    elem.insertBefore(select, wishlistForm);
+
+    wishlistForm.onsubmit = function (e) {
+      if (!window.fetch) return;
+      e.preventDefault();
+      fetch(wishlistForm.action, {
+        method: 'POST', body: new FormData(wishlistForm)
+      })
+      .then(function (r) {
+        r.text().then(function (response) {
+          if (response == 'Added') {
+            message = document.createElement('div')
+            message.textContent = response;
+            message.style.display = 'inline-block'
+            message.style.position = 'absolute';
+            message.className = 'animate__animated animate__fadeInLeft'
+            setTimeout(function () {
+              message.className = 'animate__animated animate__fadeOut'
+              message.remove();
+            }, 1000);
+            wishlistForm.appendChild(message);
+          }
+        });
+      });
+    };
+
+    var updateForms = function () {
+      for (var i = 0; i < qualitySelects.length; i++)
+        qualitySelects[i].selectedIndex = select.selectedIndex;
+      marketLink.href = getFormLink(document.forms.marketform);
+      tradeLink.href = getFormLink(document.forms.tradeform);
+    };
+
+    updateForms();
+    select.onchange = updateForms;
+  }
+
+  function initBuyButton(buy) {
+    var qty = document.createElement('input')
+    qty.type = 'number';
+    qty.size = 1;
+    qty.className = 'textbox';
+    qty.title = 'Quantity';
+    qty.value = 1;
+    qty.style.width = '4rem';
+    qty.onchange = function () {
+      var parts = buy.href.split('/');
+      parts.pop();
+      buy.href = parts.join('/') + '/' + qty.value;
+    }
+    buy.parentNode.insertBefore(qty, buy);
+  }
+
+  adjustForms(document.getElementById('forms'));
+  var buyButton = document.getElementById('buybutton');
+  if (buyButton) initBuyButton(buyButton);
 </script>
 {% endblock %}
