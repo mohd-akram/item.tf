@@ -362,7 +362,8 @@ def getitemtags(item):
 def getobsoleteindexes():
     """Return the indexes of obsolete items that have newer versions"""
     map_stamps = {
-        2007, 2015, 2049, 2079, 2123, 2125, 2138, 2139, 2140, 2143, 2155, 2156
+        2007, 2015, 2049, 2079, 2123, 2125, 2138, 2139, 2140, 2143, 2155, 2156,
+        2160, *range(2162, 2169)
     }
     starter_packs = set(range(2018, 2027)) | set(range(2094, 2103))
     return {699, 2093} | map_stamps | starter_packs
