@@ -376,6 +376,10 @@ ul {
   display: inline;
 }
 
+.iteminfo .blueprints .recipe img {
+  width: 10rem;
+}
+
 .iteminfo .blueprints dt, .iteminfo .blueprints li > span {
   display: none;
 }
