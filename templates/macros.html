@@ -68,9 +68,9 @@
 {% set name = item['name'].replace('Any ', '').replace('Spy Watch', 'PDA2 Weapon') %}
 {% if name.split(' ') | length > 2 %}
 {% set name = name.replace('Weapon', 'Set') %}
+{% endif %}
 /search?q={{name|urlencode}}
 {%- endif %}
-{% endif %}
 {% endmacro %}
 
 {% macro parseitemdescription(description) %}
