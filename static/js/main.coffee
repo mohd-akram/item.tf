@@ -211,11 +211,6 @@ class ItemBox
       <input type="hidden" name="json">
       <input type="submit" name="submit" value="Search!" style="display: none">
 
-      <select id="tradetype" class="textbox" title="Trade Type">
-        <option value="has1">Want</option>
-        <option value="wants1">Have</option>
-      </select>
-
       <select id="quality" class="textbox" title="Quality">
         <option value="6">Unique</option>
         <option value="3">Vintage</option>

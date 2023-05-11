@@ -66,6 +66,8 @@ header {
   height: 10rem;
   background-color: rgb(32, 31, 29);
   box-shadow: 0.1rem 0.1rem 0.6rem rgba(0, 0, 0, 0.3);
+  display: flow-root;
+  margin-bottom: 5rem;
 }
 
 #back {
@@ -189,8 +191,7 @@ footer .right {
 }
 
 @media (max-width: 62rem) {
-  main { padding-bottom: 7rem; }
-  footer .middle { position: initial; }
+  footer .middle { position: initial; margin-bottom: 0.5rem }
 }
 
 .tip-button {
@@ -340,7 +341,8 @@ ul {
   background-color: rgb(39, 39, 37);
   box-shadow: 0 0 0.5rem 0.5rem rgba(0, 0, 0, .1);
   border-radius: 0.5rem;
-  width: 50rem;
+  max-width: 50rem;
+  width: 100%;
   height: 60rem;
   transform: translate(-50%, -50%);
   position: fixed;
@@ -355,7 +357,6 @@ ul {
   padding: 2rem;
   padding-bottom: 1rem;
   margin: 0 auto;
-  margin-top: 2rem;
   border-radius: 2rem;
   overflow: hidden;
 }
@@ -391,6 +392,10 @@ ul {
 
 .iteminfo .buttons {
   margin-top: 4rem;
+}
+
+.iteminfo .buttons .fa {
+  padding: 1rem;
 }
 
 #itemname, .itemname {
@@ -506,21 +511,18 @@ ul {
 }
 
 @media (max-width: 500px) {
-  html {
-    font-size: 6px;
-  }
   #buttons a, #buttons select {
     margin: 0;
   }
   #buybutton {
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
   }
   #buybutton img {
-    height: 30px;
+    height: 40px;
   }
   #buybutton img:hover {
-    margin-top: -15px;
+    margin-top: -20px;
   }
 }
 

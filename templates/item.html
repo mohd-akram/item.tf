@@ -7,6 +7,7 @@
 {% block style %}
 <style>
   header { height: 6rem }
+  main { padding: 1rem; padding-bottom: 4rem; }
   #buy { float: right; position: unset; }
 </style>
 {% endblock %}
@@ -105,10 +106,10 @@
   </dl>
 
   <div class="buttons">
-    <a class="fa fa-info fa-lg button-icon" target="_blank"
-      title="Open in Wiki"
-      href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a>
-    <div id="forms" style="display: inline">
+    <div id="forms" style="display: inline-block; margin-bottom: 1rem">
+      <a class="fa fa-info fa-lg button-icon" target="_blank"
+        title="Open in Wiki"
+        href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a>
       <form name="marketform" action="https://steamcommunity.com/market/search"
         style="display:none">
         <input type="hidden" name="appid" value="440">
@@ -144,7 +145,7 @@
       </form>
 
       <form name="wishlistform" style="display: inline-block; margin-right:
-        5rem" method="POST"
+        2rem" method="POST"
         action="/wishlist/add">
         <input type="hidden" name="index" value="{{item['index']}}">
         <select name="quality" class="textbox quality" title="Quality"
