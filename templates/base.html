@@ -17,10 +17,10 @@
   <body>
     <div id="container">
       <header>{% block header %}{% endblock %}</header>
-      {% block container %}{% endblock %}
       <main>
         {% block body %}{% endblock %}
       </main>
+      {% block container %}{% endblock %}
       <footer>
         {% block footer %}{% endblock %}{% include 'footer.html' %}
       </footer>
