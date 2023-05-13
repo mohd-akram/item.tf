@@ -258,10 +258,14 @@
             message.textContent = response;
             message.style.display = 'inline-block'
             message.style.position = 'absolute';
+            message.style.marginTop = '-2rem';
+            message.style.marginLeft = '-3rem';
             message.className = 'animate__animated animate__fadeInLeft'
             setTimeout(function () {
               message.className = 'animate__animated animate__fadeOut'
-              message.remove();
+              setTimeout(function() {
+                message.remove();
+              }, 1000);
             }, 1000);
             wishlistForm.appendChild(message);
           }
