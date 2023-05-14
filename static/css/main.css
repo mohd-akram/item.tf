@@ -365,29 +365,33 @@ ul {
   margin: 0;
 }
 
+.iteminfo dl {
+  margin: 0;
+}
+
+.iteminfo > dl > dt {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
 .iteminfo .description {
   white-space: pre-wrap;
 }
 
-.iteminfo .blueprints .recipe dd {
-  margin-left: 0
+.iteminfo .recipe dd {
+  margin-left: 0;
 }
 
-.iteminfo .blueprints .recipe li {
+.iteminfo .recipe dd:not(.chance) {
   display: inline;
 }
 
-.iteminfo .blueprints .recipe img {
+.iteminfo .recipe img {
   width: 10rem;
 }
 
-.iteminfo .blueprints dt, .iteminfo .blueprints li > span {
+.iteminfo .recipe dt {
   display: none;
-}
-
-.iteminfo > dl > dd {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
 }
 
 .iteminfo .buttons {

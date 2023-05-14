@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block body %}
-<section class="iteminfo">
+<article class="iteminfo">
   <h1>{{item['name']}}</h1>
   {% if item['image_large'] %}
   <img src="{{item['image_large']}}" width="300" alt="Item">
@@ -31,13 +31,9 @@
 
     {%- if item['attributes'] %}
     <dt>Attributes</dt>
-    <dd>
-      <ul>
-        {% for a in item['attributes'] %}
-        <li class="{{a['type']}}">{{a['description']}}</li>
-        {% endfor %}
-      </ul>
-    </dd>
+    {% for a in item['attributes'] %}
+    <dd class="{{a['type']}}">{{a['description']}}</dd>
+    {% endfor %}
     {% endif %}
 
     {% if item['marketprice']['backpack.tf'] %}
@@ -55,53 +51,37 @@
 
     {%- if item['classes'] %}
     <dt>Classes</dt>
-    <dd>
-      <ul>
-        {% for c in item['classes'] %}
-        <li><a href="/search?q={{c|urlencode}}">{{c}}</a></li>
-        {% endfor %}
-      </ul>
-    </dd>
+    {% for c in item['classes'] %}
+    <dd><a href="/search?q={{c|urlencode}}">{{c}}</a></dd>
+    {% endfor %}
     {% endif %}
 
     {%- if item['tags'] %}
     <dt>Tags</dt>
-    <dd>
-      <ul>
-        {% for t in item['tags'] %}
-        <li><a href="/search?q={{t|capitalize|urlencode}}">{{t|capitalize}}</a></li>
-        {% endfor %}
-      </ul>
-    </dd>
+    {% for t in item['tags'] %}
+    <dd><a href="/search?q={{t|capitalize|urlencode}}">{{t|capitalize}}</a></dd>
+    {% endfor %}
     {% endif %}
 
     {%- if item['blueprints'] %}
     <dt>Blueprints</dt>
-    <dd class="blueprints">
-      <ul>
-        {% for b in item['blueprints'] %}
-        <li><span>Recipe #{{loop.index}}</span>
-          <dl class="recipe">
-            <dt>Items</dt>
-            <dd>
-              <ul>
-                {% for item in b['required'] %}
-                {% for i in range(item['count']) %}
-                <li><a href="{{getblueprintitemurl(item)}}"
-                    title="{{item['name']}}"><img
-                      src="{{item['image']}}" alt="{{item['name']}}"
-                      width="100"></a></li>
-                {% endfor %}
-                {% endfor %}
-              </ul>
-            </dd>
-            <dt class="chance">Chance</dt>
-            <dd title="Crafting Chance">{{b['chance']}}%</dd>
-          </dl>
-        </li>
+    {% for b in item['blueprints'] %}
+    <dd class="recipe">
+      <dl>
+        <dt>Items</dt>
+        {% for item in b['required'] %}
+        {% for i in range(item['count']) %}
+        <dd><a href="{{getblueprintitemurl(item)}}"
+            title="{{item['name']}}"><img
+              src="{{item['image']}}" alt="{{item['name']}}"
+              width="100"></a></dd>
         {% endfor %}
-      </ul>
+        {% endfor %}
+        <dt>Chance</dt>
+        <dd class="chance" title="Crafting Chance">{{b['chance']}}%</dd>
+      </dl>
     </dd>
+    {% endfor %}
     {% endif %}
   </dl>
 
@@ -181,7 +161,7 @@
     </div>
     {% endif %}
   </div>
-</section>
+</article>
 <div hidden>{{ showitem(item) }}</div>
 {% endblock %}
 
