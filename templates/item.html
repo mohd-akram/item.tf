@@ -144,6 +144,7 @@
         <input type="submit" value="Search Backpack.tf classifieds">
       </form>
 
+      {% if user %}
       <form name="wishlistform" style="display: inline-block; margin-right:
         2rem" method="POST"
         action="/wishlist/add">
@@ -162,6 +163,7 @@
           style="background: none; border: none" value="Add to Wishlist"
           class="fa fa-star fa-lg button-icon"></button>
       </form>
+      {% endif %}
     </div>
 
     <input type="text" value="{{homepage}}/{{item['index']}}" title="Shortlink"
@@ -245,33 +247,35 @@
 
     elem.insertBefore(select, wishlistForm);
 
-    wishlistForm.onsubmit = function (e) {
-      if (!window.fetch) return;
-      e.preventDefault();
-      fetch(wishlistForm.action, {
-        method: 'POST', body: new FormData(wishlistForm)
-      })
-      .then(function (r) {
-        r.text().then(function (response) {
-          if (response == 'Added') {
-            message = document.createElement('div')
-            message.textContent = response;
-            message.style.display = 'inline-block'
-            message.style.position = 'absolute';
-            message.style.marginTop = '-2rem';
-            message.style.marginLeft = '-3rem';
-            message.className = 'animate__animated animate__fadeInLeft'
-            setTimeout(function () {
-              message.className = 'animate__animated animate__fadeOut'
-              setTimeout(function() {
-                message.remove();
+    if (wishlistForm) {
+      wishlistForm.onsubmit = function (e) {
+        if (!window.fetch) return;
+        e.preventDefault();
+        fetch(wishlistForm.action, {
+          method: 'POST', body: new FormData(wishlistForm)
+        })
+        .then(function (r) {
+          r.text().then(function (response) {
+            if (response == 'Added') {
+              message = document.createElement('div')
+              message.textContent = response;
+              message.style.display = 'inline-block'
+              message.style.position = 'absolute';
+              message.style.marginTop = '-2rem';
+              message.style.marginLeft = '-3rem';
+              message.className = 'animate__animated animate__fadeInLeft'
+              setTimeout(function () {
+                message.className = 'animate__animated animate__fadeOut'
+                setTimeout(function() {
+                  message.remove();
+                }, 1000);
               }, 1000);
-            }, 1000);
-            wishlistForm.appendChild(message);
-          }
+              wishlistForm.appendChild(message);
+            }
+          });
         });
-      });
-    };
+      };
+    }
 
     var updateForms = function () {
       for (var i = 0; i < qualitySelects.length; i++)

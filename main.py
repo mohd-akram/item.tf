@@ -222,6 +222,8 @@ async def search(request: Request, slug: str = None):
 @app.router.get('/{int:index}.json')
 @app.router.get('/{int:index}')
 async def item(request: Request, slug: str = None, index: int = None):
+    user_future = asyncio.ensure_future(getcurrentuser(request))
+
     is_json = request.url.path.endswith(b'.json')
 
     item = await (getitembyslug(slug) if slug else getitem(index))
@@ -258,8 +260,11 @@ async def item(request: Request, slug: str = None, index: int = None):
             if description[-1] not in ('.', '?', '!'):
                 description += '.'
 
+        user = await user_future
+
         return await render('item.html',
                             item=item,
+                            user=user,
                             homepage=config.homepage,
                             description=description)
 
