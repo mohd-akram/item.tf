@@ -106,7 +106,8 @@
   </dl>
 
   <div class="buttons">
-    <div id="forms" style="display: inline-block; margin-bottom: 1rem">
+    <div id="forms" style="display: inline-block; margin-bottom: 1rem;
+      margin-right: 2rem">
       <a class="fa fa-info fa-lg button-icon" target="_blank"
         title="Open in Wiki"
         href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a>
@@ -145,8 +146,7 @@
       </form>
 
       {% if user %}
-      <form name="wishlistform" style="display: inline-block; margin-right:
-        2rem" method="POST"
+      <form name="wishlistform" style="display: inline-block" method="POST"
         action="/wishlist/add">
         <input type="hidden" name="index" value="{{item['index']}}">
         <select name="quality" class="textbox quality" title="Quality"
