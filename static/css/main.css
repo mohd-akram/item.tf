@@ -57,6 +57,15 @@ body {
   font-size: 1.5rem;
 }
 
+menu {
+  list-style: none;
+  padding: 0;
+}
+
+menu, menu li {
+  display: inline;
+}
+
 #container {
   min-height: 100%;
   position: relative;
@@ -180,9 +189,14 @@ footer {
   color: #A09E92;
 }
 
+footer p {
+  margin: 0;
+}
+
 footer .middle {
   position: absolute;
   width: 100%;
+  font-style: normal;
 }
 
 footer .right {
@@ -478,6 +492,7 @@ ul {
 #buttons, #buy {
   position: absolute;
   bottom: 0.7rem;
+  margin: 0;
 }
 
 #buttons {

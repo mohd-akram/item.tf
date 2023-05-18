@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block header %}
-<a id="back" href="/">{% include 'logo.html' %}</a>
+<nav><a id="back" href="/">{% include 'logo.html' %}</a></nav>
 {% include 'search-form.html' %}
 {% endblock %}
 
@@ -88,9 +88,11 @@
   <div class="buttons">
     <div id="forms" style="display: inline-block; margin-bottom: 1rem;
       margin-right: 2rem">
-      <a class="fa fa-info fa-lg button-icon" target="_blank"
-        title="Open in Wiki"
-        href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a>
+      <menu>
+        <li><a class="fa fa-info fa-lg button-icon" target="_blank"
+            title="Open in Wiki"
+            href="https://wiki.teamfortress.com/wiki/{{item['name']|urlencode}}"></a></li>
+      </menu>
       <form name="marketform" action="https://steamcommunity.com/market/search"
         style="display:none">
         <input type="hidden" name="appid" value="440">
@@ -151,14 +153,14 @@
       margin-bottom: 1rem">
 
     {% if item['storeprice'] %}
-    <div id="buy">
-      ${{item['storeprice']}}
+    <p id="buy">
+      <span>${{item['storeprice']}}</span>
       <a
         href="https://store.steampowered.com/buyitem/440/{{item['index']}}/1"
         target="_blank" id="buybutton"><img
           src="https://steamcdn-a.akamaihd.net/apps/tf2/btn_buynow.png"
           alt="Buy Now"></a>
-    </div>
+    </p>
     {% endif %}
   </div>
 </article>
@@ -198,7 +200,14 @@
       new URLSearchParams(new FormData(form)).toString();
   }
 
+  function addMenuItem(menu, elem) {
+    var li = document.createElement('li');
+    li.appendChild(elem);
+    menu.appendChild(li);
+  }
+
   function adjustForms(elem) {
+    var menu = elem.getElementsByTagName('menu')[0];
     var qualitySelects = elem.getElementsByClassName('quality');
     var options = qualitySelects[0].getElementsByTagName('option');
 
@@ -217,13 +226,13 @@
     marketLink.title = 'Community Market';
     marketLink.className = 'fa fa-shopping-cart fa-lg button-icon';
     marketLink.target = '_blank';
-    elem.insertBefore(marketLink, wishlistForm);
+    addMenuItem(menu, marketLink);
 
     var tradeLink = document.createElement('a');
     tradeLink.title = 'Find Trades';
     tradeLink.className = 'fa fa-exchange-alt fa-lg button-icon';
     tradeLink.target = '_blank';
-    elem.insertBefore(tradeLink, wishlistForm);
+    addMenuItem(menu, tradeLink);
 
     elem.insertBefore(select, wishlistForm);
 

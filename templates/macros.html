@@ -40,7 +40,7 @@
 
 {% macro showsearchlinks(stringlist) %}
 {% for string in stringlist %}
-<a href="/search/{{string|slugify}}">{{string}}</a><br>
+<li><a href="/search/{{string|slugify}}">{{string}}</a></li>
 {% endfor %}
 {% endmacro %}
 
