@@ -8,13 +8,13 @@ main { text-align: center; }
 {% endblock %}
 
 {% block header %}
-  <div style="display: flow-root">
-    <a id="back" href="/">{% include 'logo.html' %}</a>
-    {% include 'search-form.html' %}
-  </div>
-  <h1 class="heading">{% block heading %}{% endblock %}</h1>
+<div style="display: flow-root">
+  <a id="back" href="/">{% include 'logo.html' %}</a>
+  {% include 'search-form.html' %}
+</div>
+<h1 class="heading">{% block heading %}{% endblock %}</h1>
 {% endblock %}
 
 {% block script %}
-  <script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
+<script>var itemBox = new ItemBox(); new HoverBox(itemBox)</script>
 {% endblock %}

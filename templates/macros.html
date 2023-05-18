@@ -1,27 +1,40 @@
 {% macro showitem(item, qualities) %}
-<a href="/{{item['name']|slugify}}" class="item{% for quality in qualities %} quality-{{quality}}{% endfor %}" title="{{item['name']}}" data-index="{{item['index']}}" data-url="/{{item['name']|slugify}}"{% if item['image_large'] %} data-image="{{item['image_large']}}"{% endif %} data-level="{{item['level']}}"{% for i in ['classes','tags'] %}{% if item[i] %} data-{{i}}="{{item[i]|join(',')}}"{% endif %}{% endfor %}{% for i in ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}"{% endif %}{% endfor %}{% for i in item['marketprice'] %}{% if item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{% endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}"{% endif %}>
-{% if item['image'] %}<img src="{{item['image']}}" alt="{{item['name']}}" height="98">{% endif %}
-{% if item['blueprints'] %}
-<div class="prints" hidden>
-{%- for b in item['blueprints'] %}
-<div data-chance="{{b['chance']}}">
-  {%- for i in b['required'] %}
-  <span title="{{i['name']}}"{% if 'index' in i %} data-index="{{i['index']}}" data-url="/{{i['name']|slugify}}"{% endif %} data-image="{{i['image']}}" data-count="{{i['count']}}"></span>
-  {%- endfor %}
-</div>
-{%- endfor %}
-</div>
-{% endif %}
+<a href="/{{item['name']|slugify}}"
+  class="item{% for quality in qualities %} quality-{{quality}}{% endfor %}"
+  title="{{item['name']}}" data-index="{{item['index']}}"
+  data-url="/{{item['name']|slugify}}" {% if item['image_large'] %}
+  data-image="{{item['image_large']}}" {% endif %}
+  data-level="{{item['level']}}" {% for i in ['classes','tags'] %}{% if item[i]
+  %} data-{{i}}="{{item[i]|join(',')}}" {% endif %}{% endfor %}{% for i in
+  ['storeprice','description'] %}{% if item[i] %} data-{{i}}="{{item[i]}}" {%
+  endif %}{% endfor %}{% for i in item['marketprice'] %}{% if
+  item['marketprice'][i] %} data-{{i}}="{{item['marketprice'][i]|replace("'", '"')}}"{%
+  endif %}{% endfor %}{% if 'i' in item %} data-i="{{item['i']}}" {% endif %}>
+  {% if item['image'] %}<img src="{{item['image']}}" alt="{{item['name']}}"
+    height="98">{% endif %}
+  {% if item['blueprints'] %}
+  <div class="prints" hidden>
+    {%- for b in item['blueprints'] %}
+    <div data-chance="{{b['chance']}}">
+      {%- for i in b['required'] %}
+      <span title="{{i['name']}}" {% if 'index' in i %}
+        data-index="{{i['index']}}" data-url="/{{i['name']|slugify}}" {% endif
+        %} data-image="{{i['image']}}" data-count="{{i['count']}}"></span>
+      {%- endfor %}
+    </div>
+    {%- endfor %}
+  </div>
+  {% endif %}
 
-{%- if item['attributes'] %}
-<div class="attrs" hidden>
-<ul>
-{% for a in item['attributes'] %}
-<li class="{{a['type']}}">{{a['description']}}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
+  {%- if item['attributes'] %}
+  <div class="attrs" hidden>
+    <ul>
+      {% for a in item['attributes'] %}
+      <li class="{{a['type']}}">{{a['description']}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
 </a>
 {%- endmacro %}
 
@@ -31,10 +44,11 @@
 
 {% macro showitems(items, inline=False, qualities={}) %}
 <ul class="items{% if inline %} inline{% endif %}">
-{% for item in items %}
-<li>{{showitem(item, [item['quality']] if 'quality' in item else qualities.get(item['index'], []))}}</li>
+  {% for item in items %}
+  <li>{{showitem(item, [item['quality']] if 'quality' in item else
+    qualities.get(item['index'], []))}}</li>
 
-{% endfor %}
+  {% endfor %}
 </ul>
 {% endmacro %}
 
@@ -65,7 +79,8 @@
 {% if 'index' in item %}
 /{{item['name']|slugify}}
 {%- else %}
-{% set name = item['name'].replace('Any ', '').replace('Spy Watch', 'PDA2 Weapon') %}
+{% set name = item['name'].replace('Any ', '').replace('Spy Watch',
+'PDA2 Weapon') %}
 {% if name.split(' ') | length > 2 %}
 {% set name = name.replace('Weapon', 'Set') %}
 {% endif %}
@@ -79,9 +94,9 @@
 {{parts[0]}}
 {% set items = parts[1].split('\n') %}
 <ul style="white-space: initial; margin: 0">
-{% for name in items %}
-<li><a href="/{{name|slugify}}">{{name}}</a></li>
-{% endfor %}
+  {% for name in items %}
+  <li><a href="/{{name|slugify}}">{{name}}</a></li>
+  {% endfor %}
 </ul>
 {% else %}
 {{description}}

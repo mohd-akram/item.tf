@@ -4,16 +4,19 @@
 {% set searchurl = homepage+'/searchdescription.xml' -%}
 
 {% block title %}Home{% endblock %}
-{% block description %}Find TF2 items and quickly get information about crafting blueprints, market prices and more.{% endblock %}
+{% block description %}Find TF2 items and quickly get information about
+crafting blueprints, market prices and more.{% endblock %}
 
 {% block link %}
-  <link rel="search" type="application/opensearchdescription+xml" title="item.tf" href="{{searchurl}}">
-  <link rel="stylesheet" href="/css/message.css">
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.css">
+<link rel="search" type="application/opensearchdescription+xml" title="item.tf"
+  href="{{searchurl}}">
+<link rel="stylesheet" href="/css/message.css">
+<link rel="stylesheet"
+  href="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.css">
 {% endblock %}
 
 {% block style %}
-  <style>
+<style>
     #searchbox, .ui-autocomplete {
       width: 30rem;
     }
@@ -44,75 +47,81 @@
 {% endblock %}
 
 {% block body %}
-  <h1 style="margin-top:120px; font-size: 5rem">
-    {% include 'logo.html' %}
-  </h1>
-  <aside style="position: absolute; top: 3rem; left: 1rem; text-align: left">
-    <iframe class="ad" title="Ad"
-      src="https://notads.item.tf/spaces/8d72f7b4-0ca0-4a6f-afe2-1bb7c78c7e0a/embed#homepage-ad"
-      width="142" height="71" frameborder="0" allowfullscreen>
-    </iframe>
-  </aside>
-  <div id="searchitems" style="display: block"><ul class="items inline"></ul></div>
-  <search>
-    <form id="searchform" action="/search" style="display: inline">
-      <input name="q" id="searchbox" type="search" placeholder="Search" style="font-size: 2rem; margin-bottom: 1rem">
-      <br>
-      <input type="submit" value="Search" class="button">
-    </form>
-    <form action="/search/random" style="display: inline">
-      <input type="submit" value="Lucky?" class="button">
-    </form>
-  </search>
-  <aside id="newitems">{{ showitems(newitems, True) }}</aside>
-  <aside id="message">{{message|safe}}</aside>
+<h1 style="margin-top:120px; font-size: 5rem">
+  {% include 'logo.html' %}
+</h1>
+<aside style="position: absolute; top: 3rem; left: 1rem; text-align: left">
+  <iframe class="ad" title="Ad"
+    src="https://notads.item.tf/spaces/8d72f7b4-0ca0-4a6f-afe2-1bb7c78c7e0a/embed#homepage-ad"
+    width="142" height="71" frameborder="0" allowfullscreen>
+  </iframe>
+</aside>
+<div id="searchitems" style="display: block"><ul class="items inline"></ul></div>
+<search>
+  <form id="searchform" action="/search" style="display: inline">
+    <input name="q" id="searchbox" type="search" placeholder="Search"
+      style="font-size: 2rem; margin-bottom: 1rem">
+    <br>
+    <input type="submit" value="Search" class="button">
+  </form>
+  <form action="/search/random" style="display: inline">
+    <input type="submit" value="Lucky?" class="button">
+  </form>
+</search>
+<aside id="newitems">{{ showitems(newitems, True) }}</aside>
+<aside id="message">{{message|safe}}</aside>
 {% endblock %}
 
 {% block container %}
-  <aside id="sidebar">
-    {% if user %}
-    <a href="{{user.url}}" title="{{user.name}}">
-      <img class="{{user.state.lower()}}" src="{{user.avatar}}" alt="Steam Avatar" style="width: 3.2rem"></a>
-    {% else %}
-    <a href="/login">
-      <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_landing.png" alt="Sign in through Steam" style="width: 10rem"></a>
-    {% endif %}
-    <br><br>
-    <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
-    <i id="help" class="fa fa-question-circle fa-2x button-icon rounded" title="Help"></i>
+<aside id="sidebar">
+  {% if user %}
+  <a href="{{user.url}}" title="{{user.name}}">
+    <img class="{{user.state.lower()}}" src="{{user.avatar}}"
+      alt="Steam Avatar" style="width: 3.2rem"></a>
+  {% else %}
+  <a href="/login">
+    <img
+      src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_landing.png"
+      alt="Sign in through Steam" style="width: 10rem"></a>
+  {% endif %}
+  <br><br>
+  <i id="settings" class="fa fa-cog fa-2x button-icon rounded" title="Settings"></i>
+  <i id="help" class="fa fa-question-circle fa-2x button-icon rounded"
+    title="Help"></i>
 
-    <div id="settings-list" class="rounded" hidden>
-      <form id="settingsform">
-        <label for="pricesetting">Price Source:</label>
-        <select id="pricesetting" class="textbox">
-          <option value="backpack.tf">Backpack.tf</option>
-        </select>
-        <br><br>
-        <input type="submit" value="Save" class="button-small">
-      </form>
-    </div>
-
-    <div id="help-list" class="rounded">
-      <a class="rounded glow"
-        style="display: inline-block; margin-top: 1rem; padding: 0.7rem; background-color: rgba(255, 255, 255, 0.07);"
-        href="https://steamcommunity.com/groups/itemtf#announcements/detail/177093219758125435"
-        target="_blank">Guide</a>
+  <div id="settings-list" class="rounded" hidden>
+    <form id="settingsform">
+      <label for="pricesetting">Price Source:</label>
+      <select id="pricesetting" class="textbox">
+        <option value="backpack.tf">Backpack.tf</option>
+      </select>
       <br><br>
-      <b>Keywords</b>
-      <ul>
+      <input type="submit" value="Save" class="button-small">
+    </form>
+  </div>
+
+  <div id="help-list" class="rounded">
+    <a class="rounded glow"
+      style="display: inline-block; margin-top: 1rem; padding: 0.7rem; background-color: rgba(255, 255, 255, 0.07);"
+      href="https://steamcommunity.com/groups/itemtf#announcements/detail/177093219758125435"
+      target="_blank">Guide</a>
+    <br><br>
+    <b>Keywords</b>
+    <ul>
       {{ showsearchlinks(['all','sets','random']) }}
-      </ul>
-      <ul>
+    </ul>
+    <ul>
       {{ showsearchlinks(tags) }}
-      </ul>
-    </div>
-  </aside>
+    </ul>
+  </div>
+</aside>
 {% endblock %}
 
-{% block footer %}<p>Last Updated - {{getcount(lastupdated,'minute')}} ago</p>{% endblock %}
+{% block footer %}<p>Last Updated - {{getcount(lastupdated,'minute')}} ago</p>{%
+endblock %}
 
 {% block script %}
-  <script type="application/ld+json">
+<script type="application/ld+json">
     {
       "@context": "http://schema.org",
       "@type": "WebSite",
@@ -125,9 +134,9 @@
       }
     }
   </script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-  <script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+<script>
     $(function() {
       var searchBox = $('#searchbox');
       searchBox.focus();
