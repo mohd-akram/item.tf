@@ -185,16 +185,6 @@ class ItemBox
 
             url = item.getAttribute 'data-url'
 
-            unless url
-              name = name
-                .replace 'Any ', ''
-                .replace 'Spy Watch', 'PDA2 Weapon'
-
-              if name.split(' ').length > 2
-                name = name.replace 'Weapon', 'Set'
-
-              url = "/search?q=#{encodeURIComponent name}"
-
             html += "<li><a title=\"#{name}\" href=\"#{
               url}\" class=\"item-small\" target='_blank'>#{listItem}</a></li>"
 

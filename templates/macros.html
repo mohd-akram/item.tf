@@ -18,8 +18,9 @@
     <div data-chance="{{b['chance']}}">
       {%- for i in b['required'] %}
       <span title="{{i['name']}}" {% if 'index' in i %}
-        data-index="{{i['index']}}" data-url="/{{i['name']|slugify}}" {% endif
-        %} data-image="{{i['image']}}" data-count="{{i['count']}}"></span>
+        data-index="{{i['index']}}" {% endif %}
+        data-url="{{getblueprintitemurl(i)}}"
+        data-image="{{i['image']}}" data-count="{{i['count']}}"></span>
       {%- endfor %}
     </div>
     {%- endfor %}
