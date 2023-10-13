@@ -36,11 +36,20 @@ jinja_env.filters['slugify'] = slugify
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
-logging.config.dictConfig(config.logging)
-logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
+store = Redis.from_url('redis://localhost')
+
 app = Application(debug=__debug__)
 
-store = Redis.from_url('redis://localhost')
+logging.lastResort = logging.Handler()
+logging.config.dictConfig(config.logging)
+logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
+
+logger = logging.root
+
+if __debug__:
+    logger = logging.getLogger('uvicorn.error')
+    logger.disabled = False
+    logging.getLogger('uvicorn.access').disabled = False
 
 
 def json(data, status: int = 200) -> Response:
@@ -418,7 +427,7 @@ async def error404(self, request: Request, exception):
 
 @app.exception_handler(Exception)
 async def error500(self, request: Request, exception):
-    logging.exception(exception)
+    logger.exception(exception)
     return await render('error.html', 500, message='Server Error')
 
 
