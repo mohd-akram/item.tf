@@ -38,7 +38,7 @@ login_verify_url = '{}/login/verify'.format(config.homepage)
 
 store = Redis.from_url('redis://localhost')
 
-app = Application(debug=__debug__)
+app = Application(show_error_details=__debug__)
 
 logging.lastResort = logging.Handler()
 logging.config.dictConfig(config.logging)
