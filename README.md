@@ -17,20 +17,20 @@ Run this command to install dependencies.
 
     pip install -r requirements.txt
 
-You'll also need to install the [Redis server](https://redis.io/download).
+You'll also need to install the [Valkey server](https://valkey.io).
 
-Run updatestore.py to update the Redis cache. Then, run `uvicorn main:app`.
+Run updatestore.py to update the Valkey cache. Then, run `uvicorn main:app`.
 
 Hosting
 -------
 
-To host the site in FreeBSD 13, first clone into `/usr/local/www/item.tf`.
+To host the site in FreeBSD 14, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
-    pkg install -y nginx python311 redis
+    pkg install -y nginx python311 valkey
     mkdir -p /usr/local/etc/rc.conf.d
     echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
-    echo 'redis_enable="YES"' > /usr/local/etc/rc.conf.d/redis
+    echo 'valkey_enable="YES"' > /usr/local/etc/rc.conf.d/valkey
     cd /usr/local/www/item.tf
     make install
 
