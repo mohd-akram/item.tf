@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/mohd-akram/item.tf#readme",
   "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
     "babel-preset-minify": "^0.5.2",
     "coffeescript": "^2.7.0"
   },
