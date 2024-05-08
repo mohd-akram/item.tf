@@ -16,6 +16,6 @@ uvicorn=/usr/local/libexec/item.tf/bin/uvicorn
 
 pidfile=/var/run/$name.pid
 command=/usr/sbin/daemon
-command_args="-fr -T $name -t $name -u item.tf -P $pidfile $uvicorn main:app"
+command_args="-fr -T $name -t $name -u $name -P $pidfile $uvicorn main:app"
 
 run_rc_command "$1"
