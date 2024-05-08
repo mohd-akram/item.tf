@@ -9,13 +9,13 @@
 name=itemtf
 
 load_rc_config $name
-: ${itemtf_user:=item.tf}
 : ${itemtf_chdir:=/usr/local/www/item.tf}
-: ${itemtf_prepend:="/usr/sbin/daemon -f"}
 : ${itemtf_env:="PYTHONOPTIMIZE=2"}
 
-command=/usr/local/libexec/item.tf/bin/uvicorn
-command_args=main:app
-command_interpreter=/usr/local/libexec/item.tf/bin/python3.11
+uvicorn=/usr/local/libexec/item.tf/bin/uvicorn
+
+pidfile=/var/run/$name.pid
+command=/usr/sbin/daemon
+command_args="-fr -T $name -t $name -u item.tf -P $pidfile $uvicorn main:app"
 
 run_rc_command "$1"
