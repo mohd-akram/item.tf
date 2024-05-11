@@ -25,3 +25,7 @@ uninstall:
 	-rm /usr/local/etc/rc.d/itemtf
 	-rm /var/cron/tabs/itemtf
 	-pw user del itemtf
+
+upgrade:
+	. /usr/local/libexec/item.tf/bin/activate && \
+	pip install --upgrade-strategy eager --upgrade -r requirements.txt
