@@ -27,6 +27,23 @@ import tf2api
 import tf2search
 from store import Redis
 
+# Sane defaults for the logging module
+# Making logging.info and below actually do something by default
+logging.root.level = 0
+# Disable an unnecessary hack that obscures improper configuration
+logging.lastResort = logging.Handler()
+# Avoid implicit magic when using logging.* methods by doing it up front
+logging.basicConfig()
+
+# Set up logger
+logging.config.dictConfig(config.logging)
+logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
+logger = logging.root
+if __debug__:
+    logger = logging.getLogger('uvicorn.error')
+    logger.disabled = False
+    logging.getLogger('uvicorn.access').disabled = False
+
 if os.environ.get('PYTHONTRACEMALLOC'):
     import tracemalloc
     from pathlib import Path
@@ -36,7 +53,7 @@ if os.environ.get('PYTHONTRACEMALLOC'):
 
     async def take_snapshots():
         tempdir.mkdir(exist_ok=True)
-        print(f'Taking memory snapshots at {tempdir}', file=sys.stderr)
+        logger.info(f'Taking memory snapshots at {tempdir}')
         i = 0
         while True:
             await asyncio.sleep(10)
@@ -59,18 +76,6 @@ login_verify_url = '{}/login/verify'.format(config.homepage)
 store = Redis.from_url('redis://localhost')
 
 app = Application(show_error_details=__debug__)
-
-logging.lastResort = logging.Handler()
-logging.config.dictConfig(config.logging)
-logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
-
-logger = logging.root
-
-if __debug__:
-    logger = logging.getLogger('uvicorn.error')
-    logger.disabled = False
-    logging.getLogger('uvicorn.access').disabled = False
-
 
 def json(data, status: int = 200) -> Response:
     return Response(
