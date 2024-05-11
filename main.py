@@ -92,7 +92,7 @@ async def home(request: Request):
 @app.router.get('/search.json')
 @app.router.get('/search')
 async def search(request: Request, slug: str = None):
-    user_future = asyncio.ensure_future(getcurrentuser(request))
+    user_task = asyncio.create_task(getcurrentuser(request))
 
     is_json = request.url.path.endswith(b'.json')
 
@@ -208,7 +208,7 @@ async def search(request: Request, slug: str = None):
 
     qualities = defaultdict(set)
 
-    user = await user_future
+    user = await user_task
     if user:
         for item in user.get('backpack', {}).get('items', []):
             qualities[item['defindex']].add(item['quality'])
@@ -231,7 +231,7 @@ async def search(request: Request, slug: str = None):
 @app.router.get('/{int:index}.json')
 @app.router.get('/{int:index}')
 async def item(request: Request, slug: str = None, index: int = None):
-    user_future = asyncio.ensure_future(getcurrentuser(request))
+    user_task = asyncio.create_task(getcurrentuser(request))
 
     is_json = request.url.path.endswith(b'.json')
 
@@ -269,7 +269,7 @@ async def item(request: Request, slug: str = None, index: int = None):
             if description[-1] not in ('.', '?', '!'):
                 description += '.'
 
-        user = await user_future
+        user = await user_task
 
         return await render('item.html',
                             item=item,

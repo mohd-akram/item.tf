@@ -15,7 +15,7 @@ import aiohttp
 
 async def getschema(apikey):
     """Return the schema"""
-    schema_task = asyncio.ensure_future(_getschemaoverview(apikey))
+    schema_task = asyncio.create_task(_getschemaoverview(apikey))
 
     all_items = []
 
