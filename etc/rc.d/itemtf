@@ -10,7 +10,7 @@ name=itemtf
 
 load_rc_config $name
 : ${itemtf_chdir:=/usr/local/www/item.tf}
-: ${itemtf_env:="PYTHONOPTIMIZE=2"}
+: ${itemtf_env:="PYTHONOPTIMIZE=2 PYTHONUNBUFFERED=1"}
 
 uvicorn=/usr/local/libexec/item.tf/bin/uvicorn
 
