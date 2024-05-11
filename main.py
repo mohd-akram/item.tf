@@ -27,6 +27,26 @@ import tf2api
 import tf2search
 from store import Redis
 
+if os.environ.get('PYTHONTRACEMALLOC'):
+    import tracemalloc
+    from pathlib import Path
+    from tempfile import gettempdir
+
+    tempdir = Path(gettempdir()) / 'itemtf'
+
+    async def take_snapshots():
+        tempdir.mkdir(exist_ok=True)
+        print(f'Taking memory snapshots at {tempdir}', file=sys.stderr)
+        i = 0
+        while True:
+            await asyncio.sleep(10)
+            snapshot = tracemalloc.take_snapshot()
+            snapshot.dump(str(tempdir / f'{os.getpid()}-{i:03}.snapshot'))
+            i += 1
+            i %= 50
+
+    memtask = asyncio.create_task(take_snapshots())
+
 jinja_env = jinja2.Environment(loader=jinja2.PackageLoader(__name__),
                                autoescape=True, trim_blocks=True,
                                enable_async=True, auto_reload=__debug__)
