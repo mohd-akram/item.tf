@@ -17,6 +17,7 @@ from blacksheep.messages import Request, Response
 from blacksheep.server import Application
 from blacksheep.server.responses import text, html, redirect, moved_permanently
 from openid.consumer import consumer
+from redis.asyncio.connection import BlockingConnectionPool
 from slugify import slugify
 
 import config
@@ -55,7 +56,11 @@ jinja_env.filters['slugify'] = slugify
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
-store = Redis.from_url('redis://localhost')
+# Default is unlimited connections
+# https://github.com/redis/redis-py/issues/2220
+store = Redis(
+    connection_pool=BlockingConnectionPool.from_url('redis://localhost')
+)
 
 app = Application(show_error_details=__debug__)
 
