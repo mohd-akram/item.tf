@@ -12,16 +12,21 @@ load_rc_config $name
 : ${itemtf_chdir:=/usr/local/www/item.tf}
 : ${itemtf_env:="PYTHONOPTIMIZE=2 PYTHONUNBUFFERED=1"}
 
-uvicorn=/usr/local/libexec/item.tf/bin/uvicorn
+python=/usr/local/libexec/item.tf/bin/python
+
+if [ "$itemtf_debug" ]; then
+	python="$python -m debugpy --listen 5678"
+fi
 
 case $itemtf_profile in *cpu*)
-	uvicorn="/usr/local/libexec/item.tf/bin/python -m cProfile \
-		-o /tmp/itemtf/prof -m uvicorn"
+	python="$python -m cProfile -o /tmp/itemtf/prof"
 esac
 
 case $itemtf_profile in *mem*)
 	itemtf_env="$itemtf_env PYTHONTRACEMALLOC=1"
 esac
+
+uvicorn="$python -m uvicorn"
 
 pidfile=/var/run/$name.pid
 command=/usr/sbin/daemon
