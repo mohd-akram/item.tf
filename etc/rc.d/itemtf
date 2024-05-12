@@ -14,6 +14,15 @@ load_rc_config $name
 
 uvicorn=/usr/local/libexec/item.tf/bin/uvicorn
 
+case $itemtf_profile in *cpu*)
+	uvicorn="/usr/local/libexec/item.tf/bin/python -m cProfile \
+		-o /tmp/itemtf/prof -m uvicorn"
+esac
+
+case $itemtf_profile in *mem*)
+	itemtf_env="$itemtf_env PYTHONTRACEMALLOC=1"
+esac
+
 pidfile=/var/run/$name.pid
 command=/usr/sbin/daemon
 command_args="-fr -T $name -t $name -u $name -P $pidfile $uvicorn main:app"
