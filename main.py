@@ -2,9 +2,6 @@ import os
 import time
 import random
 import asyncio
-import logging
-import logging.config
-import logging.handlers
 from base64 import b64encode
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -25,24 +22,9 @@ from slugify import slugify
 import config
 import tf2api
 import tf2search
+from logger import logger
 from store import Redis
 
-# Sane defaults for the logging module
-# Making logging.info and below actually do something by default
-logging.root.level = 0
-# Disable an unnecessary hack that obscures improper configuration
-logging.lastResort = logging.Handler()
-# Avoid implicit magic when using logging.* methods by doing it up front
-logging.basicConfig()
-
-# Set up logger
-logging.config.dictConfig(config.logging)
-logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
-logger = logging.root
-if __debug__:
-    logger = logging.getLogger('uvicorn.error')
-    logger.disabled = False
-    logging.getLogger('uvicorn.access').disabled = False
 
 if os.environ.get('PYTHONTRACEMALLOC'):
     import tracemalloc
