@@ -1,10 +1,7 @@
 import os
 import sys
 import logging
-import logging.config
 import logging.handlers
-
-import config
 
 # Sane defaults for the logging module
 # Making logging.info and below actually do something by default
@@ -32,15 +29,14 @@ class OneLineExceptionFormatter(logging.Formatter):
             s = s.replace('\n', '') + '|'
         return s
 
+logging.getLogger('blacksheep.server').disabled = True
+
 logger = logging.getLogger('uvicorn.error')
 
 if not __debug__:
-    if config.logging:
-        logging.config.dictConfig(config.logging)
-    logger = logging.root
-    if not logger.handlers:
-        raise Exception('Invalid logging configuration')
+    logging.getLogger('uvicorn.access').disabled = True
     for handler in logger.handlers:
         handler.formatter = OneLineExceptionFormatter()
-    sys.excepthook = (lambda type, value, traceback:
-        logger.critical(value, exc_info=(type, value, traceback)))
+
+sys.excepthook = (lambda type, value, traceback:
+    logger.critical(value, exc_info=(type, value, traceback)))
