@@ -4,8 +4,7 @@ install:
 	# 2. Setup virtualenv
 	python3.11 -m venv /usr/local/libexec/item.tf
 	. /usr/local/libexec/item.tf/bin/activate && \
-	pip install --upgrade pip && \
-	pip install -r requirements.txt
+	pip install --upgrade -r requirements.txt pip
 	# 3. Link configs
 	mkdir -p /usr/local/etc/nginx/conf.d
 	ln -s -f $(.CURDIR)/etc/nginx/conf.d/item.tf.conf \
@@ -28,4 +27,4 @@ uninstall:
 
 upgrade:
 	. /usr/local/libexec/item.tf/bin/activate && \
-	pip install --upgrade-strategy eager --upgrade -r requirements.txt
+	pip install --upgrade-strategy eager --upgrade -r requirements.txt pip
