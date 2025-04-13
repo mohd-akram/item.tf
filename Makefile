@@ -2,7 +2,7 @@ install:
 	# 1. Create user
 	-pw user add itemtf -c item.tf -d /nonexistent -s /usr/sbin/nologin
 	# 2. Setup virtualenv
-	python3.11 -m venv /usr/local/libexec/item.tf
+	python3.12 -m venv /usr/local/libexec/item.tf
 	. /usr/local/libexec/item.tf/bin/activate && \
 	pip install --upgrade -r requirements.txt pip
 	# 3. Link configs
