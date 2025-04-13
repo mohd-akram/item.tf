@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A website for finding TF2 items.",
   "scripts": {
-    "build": "cd static/js && coffee -cmt main.coffee",
-    "watch": "cd static/js && coffee -cmtw main.coffee",
+    "build": "cd static/js && coffee -cm main.coffee",
+    "watch": "cd static/js && coffee -cmw main.coffee",
     "start": "npm run watch & uvicorn --reload main:app"
   },
   "repository": {
@@ -21,16 +21,6 @@
   },
   "homepage": "https://github.com/mohd-akram/item.tf#readme",
   "devDependencies": {
-    "@babel/core": "^7.24.5",
-    "@babel/preset-env": "^7.24.5",
-    "babel-preset-minify": "^0.5.2",
     "coffeescript": "^2.7.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env",
-      "minify"
-    ],
-    "sourceType": "script"
   }
 }
