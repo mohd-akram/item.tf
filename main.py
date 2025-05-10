@@ -437,7 +437,7 @@ async def error404(self, request: Request, exception):
     return await render('error.html', 404, message='Page Not Found')
 
 
-@app.exception_handler(Exception)
+@app.exception_handler(500)
 async def error500(self, request: Request, exception):
     logger.exception(exception)
     return await render('error.html', 500, message='Server Error')
