@@ -27,7 +27,7 @@ Hosting
 To host the site in FreeBSD 14, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
-    pkg install -y nginx python312 valkey
+    pkg install -y nginx python314 valkey
     mkdir -p /usr/local/etc/rc.conf.d
     echo 'nginx_enable="YES"' > /usr/local/etc/rc.conf.d/nginx
     echo 'valkey_enable="YES"' > /usr/local/etc/rc.conf.d/valkey
