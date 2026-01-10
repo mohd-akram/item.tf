@@ -222,8 +222,9 @@ async def search(request: Request, slug: str = None):
 
     user = await user_task
     if user:
-        for item in user.get('backpack', {}).get('items', []):
-            qualities[item['defindex']].add(item['quality'])
+        for quality, indexes in user.get('items', {}).items():
+            for index in indexes:
+                qualities[index].add(quality)
 
     if is_json:
         for result in results:
@@ -584,7 +585,12 @@ async def getuser(steamid, urltype='profiles', create=False):
                          'Offline')
 
         if backpack:
-            user['backpack'] = backpack
+            items = defaultdict(set)
+            for item in backpack['items']:
+                items[str(item['quality'])].add(item['defindex'])
+            for quality, indexes in items.items():
+                items[quality] = list(indexes)
+            user['items'] = items
 
         if 'gameid' in steamuser:
             user['state'] = 'In-Game'
