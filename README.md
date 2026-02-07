@@ -24,7 +24,7 @@ Run updatestore.py to update the Valkey cache. Then, run `uvicorn main:app`.
 Hosting
 -------
 
-To host the site in FreeBSD 14, first clone into `/usr/local/www/item.tf`.
+To host the site on a FreeBSD server, first clone into `/usr/local/www/item.tf`.
 Then, run the following as root:
 
     pkg install -y nginx python314 valkey
