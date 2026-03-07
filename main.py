@@ -15,6 +15,7 @@ from blacksheep.cookies import Cookie
 from blacksheep.exceptions import NotFound
 from blacksheep.messages import Request, Response
 from blacksheep.server import Application
+from blacksheep.server.files import get_default_extensions
 from blacksheep.server.responses import text, html, redirect, moved_permanently
 from openid.consumer import consumer
 from redis.asyncio.connection import BlockingConnectionPool
@@ -633,4 +634,4 @@ def getitemkey(index):
     return 'item:{}'.format(index)
 
 
-app.serve_files('static')
+app.serve_files('static', extensions=get_default_extensions() | {'.map'})
