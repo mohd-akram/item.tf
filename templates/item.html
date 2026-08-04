@@ -50,6 +50,17 @@ getblueprintitemurl %}
     </dd>
     {% endif %}
 
+    {% if item['index'] == 5021 %}
+    <dt>Cash-out option</dt>
+    <dd>
+      <a href="https://steamvaults.org/items/440-mann-co-supply-crate-key"
+          target="_blank" rel="noopener">SteamVaults</a> is an independent
+      third-party service offering a USDT cash-out route for this Key when a
+      live sell quote is available. Confirmed bot receipt credits the site's
+      USDT balance; on-chain withdrawal is a separate step.
+    </dd>
+    {% endif %}
+
     {%- if item['classes'] %}
     <dt>Classes</dt>
     {% for c in item['classes'] %}
