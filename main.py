@@ -6,7 +6,6 @@ from base64 import b64encode
 from collections import defaultdict
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
-from urllib.error import URLError
 
 import jinja2
 import orjson
@@ -575,7 +574,7 @@ async def getuser(steamid, urltype='profiles', create=False):
                 tf2api.getplayerbackpack(config.apikey, steamid)
             )
 
-        except URLError:
+        except Exception:
             # Postpone update if this is not a new user
             if create:
                 raise
