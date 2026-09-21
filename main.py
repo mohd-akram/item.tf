@@ -17,6 +17,7 @@ from blacksheep.messages import Request, Response
 from blacksheep.server import Application
 from blacksheep.server.files import get_default_extensions
 from blacksheep.server.responses import text, html, redirect, moved_permanently
+from blacksheep.server.routing import Route
 from openid.consumer import consumer
 from redis.asyncio.connection import BlockingConnectionPool
 from slugify import slugify
@@ -62,6 +63,8 @@ login_verify_url = '{}/login/verify'.format(config.homepage)
 store = Redis(
     connection_pool=BlockingConnectionPool.from_url('redis://localhost')
 )
+
+Route.value_patterns['slug'] = r'[a-z0-9]+(?:-[a-z0-9]+)*'
 
 app = Application(show_error_details=__debug__)
 
@@ -241,7 +244,7 @@ async def search(request: Request, slug: str = None):
                             time=round(t1 - t0, 3))
 
 
-@app.router.get('/{str:slug}')
+@app.router.get('/{slug:slug}')
 @app.router.get('/{int:index}.json')
 @app.router.get('/{int:index}')
 async def item(request: Request, slug: str = None, index: int = None):
@@ -633,5 +636,5 @@ async def getitembyslug(slug):
 def getitemkey(index):
     return 'item:{}'.format(index)
 
-
-app.serve_files('static', extensions=get_default_extensions() | {'.map'})
+app.serve_files('static',
+                extensions=get_default_extensions() | {'.map', '.xml'})
