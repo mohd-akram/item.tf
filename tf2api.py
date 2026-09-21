@@ -65,6 +65,8 @@ async def getbundles(apikey, storeprices):
     """Return a dictionary of store bundles with defindex as key"""
     indexes = [index for index, price in storeprices.items()
                if not {'Bundles', 'Class_Bundles'}.isdisjoint(price['tags'])]
+    if not indexes:
+        return {}
     return await getitemsinfo(apikey, storeprices, indexes)
 
 
@@ -401,6 +403,7 @@ async def resolvevanityurl(apikey, vanityurl):
 
 async def _getjsonresponse(url):
     headers = {'User-Agent': 'tf2api'}
-    async with aiohttp.ClientSession(headers=headers) as session:
+    async with aiohttp.ClientSession(headers=headers,
+                                     raise_for_status=True) as session:
         async with session.get(url) as response:
             return json.loads((await response.read()).decode())

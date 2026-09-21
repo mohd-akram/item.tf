@@ -37,10 +37,10 @@ QUALITYREGEX = r'({}|collector|collectors|dirty|uncraft(?:able)?)'.format(
 async def gettf2info(apikey, backpackkey, blueprintsfilename):
     """Return a named tuple which contains information from multiple sources
     about TF2 items"""
-    schema, storeprices = await asyncio.gather(
+    schema, storeprices = *await asyncio.gather(
         tf2api.getschema(apikey),
-        tf2api.getstoreprices(apikey)
-    )
+        # tf2api.getstoreprices(apikey)
+    ), {}
 
     items = tf2api.getitems(schema)
     itemsbyname = tf2api.getitemsbyname(schema)
