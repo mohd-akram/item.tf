@@ -587,7 +587,7 @@ async def getuser(steamid, urltype='profiles', create=False):
         user['state'] = ('Online' if steamuser['personastate'] != 0 else
                          'Offline')
 
-        if backpack:
+        if backpack and 'items' in backpack:
             items = defaultdict(set)
             for item in backpack['items']:
                 items[str(item['quality'])].add(item['defindex'])
