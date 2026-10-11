@@ -57,8 +57,7 @@ jinja_env.filters['slugify'] = slugify
 session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
-# Default is unlimited connections
-# https://github.com/redis/redis-py/issues/2220
+# Default is to throw an error rather than blocking
 store = Redis(
     connection_pool=BlockingConnectionPool.from_url('redis://localhost')
 )
