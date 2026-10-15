@@ -1,12 +1,12 @@
 from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
-import orjson
+import fastsimdjson
 from redis.asyncio.client import Pipeline as _Pipeline, Redis as _Redis
 
 
 def dumps(obj):
-    return orjson.dumps(obj)
+    return fastsimdjson.dumpb(obj)
 
 
 def mdumps(d):
@@ -15,7 +15,7 @@ def mdumps(d):
 
 def loads(s):
     if s is not None:
-        return orjson.loads(s)
+        return fastsimdjson.loads(s)
 
 
 class Redis(_Redis):

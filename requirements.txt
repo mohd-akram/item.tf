@@ -1,12 +1,13 @@
-uvicorn[standard]
-aiohttp[speedups]
-redis[hiredis]
+aiodns # for aiohttp
+aiohttp
 blacksheep
 cachetools
 cachetools_async
+fastsimdjson
 jinja2
-orjson
-python3-openid
 python-slugify
+python3-openid
+redis
+uvicorn[standard]
 
 debugpy

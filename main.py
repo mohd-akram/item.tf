@@ -7,8 +7,8 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
+import fastsimdjson
 import jinja2
-import orjson
 from blacksheep.contents import Content
 from blacksheep.cookies import Cookie
 from blacksheep.exceptions import NotFound
@@ -70,7 +70,7 @@ app = Application(show_error_details=__debug__)
 
 def json(data, status: int = 200) -> Response:
     return Response(
-        status, None, Content(b'application/json', orjson.dumps(data))
+        status, None, Content(b'application/json', fastsimdjson.dumpb(data))
     )
 
 
