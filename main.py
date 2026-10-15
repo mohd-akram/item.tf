@@ -17,6 +17,8 @@ from blacksheep.server import Application
 from blacksheep.server.files import get_default_extensions
 from blacksheep.server.responses import text, html, redirect, moved_permanently
 from blacksheep.server.routing import Route
+from cachetools import TTLCache
+from cachetools_async import cached
 from openid.consumer import consumer
 from redis.asyncio.connection import BlockingConnectionPool
 from slugify import slugify
@@ -173,13 +175,7 @@ async def search(request: Request, slug: str = None):
             results = await getresults(classes, tags)
 
         else:
-            itemsdict = await store.SearchHashSet(
-                'items', getitemkey,
-                ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
-                int)
-
-            itemsets = await store.get('items:sets')
-            bundles = await store.get('items:bundles')
+            itemsdict, itemsets, bundles = await getsearchinfo()
 
             results = tf2search.search(query, itemsdict, itemnames,
                                        itemsets, bundles, pricesource)
@@ -450,6 +446,18 @@ async def render(template, *args, **params):
     """Render HTML template"""
     template = jinja_env.get_template(template)
     return html(await template.render_async(params), *args)
+
+
+@cached(cache=TTLCache(maxsize=1, ttl=600))
+async def getsearchinfo():
+    return await asyncio.gather(
+        store.SearchHashSet(
+            'items', getitemkey,
+            ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
+            int),
+        store.get('items:sets'),
+        store.get('items:bundles')
+    )
 
 
 async def getresults(classes, tags):

@@ -411,21 +411,22 @@ def _wordsearch(query, querylist, itemsdict):
     if query:
         querylist = set(querylist + _pluralize(querylist))
     else:
-        pattern = r'\b{}\b'.format(querylist[0])
+        pattern = r'\b{}\b'.format(re.escape(querylist[0]))
 
     for itemdict in itemsdict.values():
         name = foldaccents(itemdict['name'])
 
+        # Match by words
         if query:
-            wordmatch = not querylist.isdisjoint(_splitspecial(name))
+            match = not querylist.isdisjoint(_splitspecial(name))
         else:
-            wordmatch = (re.search(pattern, name) or
-                         re.search(pattern, name.lower()))
+            match = (re.search(pattern, name) or
+                     re.search(pattern, name.lower()))
 
-        stringmatch = (len(query) > 2 and
-                       (query in name or query in name.lower()))
-
-        match = wordmatch or stringmatch
+        if not match:
+            # Match by substring
+            match = (len(query) > 2 and
+                     (query in name or query in name.lower()))
 
         if match and isvalidresult(itemdict, False):
             if name not in names:

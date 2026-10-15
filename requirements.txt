@@ -2,6 +2,8 @@ uvicorn[standard]
 aiohttp[speedups]
 redis[hiredis]
 blacksheep
+cachetools
+cachetools_async
 jinja2
 orjson
 python3-openid

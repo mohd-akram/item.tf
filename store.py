@@ -172,7 +172,7 @@ class Hashes(AsyncIterator, Sized):
 
 
 class HashSet(Mapping):
-    def __init__(self, redis, key, tokey, sortkey=None):
+    def __init__(self, redis: Redis, key, tokey, sortkey=None):
         self.r = redis
         self.key = key
         self.tokey = tokey
@@ -216,7 +216,7 @@ class SearchHashSet(HashSet):
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = tuple(await self.r.sort(key, get=get))
+        self.result = tuple(await self.r.sort(key, by='nosort', get=get))
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):
