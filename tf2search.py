@@ -343,11 +343,13 @@ def parseinput(query):
     return {'query': query, 'querylist': querylist,
             'classes': classes, 'tags': tags}
 
+
 accents = str.maketrans({
     'ä': 'a', 'é': 'e',
     'ò': 'o', 'ö': 'o',
     'ü': 'u', 'Ü': 'U',
 })
+
 
 def foldaccents(string: str):
     """Fold accents in a string"""
@@ -453,7 +455,7 @@ def _itemsetsearch(query, itemsets, nametoindexmap, itemsdict):
 
     if query is None:
         isresult = lambda name: True
-    elif type(query) == list:
+    elif type(query) is list:
         isresult = lambda name: not set(_splitspecial(name)).isdisjoint(query)
     else:
         isresult = lambda name: name.lower() == query

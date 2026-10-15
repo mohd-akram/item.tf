@@ -68,6 +68,7 @@ Route.value_patterns['slug'] = r'[a-z0-9]+(?:-[a-z0-9]+)*'
 
 app = Application(show_error_details=__debug__)
 
+
 def json(data, status: int = 200) -> Response:
     return Response(
         status, None, Content(b'application/json', fastsimdjson.dumpb(data))
@@ -641,6 +642,7 @@ async def getitembyslug(slug):
 
 def getitemkey(index):
     return 'item:{}'.format(index)
+
 
 app.serve_files('static',
                 extensions=get_default_extensions() | {'.map', '.xml'})

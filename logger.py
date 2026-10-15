@@ -13,6 +13,7 @@ logging.basicConfig()
 # Fix syslog tag
 logging.handlers.SysLogHandler.ident = f'itemtf[{os.getpid()}]: '
 
+
 # Set up logger
 # https://docs.python.org/3/howto/logging-cookbook.html#customized-exception-formatting
 class OneLineExceptionFormatter(logging.Formatter):
@@ -29,9 +30,12 @@ class OneLineExceptionFormatter(logging.Formatter):
             s = s.replace('\n', '') + '|'
         return s
 
+
 logging.getLogger('blacksheep.server').disabled = True
 
+
 logger = logging.getLogger('uvicorn.error')
+
 
 if not __debug__:
     logging.getLogger('uvicorn.access').disabled = True
@@ -39,4 +43,4 @@ if not __debug__:
         handler.formatter = OneLineExceptionFormatter()
 
 sys.excepthook = (lambda type, value, traceback:
-    logger.critical(value, exc_info=(type, value, traceback)))
+                  logger.critical(value, exc_info=(type, value, traceback)))

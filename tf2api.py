@@ -45,10 +45,11 @@ async def _getschemaitems(apikey, start):
 
 async def getitemsinfo(apikey, storeprices, indexes):
     """Return a dictionary of AssetClassInfo values with defindex as key"""
-    url = ('https://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
-           '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
-                                                                   len(indexes)
-                                                                   ))
+    url = (
+        'https://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/'
+        '?key={0}&language=en&appid=440&class_count={1}'.format(apikey,
+                                                                len(indexes))
+    )
 
     for n, index in enumerate(indexes):
         classid = storeprices[index]['classid']
