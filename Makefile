@@ -4,7 +4,7 @@ install:
 	# 2. Setup virtualenv
 	python3.14 -m venv /usr/local/libexec/item.tf
 	. /usr/local/libexec/item.tf/bin/activate && \
-	pip install --upgrade -r requirements.txt pip
+	pip install -r requirements.txt pip
 	# 3. Link configs
 	mkdir -p /usr/local/etc/nginx/conf.d
 	ln -s -f $(.CURDIR)/etc/nginx/conf.d/item.tf.conf \
