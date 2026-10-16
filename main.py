@@ -117,6 +117,9 @@ async def search(request: Request, slug: str = None):
         slug.replace('-', ' ') if slug else request.query.get('q', [''])[-1]
     )
 
+    if len(query) > 100:
+        return Response(status=414)
+
     if not query:
         if is_json:
             return {'error': 'No query provided.'}
