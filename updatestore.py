@@ -9,7 +9,7 @@ from slugify import slugify
 import config
 import tf2api
 import tf2search
-from store import Redis
+from store import Valkey
 from main import getitemkey, getclasskey, gettagkey
 
 
@@ -37,7 +37,7 @@ class Sitemap:
 
 
 async def main(flush):
-    store = Redis.from_url('redis://localhost')
+    store = Valkey.from_url('valkey://localhost')
 
     tf2info = await tf2search.gettf2info(config.apikey,
                                          config.backpackkey,

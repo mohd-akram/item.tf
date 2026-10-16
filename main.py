@@ -20,14 +20,14 @@ from blacksheep.server.routing import Route
 from cachetools import TTLCache
 from cachetools_async import cached
 from openid.consumer import consumer
-from redis.asyncio.connection import BlockingConnectionPool
+from valkey.asyncio.connection import BlockingConnectionPool
 from slugify import slugify
 
 import config
 import tf2api
 import tf2search
 from logger import logger
-from store import Redis
+from store import Valkey
 
 
 if os.environ.get('PYTHONTRACEMALLOC'):
@@ -60,8 +60,8 @@ session_age = timedelta(weeks=2)
 login_verify_url = '{}/login/verify'.format(config.homepage)
 
 # Default is to throw an error rather than blocking
-store = Redis(
-    connection_pool=BlockingConnectionPool.from_url('redis://localhost')
+store = Valkey(
+    connection_pool=BlockingConnectionPool.from_url('valkey://localhost')
 )
 
 Route.value_patterns['slug'] = r'[a-z0-9]+(?:-[a-z0-9]+)*'

@@ -2,7 +2,7 @@ from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
 import fastsimdjson
-from redis.asyncio.client import Pipeline as _Pipeline, Redis as _Redis
+from valkey.asyncio.client import Pipeline as _Pipeline, Valkey as _Valkey
 
 
 def dumps(obj):
@@ -18,7 +18,7 @@ def loads(s):
         return fastsimdjson.loads(s)
 
 
-class Redis(_Redis):
+class Valkey(_Valkey):
     async def get(self, *args, **kwargs):
         return loads(await super().get(*args, **kwargs))
 
@@ -40,7 +40,7 @@ class Redis(_Redis):
             self.register_script(
                 """
                 local hgetall = function (key)
-                  local data = redis.call('HGETALL', key)
+                  local data = server.call('HGETALL', key)
                   local hash = {}
 
                   for i = 1, #data, 2 do
@@ -117,39 +117,39 @@ class Redis(_Redis):
         return await SearchHashSet.create(self, *args, **kwargs)
 
 
-class Pipeline(_Pipeline, Redis):
+class Pipeline(_Pipeline, Valkey):
     pass
 
 
 class Hash(Hashable, Mapping):
-    def __init__(self, redis, key):
-        self.r = redis
+    def __init__(self, valkey, key):
+        self.v = valkey
         self.key = key
 
     def __hash__(self):
         return hash(self.key)
 
     async def __getitem__(self, field):
-        return await self.r.hget(self.key, field)
+        return await self.v.hget(self.key, field)
 
     async def contains(self, field):
-        return await self.r.hexists(self.key, field)
+        return await self.v.hexists(self.key, field)
 
     async def __iter__(self):
-        return await self.r.hkeys(self.key)
+        return await self.v.hkeys(self.key)
 
     async def __len__(self):
-        return await self.r.hlen(self.key)
+        return await self.v.hlen(self.key)
 
     async def todict(self):
-        return await self.r.hgetall(self.key)
+        return await self.v.hgetall(self.key)
 
 
 class Hashes(AsyncIterator, Sized):
     """This class enables buffered iteration over a list of hashes.
     The hashes are returned as regular dicts."""
-    def __init__(self, redis, keys, bufsize=100):
-        self.r = redis
+    def __init__(self, valkey, keys, bufsize=100):
+        self.v = valkey
         self.keys = keys
         self.bufsize = bufsize
         self.i = -1
@@ -162,7 +162,7 @@ class Hashes(AsyncIterator, Sized):
         if self.i >= len(self.keys):
             raise StopAsyncIteration
         if self.i % self.bufsize == 0:
-            self.results = await self.r.hgetall(
+            self.results = await self.v.hgetall(
                 self.keys[self.i:self.i + self.bufsize]
             )
         return self.results[self.i % self.bufsize]
@@ -172,26 +172,26 @@ class Hashes(AsyncIterator, Sized):
 
 
 class HashSet(Mapping):
-    def __init__(self, redis: Redis, key, tokey, sortkey=None):
-        self.r = redis
+    def __init__(self, valkey: Valkey, key, tokey, sortkey=None):
+        self.v = valkey
         self.key = key
         self.tokey = tokey
         self.sortkey = sortkey
 
     def __getitem__(self, member):
-        return Hash(self.r, self.tokey(member))
+        return Hash(self.v, self.tokey(member))
 
     async def __contains__(self, member):
-        return await self.r.sismember(self.key, member)
+        return await self.v.sismember(self.key, member)
 
     async def __iter__(self):
         if self.sortkey:
-            return sorted(await self.r.smembers(self.key), key=self.sortkey)
+            return sorted(await self.v.smembers(self.key), key=self.sortkey)
         else:
-            return await self.r.smembers(self.key)
+            return await self.v.smembers(self.key)
 
     async def __len__(self):
-        return await self.r.scard(self.key)
+        return await self.v.scard(self.key)
 
 
 class SearchHashSet(HashSet):
@@ -200,7 +200,7 @@ class SearchHashSet(HashSet):
     to them. Other fields are accessed as required from the store."""
     class SearchHash(Hash):
         def __init__(self, key, member, set_):
-            super().__init__(set_.r, key)
+            super().__init__(set_.v, key)
             self.member = member
             self.set_ = set_
 
@@ -211,12 +211,12 @@ class SearchHashSet(HashSet):
                 return super().__getitem__(field)
 
     @classmethod
-    async def create(cls, redis, key, tokey, fields, sortkey=None):
-        self = cls(redis, key, tokey)
+    async def create(cls, valkey, key, tokey, fields, sortkey=None):
+        self = cls(valkey, key, tokey)
         self.fields = fields
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = tuple(await self.r.sort(key, by='nosort', get=get))
+        self.result = tuple(await self.v.sort(key, by='nosort', get=get))
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):

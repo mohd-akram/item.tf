@@ -7,7 +7,7 @@ fastsimdjson
 jinja2
 python-slugify
 python3-openid
-redis
 uvicorn[standard]
+valkey[libvalkey]
 
 debugpy
