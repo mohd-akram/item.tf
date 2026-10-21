@@ -353,6 +353,8 @@ accents = str.maketrans({
 
 def foldaccents(string: str):
     """Fold accents in a string"""
+    if string.isascii():
+        return string
     return string.translate(accents)
 
 
@@ -411,24 +413,25 @@ def _wordsearch(query, querylist, itemsdict):
     names = set()
 
     if query:
-        querylist = set(querylist + _pluralize(querylist))
-    else:
-        pattern = r'\b{}\b'.format(re.escape(querylist[0]))
+        querylist += _pluralize(querylist)
+
+    pattern = fr'\b({'|'.join(re.escape(w) for w in querylist)})\b'
 
     for itemdict in itemsdict.values():
         name = foldaccents(itemdict['name'])
+        name_lower = name.lower()
+
+        # Match by substring
+        match = (len(query) > 2 and
+                 (query in name or query in name_lower))
 
         # Match by words
-        if query:
-            match = not querylist.isdisjoint(_splitspecial(name))
-        else:
-            match = (re.search(pattern, name) or
-                     re.search(pattern, name.lower()))
-
         if not match:
-            # Match by substring
-            match = (len(query) > 2 and
-                     (query in name or query in name.lower()))
+            if query:
+                match = re.search(pattern, name_lower)
+            else:
+                match = (re.search(pattern, name) or
+                         re.search(pattern, name_lower))
 
         if match and isvalidresult(itemdict, False):
             if name not in names:

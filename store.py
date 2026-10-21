@@ -199,9 +199,9 @@ class SearchHashSet(HashSet):
     and storing all the fields necessary for search, allowing faster access
     to them. Other fields are accessed as required from the store."""
     class SearchHash(Hash):
-        def __init__(self, key, member, set_):
+        def __init__(self, key, index, set_):
             super().__init__(set_.v, key)
-            self.member = member
+            self.index = index
             self.set_ = set_
 
         def __getitem__(self, field):
@@ -213,14 +213,19 @@ class SearchHashSet(HashSet):
     @classmethod
     async def create(cls, valkey, key, tokey, fields, sortkey=None):
         self = cls(valkey, key, tokey)
-        self.fields = fields
+        self.fields = {f: (i+1) for i, f in enumerate(fields)}
 
         get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
-        self.result = tuple(await self.v.sort(key, by='nosort', get=get))
+        self.result = [
+            int(v) if i % (len(fields)+1) == 0 else loads(v)
+            for i, v in enumerate(await self.v.sort(key, by='nosort', get=get))
+        ]
 
         hashes = []
         for i in range(0, len(self.result), len(fields) + 1):
-            hashes.append((self.result[i].decode(), i + 1))
+            member = self.result[i]
+            hashes.append((member,
+                           self.SearchHash(self.tokey(member), i, self)))
 
         if sortkey:
             hashes.sort(key=lambda k: sortkey(k[0]))
@@ -231,17 +236,16 @@ class SearchHashSet(HashSet):
         return self
 
     def __getitem__(self, member):
-        return self.SearchHash(self.tokey(member), str(member), self)
+        return self.hashes[member]
 
     def __contains__(self, member):
-        return str(member) in self.hashes
+        return member in self.hashes
 
     def __iter__(self):
-        yield from self.hashes
+        return iter(self.hashes)
 
     def __len__(self):
         return len(self.hashes)
 
     def _gethashfield(self, hash_, field):
-        i = self.hashes[hash_.member] + self.fields.index(field)
-        return loads(self.result[i])
+        return self.result[hash_.index + self.fields[field]]
