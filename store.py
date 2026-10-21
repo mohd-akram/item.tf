@@ -4,12 +4,12 @@ import fastsimdjson
 from valkey.asyncio.client import Pipeline as _Pipeline, Valkey as _Valkey
 
 
-def dumps(obj):
+def dumpb(obj):
     return fastsimdjson.dumpb(obj)
 
 
-def mdumps(d):
-    return {k: dumps(v) for k, v in d.items()}
+def mdumpb(d):
+    return {k: dumpb(v) for k, v in d.items()}
 
 
 def loads(s):
@@ -22,13 +22,13 @@ class Valkey(_Valkey):
         return loads(await super().get(*args, **kwargs))
 
     def set(self, key, value):
-        return super().set(key, dumps(value))
+        return super().set(key, dumpb(value))
 
     def setex(self, key, time, value):
-        return super().setex(key, time, dumps(value))
+        return super().setex(key, time, dumpb(value))
 
     def mset(self, map_):
-        return super().mset(mdumps(map_))
+        return super().mset(mdumpb(map_))
 
     async def hget(self, *args, **kwargs):
         return loads(await super().hget(*args, **kwargs))
@@ -68,8 +68,8 @@ class Valkey(_Valkey):
     def hset(self, name, key=None, value=None, mapping=None):
         return super().hset(
             name, key,
-            dumps(value) if value is not None else None,
-            mdumps(mapping) if mapping is not None else None
+            dumpb(value) if value is not None else None,
+            mdumpb(mapping) if mapping is not None else None
         )
 
     async def hkeys(self, *args, **kwargs):
