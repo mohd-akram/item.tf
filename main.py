@@ -457,8 +457,8 @@ async def getsearchinfo():
     return await asyncio.gather(
         store.SearchHashSet(
             'items', getitemkey,
-            ('index', 'name', 'image', 'classes', 'tags', 'marketprice'),
-            int),
+            ('index', 'name', 'image', 'classes', 'tags', 'marketprice')
+        ),
         store.get('items:sets'),
         store.get('items:bundles')
     )

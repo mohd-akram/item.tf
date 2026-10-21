@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
 
 import fastsimdjson
@@ -104,14 +103,8 @@ class Valkey(_Valkey):
             shard_hint
         )
 
-    def Hash(self, *args, **kwargs):
-        return Hash(self, *args, **kwargs)
-
     def Hashes(self, *args, **kwargs):
         return Hashes(self, *args, **kwargs)
-
-    def HashSet(self, *args, **kwargs):
-        return HashSet(self, *args, **kwargs)
 
     async def SearchHashSet(self, *args, **kwargs):
         return await SearchHashSet.create(self, *args, **kwargs)
@@ -119,30 +112,6 @@ class Valkey(_Valkey):
 
 class Pipeline(_Pipeline, Valkey):
     pass
-
-
-class Hash(Hashable, Mapping):
-    def __init__(self, valkey, key):
-        self.v = valkey
-        self.key = key
-
-    def __hash__(self):
-        return hash(self.key)
-
-    async def __getitem__(self, field):
-        return await self.v.hget(self.key, field)
-
-    async def contains(self, field):
-        return await self.v.hexists(self.key, field)
-
-    async def __iter__(self):
-        return await self.v.hkeys(self.key)
-
-    async def __len__(self):
-        return await self.v.hlen(self.key)
-
-    async def todict(self):
-        return await self.v.hgetall(self.key)
 
 
 class Hashes(AsyncIterator, Sized):
@@ -171,69 +140,52 @@ class Hashes(AsyncIterator, Sized):
         return len(self.keys)
 
 
-class HashSet(Mapping):
-    def __init__(self, valkey: Valkey, key, tokey, sortkey=None):
-        self.v = valkey
-        self.key = key
-        self.tokey = tokey
-        self.sortkey = sortkey
-
-    def __getitem__(self, member):
-        return Hash(self.v, self.tokey(member))
-
-    async def __contains__(self, member):
-        return await self.v.sismember(self.key, member)
-
-    async def __iter__(self):
-        if self.sortkey:
-            return sorted(await self.v.smembers(self.key), key=self.sortkey)
-        else:
-            return await self.v.smembers(self.key)
-
-    async def __len__(self):
-        return await self.v.scard(self.key)
-
-
-class SearchHashSet(HashSet):
+class SearchHashSet(Mapping):
     """This class optimizes search on a set of hashes by first obtaining
-    and storing all the fields necessary for search, allowing faster access
-    to them. Other fields are accessed as required from the store."""
-    class SearchHash(Hash):
+    and storing all the fields necessary for search."""
+    class SearchHash(Hashable, Mapping):
         def __init__(self, key, index, set_):
-            super().__init__(set_.v, key)
+            self.key = key
             self.index = index
             self.set_ = set_
 
+        def __hash__(self):
+            return hash(self.key)
+
+        def __iter__(self):
+            return iter(self.set_.fields)
+
+        def __len__(self):
+            return len(self.set_.fields)
+
         def __getitem__(self, field):
-            if field in self.set_.fields:
-                return self.set_._gethashfield(self, field)
-            else:
-                return super().__getitem__(field)
+            return self.set_._getvalue(self.index, field)
 
     @classmethod
-    async def create(cls, valkey, key, tokey, fields, sortkey=None):
-        self = cls(valkey, key, tokey)
-        self.fields = {f: (i+1) for i, f in enumerate(fields)}
+    async def create(cls, valkey, *args, **kwargs):
+        self = cls(*args, **kwargs)
 
-        get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
+        get = ('#',) + tuple(
+            '{}->{}'.format(self.tokey('*'), f) for f in self.fields
+        )
+
         self.result = [
-            int(v) if i % (len(fields)+1) == 0 else loads(v)
-            for i, v in enumerate(await self.v.sort(key, by='nosort', get=get))
+            int(v) if i % (len(self.fields)+1) == 0 else loads(v)
+            for i, v in enumerate(await valkey.sort(self.key, get=get))
         ]
 
-        hashes = []
-        for i in range(0, len(self.result), len(fields) + 1):
+        for i in range(0, len(self.result), len(self.fields) + 1):
             member = self.result[i]
-            hashes.append((member,
-                           self.SearchHash(self.tokey(member), i, self)))
-
-        if sortkey:
-            hashes.sort(key=lambda k: sortkey(k[0]))
-            self.hashes = OrderedDict(hashes)
-        else:
-            self.hashes = dict(hashes)
+            self.hashes[member] = self.SearchHash(self.tokey(member), i, self)
 
         return self
+
+    def __init__(self, key, tokey, fields):
+        self.key = key
+        self.tokey = tokey
+        self.fields = {f: (i+1) for i, f in enumerate(fields)}
+        self.hashes = {}
+        self.result = []
 
     def __getitem__(self, member):
         return self.hashes[member]
@@ -247,5 +199,5 @@ class SearchHashSet(HashSet):
     def __len__(self):
         return len(self.hashes)
 
-    def _gethashfield(self, hash_, field):
-        return self.result[hash_.index + self.fields[field]]
+    def _getvalue(self, index, field):
+        return self.result[index + self.fields[field]]
