@@ -79,6 +79,9 @@ class Valkey(_Valkey):
     async def lrange(self, *args, **kwargs):
         return (e.decode() for e in await super().lrange(*args, **kwargs))
 
+    async def sort(self, *args, **kwargs):
+        return [loads(v) for v in await super().sort(*args, **kwargs)]
+
     async def delete_all(self, match, count=100):
         cursor = None
         while cursor != 0:
@@ -111,19 +114,25 @@ class Pipeline(_Pipeline, Valkey):
     def lrange(self, *args, **kwargs):
         return _Valkey.lrange(self, *args, **kwargs)
 
+    def sort(self, *args, **kwargs):
+        return _Valkey.sort(self, *args, **kwargs)
+
     async def execute(self, *args, **kwargs):
         r = await super().execute(*args, **kwargs)
         for i, v in enumerate(r):
             try:
-                r[i] = loads(v)
+                r[i] = [loads(e) for e in v]
             except TypeError:
                 try:
-                    r[i] = (e.decode() for e in v)
+                    r[i] = loads(v)
                 except TypeError:
                     try:
-                        r[i] = v.decode()
-                    except AttributeError:
-                        pass
+                        r[i] = (e.decode() for e in v)
+                    except TypeError:
+                        try:
+                            r[i] = v.decode()
+                        except AttributeError:
+                            pass
         return r
 
 
@@ -188,10 +197,7 @@ class SearchHashSet(Mapping):
         self.key = key
         self.tokey = tokey
         self.fields = {f: (i+1) for i, f in enumerate(fields)}
-        self.result = [
-            int(v) if i % (len(fields)+1) == 0 else loads(v)
-            for i, v in enumerate(result)
-        ]
+        self.result = result
         self.hashes = {}
         for i in range(0, len(self.result), len(self.fields) + 1):
             member = self.result[i]

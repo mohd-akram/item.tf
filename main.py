@@ -479,7 +479,7 @@ async def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = (title, 'Multi-Class Items', 'All-Class Items')
 
-    is_cached = await store.exists(key, allkey) > 0
+    is_cached = await store.exists(*keys) > 0
 
     async def getkeys(pipe, keys):
         for key in keys:
