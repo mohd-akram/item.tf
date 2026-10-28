@@ -1,4 +1,5 @@
 from collections.abc import AsyncIterator, Hashable, Sized, Mapping
+from itertools import batched
 
 import fastsimdjson
 from valkey.asyncio.client import Pipeline as _Pipeline, Valkey as _Valkey
@@ -38,24 +39,11 @@ class Valkey(_Valkey):
             self, '_hgetall',
             self.register_script(
                 """
-                local hgetall = function (key)
-                  local data = server.call('HGETALL', key)
-                  local hash = {}
-
-                  for i = 1, #data, 2 do
-                    hash[data[i]] = cjson.decode(data[i + 1])
-                  end
-
-                  return hash
-                end
-
                 local hashes = {}
-
                 for i = 1, #KEYS do
-                  hashes[i] = hgetall(KEYS[i])
+                  hashes[i] = server.call('HGETALL', KEYS[i])
                 end
-
-                return cjson.encode(hashes)
+                return hashes
                 """
             )
         )
@@ -63,7 +51,10 @@ class Valkey(_Valkey):
             return {k.decode(): loads(v)
                     for k, v in (await super().hgetall(key)).items()}
         else:
-            return loads(await self._hgetall(key))
+            return [
+                {k.decode(): loads(v) for k, v in batched(h, 2)}
+                for h in await self._hgetall(key)
+            ]
 
     def hset(self, name, key=None, value=None, mapping=None):
         return super().hset(
