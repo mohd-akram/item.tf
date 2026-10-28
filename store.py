@@ -102,7 +102,17 @@ class Valkey(_Valkey):
 
 
 class Pipeline(_Pipeline, Valkey):
-    pass
+    def get(self, *args, **kwargs):
+        return _Valkey.get(self, *args, **kwargs)
+
+    async def execute(self, *args, **kwargs):
+        r = await super().execute(*args, **kwargs)
+        for i, v in enumerate(r):
+            try:
+                r[i] = loads(v)
+            except TypeError:
+                pass
+        return r
 
 
 class Hashes(AsyncIterator, Sized):
@@ -153,30 +163,27 @@ class SearchHashSet(Mapping):
             return self.set_._getvalue(self.index, field)
 
     @classmethod
-    async def create(cls, valkey, *args, **kwargs):
-        self = cls(*args, **kwargs)
+    async def create(cls, valkey, key, tokey, fields):
+        return cls(key, tokey, fields,
+                   await cls._sort(valkey, key, tokey, fields))
 
-        get = ('#',) + tuple(
-            '{}->{}'.format(self.tokey('*'), f) for f in self.fields
-        )
+    @classmethod
+    def _sort(cls, valkey, key, tokey, fields):
+        get = ('#',) + tuple('{}->{}'.format(tokey('*'), f) for f in fields)
+        return valkey.sort(key, get=get)
 
-        self.result = [
-            int(v) if i % (len(self.fields)+1) == 0 else loads(v)
-            for i, v in enumerate(await valkey.sort(self.key, get=get))
-        ]
-
-        for i in range(0, len(self.result), len(self.fields) + 1):
-            member = self.result[i]
-            self.hashes[member] = self.SearchHash(self.tokey(member), i, self)
-
-        return self
-
-    def __init__(self, key, tokey, fields):
+    def __init__(self, key, tokey, fields, result):
         self.key = key
         self.tokey = tokey
         self.fields = {f: (i+1) for i, f in enumerate(fields)}
+        self.result = [
+            int(v) if i % (len(fields)+1) == 0 else loads(v)
+            for i, v in enumerate(result)
+        ]
         self.hashes = {}
-        self.result = []
+        for i in range(0, len(self.result), len(self.fields) + 1):
+            member = self.result[i]
+            self.hashes[member] = self.SearchHash(self.tokey(member), i, self)
 
     def __getitem__(self, member):
         return self.hashes[member]

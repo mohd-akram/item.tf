@@ -27,7 +27,7 @@ import config
 import tf2api
 import tf2search
 from logger import logger
-from store import Valkey
+from store import SearchHashSet, Valkey
 
 
 if os.environ.get('PYTHONTRACEMALLOC'):
@@ -454,14 +454,16 @@ async def render(template, *args, **params):
 
 @cached(cache=TTLCache(maxsize=1, ttl=600))
 async def getsearchinfo():
-    return await asyncio.gather(
-        store.SearchHashSet(
-            'items', getitemkey,
-            ('index', 'name', 'image', 'classes', 'tags', 'marketprice')
-        ),
-        store.get('items:sets'),
-        store.get('items:bundles')
-    )
+    key = 'items'
+    fields = ('index', 'name', 'image', 'classes', 'tags', 'marketprice')
+
+    async with store.pipeline() as pipe:
+        SearchHashSet._sort(pipe, key, getitemkey, fields)
+        pipe.get('items:sets')
+        pipe.get('items:bundles')
+        result, sets, bundles = await pipe.execute()
+
+    return (SearchHashSet(key, getitemkey, fields, result), sets, bundles)
 
 
 async def getresults(classes, tags):
