@@ -105,13 +105,25 @@ class Pipeline(_Pipeline, Valkey):
     def get(self, *args, **kwargs):
         return _Valkey.get(self, *args, **kwargs)
 
+    def srandmember(self, *args, **kwargs):
+        return _Valkey.srandmember(self, *args, **kwargs)
+
+    def lrange(self, *args, **kwargs):
+        return _Valkey.lrange(self, *args, **kwargs)
+
     async def execute(self, *args, **kwargs):
         r = await super().execute(*args, **kwargs)
         for i, v in enumerate(r):
             try:
                 r[i] = loads(v)
             except TypeError:
-                pass
+                try:
+                    r[i] = (e.decode() for e in v)
+                except TypeError:
+                    try:
+                        r[i] = v.decode()
+                    except AttributeError:
+                        pass
         return r
 
 

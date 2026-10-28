@@ -77,11 +77,14 @@ def json(data, status: int = 200) -> Response:
 
 @app.router.get('/')
 async def home(request: Request):
-    t0, newitemsindexes, user = await asyncio.gather(
-        store.get('items:lastupdated'),
-        store.srandmember('items:new', 4),
-        getcurrentuser(request)
-    )
+    user_task = asyncio.create_task(getcurrentuser(request))
+
+    async with store.pipeline() as pipe:
+        pipe.get('items:lastupdated')
+        pipe.srandmember('items:new', 4)
+        t0, newitemsindexes = await pipe.execute()
+
+    user = await user_task
 
     newitems = await getitems(newitemsindexes)
 
@@ -476,16 +479,21 @@ async def getresults(classes, tags):
     keys = (key, multikey, allkey)
     titles = (title, 'Multi-Class Items', 'All-Class Items')
 
-    is_cached = any(
-        await asyncio.gather(store.exists(key), store.exists(allkey))
-    )
+    is_cached = await store.exists(key, allkey) > 0
 
-    if not is_cached:
-        classeskey = 'temp:classes'
-        tagskey = 'temp:tags'
-        remove = []
+    async def getkeys(pipe, keys):
+        for key in keys:
+            pipe.lrange(key, 0, -1)
 
-        async with store.pipeline() as pipe:
+        return ([getitemkey(k) for k in r]
+                for r in (await pipe.execute())[-len(keys):])
+
+    async with store.pipeline() as pipe:
+        if not is_cached:
+            classeskey = 'temp:classes'
+            tagskey = 'temp:tags'
+            remove = []
+
             classkeys = [getclasskey(c) for c in classes] or ['items']
             pipe.sunionstore(classeskey, *classkeys)
 
@@ -519,14 +527,9 @@ async def getresults(classes, tags):
                 pipe.sort(k, store=k)
                 pipe.expire(k, 3600)
 
-            await pipe.execute()
-
-    async def getkeys(key):
-        return [getitemkey(k) for k in await store.lrange(key, 0, -1)]
+        allitemkeys = await getkeys(pipe, keys)
 
     results = []
-
-    allitemkeys = await asyncio.gather(*[getkeys(k) for k in keys])
 
     for title, itemkeys in zip(titles, allitemkeys):
         if itemkeys:
