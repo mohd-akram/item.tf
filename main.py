@@ -146,7 +146,7 @@ async def search(request: Request, slug: str = None):
 
     if query == 'all':
         items = store.Hashes(
-            [getitemkey(k.decode()) for k in await store.sort('items')])
+            [getitemkey(k) for k in await store.sort('items')])
         results = [tf2search.getsearchresult(items=items)]
     else:
         sources = ('backpack.tf',)
